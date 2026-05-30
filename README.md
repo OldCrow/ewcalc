@@ -9,7 +9,7 @@ basic radar — based on the EW101 series by David Adamy.
 Three layers with clean separation:
 
 - **`libew`** — pure C++20 calculation library, no UI, no external dependencies
-- **`ewpresenter`** — platform-agnostic presenter/viewmodel layer (Phase 2)
+- **`ewpresenter`** — platform-agnostic presenter/viewmodel layer
 - **`frontend/`** — platform-native UIs: WinUI 3 (Windows), AppKit (macOS), Qt6 (Linux)
 
 ## libew modules
@@ -25,6 +25,23 @@ Three layers with clean separation:
 | `location` | CEP from AOA bearing error, TDOA, and EEP |
 | `radar` | Radar range equation, pulse compression, coherent integration gain |
 
+## ewpresenter
+
+Six presenters wrap the `libew` modules for use by any view layer:
+
+| Presenter | Inputs | Key outputs |
+|-----------|--------|-------------|
+| `PropagationPresenter` | distance, frequency, antenna heights | FSPL, 2-ray loss, Fresnel zone, regime |
+| `LinkPresenter` | Tx power/gain, Rx gain, geometry, sensitivity | Received power, link margin, effective range |
+| `ReceiverPresenter` | Bandwidth, NF, SNR, stage chain, ADC bits | Sensitivity, cascaded NF, SFDR, digital DR |
+| `JammingPresenter` | Signal/jammer ERP, geometry, frequency | J/S ratio, partial-band optimum BW |
+| `LocationPresenter` | Bearing error, range, EEP semi-axes | CEP (AOA and EEP methods) |
+| `RadarPresenter` | Tx power, gain, RCS, frequency, NF | Max range, two-way loss, PC/integration gain |
+
+Each presenter validates inputs, calls `libew`, and fires a `std::function` callback with formatted output strings. No platform types are exposed.
+
+A console harness (`ewpresenter_harness`) exercises all presenters against default inputs.
+
 ## Building
 
 ```
@@ -33,6 +50,18 @@ cmake --build build --config Release
 ctest --test-dir build -C Release --output-on-failure
 ```
 
+To run the presenter harness:
+
+```
+.\build\bin\Release\ewpresenter_harness.exe
+```
+
 ## Current status
 
-Phase 1 — libew core library and tests.
+**v0.1.0** — Phases 1 and 2 complete.
+
+- Phase 1 ✓ — `libew`: eight calculation modules, full test suite (6/6 passing)
+- Phase 2 ✓ — `ewpresenter`: six presenters, formatter, validation, console harness
+- Phase 3 — Windows frontend (WinUI 3 / C++/WinRT)
+- Phase 4 — macOS frontend (AppKit / Obj-C++)
+- Phase 5 — Linux frontend (Qt6 Widgets)
