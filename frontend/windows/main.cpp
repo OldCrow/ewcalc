@@ -16,6 +16,7 @@
 #undef GetCurrentTime
 
 // C++/WinRT
+#include <optional>
 #include <winrt/base.h>
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Foundation.Collections.h>
@@ -27,93 +28,37 @@
 #include <MddBootstrap.h>
 #include <WindowsAppSDK-VersionInfo.h>
 
-// ewpresenter
-#include "ewpresenter/ewpresenter.h"
+// Main window
+#include "main_window.h"
 
 // ---------------------------------------------------------------------------
 // Namespace aliases
 // ---------------------------------------------------------------------------
-namespace xaml    = winrt::Microsoft::UI::Xaml;
-namespace controls = winrt::Microsoft::UI::Xaml::Controls;
+namespace xaml = winrt::Microsoft::UI::Xaml;
 
 // ---------------------------------------------------------------------------
-// Application class — subclasses WinUI 3 Application, no XAML required
+// Application class
 // ---------------------------------------------------------------------------
 namespace ewcalc::implementation {
 
 struct App : xaml::ApplicationT<App> {
     void OnLaunched([[maybe_unused]] xaml::LaunchActivatedEventArgs const&) {
-        build_window();
+        try {
+            main_window_.emplace(xaml::Window{});
+        } catch (winrt::hresult_error const& e) {
+            MessageBoxW(nullptr,
+                e.message().c_str(),
+                L"ewcalc \u2014 launch error (hresult)",
+                MB_ICONERROR | MB_OK);
+        } catch (...) {
+            MessageBoxW(nullptr,
+                L"An unknown exception occurred during application launch.",
+                L"ewcalc \u2014 launch error",
+                MB_ICONERROR | MB_OK);
+        }
     }
-
 private:
-    xaml::Window window_{nullptr};
-
-    void build_window() {
-        window_ = xaml::Window{};
-        window_.Title(L"ewcalc \u2014 EW Engineering Calculator");
-
-        // Root layout
-        auto root = controls::StackPanel{};
-        root.Margin({16, 16, 16, 16});
-        root.Spacing(8.0);
-
-        // Title label
-        auto title = controls::TextBlock{};
-        title.Text(L"ewcalc \u2014 EW Engineering Calculator");
-        title.FontSize(22.0);
-        root.Children().Append(title);
-
-        // Subtitle / version
-        auto version = controls::TextBlock{};
-        version.Text(L"Phase 3 proof-of-concept \u2014 Windows App SDK 2.1 / WinUI 3 / C++20");
-        version.FontSize(12.0);
-        root.Children().Append(version);
-
-        // Separator-like spacer
-        auto sep = controls::TextBlock{};
-        sep.Text(L"\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500");
-        root.Children().Append(sep);
-
-        // Live result from ewpresenter to verify the full stack
-        auto result_label = controls::TextBlock{};
-        result_label.Text(L"Propagation (32.6 km, 100 MHz, 10 m / 10 m):");
-        root.Children().Append(result_label);
-
-        // Run ewpresenter to get a result
-        ewpresenter::PropagationPresenter prop;
-        prop.set_distance(32.6);
-        prop.set_frequency(100.0);
-        prop.set_tx_height(10.0);
-        prop.set_rx_height(10.0);
-        const auto& out = prop.output();
-
-        auto make_row = [&](const wchar_t* label, const std::string& value) {
-            auto row = controls::StackPanel{};
-            row.Orientation(controls::Orientation::Horizontal);
-            row.Spacing(8.0);
-
-            auto lbl = controls::TextBlock{};
-            lbl.Text(label);
-            lbl.Width(180.0);
-            row.Children().Append(lbl);
-
-            auto val = controls::TextBlock{};
-            val.Text(winrt::to_hstring(value));
-            row.Children().Append(val);
-
-            return row;
-        };
-
-        root.Children().Append(make_row(L"Path loss:",          out.path_loss_str));
-        root.Children().Append(make_row(L"FSPL:",               out.fspl_str));
-        root.Children().Append(make_row(L"2-Ray loss:",         out.two_ray_loss_str));
-        root.Children().Append(make_row(L"Fresnel zone:",       out.fresnel_zone_str));
-        root.Children().Append(make_row(L"Regime:",             out.regime_str));
-
-        window_.Content(root);
-        window_.Activate();
-    }
+    std::optional<MainWindow> main_window_;
 };
 
 } // namespace ewcalc::implementation
