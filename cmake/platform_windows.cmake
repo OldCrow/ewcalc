@@ -70,4 +70,18 @@ function(ewcalc_configure_winui3_target TARGET)
         WindowsApp.lib
         OneCoreUap.lib
     )
+
+    # Copy the bootstrap DLL side-by-side with the exe for unpackaged development runs.
+    # winapp run handles this automatically; running the exe directly requires it here.
+    set(EWCALC_BOOTSTRAP_DLL "${EWCALC_WINAPP_DIR}/bin/${EWCALC_WIN_ARCH}/Microsoft.WindowsAppRuntime.Bootstrap.dll")
+    if(EXISTS "${EWCALC_BOOTSTRAP_DLL}")
+        add_custom_command(TARGET ${TARGET} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${EWCALC_BOOTSTRAP_DLL}"
+                "$<TARGET_FILE_DIR:${TARGET}>/"
+            COMMENT "Copying Windows App Runtime bootstrap DLL"
+        )
+    else()
+        message(WARNING "Bootstrap DLL not found at ${EWCALC_BOOTSTRAP_DLL} — run winapp restore")
+    endif()
 endfunction()
