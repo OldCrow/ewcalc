@@ -29,6 +29,7 @@ endif()
 
 # Core library (always built)
 add_subdirectory(libew)
+add_subdirectory(ewpresenter)
 
 # GUI frontend — platform-specific, Phase 3+
 if(EWCALC_BUILD_GUI)
