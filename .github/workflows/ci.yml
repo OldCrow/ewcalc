@@ -1,0 +1,162 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+    tags:     [ 'v*' ]          # trigger packaging on version tags
+  pull_request:
+    branches: [ main ]
+
+# Cancel in-progress runs on the same branch/PR when a new commit arrives
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  # ── Windows ─────────────────────────────────────────────────────────────────
+  build-windows:
+    name: Windows (WinUI 3)
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Install Windows App SDK runtime
+        shell: pwsh
+        run: |
+          # Download and install the Windows App SDK runtime (required for WinUI 3)
+          $url = "https://aka.ms/windowsappsdk/2.0/latest/windowsappruntimeinstall-x64.exe"
+          $installer = "$env:TEMP\WinAppRuntime.exe"
+          Invoke-WebRequest -Uri $url -OutFile $installer
+          & $installer --quiet
+          if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne 3010) {
+            throw "Windows App SDK installation failed (exit $LASTEXITCODE)"
+          }
+
+      - name: Build (native libs + frontend)
+        shell: pwsh
+        run: scripts\build-windows.ps1 -Config Release
+
+      - name: Run tests
+        shell: pwsh
+        run: |
+          cmake -B build -DEWCALC_BUILD_TESTS=ON
+          cmake --build build --config Release
+          ctest --test-dir build --build-config Release --output-on-failure
+
+      - name: Package MSIX
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        run: scripts\build-windows.ps1 -Config Release -Package
+
+      - name: Upload MSIX
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: ewcalc-windows-msix
+          path: build/msix/*.msix
+          retention-days: 90
+
+  # ── macOS ───────────────────────────────────────────────────────────────────
+  build-macos:
+    name: macOS (SwiftUI) — Phase 4
+    runs-on: macos-14           # Apple Silicon runner
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install CMake
+        run: brew install cmake
+
+      - name: Build (native libs + frontend)
+        run: bash scripts/build-macos.sh --config Release
+
+      - name: Run tests
+        run: |
+          cmake -B build -DEWCALC_BUILD_TESTS=ON
+          cmake --build build --config Release --parallel
+          ctest --test-dir build --build-config Release --output-on-failure
+
+      - name: Package .pkg
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: bash scripts/build-macos.sh --config Release --package
+
+      - name: Upload .pkg
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: ewcalc-macos-pkg
+          path: build/pkg/*.pkg
+          retention-days: 90
+
+  # ── Linux ───────────────────────────────────────────────────────────────────
+  build-linux:
+    name: Linux (Qt6) — Phase 5
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build
+
+      - name: Build (native libs + frontend)
+        run: bash scripts/build-linux.sh --config Release
+
+      - name: Run tests
+        run: |
+          cmake -B build -DEWCALC_BUILD_TESTS=ON
+          cmake --build build --config Release --parallel
+          ctest --test-dir build --build-config Release --output-on-failure
+
+      - name: Package AppImage
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          # Install linuxdeploy
+          wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          chmod +x linuxdeploy-x86_64.AppImage
+          mv linuxdeploy-x86_64.AppImage /usr/local/bin/linuxdeploy
+          bash scripts/build-linux.sh --config Release --package appimage
+
+      - name: Upload AppImage
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: ewcalc-linux-appimage
+          path: build/pkg/*.AppImage
+          retention-days: 90
+
+  # ── GitHub Release ───────────────────────────────────────────────────────────
+  release:
+    name: Create GitHub Release
+    needs: [ build-windows, build-macos, build-linux ]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ewcalc ${{ github.ref_name }}
+          draft: true             # review before publishing
+          generate_release_notes: true
+          files: |
+            artifacts/**/*.msix
+            artifacts/**/*.pkg
+            artifacts/**/*.AppImage

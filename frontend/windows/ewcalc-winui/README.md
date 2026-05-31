@@ -1,0 +1,98 @@
+# ewcalc-winui — Phase 3.1 Windows Frontend
+
+WinUI 3 / C# frontend for ewcalc. Consumes `libew` and `ewpresenter`
+through a C++/CLI interop assembly (`ewpresenter.net`).
+
+## Project structure
+
+```
+ewcalc-winui.sln
+├── ewpresenter.net/       C++/CLI (.vcxproj) — bridges native libs to C#
+│   ├── MarshalHelper.h    std::string → System::String^, FieldError → enum
+│   ├── PropagationAdapter.h/.cpp
+│   ├── LinkAdapter.h/.cpp
+│   ├── ReceiverAdapter.h/.cpp   (includes stage chain management)
+│   ├── JammingAdapter.h/.cpp
+│   ├── LocationAdapter.h/.cpp
+│   └── RadarAdapter.h/.cpp
+│
+└── ewcalc-winui/          C# WinUI 3 (.csproj)
+    ├── App.xaml            Loads XamlControlsResources — the key Phase 3.1 unlock
+    ├── MainWindow.xaml     NavigationView shell
+    ├── Helpers/
+    │   └── FieldErrorConverter.cs   FieldValidationError → BorderBrush / tooltip
+    ├── ViewModels/
+    │   ├── PropagationViewModel.cs
+    │   ├── LinkViewModel.cs
+    │   ├── ReceiverViewModel.cs     (+ StageItemViewModel, RelayCommand)
+    │   └── JammingLocationRadarViewModels.cs
+    └── Views/
+        ├── ResultRow.xaml/.cs       Shared label/value row control
+        ├── PropagationPage.xaml/.cs
+        ├── LinkPage.xaml/.cs
+        ├── ReceiverPage.xaml/.cs
+        ├── JammingPage.xaml/.cs
+        ├── LocationPage.xaml/.cs
+        └── RadarPage.xaml/.cs
+```
+
+## Build order
+
+**Step 1 — Build the native libraries with CMake** (from the repo root):
+```
+cmake -B build -DEWCALC_BUILD_GUI=OFF
+cmake --build build --config Release
+```
+This produces `build\lib\Release\libew.lib` and `build\lib\Release\ewpresenter.lib`.
+
+**Step 2 — Open `ewcalc-winui.sln` in Visual Studio 2022** (17.x, with the
+"Desktop development with C++" and ".NET desktop development" workloads, plus
+the Windows App SDK extension).
+
+**Step 3 — Set configuration to `Release | x64` and build the solution.**
+VS builds `ewpresenter.net` first (it links against the .lib files from Step 1),
+then builds `ewcalc-winui` which references the resulting assembly.
+
+**Step 4 — Run `ewcalc-winui`** directly from VS (F5) or from the output bin.
+
+## Key design decisions
+
+### Why C++/CLI rather than P/Invoke?
+The ewpresenter interface uses `std::function` callbacks and `std::vector` for
+the Friis stage chain. P/Invoke cannot marshal these types. C++/CLI gives us
+direct C++ interop with the full type system, and the managed ref classes it
+produces are first-class .NET objects — no unsafe code in the C# layer.
+
+### Why NavigationView rather than TabView?
+The six calculators have very different visual weight and input count. A TabView
+would clip labels at typical window widths. NavigationView provides grouping
+(Propagation / Analysis), compact mode on narrow windows, and natural room for
+future calculators or a Settings page without restructuring the shell.
+
+### Binding strategy
+- `x:Bind Mode=OneTime` for default values (NumberBox initial values).
+- `x:Bind Mode=OneWay` for output TextBlocks — updated via INotifyPropertyChanged.
+- `NumberBox.ValueChanged` → ViewModel setter → Adapter setter → native presenter.
+- The presenter's `set_on_change` callback fires synchronously inside each setter;
+  the ViewModel marshals it to the UI thread via `DispatcherQueue`.
+
+### Receiver stage chain
+`ReceiverViewModel.Stages` is an `ObservableCollection<StageItemViewModel>`.
+Each item's `NoiseFigureDb` and `GainDb` setters call `PushStages()` which
+rebuilds the full `StageInput[]` and calls `ReceiverAdapter.SetStages()`.
+Add/Remove buttons are bound to `ICommand` properties.
+
+## Next steps
+
+- Wire `Package.appxmanifest` identity from the existing PoC (copy the
+  `dev.OldCrow.ewcalc` identity into a new `Package.appxmanifest` alongside
+  the `.csproj` for packaged deployment).
+- Copy the `Assets/` folder from the PoC for tile images.
+- Implement `FieldErrorConverter` highlight on the `ResultRow` for link margin
+  (negative = red, positive = accent colour).
+- Add the Jamming geometry diagram (static SVG or XAML canvas showing the
+  signal transmitter / jammer / receiver triangle) to `JammingPage`.
+- Phase 4: `frontend/macos/` — Xcode project with AppKit/SwiftUI, consuming
+  ewpresenter via an Objective-C++ wrapper (`EWPresenterBridge`).
+- Phase 5: `frontend/linux/` — Qt6 CMake project, consuming ewpresenter
+  directly (no wrapper needed; Qt uses the same C++ ABI).

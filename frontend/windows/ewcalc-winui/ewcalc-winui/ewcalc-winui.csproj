@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.26100.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <RootNamespace>EwCalc</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Platforms>x64</Platforms>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <PublishProfile>win-x64</PublishProfile>
+    <UseWinUI>true</UseWinUI>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <!-- Disable SDK auto-discovery of XAML items so our explicit list is the sole source -->
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
+    <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.0.1" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4654" PrivateAssets="all" />
+    <PackageReference Include="WinUIEx" Version="2.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ewpresenter.net\ewpresenter.net.vcxproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </ApplicationDefinition>
+    <Page Include="MainWindow.xaml">                <Generator>MSBuild:Compile</Generator></Page>
+    <Page Include="Views\PropagationPage.xaml">     <Generator>MSBuild:Compile</Generator></Page>
+    <Page Include="Views\LinkPage.xaml">            <Generator>MSBuild:Compile</Generator></Page>
+    <Page Include="Views\ReceiverPage.xaml">        <Generator>MSBuild:Compile</Generator></Page>
+    <Page Include="Views\JammingPage.xaml">         <Generator>MSBuild:Compile</Generator></Page>
+    <Page Include="Views\LocationPage.xaml">        <Generator>MSBuild:Compile</Generator></Page>
+    <Page Include="Views\RadarPage.xaml">           <Generator>MSBuild:Compile</Generator></Page>
+    <Page Include="Views\HomePage.xaml">            <Generator>MSBuild:Compile</Generator></Page>
+    <Page Include="Views\ResultRow.xaml">           <Generator>MSBuild:Compile</Generator></Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Manifest Include="app.manifest" />
+  </ItemGroup>
+
+</Project>

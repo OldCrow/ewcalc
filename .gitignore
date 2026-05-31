@@ -1,6 +1,42 @@
+# ── Build outputs ─────────────────────────────────────────────────────────────
 build/
-.cache/
-*.user
-.vs/
 out/
+
+# ── CMake ─────────────────────────────────────────────────────────────────────
+.cache/
 CMakeSettings.json
+CMakeUserPresets.json
+
+# ── Visual Studio ─────────────────────────────────────────────────────────────
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS / MSBuild intermediate and output directories
+# (bin/ and obj/ inside the VS solution folder only — not repo root)
+frontend/windows/ewcalc-winui/ewcalc-winui/bin/
+frontend/windows/ewcalc-winui/ewcalc-winui/obj/
+frontend/windows/ewcalc-winui/ewpresenter.net/bin/
+frontend/windows/ewcalc-winui/ewpresenter.net/obj/
+frontend/windows/ewcalc-winui/obj/
+
+# ── Package outputs ───────────────────────────────────────────────────────────
+*.msix
+*.msixbundle
+*.appx
+*.pkg
+*.dmg
+*.AppImage
+*.deb
+*.rpm
+
+# ── macOS ─────────────────────────────────────────────────────────────────────
+.DS_Store
+*.xcuserstate
+xcuserdata/
+DerivedData/
+
+# ── Linux ─────────────────────────────────────────────────────────────────────
+AppDir/

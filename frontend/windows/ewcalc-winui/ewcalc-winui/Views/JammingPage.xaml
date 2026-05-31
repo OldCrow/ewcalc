@@ -1,0 +1,104 @@
+<Page
+    x:Class="EwCalc.Views.JammingPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:EwCalc.Views">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="24,20,24,24" ColumnSpacing="24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300" MinWidth="220" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,16">
+                <TextBlock Text="Jamming" Style="{ThemeResource TitleTextBlockStyle}" />
+                <TextBlock Text="J/S ratio · Burnthrough · Partial-band optimum bandwidth"
+                           Style="{ThemeResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="0" Spacing="8">
+                <TextBlock Text="SIGNAL" Style="{StaticResource SectionHeaderStyle}" />
+                <Border Style="{StaticResource InputCardStyle}">
+                    <StackPanel Spacing="12">
+                        <NumberBox x:Name="SignalErpBox"    Header="Signal ERP (dBm)"
+                                   Value="{x:Bind ViewModel.DefaultSignalErp, Mode=OneTime}"
+                                   Minimum="-100" Maximum="200" SmallChange="1"
+                                   ValueChanged="SignalErpBox_ValueChanged" />
+                        <NumberBox x:Name="SignalDistBox"   Header="Signal→Rx distance (km)"
+                                   Value="{x:Bind ViewModel.DefaultSignalToRxDist, Mode=OneTime}"
+                                   Minimum="0.01" Maximum="10000" SmallChange="1"
+                                   ValueChanged="SignalDistBox_ValueChanged" />
+                        <NumberBox x:Name="SignalHeightBox" Header="Signal Tx height (m)"
+                                   Value="{x:Bind ViewModel.DefaultSignalTxHeight, Mode=OneTime}"
+                                   Minimum="0.1" Maximum="100000" SmallChange="1"
+                                   ValueChanged="SignalHeightBox_ValueChanged" />
+                        <NumberBox x:Name="SignalBwBox"     Header="Signal bandwidth (MHz)"
+                                   Value="{x:Bind ViewModel.DefaultSignalBandwidth, Mode=OneTime}"
+                                   Minimum="0.001" Maximum="1000" SmallChange="0.01"
+                                   ValueChanged="SignalBwBox_ValueChanged" />
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="JAMMER" Style="{StaticResource SectionHeaderStyle}" />
+                <Border Style="{StaticResource InputCardStyle}">
+                    <StackPanel Spacing="12">
+                        <NumberBox x:Name="JammerErpBox"    Header="Jammer ERP (dBm)"
+                                   Value="{x:Bind ViewModel.DefaultJammerErp, Mode=OneTime}"
+                                   Minimum="-100" Maximum="200" SmallChange="1"
+                                   ValueChanged="JammerErpBox_ValueChanged" />
+                        <NumberBox x:Name="JammerDistBox"   Header="Jammer→Rx distance (km)"
+                                   Value="{x:Bind ViewModel.DefaultJammerToRxDist, Mode=OneTime}"
+                                   Minimum="0.01" Maximum="10000" SmallChange="1"
+                                   ValueChanged="JammerDistBox_ValueChanged" />
+                        <NumberBox x:Name="JammerHeightBox" Header="Jammer height (m)"
+                                   Value="{x:Bind ViewModel.DefaultJammerHeight, Mode=OneTime}"
+                                   Minimum="0.1" Maximum="100000" SmallChange="1"
+                                   ValueChanged="JammerHeightBox_ValueChanged" />
+                        <NumberBox x:Name="HopRangeBox"     Header="Hop range (MHz)"
+                                   Value="{x:Bind ViewModel.DefaultHopRange, Mode=OneTime}"
+                                   Minimum="0.001" Maximum="10000" SmallChange="1"
+                                   ValueChanged="HopRangeBox_ValueChanged" />
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="SHARED" Style="{StaticResource SectionHeaderStyle}" />
+                <Border Style="{StaticResource InputCardStyle}">
+                    <StackPanel Spacing="12">
+                        <NumberBox x:Name="FrequencyBox" Header="Frequency (MHz)"
+                                   Value="{x:Bind ViewModel.DefaultFrequency, Mode=OneTime}"
+                                   Minimum="0.1" Maximum="100000" SmallChange="10"
+                                   ValueChanged="FrequencyBox_ValueChanged" />
+                        <NumberBox x:Name="RxHeightBox"  Header="Rx height (m)"
+                                   Value="{x:Bind ViewModel.DefaultRxHeight, Mode=OneTime}"
+                                   Minimum="0.1" Maximum="100000" SmallChange="1"
+                                   ValueChanged="RxHeightBox_ValueChanged" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="1" Spacing="8">
+                <TextBlock Text="J/S ANALYSIS" Style="{StaticResource SectionHeaderStyle}" />
+                <Border Style="{StaticResource ResultCardStyle}">
+                    <StackPanel Spacing="0">
+                        <local:ResultRow Label="J/S ratio"    Value="{x:Bind ViewModel.JsRatio,    Mode=OneWay}" />
+                        <local:ResultRow Label="Signal at Rx" Value="{x:Bind ViewModel.SignalAtRx, Mode=OneWay}" />
+                        <local:ResultRow Label="Jammer at Rx" Value="{x:Bind ViewModel.JammerAtRx, Mode=OneWay}" />
+                    </StackPanel>
+                </Border>
+                <TextBlock Text="PARTIAL-BAND" Style="{StaticResource SectionHeaderStyle}" />
+                <Border Style="{StaticResource ResultCardStyle}">
+                    <StackPanel Spacing="0">
+                        <local:ResultRow Label="Optimum BW" Value="{x:Bind ViewModel.OptimumBw, Mode=OneWay}" />
+                        <local:ResultRow Label="Duty cycle" Value="{x:Bind ViewModel.DutyCycle, Mode=OneWay}" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</Page>

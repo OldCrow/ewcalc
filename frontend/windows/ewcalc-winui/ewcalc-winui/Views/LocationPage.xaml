@@ -1,0 +1,73 @@
+<Page
+    x:Class="EwCalc.Views.LocationPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:EwCalc.Views">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="24,20,24,24" ColumnSpacing="24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300" MinWidth="220" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,16">
+                <TextBlock Text="Emitter location" Style="{ThemeResource TitleTextBlockStyle}" />
+                <TextBlock Text="CEP from AOA bearing error · EEP semi-axes"
+                           Style="{ThemeResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="0" Spacing="8">
+                <TextBlock Text="AOA METHOD" Style="{StaticResource SectionHeaderStyle}" />
+                <Border Style="{StaticResource InputCardStyle}">
+                    <StackPanel Spacing="12">
+                        <NumberBox x:Name="BearingErrorBox" Header="RMS bearing error (°)"
+                                   Value="{x:Bind ViewModel.DefaultRmsBearingError, Mode=OneTime}"
+                                   Minimum="0.01" Maximum="45"
+                                   SpinButtonPlacementMode="Compact" SmallChange="0.1"
+                                   ValueChanged="BearingErrorBox_ValueChanged" />
+                        <NumberBox x:Name="AoaRangeBox"     Header="Range to emitter (km)"
+                                   Value="{x:Bind ViewModel.DefaultAoaRange, Mode=OneTime}"
+                                   Minimum="0.1" Maximum="10000"
+                                   SpinButtonPlacementMode="Compact" SmallChange="1"
+                                   ValueChanged="AoaRangeBox_ValueChanged" />
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="EEP METHOD" Style="{StaticResource SectionHeaderStyle}" />
+                <Border Style="{StaticResource InputCardStyle}">
+                    <StackPanel Spacing="12">
+                        <NumberBox x:Name="SemiMajorBox" Header="Semi-major axis (km, 1σ)"
+                                   Value="{x:Bind ViewModel.DefaultSemiMajor, Mode=OneTime}"
+                                   Minimum="0.001" Maximum="1000"
+                                   SpinButtonPlacementMode="Compact" SmallChange="0.1"
+                                   ValueChanged="SemiMajorBox_ValueChanged" />
+                        <NumberBox x:Name="SemiMinorBox" Header="Semi-minor axis (km, 1σ)"
+                                   Value="{x:Bind ViewModel.DefaultSemiMinor, Mode=OneTime}"
+                                   Minimum="0.001" Maximum="1000"
+                                   SpinButtonPlacementMode="Compact" SmallChange="0.1"
+                                   ValueChanged="SemiMinorBox_ValueChanged" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="1" Spacing="8">
+                <TextBlock Text="RESULTS" Style="{StaticResource SectionHeaderStyle}" />
+                <Border Style="{StaticResource ResultCardStyle}">
+                    <StackPanel Spacing="0">
+                        <local:ResultRow Label="CEP (AOA method)" Value="{x:Bind ViewModel.CepAoa, Mode=OneWay}" IsHighlighted="True" />
+                        <local:ResultRow Label="CEP (EEP method)" Value="{x:Bind ViewModel.CepEep, Mode=OneWay}" IsHighlighted="True" />
+                    </StackPanel>
+                </Border>
+                <InfoBar IsOpen="True" IsClosable="False" Severity="Informational"
+                         Title="About CEP"
+                         Message="The 50% circular error probable is the radius within which 50% of location estimates fall." />
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</Page>

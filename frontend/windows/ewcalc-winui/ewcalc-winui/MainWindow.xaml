@@ -1,0 +1,89 @@
+<Window
+    x:Class="EwCalc.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:EwCalc"
+    xmlns:views="using:EwCalc.Views"
+    Title="ewcalc — EW Engineering Calculator">
+
+    <Grid>
+        <NavigationView
+            x:Name="NavView"
+            PaneTitle="ewcalc"
+            IsBackButtonVisible="Collapsed"
+            IsSettingsVisible="False"
+            SelectionChanged="NavView_SelectionChanged"
+            OpenPaneLength="200"
+            CompactModeThresholdWidth="800"
+            ExpandedModeThresholdWidth="1200">
+
+            <NavigationView.MenuItems>
+
+                <NavigationViewItemHeader Content="PROPAGATION" />
+
+                <NavigationViewItem
+                    x:Name="NavPropagation"
+                    Tag="Propagation"
+                    Content="Propagation">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE704;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem
+                    x:Name="NavLink"
+                    Tag="Link"
+                    Content="Link budget">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE71B;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItemSeparator />
+                <NavigationViewItemHeader Content="ANALYSIS" />
+
+                <NavigationViewItem
+                    x:Name="NavReceiver"
+                    Tag="Receiver"
+                    Content="Receiver">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE7F4;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem
+                    x:Name="NavJamming"
+                    Tag="Jamming"
+                    Content="Jamming">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE7BA;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem
+                    x:Name="NavLocation"
+                    Tag="Location"
+                    Content="Location">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE81D;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem
+                    x:Name="NavRadar"
+                    Tag="Radar"
+                    Content="Radar">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE7C8;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+            </NavigationView.MenuItems>
+
+            <!-- No FooterMenuItems — IsSettingsVisible=False removes the built-in one -->
+
+            <Frame x:Name="ContentFrame" />
+
+        </NavigationView>
+    </Grid>
+</Window>
