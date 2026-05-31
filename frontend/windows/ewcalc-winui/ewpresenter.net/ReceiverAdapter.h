@@ -25,11 +25,11 @@ public:
     ~ReceiverAdapter();
     !ReceiverAdapter();
 
-    void SetBandwidth    (double mhz) { presenter_->set_bandwidth(mhz);       }
-    void SetNoiseFigure  (double db)  { presenter_->set_noise_figure(db);     }
-    void SetRequiredSnr  (double db)  { presenter_->set_required_snr(db);     }
-    void SetSecondOrderIp(double dbm) { presenter_->set_second_order_ip(dbm); }
-    void SetThirdOrderIp (double dbm) { presenter_->set_third_order_ip(dbm);  }
+    void SetBandwidth    (double mhz) { presenter_->set_bandwidth(RoundInput(mhz));       }
+    void SetNoiseFigure  (double db)  { presenter_->set_noise_figure(RoundInput(db));     }
+    void SetRequiredSnr  (double db)  { presenter_->set_required_snr(RoundInput(db));     }
+    void SetSecondOrderIp(double dbm) { presenter_->set_second_order_ip(RoundInput(dbm)); }
+    void SetThirdOrderIp (double dbm) { presenter_->set_third_order_ip(RoundInput(dbm));  }
     void SetAdcBits      (int bits)   { presenter_->set_adc_bits(bits);       }
 
     void SetStages(array<StageInput>^ stages) {

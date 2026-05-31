@@ -3,7 +3,7 @@
 
 #include "ewpresenter/validation.h"
 #include <string>
-#include <msclr/marshal_cppstd.h>
+#include <cmath>
 
 namespace EwPresenterNet {
 
@@ -26,8 +26,24 @@ inline FieldValidationError ToManaged(ewpresenter::FieldError e) {
     return FieldValidationError::None;
 }
 
+/// Marshal a UTF-8 std::string to a managed System::String^.
+/// marshal_as uses the ANSI code page (Windows-1252) which garbles multi-byte
+/// UTF-8 sequences. Explicit UTF-8 decoding is required.
 inline System::String^ ToManaged(const std::string& s) {
-    return msclr::interop::marshal_as<System::String^>(s);
+    if (s.empty()) return System::String::Empty;
+    auto len   = static_cast<int>(s.size());
+    auto bytes = gcnew array<System::Byte>(len);
+    for (int i = 0; i < len; ++i)
+        bytes[i] = static_cast<System::Byte>(static_cast<unsigned char>(s[i]));
+    return System::Text::Encoding::UTF8->GetString(bytes);
+}
+
+/// Round a value to 6 significant figures to eliminate NumberBox float
+/// precision artefacts (e.g. minimum=0.01 stored as 0.009999999776...).
+inline double RoundInput(double v) noexcept {
+    if (v == 0.0) return 0.0;
+    const double mag = std::pow(10.0, 6.0 - std::floor(std::log10(std::abs(v))) - 1.0);
+    return std::round(v * mag) / mag;
 }
 
 } // namespace EwPresenterNet

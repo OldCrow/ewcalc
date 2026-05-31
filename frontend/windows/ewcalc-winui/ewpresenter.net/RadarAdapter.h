@@ -21,15 +21,15 @@ public:
     ~RadarAdapter();
     !RadarAdapter();
 
-    void SetTxPower          (double dbm)  { presenter_->set_tx_power(dbm);              }
-    void SetAntennaGain      (double dbi)  { presenter_->set_antenna_gain(dbi);          }
-    void SetTargetRcs        (double dbsm) { presenter_->set_target_rcs(dbsm);           }
-    void SetFrequency        (double mhz)  { presenter_->set_frequency(mhz);             }
-    void SetSystemLosses     (double db)   { presenter_->set_system_losses(db);          }
-    void SetNoiseFigure      (double db)   { presenter_->set_noise_figure(db);           }
-    void SetBandwidth        (double mhz)  { presenter_->set_bandwidth(mhz);             }
-    void SetRequiredSnr      (double db)   { presenter_->set_required_snr(db);           }
-    void SetTimeBandwidthProd(double tb)   { presenter_->set_time_bandwidth_product(tb); }
+    void SetTxPower          (double dbm)  { presenter_->set_tx_power(RoundInput(dbm));              }
+    void SetAntennaGain      (double dbi)  { presenter_->set_antenna_gain(RoundInput(dbi));          }
+    void SetTargetRcs        (double dbsm) { presenter_->set_target_rcs(RoundInput(dbsm));           }
+    void SetFrequency        (double mhz)  { presenter_->set_frequency(RoundInput(mhz));             }
+    void SetSystemLosses     (double db)   { presenter_->set_system_losses(RoundInput(db));          }
+    void SetNoiseFigure      (double db)   { presenter_->set_noise_figure(RoundInput(db));           }
+    void SetBandwidth        (double mhz)  { presenter_->set_bandwidth(RoundInput(mhz));             }
+    void SetRequiredSnr      (double db)   { presenter_->set_required_snr(RoundInput(db));           }
+    void SetTimeBandwidthProd(double tb)   { presenter_->set_time_bandwidth_product(RoundInput(tb)); }
     void SetNumPulses        (int n)       { presenter_->set_num_pulses(n);              }
 
     property double DefaultTxPower           { double get() { return presenter_->tx_power_dbm();           } }

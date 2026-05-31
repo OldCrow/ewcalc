@@ -24,14 +24,14 @@ public:
     ~LinkAdapter();
     !LinkAdapter();
 
-    void SetTxPower      (double dbm)    { presenter_->set_tx_power(dbm);       }
-    void SetTxGain       (double db)     { presenter_->set_tx_gain(db);         }
-    void SetRxGain       (double db)     { presenter_->set_rx_gain(db);         }
-    void SetDistance     (double km)     { presenter_->set_distance(km);        }
-    void SetTxHeight     (double meters) { presenter_->set_tx_height(meters);   }
-    void SetRxHeight     (double meters) { presenter_->set_rx_height(meters);   }
-    void SetFrequency    (double mhz)    { presenter_->set_frequency(mhz);      }
-    void SetRxSensitivity(double dbm)    { presenter_->set_rx_sensitivity(dbm); }
+    void SetTxPower      (double dbm)    { presenter_->set_tx_power(RoundInput(dbm));       }
+    void SetTxGain       (double db)     { presenter_->set_tx_gain(RoundInput(db));         }
+    void SetRxGain       (double db)     { presenter_->set_rx_gain(RoundInput(db));         }
+    void SetDistance     (double km)     { presenter_->set_distance(RoundInput(km));        }
+    void SetTxHeight     (double meters) { presenter_->set_tx_height(RoundInput(meters));   }
+    void SetRxHeight     (double meters) { presenter_->set_rx_height(RoundInput(meters));   }
+    void SetFrequency    (double mhz)    { presenter_->set_frequency(RoundInput(mhz));      }
+    void SetRxSensitivity(double dbm)    { presenter_->set_rx_sensitivity(RoundInput(dbm)); }
 
     property double DefaultTxPower       { double get() { return presenter_->tx_power_dbm();       } }
     property double DefaultTxGain        { double get() { return presenter_->tx_gain_db();         } }

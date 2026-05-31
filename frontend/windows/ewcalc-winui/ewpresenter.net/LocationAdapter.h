@@ -19,10 +19,10 @@ public:
     ~LocationAdapter();
     !LocationAdapter();
 
-    void SetRmsBearingError(double degrees) { presenter_->set_rms_bearing_error(degrees); }
-    void SetAoaRange       (double km)      { presenter_->set_aoa_range(km);              }
-    void SetSemiMajor      (double km)      { presenter_->set_semi_major(km);             }
-    void SetSemiMinor      (double km)      { presenter_->set_semi_minor(km);             }
+    void SetRmsBearingError(double degrees) { presenter_->set_rms_bearing_error(RoundInput(degrees)); }
+    void SetAoaRange       (double km)      { presenter_->set_aoa_range(RoundInput(km));              }
+    void SetSemiMajor      (double km)      { presenter_->set_semi_major(RoundInput(km));             }
+    void SetSemiMinor      (double km)      { presenter_->set_semi_minor(RoundInput(km));             }
 
     property double DefaultRmsBearingError { double get() { return presenter_->rms_bearing_error_deg(); } }
     property double DefaultAoaRange        { double get() { return presenter_->aoa_range_km();          } }

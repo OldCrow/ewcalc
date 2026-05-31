@@ -22,18 +22,18 @@ public:
     ~JammingAdapter();
     !JammingAdapter();
 
-    void SetSignalErp      (double dbm)    { presenter_->set_signal_erp(dbm);          }
-    void SetJammerErp      (double dbm)    { presenter_->set_jammer_erp(dbm);          }
-    void SetSignalToRxDist (double km)     { presenter_->set_signal_to_rx_dist(km);    }
-    void SetJammerToRxDist (double km)     { presenter_->set_jammer_to_rx_dist(km);    }
-    void SetSignalTxHeight (double meters) { presenter_->set_signal_tx_height(meters); }
-    void SetJammerHeight   (double meters) { presenter_->set_jammer_height(meters);    }
-    void SetRxHeight       (double meters) { presenter_->set_rx_height(meters);        }
-    void SetFrequency      (double mhz)    { presenter_->set_frequency(mhz);           }
-    void SetRxGainSignal   (double db)     { presenter_->set_rx_gain_signal(db);       }
-    void SetRxGainJammer   (double db)     { presenter_->set_rx_gain_jammer(db);       }
-    void SetSignalBandwidth(double mhz)    { presenter_->set_signal_bandwidth(mhz);    }
-    void SetHopRange       (double mhz)    { presenter_->set_hop_range(mhz);           }
+    void SetSignalErp      (double dbm)    { presenter_->set_signal_erp(RoundInput(dbm));          }
+    void SetJammerErp      (double dbm)    { presenter_->set_jammer_erp(RoundInput(dbm));          }
+    void SetSignalToRxDist (double km)     { presenter_->set_signal_to_rx_dist(RoundInput(km));    }
+    void SetJammerToRxDist (double km)     { presenter_->set_jammer_to_rx_dist(RoundInput(km));    }
+    void SetSignalTxHeight (double meters) { presenter_->set_signal_tx_height(RoundInput(meters)); }
+    void SetJammerHeight   (double meters) { presenter_->set_jammer_height(RoundInput(meters));    }
+    void SetRxHeight       (double meters) { presenter_->set_rx_height(RoundInput(meters));        }
+    void SetFrequency      (double mhz)    { presenter_->set_frequency(RoundInput(mhz));           }
+    void SetRxGainSignal   (double db)     { presenter_->set_rx_gain_signal(RoundInput(db));       }
+    void SetRxGainJammer   (double db)     { presenter_->set_rx_gain_jammer(RoundInput(db));       }
+    void SetSignalBandwidth(double mhz)    { presenter_->set_signal_bandwidth(RoundInput(mhz));    }
+    void SetHopRange       (double mhz)    { presenter_->set_hop_range(RoundInput(mhz));           }
 
     property double DefaultSignalErp       { double get() { return presenter_->signal_erp_dbm();       } }
     property double DefaultJammerErp       { double get() { return presenter_->jammer_erp_dbm();       } }
