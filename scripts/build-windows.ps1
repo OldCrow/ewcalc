@@ -75,6 +75,7 @@ Write-Host "`n==> Building WinUI 3 frontend (MSBuild)..." -ForegroundColor Cyan
 
 $MSBuildArgs = @(
     $Solution,
+    "/restore",             # restore NuGet packages (C# project + C++/CLI)
     "/p:Configuration=$Config",
     "/p:Platform=$Platform",
     "/m",                   # parallel build

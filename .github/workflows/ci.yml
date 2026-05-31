@@ -26,17 +26,9 @@ jobs:
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v2
 
-      - name: Install Windows App SDK runtime
-        shell: pwsh
-        run: |
-          # Download and install the Windows App SDK runtime (required for WinUI 3)
-          $url = "https://aka.ms/windowsappsdk/2.0/latest/windowsappruntimeinstall-x64.exe"
-          $installer = "$env:TEMP\WinAppRuntime.exe"
-          Invoke-WebRequest -Uri $url -OutFile $installer
-          & $installer --quiet
-          if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne 3010) {
-            throw "Windows App SDK installation failed (exit $LASTEXITCODE)"
-          }
+      # Windows App SDK runtime is only needed to RUN the app, not to build it.
+      # The NuGet packages (Microsoft.WindowsAppSDK etc.) are restored by
+      # MSBuild /restore and supply all build-time headers and libs.
 
       - name: Build (native libs + frontend)
         shell: pwsh
@@ -107,16 +99,16 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake ninja-build
+          sudo apt-get install -y build-essential cmake ninja-build
 
       - name: Build (native libs + frontend)
         run: bash scripts/build-linux.sh --config Release
 
       - name: Run tests
         run: |
-          cmake -B build -DEWCALC_BUILD_TESTS=ON
-          cmake --build build --config Release --parallel
-          ctest --test-dir build --build-config Release --output-on-failure
+          cmake -B build -DEWCALC_BUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --parallel
+          ctest --test-dir build --output-on-failure
 
       - name: Package AppImage
         if: startsWith(github.ref, 'refs/tags/v')
