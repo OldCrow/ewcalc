@@ -2,7 +2,7 @@
 # scripts/build-linux.sh
 # Builds the full Linux ewcalc stack:
 #   1. CMake: libew + ewpresenter (native C++ static libs)
-#   2. CMake: Qt6 frontend (Phase 5 — not yet implemented)
+#   2. CMake: Qt6 frontend (Phase 5)
 #   3. Optionally packages as .deb, .rpm, or AppImage (pass --package)
 #
 # Usage:
@@ -41,7 +41,7 @@ cmake --build "$BUILD_DIR" --config "$CONFIG" --parallel "$NPROC"
 
 echo "    Native libs built to: $BUILD_DIR/lib/$CONFIG/"
 
-# ── Linux frontend (Phase 5 placeholder) ─────────────────────────────────────
+# ── Linux frontend (Phase 5) ─────────────────────────────────────────────────
 LINUX_FRONTEND="$REPO_ROOT/frontend/linux/CMakeLists.txt"
 
 if [[ -f "$LINUX_FRONTEND" ]]; then
@@ -51,7 +51,7 @@ if [[ -f "$LINUX_FRONTEND" ]]; then
     cmake -B "$BUILD_DIR/linux-frontend" \
         -S "$REPO_ROOT/frontend/linux" \
         -DCMAKE_BUILD_TYPE="$CONFIG" \
-        -DCMAKE_PREFIX_PATH="$(qtpaths --install-prefix 2>/dev/null || echo '/usr')"
+        -DEWCALC_NATIVE_BUILD_DIR="$BUILD_DIR"
 
     cmake --build "$BUILD_DIR/linux-frontend" --parallel "$NPROC"
 
