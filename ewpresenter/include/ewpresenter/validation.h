@@ -7,6 +7,7 @@
 /// before passing them to libew. No exceptions are thrown; all errors are
 /// expressed as FieldError values.
 
+#include <cstdint>
 #include <string_view>
 
 namespace ewpresenter {
