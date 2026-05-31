@@ -59,11 +59,11 @@ struct InputRow: View {
                 Stepper("", value: $value, in: range, step: step)
                     .labelsHidden()
 
-                if !unit.isEmpty {
-                    Text(unit)
-                        .foregroundStyle(.secondary)
-                        .frame(width: 38, alignment: .leading)
-                }
+                // Always render the unit slot so all rows align regardless
+                // of whether they carry a unit label or not.
+                Text(unit)
+                    .foregroundStyle(.secondary)
+                    .frame(width: 38, alignment: .leading)
             }
         }
         .onChange(of: value) { onChange($0) }
