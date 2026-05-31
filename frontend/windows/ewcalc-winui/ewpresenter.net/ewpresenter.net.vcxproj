@@ -32,8 +32,9 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <!-- WholeProgramOptimization (/LTCG) is ineffective for C++/CLI DLLs and
+         causes a spurious linker performance note; omitted intentionally. -->
   </PropertyGroup>
 
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -50,6 +51,9 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
+      <!-- C4679: C++/CLI cannot import static virtual interface members added
+           to System::IntPtr and System::String in .NET 7+. Unused here. -->
+      <DisableSpecificWarnings>4679</DisableSpecificWarnings>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>
         $(EwCalcSrcRoot)libew\include;

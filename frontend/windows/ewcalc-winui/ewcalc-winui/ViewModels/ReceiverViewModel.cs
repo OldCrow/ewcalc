@@ -134,7 +134,9 @@ public sealed class ReceiverViewModel : INotifyPropertyChanged
 
 internal sealed class RelayCommand(Action execute) : ICommand
 {
-    public event EventHandler? CanExecuteChanged;
+    // CanExecute always returns true; empty accessors satisfy ICommand without
+    // creating an unused backing field (suppresses CS0067).
+    public event EventHandler? CanExecuteChanged { add { } remove { } }
     public bool CanExecute(object? parameter) => true;
     public void Execute(object? parameter) => execute();
 }
