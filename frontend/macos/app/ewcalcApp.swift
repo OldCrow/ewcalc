@@ -10,6 +10,6 @@ struct ewcalcApp: App {
             ContentView()
                 .environmentObject(store)
         }
-        .defaultSize(width: 960, height: 680)
+        .defaultSize(width: 820, height: 640)
     }
 }

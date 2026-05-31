@@ -55,9 +55,10 @@ struct RadarView: View {
                 LabeledContent("Coherent pulses") {
                     HStack(spacing: 4) {
                         TextField("", value: $numPulses, format: .number)
-                            .frame(width: 72).textFieldStyle(.roundedBorder).multilineTextAlignment(.trailing)
+                            .frame(width: 100).textFieldStyle(.roundedBorder).multilineTextAlignment(.trailing)
                         Stepper("", value: $numPulses, in: 1...100000)
                             .labelsHidden()
+                        Spacer().frame(width: 38)
                     }
                 }
                 .onChange(of: numPulses) { adapter.setNumPulses($0) }

@@ -40,11 +40,13 @@ struct ReceiverView: View {
                 LabeledContent("ADC bits") {
                     HStack(spacing: 4) {
                         TextField("", value: $adcBits, format: .number)
-                            .frame(width: 60)
+                            .frame(width: 100)
                             .textFieldStyle(.roundedBorder)
                             .multilineTextAlignment(.trailing)
                         Stepper("", value: $adcBits, in: 1...64)
                             .labelsHidden()
+                        // Blank spacer matching the unit label width in InputRow
+                        Spacer().frame(width: 38)
                     }
                 }
                 .onChange(of: adcBits) { adapter.setAdcBits($0) }
