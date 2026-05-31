@@ -1,4 +1,7 @@
 // RadarAdapter.cpp
+// C4679: static virtual interface members (IDivisionOperators etc. on System::IntPtr)
+// are not importable by C++/CLI; the affected interfaces are unused here.
+#pragma warning(disable: 4679)
 #include "RadarAdapter.h"
 
 #pragma managed(push, off)

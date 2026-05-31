@@ -1,4 +1,7 @@
 // PropagationAdapter.cpp
+// C4679: static virtual interface members (IDivisionOperators etc. on System::IntPtr)
+// are not importable by C++/CLI; the affected interfaces are unused here.
+#pragma warning(disable: 4679)
 #include "PropagationAdapter.h"
 
 // Include NativeCallbacks.h in a native-only section so its lambdas
