@@ -65,17 +65,8 @@ jobs:
           cmake --build build --config Release --parallel
           ctest --test-dir build --build-config Release --output-on-failure
 
-      - name: Package .pkg
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: bash scripts/build-macos.sh --config Release --package
-
-      - name: Upload .pkg
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: actions/upload-artifact@v4
-        with:
-          name: ewcalc-macos-pkg
-          path: build/pkg/*.pkg
-          retention-days: 90
+      # .pkg packaging deferred: requires Apple Developer ID certificate +
+      # notarization. See plan doc 8f389d3a for details.
 
   # ── Linux ───────────────────────────────────────────────────────────────────
   build-linux:

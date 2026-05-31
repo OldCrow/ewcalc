@@ -2,8 +2,8 @@
 # scripts/build-macos.sh
 # Builds the full macOS ewcalc stack:
 #   1. CMake: libew + ewpresenter (native C++ static libs)
-#   2. xcodebuild: SwiftUI/AppKit frontend (Phase 4 — not yet implemented)
-#   3. Optionally packages as .pkg or .dmg (pass --package)
+#   2. cmake -G Xcode: SwiftUI frontend (Phase 4)
+#   3. Optionally packages as .pkg (pass --package; deferred until signing is ready)
 #
 # Usage:
 #   ./scripts/build-macos.sh                  # build only
@@ -32,7 +32,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 BUILD_DIR="$REPO_ROOT/build"
-MSIX_DIR="$BUILD_DIR/pkg"
+PKG_DIR="$BUILD_DIR/pkg"
 
 echo ""
 echo "==> Building native libraries (CMake)..."
@@ -44,48 +44,50 @@ cmake -B "$BUILD_DIR" \
 
 cmake --build "$BUILD_DIR" --config "$CONFIG" --parallel "$(sysctl -n hw.logicalcpu)"
 
-echo "    Native libs built to: $BUILD_DIR/lib/$CONFIG/"
+echo "    Native libs built to: $BUILD_DIR/lib/"
 
-# ── macOS frontend (Phase 4 placeholder) ─────────────────────────────────────
-XCODEPROJ="$REPO_ROOT/frontend/macos/ewcalc.xcodeproj"
+# ── macOS frontend (Phase 4) ──────────────────────────────────────────────────
+MACOS_FRONTEND="$REPO_ROOT/frontend/macos/CMakeLists.txt"
 
-if [[ -d "$XCODEPROJ" ]]; then
+if [[ -f "$MACOS_FRONTEND" ]]; then
     echo ""
-    echo "==> Building macOS frontend (xcodebuild)..."
+    echo "==> Building macOS frontend (cmake -G Xcode)..."
 
-    xcodebuild \
-        -project "$XCODEPROJ" \
-        -scheme "ewcalc" \
-        -configuration "$CONFIG" \
-        -arch "$ARCH" \
-        SYMROOT="$BUILD_DIR/macos" \
-        build
+    FRONTEND_BUILD="$BUILD_DIR/macos-frontend"
 
-    APP_PATH="$BUILD_DIR/macos/$CONFIG/ewcalc.app"
+    # Unset any LLVM-specific overrides so swiftc uses Apple's toolchain.
+    # LD in particular causes Swift's linker test to fail if pointed at lld.
+    unset LD CC CXX CPP AR RANLIB STRIP NM OBJDUMP
+    unset CMAKE_C_COMPILER CMAKE_CXX_COMPILER CMAKE_AR CMAKE_RANLIB
+    unset CPPFLAGS CXXFLAGS LDFLAGS
+
+    # Configure: generate an Xcode project that CMake manages
+    cmake -G Xcode \
+        -B "$FRONTEND_BUILD" \
+        -S "$REPO_ROOT/frontend/macos" \
+        -DEWCALC_NATIVE_BUILD_DIR="$BUILD_DIR" \
+        -DCMAKE_OSX_ARCHITECTURES="$ARCH"
+
+    # Build
+    cmake --build "$FRONTEND_BUILD" --config "$CONFIG" -- \
+        -jobs "$(sysctl -n hw.logicalcpu)"
+
+    APP_PATH="$FRONTEND_BUILD/$CONFIG/ewcalc.app"
     echo "    App built to: $APP_PATH"
 
     if [[ $PACKAGE -eq 1 ]]; then
         echo ""
-        echo "==> Packaging as .pkg..."
-
-        mkdir -p "$MSIX_DIR"
-        PKG_OUTPUT="$MSIX_DIR/ewcalc-$ARCH-$CONFIG.pkg"
-
-        # productbuild creates a distributable installer package
-        productbuild \
-            --component "$APP_PATH" /Applications \
-            "$PKG_OUTPUT"
-
-        echo "    Package: $PKG_OUTPUT"
-
-        # To also create a .dmg:
-        # hdiutil create -volname "ewcalc" -srcfolder "$APP_PATH" \
-        #     -ov -format UDZO "$MSIX_DIR/ewcalc-$ARCH-$CONFIG.dmg"
+        echo "    [SKIP] .pkg packaging deferred: requires Apple Developer ID"
+        echo "           certificate + notarization. See plan doc for details."
+        # When ready, restore:
+        #   mkdir -p "$PKG_DIR"
+        #   productbuild --component "$APP_PATH" /Applications \
+        #       "$PKG_DIR/ewcalc-$ARCH-$CONFIG.pkg"
     fi
 else
     echo ""
-    echo "    [SKIP] macOS frontend not yet implemented (Phase 4)."
-    echo "           Expected Xcode project at: $XCODEPROJ"
+    echo "    [SKIP] macOS frontend not found."
+    echo "           Expected CMakeLists.txt at: $MACOS_FRONTEND"
 fi
 
 echo ""
