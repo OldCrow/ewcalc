@@ -41,18 +41,8 @@ jobs:
           cmake --build build --config Release
           ctest --test-dir build --build-config Release --output-on-failure
 
-      - name: Package MSIX
-        if: startsWith(github.ref, 'refs/tags/v')
-        shell: pwsh
-        run: scripts\build-windows.ps1 -Config Release -Package
-
-      - name: Upload MSIX
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: actions/upload-artifact@v4
-        with:
-          name: ewcalc-windows-msix
-          path: build/msix/*.msix
-          retention-days: 90
+      # MSIX packaging deferred: requires Package.appxmanifest, logo assets,
+      # and a valid Publisher certificate. Address when preparing for distribution.
 
   # ── macOS ───────────────────────────────────────────────────────────────────
   build-macos:
