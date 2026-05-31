@@ -106,25 +106,38 @@ private struct StageRow: View {
 
     var body: some View {
         HStack(spacing: 6) {
-            Text("S\(index + 1)")
-                .frame(width: 26, alignment: .leading)
-                .foregroundStyle(.secondary)
-            Text("NF").foregroundStyle(.secondary)
-            TextField("", value: $nf, format: .number.precision(.fractionLength(1)))
-                .frame(width: 68).textFieldStyle(.roundedBorder).multilineTextAlignment(.trailing)
-            Stepper("", value: $nf, in: -10...50, step: 0.5).labelsHidden()
-            Text("dB").foregroundStyle(.secondary).frame(width: 22)
-            Spacer()
-            Text("G").foregroundStyle(.secondary)
-            TextField("", value: $gain, format: .number.precision(.fractionLength(1)))
-                .frame(width: 68).textFieldStyle(.roundedBorder).multilineTextAlignment(.trailing)
-            Stepper("", value: $gain, in: -60...60, step: 0.5).labelsHidden()
-            Text("dB").foregroundStyle(.secondary).frame(width: 22)
-            Button(action: onRemove) {
-                Image(systemName: "minus.circle")
+            // NF group — fixed layout, left-aligned
+            HStack(spacing: 4) {
+                Text("S\(index + 1)")
+                    .frame(width: 26, alignment: .leading)
+                    .foregroundStyle(.secondary)
+                Text("NF").foregroundStyle(.secondary)
+                TextField("", value: $nf, format: .number.precision(.fractionLength(1)))
+                    .multilineTextAlignment(.trailing)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(width: 68)
+                Stepper("", value: $nf, in: -10...50, step: 0.5).labelsHidden()
+                Text("dB").foregroundStyle(.secondary).frame(width: 22)
             }
-            .buttonStyle(.borderless)
-            .foregroundStyle(.red)
+
+            Spacer()
+
+            // G group — fixed layout, right-aligned; isolated so Spacer
+            // cannot affect the width of the G TextField.
+            HStack(spacing: 4) {
+                Text("G").foregroundStyle(.secondary)
+                TextField("", value: $gain, format: .number.precision(.fractionLength(1)))
+                    .multilineTextAlignment(.trailing)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(width: 68)
+                Stepper("", value: $gain, in: -60...60, step: 0.5).labelsHidden()
+                Text("dB").foregroundStyle(.secondary).frame(width: 22)
+                Button(action: onRemove) {
+                    Image(systemName: "minus.circle")
+                }
+                .buttonStyle(.borderless)
+                .foregroundStyle(.red)
+            }
         }
         .onChange(of: nf)   { onChange(EwpStageInput(noise_figure_db: $0, gain_db: gain)) }
         .onChange(of: gain)  { onChange(EwpStageInput(noise_figure_db: nf, gain_db: $0)) }
