@@ -65,8 +65,43 @@ jobs:
           cmake --build build --config Release --parallel
           ctest --test-dir build --build-config Release --output-on-failure
 
-      # .dmg packaging requires the Developer ID notarytool profile;
-      # run manually with --package on a machine that has the credentials.
+      - name: Sign, notarize and package DMG
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          MACOS_CERTIFICATE:     ${{ secrets.MACOS_CERTIFICATE }}
+          MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+          APPLE_ID:              ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID:         ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_APP_SPECIFIC_PWD:${{ secrets.APPLE_APP_SPECIFIC_PWD }}
+        run: |
+          # ── Import Developer ID cert into a temporary keychain ──────────
+          KEYCHAIN=$RUNNER_TEMP/ewcalc-signing.keychain-db
+          security create-keychain -p "" $KEYCHAIN
+          security set-keychain-settings -lut 21600 $KEYCHAIN
+          security unlock-keychain -p "" $KEYCHAIN
+          echo "$MACOS_CERTIFICATE" | base64 --decode > /tmp/cert.p12
+          security import /tmp/cert.p12 -P "$MACOS_CERTIFICATE_PWD" \
+              -A -t cert -f pkcs12 -k $KEYCHAIN
+          security set-key-partition-list -S apple-tool:,apple: -s -k "" $KEYCHAIN
+          security list-keychain -d user -s $KEYCHAIN $(security list-keychains -d user | tr -d '"')
+          rm /tmp/cert.p12
+
+          # ── Store notarytool credentials ────────────────────────────────
+          xcrun notarytool store-credentials ewcalc-notarytool \
+              --apple-id "$APPLE_ID" \
+              --team-id "$APPLE_TEAM_ID" \
+              --password "$APPLE_APP_SPECIFIC_PWD"
+
+          # ── Build, sign, notarize, package ──────────────────────────────
+          bash scripts/build-macos.sh --config Release --package
+
+      - name: Upload DMG
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: ewcalc-macos-dmg
+          path: build/pkg/*.dmg
+          retention-days: 90
 
   # ── Linux ───────────────────────────────────────────────────────────────────
   build-linux:
