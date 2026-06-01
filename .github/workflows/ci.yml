@@ -94,6 +94,10 @@ jobs:
               --password "$APPLE_APP_SPECIFIC_PWD"
 
           # ── Build, sign, notarize, package ──────────────────────────────
+          # The previous step built the frontend with ad-hoc signing (cert
+          # not yet present). Delete that stale build so cmake reconfigures
+          # with the real Developer ID identity and --timestamp flag.
+          rm -rf build/macos-frontend
           bash scripts/build-macos.sh --config Release --package
 
       - name: Upload DMG
