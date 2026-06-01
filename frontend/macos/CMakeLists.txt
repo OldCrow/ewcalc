@@ -76,7 +76,12 @@ set(SWIFT_SOURCES
     app/Views/RadarView.swift
 )
 
-add_executable(ewcalc MACOSX_BUNDLE ${SWIFT_SOURCES})
+# App icon (must be a resource inside the bundle)
+set(ICON_FILE "${CMAKE_CURRENT_SOURCE_DIR}/app/Assets/AppIcon.icns")
+set_source_files_properties(${ICON_FILE} PROPERTIES
+    MACOSX_PACKAGE_LOCATION Resources)
+
+add_executable(ewcalc MACOSX_BUNDLE ${SWIFT_SOURCES} ${ICON_FILE})
 
 target_link_libraries(ewcalc PRIVATE ewcalc_bridge)
 
@@ -85,6 +90,7 @@ target_include_directories(ewcalc PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/bridge")
 
 set_target_properties(ewcalc PROPERTIES
     MACOSX_BUNDLE_INFO_PLIST         "${CMAKE_CURRENT_SOURCE_DIR}/app/Info.plist"
+    MACOSX_BUNDLE_ICON_FILE          "AppIcon.icns"
     MACOSX_BUNDLE_BUNDLE_IDENTIFIER  "com.oldcrow.ewcalc"
     MACOSX_BUNDLE_BUNDLE_NAME        "EW Calculator"
     MACOSX_BUNDLE_SHORT_VERSION_STRING "0.3.0"
