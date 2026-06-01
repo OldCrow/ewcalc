@@ -61,27 +61,27 @@ if [[ -f "$MACOS_FRONTEND" ]]; then
     unset CMAKE_C_COMPILER CMAKE_CXX_COMPILER CMAKE_AR CMAKE_RANLIB
     unset CPPFLAGS CXXFLAGS LDFLAGS
 
-    # Use the real Developer ID if it is present in the local keychain;
-    # fall back to ad-hoc ('-') on CI runners that don't have the cert.
+    # Configure: generate an Xcode project that CMake manages.
+    # Pass the real Developer ID if present; fall back to ad-hoc on CI.
+    # Two explicit cmake calls avoids empty-array expansion issues with set -u.
     DEVID_CERT="Developer ID Application: Gary Wolfman (6HGS466D28)"
     if security find-identity -v -p codesigning 2>/dev/null | grep -qF "$DEVID_CERT"; then
-        SIGN_ARGS=(
-            "-DEWCALC_CODESIGN_IDENTITY=$DEVID_CERT"
-            "-DEWCALC_TEAM_ID=6HGS466D28"
-        )
         echo "    Signing with: $DEVID_CERT"
+        cmake -G Xcode \
+            -B "$FRONTEND_BUILD" \
+            -S "$REPO_ROOT/frontend/macos" \
+            -DEWCALC_NATIVE_BUILD_DIR="$BUILD_DIR" \
+            -DCMAKE_OSX_ARCHITECTURES="$ARCH" \
+            "-DEWCALC_CODESIGN_IDENTITY=$DEVID_CERT" \
+            "-DEWCALC_TEAM_ID=6HGS466D28"
     else
-        SIGN_ARGS=()
         echo "    Developer ID cert not found — using ad-hoc signing"
+        cmake -G Xcode \
+            -B "$FRONTEND_BUILD" \
+            -S "$REPO_ROOT/frontend/macos" \
+            -DEWCALC_NATIVE_BUILD_DIR="$BUILD_DIR" \
+            -DCMAKE_OSX_ARCHITECTURES="$ARCH"
     fi
-
-    # Configure: generate an Xcode project that CMake manages
-    cmake -G Xcode \
-        -B "$FRONTEND_BUILD" \
-        -S "$REPO_ROOT/frontend/macos" \
-        -DEWCALC_NATIVE_BUILD_DIR="$BUILD_DIR" \
-        -DCMAKE_OSX_ARCHITECTURES="$ARCH" \
-        "${SIGN_ARGS[@]}"
 
     # Build
     cmake --build "$FRONTEND_BUILD" --config "$CONFIG" -- \
