@@ -43,6 +43,13 @@ fi
 BUILD_DIR="$REPO_ROOT/build"
 PKG_DIR="$BUILD_DIR/pkg"
 
+# Unset any Homebrew LLVM overrides so ALL cmake steps use AppleClang.
+# Without this, CC/CXX from .zshenv point at Homebrew LLVM which uses a
+# newer libc++ ABI that is incompatible with the 13.0 deployment target.
+unset CC CXX CPP LD AR RANLIB STRIP NM OBJDUMP
+unset CMAKE_C_COMPILER CMAKE_CXX_COMPILER CMAKE_AR CMAKE_RANLIB
+unset CPPFLAGS CXXFLAGS LDFLAGS
+
 echo ""
 echo "==> Building native libraries (CMake)..."
 
@@ -64,12 +71,6 @@ if [[ -f "$MACOS_FRONTEND" ]]; then
     echo "==> Building macOS frontend (cmake -G Xcode)..."
 
     FRONTEND_BUILD="$BUILD_DIR/macos-frontend"
-
-    # Unset any LLVM-specific overrides so swiftc uses Apple's toolchain.
-    # LD in particular causes Swift's linker test to fail if pointed at lld.
-    unset LD CC CXX CPP AR RANLIB STRIP NM OBJDUMP
-    unset CMAKE_C_COMPILER CMAKE_CXX_COMPILER CMAKE_AR CMAKE_RANLIB
-    unset CPPFLAGS CXXFLAGS LDFLAGS
 
     # Configure: generate an Xcode project that CMake manages.
     # Pass the real Developer ID if present; fall back to ad-hoc on CI.

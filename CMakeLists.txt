@@ -36,6 +36,12 @@ endif()
 add_subdirectory(libew)
 add_subdirectory(ewpresenter)
 
+# macOS C bridge: build alongside native libs so the Xcode frontend project
+# can import it with the correct deployment target (not set by Xcode generator).
+if(APPLE)
+    add_subdirectory(frontend/macos/bridge)
+endif()
+
 # ── GUI frontends ─────────────────────────────────────────────────────────────
 # Frontends are built by their native toolchains. CMake provides a convenience
 # target on each platform so the full stack can be driven from one command:

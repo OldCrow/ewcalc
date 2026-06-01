@@ -50,15 +50,23 @@ if(NOT DEFINED EWCALC_TEAM_ID)
     set(EWCALC_TEAM_ID "")
 endif()
 
-# ── C bridge (C++20, exposes plain-C API to Swift) ────────────────────────────
-add_library(ewcalc_bridge STATIC bridge/ewcalc_bridge.cpp)
-target_include_directories(ewcalc_bridge PUBLIC bridge)
-target_compile_features(ewcalc_bridge PRIVATE cxx_std_20)
-target_link_libraries(ewcalc_bridge PRIVATE ewpresenter_native libew_native)
-# The Xcode generator does not propagate CMAKE_OSX_DEPLOYMENT_TARGET to
-# static library targets; set it explicitly to match the app target.
+# ── C bridge (pre-built by native cmake, IMPORTED here) ────────────────────────
+# ewcalc_bridge is compiled by the native cmake step (Makefiles/Ninja) with
+# CMAKE_OSX_DEPLOYMENT_TARGET=13.0, avoiding the Xcode generator's failure
+# to propagate that setting for C++ static library targets.
+foreach(_lib libewcalc_bridge.a)
+    if(NOT EXISTS "${EWCALC_NATIVE_BUILD_DIR}/lib/${_lib}")
+        message(FATAL_ERROR
+            "${_lib} not found at ${EWCALC_NATIVE_BUILD_DIR}/lib/\n"
+            "Run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=... "
+            "&& cmake --build build")
+    endif()
+endforeach()
+
+add_library(ewcalc_bridge STATIC IMPORTED)
 set_target_properties(ewcalc_bridge PROPERTIES
-    XCODE_ATTRIBUTE_MACOSX_DEPLOYMENT_TARGET "13.0"
+    IMPORTED_LOCATION "${EWCALC_NATIVE_BUILD_DIR}/lib/libewcalc_bridge.a"
+    INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/bridge"
 )
 
 # ── Swift app bundle ──────────────────────────────────────────────────────────
@@ -88,7 +96,12 @@ set_source_files_properties(${ICON_FILE} PROPERTIES
 
 add_executable(ewcalc MACOSX_BUNDLE ${SWIFT_SOURCES} ${ICON_FILE})
 
-target_link_libraries(ewcalc PRIVATE ewcalc_bridge)
+# libc++ must be explicitly listed: the bridge is a pre-built IMPORTED
+# static library; Xcode's Swift target does not automatically add C++
+# runtime linkage for imported libraries the way it does for source targets.
+# IMPORTED static libraries do not carry transitive link deps; list all
+# libraries that ewcalc_bridge depends on explicitly.
+target_link_libraries(ewcalc PRIVATE ewcalc_bridge ewpresenter_native libew_native c++)
 
 # Include bridge/ so the bridging header can resolve #include "ewcalc_bridge.h"
 target_include_directories(ewcalc PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/bridge")
