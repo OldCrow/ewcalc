@@ -66,7 +66,9 @@ if [[ -f "$MACOS_FRONTEND" ]]; then
         -B "$FRONTEND_BUILD" \
         -S "$REPO_ROOT/frontend/macos" \
         -DEWCALC_NATIVE_BUILD_DIR="$BUILD_DIR" \
-        -DCMAKE_OSX_ARCHITECTURES="$ARCH"
+        -DCMAKE_OSX_ARCHITECTURES="$ARCH" \
+        -DEWCALC_CODESIGN_IDENTITY="Developer ID Application: Gary Wolfman (6HGS466D28)" \
+        -DEWCALC_TEAM_ID="6HGS466D28"
 
     # Build
     cmake --build "$FRONTEND_BUILD" --config "$CONFIG" -- \
@@ -77,12 +79,31 @@ if [[ -f "$MACOS_FRONTEND" ]]; then
 
     if [[ $PACKAGE -eq 1 ]]; then
         echo ""
-        echo "    [SKIP] .pkg packaging deferred: requires Apple Developer ID"
-        echo "           certificate + notarization. See plan doc for details."
-        # When ready, restore:
-        #   mkdir -p "$PKG_DIR"
-        #   productbuild --component "$APP_PATH" /Applications \
-        #       "$PKG_DIR/ewcalc-$ARCH-$CONFIG.pkg"
+        echo "==> Notarizing and packaging..."
+
+        # ── Notarize ─────────────────────────────────────────────────────
+        # Requires credentials stored via:
+        #   xcrun notarytool store-credentials ewcalc-notarytool \
+        #       --apple-id <apple-id> --team-id 6HGS466D28 \
+        #       --password <app-specific-password>
+        echo "    Submitting for notarization (this may take several minutes)..."
+        xcrun notarytool submit "$APP_PATH" \
+            --keychain-profile "ewcalc-notarytool" \
+            --wait
+
+        echo "    Stapling notarization ticket..."
+        xcrun stapler staple "$APP_PATH"
+
+        # ── Package ──────────────────────────────────────────────────────
+        mkdir -p "$PKG_DIR"
+        PKG_OUTPUT="$PKG_DIR/ewcalc-$ARCH-$CONFIG.pkg"
+
+        productbuild \
+            --component "$APP_PATH" /Applications \
+            --sign "Developer ID Installer: Gary Wolfman (6HGS466D28)" \
+            "$PKG_OUTPUT"
+
+        echo "    Package: $PKG_OUTPUT"
     fi
 else
     echo ""

@@ -39,6 +39,17 @@ set_target_properties(ewpresenter_native PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES "${EWCALC_SRC_ROOT}/ewpresenter/include"
 )
 
+# ── Signing identity ─────────────────────────────────────────────────────────
+# Override on the cmake command line for distribution builds:
+#   -DEWCALC_CODESIGN_IDENTITY="Developer ID Application: Gary Wolfman (6HGS466D28)"
+#   -DEWCALC_TEAM_ID="6HGS466D28"
+if(NOT DEFINED EWCALC_CODESIGN_IDENTITY)
+    set(EWCALC_CODESIGN_IDENTITY "-")
+endif()
+if(NOT DEFINED EWCALC_TEAM_ID)
+    set(EWCALC_TEAM_ID "")
+endif()
+
 # ── C bridge (C++20, exposes plain-C API to Swift) ────────────────────────────
 add_library(ewcalc_bridge STATIC bridge/ewcalc_bridge.cpp)
 target_include_directories(ewcalc_bridge PUBLIC bridge)
@@ -88,6 +99,11 @@ set_target_properties(ewcalc PROPERTIES
     XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER             "com.oldcrow.ewcalc"
     XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD          "c++20"
     XCODE_ATTRIBUTE_ENABLE_HARDENED_RUNTIME               "YES"
-    XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY                    "-"
+    # Pass -DEWCALC_CODESIGN_IDENTITY="Developer ID Application: ..." for
+    # distribution builds. Defaults to ad-hoc ("-") for CI / local dev.
+    XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY                    "${EWCALC_CODESIGN_IDENTITY}"
+    XCODE_ATTRIBUTE_DEVELOPMENT_TEAM                      "${EWCALC_TEAM_ID}"
+    XCODE_ATTRIBUTE_CODE_SIGN_STYLE                       "Manual"
+    XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED                 "YES"
     XCODE_ATTRIBUTE_LD_RUNPATH_SEARCH_PATHS               "@executable_path/../Frameworks"
 )
