@@ -40,7 +40,8 @@ echo "==> Building native libraries (CMake)..."
 cmake -B "$BUILD_DIR" \
     -DEWCALC_BUILD_TESTS=OFF \
     -DCMAKE_BUILD_TYPE="$CONFIG" \
-    -DCMAKE_OSX_ARCHITECTURES="$ARCH"
+    -DCMAKE_OSX_ARCHITECTURES="$ARCH" \
+    -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0
 
 cmake --build "$BUILD_DIR" --config "$CONFIG" --parallel "$(sysctl -n hw.logicalcpu)"
 
