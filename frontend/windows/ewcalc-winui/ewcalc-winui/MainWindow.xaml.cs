@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using System;
+using System.IO;
 
 namespace EwCalc;
 
@@ -23,6 +24,7 @@ public sealed partial class MainWindow : Window
     {
         InitializeComponent();
         AppWindow.Resize(new Windows.Graphics.SizeInt32(860, 660));
+        AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "Assets", "icon.ico"));
         NavView.SelectedItem = NavPropagation;
         ContentFrame.Navigate(typeof(PropagationPage));
     }
