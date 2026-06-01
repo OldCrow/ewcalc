@@ -119,7 +119,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential cmake ninja-build \
-            qt6-base-dev libgl-dev
+            qt6-base-dev libgl-dev libopengl0
 
       - name: Build (native libs + frontend)
         run: bash scripts/build-linux.sh --config Release

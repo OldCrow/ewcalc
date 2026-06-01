@@ -85,9 +85,13 @@ if [[ -f "$LINUX_FRONTEND" ]]; then
                 # desktop file, producing "EW_Calculator-x86_64.AppImage").
                 export QMAKE="$(which qmake6 2>/dev/null || which qmake)"
                 export OUTPUT="ewcalc-x86_64.AppImage"
+                # libOpenGL.so.0 (libglvnd) is not picked up automatically by
+                # linuxdeploy-plugin-qt; pass it explicitly so it is bundled.
+                LIBOPENGL=$(ldconfig -p | awk '/libOpenGL\.so\.0/{print $NF}' | head -1)
                 linuxdeploy --appdir "$APPDIR" \
                     --icon-file "$ICON" \
                     --desktop-file "$DESKTOP" \
+                    ${LIBOPENGL:+--library "$LIBOPENGL"} \
                     --plugin qt --output appimage
                 mv ewcalc-x86_64.AppImage "$BUILD_DIR/pkg/"
                 ;;
