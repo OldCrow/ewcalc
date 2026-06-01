@@ -11,138 +11,116 @@
     </Page.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid Margin="24,20,24,24" ColumnSpacing="24">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300" MinWidth="220" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+        <StackPanel Margin="24,20,24,24" Spacing="8">
 
-            <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,16">
+            <StackPanel Margin="0,0,0,8">
                 <TextBlock Text="Receiver" Style="{ThemeResource TitleTextBlockStyle}" />
                 <TextBlock Text="Sensitivity · Cascaded noise figure (Friis) · SFDR · Digital dynamic range"
                            Style="{ThemeResource CaptionTextBlockStyle}"
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
             </StackPanel>
 
-            <StackPanel Grid.Row="1" Grid.Column="0" Spacing="8">
-                <TextBlock Text="SENSITIVITY" Style="{StaticResource SectionHeaderStyle}" />
-                <Border Style="{StaticResource InputCardStyle}">
-                    <StackPanel Spacing="12">
-                        <NumberBox x:Name="BandwidthBox" Header="Bandwidth (MHz)"
-                                   Value="{x:Bind ViewModel.DefaultBandwidth, Mode=OneTime}"
-                                   Minimum="0.001" Maximum="10000"
-                                   ValueChanged="BandwidthBox_ValueChanged" />
-                        <NumberBox x:Name="NoiseFigureBox" Header="Noise figure (dB)"
-                                   Value="{x:Bind ViewModel.DefaultNoiseFigure, Mode=OneTime}"
-                                   Minimum="0" Maximum="30" SmallChange="0.5"
-                                   ValueChanged="NoiseFigureBox_ValueChanged" />
-                        <NumberBox x:Name="SnrBox" Header="Required SNR (dB)"
-                                   Value="{x:Bind ViewModel.DefaultRequiredSnr, Mode=OneTime}"
-                                   Minimum="-20" Maximum="50" SmallChange="0.5"
-                                   ValueChanged="SnrBox_ValueChanged" />
-                    </StackPanel>
-                </Border>
+            <TextBlock Text="SENSITIVITY" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource InputCardStyle}">
+                <StackPanel Spacing="12">
+                    <NumberBox x:Name="BandwidthBox" Header="Bandwidth (MHz)"
+                               Value="{x:Bind ViewModel.DefaultBandwidth, Mode=OneTime}"
+                               Minimum="0.001" Maximum="10000"
+                               ValueChanged="BandwidthBox_ValueChanged" />
+                    <NumberBox x:Name="NoiseFigureBox" Header="Noise figure (dB)"
+                               Value="{x:Bind ViewModel.DefaultNoiseFigure, Mode=OneTime}"
+                               Minimum="0" Maximum="30" SmallChange="0.5"
+                               ValueChanged="NoiseFigureBox_ValueChanged" />
+                    <NumberBox x:Name="SnrBox" Header="Required SNR (dB)"
+                               Value="{x:Bind ViewModel.DefaultRequiredSnr, Mode=OneTime}"
+                               Minimum="-20" Maximum="50" SmallChange="0.5"
+                               ValueChanged="SnrBox_ValueChanged" />
+                </StackPanel>
+            </Border>
 
-                <TextBlock Text="DYNAMIC RANGE" Style="{StaticResource SectionHeaderStyle}" />
-                <Border Style="{StaticResource InputCardStyle}">
-                    <StackPanel Spacing="12">
-                        <NumberBox x:Name="Ip2Box" Header="IP2 (dBm)"
-                                   Value="{x:Bind ViewModel.DefaultSecondOrderIp, Mode=OneTime}"
-                                   Minimum="-50" Maximum="100"
-                                   ValueChanged="Ip2Box_ValueChanged" />
-                        <NumberBox x:Name="Ip3Box" Header="IP3 (dBm)"
-                                   Value="{x:Bind ViewModel.DefaultThirdOrderIp, Mode=OneTime}"
-                                   Minimum="-50" Maximum="100"
-                                   ValueChanged="Ip3Box_ValueChanged" />
-                        <NumberBox x:Name="AdcBitsBox" Header="ADC bits"
-                                   Value="{x:Bind ViewModel.DefaultAdcBits, Mode=OneTime}"
-                                   Minimum="1" Maximum="64" SmallChange="1"
-                                   ValueChanged="AdcBitsBox_ValueChanged" />
-                    </StackPanel>
-                </Border>
-            </StackPanel>
+            <TextBlock Text="DYNAMIC RANGE" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource InputCardStyle}">
+                <StackPanel Spacing="12">
+                    <NumberBox x:Name="Ip2Box" Header="IP2 (dBm)"
+                               Value="{x:Bind ViewModel.DefaultSecondOrderIp, Mode=OneTime}"
+                               Minimum="-50" Maximum="100"
+                               ValueChanged="Ip2Box_ValueChanged" />
+                    <NumberBox x:Name="Ip3Box" Header="IP3 (dBm)"
+                               Value="{x:Bind ViewModel.DefaultThirdOrderIp, Mode=OneTime}"
+                               Minimum="-50" Maximum="100"
+                               ValueChanged="Ip3Box_ValueChanged" />
+                    <NumberBox x:Name="AdcBitsBox" Header="ADC bits"
+                               Value="{x:Bind ViewModel.DefaultAdcBits, Mode=OneTime}"
+                               Minimum="1" Maximum="64" SmallChange="1"
+                               ValueChanged="AdcBitsBox_ValueChanged" />
+                </StackPanel>
+            </Border>
 
-            <StackPanel Grid.Row="1" Grid.Column="1" Spacing="8">
-                <TextBlock Text="RESULTS" Style="{StaticResource SectionHeaderStyle}" />
-                <Border Style="{StaticResource ResultCardStyle}">
-                    <StackPanel Spacing="0">
-                        <local:ResultRow Label="Sensitivity" Value="{x:Bind ViewModel.Sensitivity, Mode=OneWay}" />
-                        <local:ResultRow Label="Cascaded NF" Value="{x:Bind ViewModel.CascadedNf,  Mode=OneWay}" />
-                        <local:ResultRow Label="SFDR (2nd)"  Value="{x:Bind ViewModel.Sfdr2,       Mode=OneWay}" />
-                        <local:ResultRow Label="SFDR (3rd)"  Value="{x:Bind ViewModel.Sfdr3,       Mode=OneWay}" />
-                        <local:ResultRow Label="Digital DR"  Value="{x:Bind ViewModel.DigitalDr,   Mode=OneWay}" />
-                    </StackPanel>
-                </Border>
+            <TextBlock Text="NOISE CHAIN (FRIIS CASCADE)" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource InputCardStyle}">
+                <StackPanel Spacing="8">
+                    <Grid ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="32" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="32" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="1" Text="NF (dB)"
+                                   Style="{ThemeResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock Grid.Column="2" Text="Gain (dB)"
+                                   Style="{ThemeResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    </Grid>
+                    <ItemsRepeater x:Name="StageRepeater"
+                                   ItemsSource="{x:Bind ViewModel.Stages, Mode=OneWay}">
+                        <ItemsRepeater.Layout>
+                            <StackLayout Spacing="6" />
+                        </ItemsRepeater.Layout>
+                        <ItemsRepeater.ItemTemplate>
+                            <DataTemplate x:DataType="vm:StageItemViewModel">
+                                <Grid ColumnSpacing="8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="32" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="32" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="{x:Bind IndexLabel}"
+                                               Style="{ThemeResource CaptionTextBlockStyle}"
+                                               Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                               VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                    <NumberBox Grid.Column="1"
+                                               Value="{x:Bind NoiseFigureDb, Mode=TwoWay}"
+                                               Minimum="0" Maximum="30" SmallChange="0.5" />
+                                    <NumberBox Grid.Column="2"
+                                               Value="{x:Bind GainDb, Mode=TwoWay}"
+                                               Minimum="-60" Maximum="60" SmallChange="1" />
+                                    <Button Grid.Column="3" Content="✕"
+                                            VerticalAlignment="Center" Padding="4"
+                                            Command="{x:Bind RemoveCommand}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsRepeater.ItemTemplate>
+                    </ItemsRepeater>
+                    <Button Content="+ Add stage"
+                            Command="{x:Bind ViewModel.AddStageCommand}"
+                            HorizontalAlignment="Left" />
+                </StackPanel>
+            </Border>
 
-                <TextBlock Text="NOISE CHAIN (FRIIS CASCADE)" Style="{StaticResource SectionHeaderStyle}" />
-                <Border Style="{StaticResource InputCardStyle}">
-                    <StackPanel Spacing="8">
-                        <!-- Column headers -->
-                        <Grid ColumnSpacing="8">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="32" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="32" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="1" Text="NF (dB)"
-                                       Style="{ThemeResource CaptionTextBlockStyle}"
-                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                            <TextBlock Grid.Column="2" Text="Gain (dB)"
-                                       Style="{ThemeResource CaptionTextBlockStyle}"
-                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                        </Grid>
+            <TextBlock Text="RESULTS" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource ResultCardStyle}">
+                <StackPanel Spacing="0">
+                    <local:ResultRow Label="Sensitivity" Value="{x:Bind ViewModel.Sensitivity, Mode=OneWay}" />
+                    <local:ResultRow Label="Cascaded NF" Value="{x:Bind ViewModel.CascadedNf,  Mode=OneWay}" />
+                    <local:ResultRow Label="SFDR (2nd)"  Value="{x:Bind ViewModel.Sfdr2,       Mode=OneWay}" />
+                    <local:ResultRow Label="SFDR (3rd)"  Value="{x:Bind ViewModel.Sfdr3,       Mode=OneWay}" />
+                    <local:ResultRow Label="Digital DR"  Value="{x:Bind ViewModel.DigitalDr,   Mode=OneWay}" />
+                </StackPanel>
+            </Border>
 
-                        <ItemsRepeater x:Name="StageRepeater"
-                                       ItemsSource="{x:Bind ViewModel.Stages, Mode=OneWay}">
-                            <ItemsRepeater.Layout>
-                                <StackLayout Spacing="6" />
-                            </ItemsRepeater.Layout>
-                            <ItemsRepeater.ItemTemplate>
-                                <DataTemplate x:DataType="vm:StageItemViewModel">
-                                    <Grid ColumnSpacing="8">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="32" />
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="32" />
-                                        </Grid.ColumnDefinitions>
-                                        <!-- Stage label (S1, S2 …) centred in its own column -->
-                                        <TextBlock Grid.Column="0"
-                                                   Text="{x:Bind IndexLabel}"
-                                                   Style="{ThemeResource CaptionTextBlockStyle}"
-                                                   Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                                   VerticalAlignment="Center"
-                                                   HorizontalAlignment="Center" />
-                                        <!-- NF — no Header, no SpinButtonPlacementMode (inherits Hidden from App.xaml) -->
-                                        <NumberBox Grid.Column="1"
-                                                   Value="{x:Bind NoiseFigureDb, Mode=TwoWay}"
-                                                   Minimum="0" Maximum="30" SmallChange="0.5" />
-                                        <!-- Gain -->
-                                        <NumberBox Grid.Column="2"
-                                                   Value="{x:Bind GainDb, Mode=TwoWay}"
-                                                   Minimum="-60" Maximum="60" SmallChange="1" />
-                                        <!-- Remove -->
-                                        <Button Grid.Column="3"
-                                                Content="✕"
-                                                VerticalAlignment="Center"
-                                                Padding="4"
-                                                Command="{x:Bind RemoveCommand}" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsRepeater.ItemTemplate>
-                        </ItemsRepeater>
-
-                        <Button Content="+ Add stage"
-                                Command="{x:Bind ViewModel.AddStageCommand}"
-                                HorizontalAlignment="Left" />
-                    </StackPanel>
-                </Border>
-            </StackPanel>
-        </Grid>
+        </StackPanel>
     </ScrollViewer>
 </Page>

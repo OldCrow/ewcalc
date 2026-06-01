@@ -14,8 +14,8 @@
             IsSettingsVisible="False"
             SelectionChanged="NavView_SelectionChanged"
             OpenPaneLength="200"
-            CompactModeThresholdWidth="800"
-            ExpandedModeThresholdWidth="1200">
+            CompactModeThresholdWidth="0"
+            ExpandedModeThresholdWidth="1400">
 
             <NavigationView.MenuItems>
 

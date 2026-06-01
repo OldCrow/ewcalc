@@ -12,17 +12,9 @@
     </Page.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid Margin="24,20,24,24" RowSpacing="0" ColumnSpacing="24">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300" MinWidth="220" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+        <StackPanel Margin="24,20,24,24" Spacing="8">
 
-            <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,16">
+            <StackPanel Margin="0,0,0,8">
                 <TextBlock Text="Propagation"
                            Style="{ThemeResource TitleTextBlockStyle}" />
                 <TextBlock Text="Free-space path loss · 2-ray ground reflection · Fresnel zone"
@@ -30,95 +22,68 @@
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
             </StackPanel>
 
-            <StackPanel Grid.Row="1" Grid.Column="0" Spacing="8">
-                <TextBlock Text="INPUTS" Style="{StaticResource SectionHeaderStyle}" />
-                <Border Style="{StaticResource InputCardStyle}">
-                    <StackPanel Spacing="12">
-
-                        <NumberBox x:Name="DistanceBox"
-                                   Header="Distance (km)"
-                                   Value="{x:Bind ViewModel.DefaultDistance, Mode=OneTime}"
-                                   Minimum="0.01" Maximum="10000"
-                                   SpinButtonPlacementMode="Compact"
-                                   SmallChange="1"
-                                   BorderBrush="{x:Bind ViewModel.DistanceError,
-                                       Mode=OneWay,
-                                       Converter={StaticResource FieldErrorToBrush}}"
-                                   ValueChanged="DistanceBox_ValueChanged">
-                            <ToolTipService.ToolTip>
-                                <ToolTip Content="{x:Bind ViewModel.DistanceError,
-                                             Mode=OneWay,
-                                             Converter={StaticResource FieldErrorToTooltip}}" />
-                            </ToolTipService.ToolTip>
-                        </NumberBox>
-
-                        <NumberBox x:Name="FrequencyBox"
-                                   Header="Frequency (MHz)"
-                                   Value="{x:Bind ViewModel.DefaultFrequency, Mode=OneTime}"
+            <TextBlock Text="INPUTS" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource InputCardStyle}">
+                <StackPanel Spacing="12">
+                    <NumberBox x:Name="DistanceBox"
+                               Header="Distance (km)"
+                               Value="{x:Bind ViewModel.DefaultDistance, Mode=OneTime}"
+                               Minimum="0.01" Maximum="10000"
+                               SpinButtonPlacementMode="Compact" SmallChange="1"
+                               BorderBrush="{x:Bind ViewModel.DistanceError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
+                               ValueChanged="DistanceBox_ValueChanged">
+                        <ToolTipService.ToolTip>
+                            <ToolTip Content="{x:Bind ViewModel.DistanceError, Mode=OneWay,
+                                         Converter={StaticResource FieldErrorToTooltip}}" />
+                        </ToolTipService.ToolTip>
+                    </NumberBox>
+                    <NumberBox x:Name="FrequencyBox"
+                               Header="Frequency (MHz)"
+                               Value="{x:Bind ViewModel.DefaultFrequency, Mode=OneTime}"
+                               Minimum="0.1" Maximum="100000"
+                               SpinButtonPlacementMode="Compact" SmallChange="10"
+                               BorderBrush="{x:Bind ViewModel.FrequencyError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
+                               ValueChanged="FrequencyBox_ValueChanged" />
+                    <Grid ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <NumberBox Grid.Column="0" x:Name="TxHeightBox"
+                                   Header="Tx height (m)"
+                                   Value="{x:Bind ViewModel.DefaultTxHeight, Mode=OneTime}"
                                    Minimum="0.1" Maximum="100000"
-                                   SpinButtonPlacementMode="Compact"
-                                   SmallChange="10"
-                                   BorderBrush="{x:Bind ViewModel.FrequencyError,
-                                       Mode=OneWay,
+                                   SpinButtonPlacementMode="Compact" SmallChange="1"
+                                   BorderBrush="{x:Bind ViewModel.TxHeightError, Mode=OneWay,
                                        Converter={StaticResource FieldErrorToBrush}}"
-                                   ValueChanged="FrequencyBox_ValueChanged" />
+                                   ValueChanged="TxHeightBox_ValueChanged" />
+                        <NumberBox Grid.Column="1" x:Name="RxHeightBox"
+                                   Header="Rx height (m)"
+                                   Value="{x:Bind ViewModel.DefaultRxHeight, Mode=OneTime}"
+                                   Minimum="0.1" Maximum="100000"
+                                   SpinButtonPlacementMode="Compact" SmallChange="1"
+                                   BorderBrush="{x:Bind ViewModel.RxHeightError, Mode=OneWay,
+                                       Converter={StaticResource FieldErrorToBrush}}"
+                                   ValueChanged="RxHeightBox_ValueChanged" />
+                    </Grid>
+                </StackPanel>
+            </Border>
 
-                        <Grid ColumnSpacing="8">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+            <TextBlock Text="RESULTS" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource ResultCardStyle}">
+                <StackPanel Spacing="0">
+                    <InfoBar IsOpen="True" IsClosable="False" Severity="Informational"
+                             Message="{x:Bind ViewModel.Regime, Mode=OneWay}"
+                             Margin="0,0,0,12" />
+                    <local:ResultRow Label="Path loss"        Value="{x:Bind ViewModel.PathLoss,    Mode=OneWay}" />
+                    <local:ResultRow Label="FSPL"             Value="{x:Bind ViewModel.Fspl,        Mode=OneWay}" />
+                    <local:ResultRow Label="2-ray loss"       Value="{x:Bind ViewModel.TwoRayLoss,  Mode=OneWay}" />
+                    <local:ResultRow Label="Fresnel zone dist." Value="{x:Bind ViewModel.Fresnel,   Mode=OneWay}" />
+                </StackPanel>
+            </Border>
 
-                            <NumberBox Grid.Column="0"
-                                       x:Name="TxHeightBox"
-                                       Header="Tx height (m)"
-                                       Value="{x:Bind ViewModel.DefaultTxHeight, Mode=OneTime}"
-                                       Minimum="0.1" Maximum="100000"
-                                       SpinButtonPlacementMode="Compact"
-                                       SmallChange="1"
-                                       BorderBrush="{x:Bind ViewModel.TxHeightError,
-                                           Mode=OneWay,
-                                           Converter={StaticResource FieldErrorToBrush}}"
-                                       ValueChanged="TxHeightBox_ValueChanged" />
-
-                            <NumberBox Grid.Column="1"
-                                       x:Name="RxHeightBox"
-                                       Header="Rx height (m)"
-                                       Value="{x:Bind ViewModel.DefaultRxHeight, Mode=OneTime}"
-                                       Minimum="0.1" Maximum="100000"
-                                       SpinButtonPlacementMode="Compact"
-                                       SmallChange="1"
-                                       BorderBrush="{x:Bind ViewModel.RxHeightError,
-                                           Mode=OneWay,
-                                           Converter={StaticResource FieldErrorToBrush}}"
-                                       ValueChanged="RxHeightBox_ValueChanged" />
-                        </Grid>
-
-                    </StackPanel>
-                </Border>
-            </StackPanel>
-
-            <StackPanel Grid.Row="1" Grid.Column="1" Spacing="8">
-                <TextBlock Text="RESULTS" Style="{StaticResource SectionHeaderStyle}" />
-                <Border Style="{StaticResource ResultCardStyle}">
-                    <StackPanel Spacing="0">
-                        <InfoBar IsOpen="True"
-                                 IsClosable="False"
-                                 Severity="Informational"
-                                 Message="{x:Bind ViewModel.Regime, Mode=OneWay}"
-                                 Margin="0,0,0,12" />
-                        <local:ResultRow Label="Path loss"
-                                         Value="{x:Bind ViewModel.PathLoss, Mode=OneWay}" />
-                        <local:ResultRow Label="FSPL"
-                                         Value="{x:Bind ViewModel.Fspl, Mode=OneWay}" />
-                        <local:ResultRow Label="2-ray loss"
-                                         Value="{x:Bind ViewModel.TwoRayLoss, Mode=OneWay}" />
-                        <local:ResultRow Label="Fresnel zone dist."
-                                         Value="{x:Bind ViewModel.Fresnel, Mode=OneWay}" />
-                    </StackPanel>
-                </Border>
-            </StackPanel>
-
-        </Grid>
+        </StackPanel>
     </ScrollViewer>
 </Page>

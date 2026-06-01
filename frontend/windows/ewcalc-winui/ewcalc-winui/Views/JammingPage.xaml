@@ -5,24 +5,16 @@
     xmlns:local="using:EwCalc.Views">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid Margin="24,20,24,24" ColumnSpacing="24">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300" MinWidth="220" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+        <StackPanel Margin="24,20,24,24" Spacing="8">
 
-            <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,16">
+            <StackPanel Margin="0,0,0,8">
                 <TextBlock Text="Jamming" Style="{ThemeResource TitleTextBlockStyle}" />
                 <TextBlock Text="J/S ratio · Burnthrough · Partial-band optimum bandwidth"
                            Style="{ThemeResource CaptionTextBlockStyle}"
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
             </StackPanel>
 
-            <StackPanel Grid.Row="1" Grid.Column="0" Spacing="8">
+            <StackPanel Spacing="8">
                 <TextBlock Text="SIGNAL" Style="{StaticResource SectionHeaderStyle}" />
                 <Border Style="{StaticResource InputCardStyle}">
                     <StackPanel Spacing="12">
@@ -90,23 +82,23 @@
                 </Border>
             </StackPanel>
 
-            <StackPanel Grid.Row="1" Grid.Column="1" Spacing="8">
-                <TextBlock Text="J/S ANALYSIS" Style="{StaticResource SectionHeaderStyle}" />
-                <Border Style="{StaticResource ResultCardStyle}">
-                    <StackPanel Spacing="0">
-                        <local:ResultRow Label="J/S ratio"    Value="{x:Bind ViewModel.JsRatio,    Mode=OneWay}" />
-                        <local:ResultRow Label="Signal at Rx" Value="{x:Bind ViewModel.SignalAtRx, Mode=OneWay}" />
-                        <local:ResultRow Label="Jammer at Rx" Value="{x:Bind ViewModel.JammerAtRx, Mode=OneWay}" />
-                    </StackPanel>
-                </Border>
-                <TextBlock Text="PARTIAL-BAND" Style="{StaticResource SectionHeaderStyle}" />
-                <Border Style="{StaticResource ResultCardStyle}">
-                    <StackPanel Spacing="0">
-                        <local:ResultRow Label="Optimum BW" Value="{x:Bind ViewModel.OptimumBw, Mode=OneWay}" />
-                        <local:ResultRow Label="Duty cycle" Value="{x:Bind ViewModel.DutyCycle, Mode=OneWay}" />
-                    </StackPanel>
-                </Border>
-            </StackPanel>
-        </Grid>
+            <TextBlock Text="J/S ANALYSIS" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource ResultCardStyle}">
+                <StackPanel Spacing="0">
+                    <local:ResultRow Label="J/S ratio"    Value="{x:Bind ViewModel.JsRatio,    Mode=OneWay}" />
+                    <local:ResultRow Label="Signal at Rx" Value="{x:Bind ViewModel.SignalAtRx, Mode=OneWay}" />
+                    <local:ResultRow Label="Jammer at Rx" Value="{x:Bind ViewModel.JammerAtRx, Mode=OneWay}" />
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="PARTIAL-BAND" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource ResultCardStyle}">
+                <StackPanel Spacing="0">
+                    <local:ResultRow Label="Optimum BW" Value="{x:Bind ViewModel.OptimumBw, Mode=OneWay}" />
+                    <local:ResultRow Label="Duty cycle" Value="{x:Bind ViewModel.DutyCycle, Mode=OneWay}" />
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
     </ScrollViewer>
 </Page>

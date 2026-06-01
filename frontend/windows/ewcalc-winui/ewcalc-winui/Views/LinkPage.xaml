@@ -10,95 +10,84 @@
     </Page.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid Margin="24,20,24,24" ColumnSpacing="24">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300" MinWidth="220" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+        <StackPanel Margin="24,20,24,24" Spacing="8">
 
-            <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,16">
+            <StackPanel Margin="0,0,0,8">
                 <TextBlock Text="Link budget" Style="{ThemeResource TitleTextBlockStyle}" />
                 <TextBlock Text="One-way link · Received power · Link margin · Effective range"
                            Style="{ThemeResource CaptionTextBlockStyle}"
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
             </StackPanel>
 
-            <StackPanel Grid.Row="1" Grid.Column="0" Spacing="8">
-                <TextBlock Text="TRANSMITTER" Style="{StaticResource SectionHeaderStyle}" />
-                <Border Style="{StaticResource InputCardStyle}">
-                    <StackPanel Spacing="12">
-                        <NumberBox x:Name="TxPowerBox"   Header="Tx power (dBm)"
-                                   Value="{x:Bind ViewModel.DefaultTxPower,   Mode=OneTime}"
-                                   Minimum="-50" Maximum="200" SmallChange="1"
-                                   ValueChanged="TxPowerBox_ValueChanged" />
-                        <NumberBox x:Name="TxGainBox"    Header="Tx gain (dB)"
-                                   Value="{x:Bind ViewModel.DefaultTxGain,    Mode=OneTime}"
-                                   Minimum="-30" Maximum="60" SmallChange="0.5"
-                                   ValueChanged="TxGainBox_ValueChanged" />
-                        <NumberBox x:Name="FrequencyBox" Header="Frequency (MHz)"
-                                   Value="{x:Bind ViewModel.DefaultFrequency, Mode=OneTime}"
-                                   Minimum="0.1" Maximum="100000" SmallChange="10"
-                                   ValueChanged="FrequencyBox_ValueChanged" />
-                    </StackPanel>
-                </Border>
+            <TextBlock Text="TRANSMITTER" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource InputCardStyle}">
+                <StackPanel Spacing="12">
+                    <NumberBox x:Name="TxPowerBox"   Header="Tx power (dBm)"
+                               Value="{x:Bind ViewModel.DefaultTxPower,   Mode=OneTime}"
+                               Minimum="-50" Maximum="200" SmallChange="1"
+                               ValueChanged="TxPowerBox_ValueChanged" />
+                    <NumberBox x:Name="TxGainBox"    Header="Tx gain (dB)"
+                               Value="{x:Bind ViewModel.DefaultTxGain,    Mode=OneTime}"
+                               Minimum="-30" Maximum="60" SmallChange="0.5"
+                               ValueChanged="TxGainBox_ValueChanged" />
+                    <NumberBox x:Name="FrequencyBox" Header="Frequency (MHz)"
+                               Value="{x:Bind ViewModel.DefaultFrequency, Mode=OneTime}"
+                               Minimum="0.1" Maximum="100000" SmallChange="10"
+                               ValueChanged="FrequencyBox_ValueChanged" />
+                </StackPanel>
+            </Border>
 
-                <TextBlock Text="GEOMETRY" Style="{StaticResource SectionHeaderStyle}" />
-                <Border Style="{StaticResource InputCardStyle}">
-                    <StackPanel Spacing="12">
-                        <NumberBox x:Name="DistanceBox" Header="Distance (km)"
-                                   Value="{x:Bind ViewModel.DefaultDistance, Mode=OneTime}"
-                                   Minimum="0.01" Maximum="10000" SmallChange="1"
-                                   ValueChanged="DistanceBox_ValueChanged" />
-                        <Grid ColumnSpacing="8">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <NumberBox Grid.Column="0" x:Name="TxHeightBox" Header="Tx height (m)"
-                                       Value="{x:Bind ViewModel.DefaultTxHeight, Mode=OneTime}"
-                                       Minimum="0.1" Maximum="100000" SmallChange="1"
-                                       ValueChanged="TxHeightBox_ValueChanged" />
-                            <NumberBox Grid.Column="1" x:Name="RxHeightBox" Header="Rx height (m)"
-                                       Value="{x:Bind ViewModel.DefaultRxHeight, Mode=OneTime}"
-                                       Minimum="0.1" Maximum="100000" SmallChange="1"
-                                       ValueChanged="RxHeightBox_ValueChanged" />
-                        </Grid>
-                    </StackPanel>
-                </Border>
+            <TextBlock Text="GEOMETRY" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource InputCardStyle}">
+                <StackPanel Spacing="12">
+                    <NumberBox x:Name="DistanceBox" Header="Distance (km)"
+                               Value="{x:Bind ViewModel.DefaultDistance, Mode=OneTime}"
+                               Minimum="0.01" Maximum="10000" SmallChange="1"
+                               ValueChanged="DistanceBox_ValueChanged" />
+                    <Grid ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <NumberBox Grid.Column="0" x:Name="TxHeightBox" Header="Tx height (m)"
+                                   Value="{x:Bind ViewModel.DefaultTxHeight, Mode=OneTime}"
+                                   Minimum="0.1" Maximum="100000" SmallChange="1"
+                                   ValueChanged="TxHeightBox_ValueChanged" />
+                        <NumberBox Grid.Column="1" x:Name="RxHeightBox" Header="Rx height (m)"
+                                   Value="{x:Bind ViewModel.DefaultRxHeight, Mode=OneTime}"
+                                   Minimum="0.1" Maximum="100000" SmallChange="1"
+                                   ValueChanged="RxHeightBox_ValueChanged" />
+                    </Grid>
+                </StackPanel>
+            </Border>
 
-                <TextBlock Text="RECEIVER" Style="{StaticResource SectionHeaderStyle}" />
-                <Border Style="{StaticResource InputCardStyle}">
-                    <StackPanel Spacing="12">
-                        <NumberBox x:Name="RxGainBox" Header="Rx gain (dB)"
-                                   Value="{x:Bind ViewModel.DefaultRxGain, Mode=OneTime}"
-                                   Minimum="-30" Maximum="60" SmallChange="0.5"
-                                   ValueChanged="RxGainBox_ValueChanged" />
-                        <NumberBox x:Name="RxSensitivityBox" Header="Rx sensitivity (dBm)"
-                                   Value="{x:Bind ViewModel.DefaultRxSensitivity, Mode=OneTime}"
-                                   Minimum="-200" Maximum="0" SmallChange="1"
-                                   ValueChanged="RxSensitivityBox_ValueChanged" />
-                    </StackPanel>
-                </Border>
-            </StackPanel>
+            <TextBlock Text="RECEIVER" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource InputCardStyle}">
+                <StackPanel Spacing="12">
+                    <NumberBox x:Name="RxGainBox" Header="Rx gain (dB)"
+                               Value="{x:Bind ViewModel.DefaultRxGain, Mode=OneTime}"
+                               Minimum="-30" Maximum="60" SmallChange="0.5"
+                               ValueChanged="RxGainBox_ValueChanged" />
+                    <NumberBox x:Name="RxSensitivityBox" Header="Rx sensitivity (dBm)"
+                               Value="{x:Bind ViewModel.DefaultRxSensitivity, Mode=OneTime}"
+                               Minimum="-200" Maximum="0" SmallChange="1"
+                               ValueChanged="RxSensitivityBox_ValueChanged" />
+                </StackPanel>
+            </Border>
 
-            <StackPanel Grid.Row="1" Grid.Column="1" Spacing="8">
-                <TextBlock Text="RESULTS" Style="{StaticResource SectionHeaderStyle}" />
-                <Border Style="{StaticResource ResultCardStyle}">
-                    <StackPanel Spacing="0">
-                        <local:ResultRow Label="Received power"  Value="{x:Bind ViewModel.ReceivedPower,  Mode=OneWay}" />
-                        <local:ResultRow Label="Path loss"       Value="{x:Bind ViewModel.PathLoss,       Mode=OneWay}" />
-                        <local:ResultRow Label="Link margin"     Value="{x:Bind ViewModel.LinkMargin,     Mode=OneWay}" />
-                        <local:ResultRow Label="Fresnel zone"    Value="{x:Bind ViewModel.FresnelZone,    Mode=OneWay}" />
-                        <local:ResultRow Label="Regime"          Value="{x:Bind ViewModel.Regime,         Mode=OneWay}" />
-                        <local:ResultRow Label="Effective range" Value="{x:Bind ViewModel.EffectiveRange, Mode=OneWay}" />
-                        <local:ResultRow Label="Range regime"    Value="{x:Bind ViewModel.RangeRegime,    Mode=OneWay}" />
-                    </StackPanel>
-                </Border>
-            </StackPanel>
-        </Grid>
+            <TextBlock Text="RESULTS" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource ResultCardStyle}">
+                <StackPanel Spacing="0">
+                    <local:ResultRow Label="Received power"  Value="{x:Bind ViewModel.ReceivedPower,  Mode=OneWay}" />
+                    <local:ResultRow Label="Path loss"       Value="{x:Bind ViewModel.PathLoss,       Mode=OneWay}" />
+                    <local:ResultRow Label="Link margin"     Value="{x:Bind ViewModel.LinkMargin,     Mode=OneWay}" />
+                    <local:ResultRow Label="Fresnel zone"    Value="{x:Bind ViewModel.FresnelZone,    Mode=OneWay}" />
+                    <local:ResultRow Label="Regime"          Value="{x:Bind ViewModel.Regime,         Mode=OneWay}" />
+                    <local:ResultRow Label="Effective range" Value="{x:Bind ViewModel.EffectiveRange, Mode=OneWay}" />
+                    <local:ResultRow Label="Range regime"    Value="{x:Bind ViewModel.RangeRegime,    Mode=OneWay}" />
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
     </ScrollViewer>
 </Page>
