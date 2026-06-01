@@ -65,8 +65,8 @@ jobs:
           cmake --build build --config Release --parallel
           ctest --test-dir build --build-config Release --output-on-failure
 
-      # .pkg packaging deferred: requires Apple Developer ID certificate +
-      # notarization. See plan doc 8f389d3a for details.
+      # .dmg packaging requires the Developer ID notarytool profile;
+      # run manually with --package on a machine that has the credentials.
 
   # ── Linux ───────────────────────────────────────────────────────────────────
   build-linux:
@@ -132,5 +132,5 @@ jobs:
           generate_release_notes: true
           files: |
             artifacts/**/*.msix
-            artifacts/**/*.pkg
+            artifacts/**/*.dmg
             artifacts/**/*.AppImage

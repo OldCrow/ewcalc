@@ -3,7 +3,7 @@
 # Builds the full macOS ewcalc stack:
 #   1. CMake: libew + ewpresenter (native C++ static libs)
 #   2. cmake -G Xcode: SwiftUI frontend (Phase 4)
-#   3. Optionally packages as .pkg (pass --package; deferred until signing is ready)
+#   3. Optionally notarizes and packages as .dmg (pass --package)
 #
 # Usage:
 #   ./scripts/build-macos.sh                  # build only
@@ -82,43 +82,34 @@ if [[ -f "$MACOS_FRONTEND" ]]; then
         echo "==> Notarizing and packaging..."
 
         mkdir -p "$PKG_DIR"
-        PKG_OUTPUT="$PKG_DIR/ewcalc-$ARCH-$CONFIG.pkg"
-        ZIP_PATH="$PKG_DIR/ewcalc-$ARCH-$CONFIG-notarize.zip"
+        DMG_OUTPUT="$PKG_DIR/ewcalc-$ARCH-$CONFIG.dmg"
 
-        # ── Notarize ─────────────────────────────────────────────────────
-        # notarytool requires a zip/pkg/dmg, not a bare .app.
-        # ditto -c -k preserves HFS metadata and resource forks correctly.
-        echo "    Creating zip for notarization submission..."
-        ditto -c -k --keepParent "$APP_PATH" "$ZIP_PATH"
+        # ── Create DMG ──────────────────────────────────────────────────
+        # Stage the .app in a temp folder so hdiutil places it (not its
+        # contents) at the root of the DMG volume.
+        STAGING=$(mktemp -d)
+        cp -R "$APP_PATH" "$STAGING/"
 
-        echo "    Submitting for notarization (this may take several minutes)..."
-        xcrun notarytool submit "$ZIP_PATH" \
+        echo "    Creating DMG..."
+        hdiutil create \
+            -volname "EW Calculator" \
+            -srcfolder "$STAGING" \
+            -ov \
+            -format UDZO \
+            "$DMG_OUTPUT"
+        rm -rf "$STAGING"
+
+        # ── Notarize ──────────────────────────────────────────────────
+        # notarytool accepts DMGs directly—no intermediate zip needed.
+        echo "    Submitting DMG for notarization (this may take several minutes)..."
+        xcrun notarytool submit "$DMG_OUTPUT" \
             --keychain-profile "ewcalc-notarytool" \
             --wait
 
-        echo "    Stapling notarization ticket to app bundle..."
-        xcrun stapler staple "$APP_PATH"
-        rm -f "$ZIP_PATH"
+        echo "    Stapling notarization ticket to DMG..."
+        xcrun stapler staple "$DMG_OUTPUT"
 
-        # ── Package ──────────────────────────────────────────────────────
-
-        # Sign the .pkg with Developer ID Installer if that cert is available.
-        # The inner .app is already notarized+stapled so Gatekeeper accepts
-        # the package regardless; the Installer cert signature is optional.
-        INSTALLER_CERT="Developer ID Installer: Gary Wolfman (6HGS466D28)"
-        if security find-identity -v -p basic | grep -q "$INSTALLER_CERT"; then
-            productbuild \
-                --component "$APP_PATH" /Applications \
-                --sign "$INSTALLER_CERT" \
-                "$PKG_OUTPUT"
-        else
-            echo "    (Developer ID Installer cert not found — creating unsigned .pkg)"
-            productbuild \
-                --component "$APP_PATH" /Applications \
-                "$PKG_OUTPUT"
-        fi
-
-        echo "    Package: $PKG_OUTPUT"
+        echo "    DMG: $DMG_OUTPUT"
     fi
 else
     echo ""
