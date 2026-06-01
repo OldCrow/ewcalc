@@ -55,6 +55,11 @@ add_library(ewcalc_bridge STATIC bridge/ewcalc_bridge.cpp)
 target_include_directories(ewcalc_bridge PUBLIC bridge)
 target_compile_features(ewcalc_bridge PRIVATE cxx_std_20)
 target_link_libraries(ewcalc_bridge PRIVATE ewpresenter_native libew_native)
+# The Xcode generator does not propagate CMAKE_OSX_DEPLOYMENT_TARGET to
+# static library targets; set it explicitly to match the app target.
+set_target_properties(ewcalc_bridge PROPERTIES
+    XCODE_ATTRIBUTE_MACOSX_DEPLOYMENT_TARGET "13.0"
+)
 
 # ── Swift app bundle ──────────────────────────────────────────────────────────
 set(SWIFT_SOURCES

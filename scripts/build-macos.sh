@@ -20,7 +20,6 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CONFIG="Release"
 PACKAGE=0
-ARCH="$(uname -m)"   # arm64 on Apple Silicon, x86_64 on Intel
 
 # ── Argument parsing ─────────────────────────────────────────────────────────
 while [[ $# -gt 0 ]]; do
@@ -30,6 +29,16 @@ while [[ $# -gt 0 ]]; do
         *) echo "Unknown argument: $1"; exit 1 ;;
     esac
 done
+
+# Set architecture AFTER parsing args so --package can influence the whole build.
+# Universal binary for distribution (CI, Apple Silicon handles the cross-compile);
+# native arch for local dev builds on Intel where the 14.x SDK x86_64 cross-compile
+# produces an ABI mismatch against the 13.0 deployment target.
+if [[ $PACKAGE -eq 1 ]]; then
+    ARCH="arm64;x86_64"
+else
+    ARCH="$(uname -m)"
+fi
 
 BUILD_DIR="$REPO_ROOT/build"
 PKG_DIR="$BUILD_DIR/pkg"
@@ -93,10 +102,10 @@ if [[ -f "$MACOS_FRONTEND" ]]; then
 
     if [[ $PACKAGE -eq 1 ]]; then
         echo ""
-        echo "==> Notarizing and packaging..."
+        echo "==> Notarizing and packaging universal binary..."
 
         mkdir -p "$PKG_DIR"
-        DMG_OUTPUT="$PKG_DIR/ewcalc-$ARCH-$CONFIG.dmg"
+        DMG_OUTPUT="$PKG_DIR/ewcalc-universal-$CONFIG.dmg"
 
         # ── Create DMG ──────────────────────────────────────────────────
         # Stage the .app in a temp folder so hdiutil places it (not its
