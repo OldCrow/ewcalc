@@ -133,10 +133,12 @@ jobs:
       - name: Package AppImage
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          # Install linuxdeploy
+          # Install linuxdeploy + Qt plugin (both required for Qt AppImages)
           wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
-          chmod +x linuxdeploy-x86_64.AppImage
+          wget -q https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+          chmod +x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-qt-x86_64.AppImage
           mv linuxdeploy-x86_64.AppImage /usr/local/bin/linuxdeploy
+          mv linuxdeploy-plugin-qt-x86_64.AppImage /usr/local/bin/linuxdeploy-plugin-qt
           bash scripts/build-linux.sh --config Release --package appimage
 
       - name: Upload AppImage
