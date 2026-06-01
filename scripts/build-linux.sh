@@ -78,7 +78,13 @@ if [[ -f "$LINUX_FRONTEND" ]]; then
                 APPDIR="$BUILD_DIR/AppDir"
                 cmake --install "$BUILD_DIR/linux-frontend" --prefix "$APPDIR/usr"
                 ICON="$REPO_ROOT/assets/linux/hicolor/256x256/apps/ewcalc.png"
-                linuxdeploy --appdir "$APPDIR" --icon-file "$ICON" --plugin qt --output appimage
+                DESKTOP="$REPO_ROOT/assets/linux/ewcalc.desktop"
+                # QMAKE tells linuxdeploy-plugin-qt where to find Qt
+                export QMAKE="$(which qmake6 2>/dev/null || which qmake)"
+                linuxdeploy --appdir "$APPDIR" \
+                    --icon-file "$ICON" \
+                    --desktop-file "$DESKTOP" \
+                    --plugin qt --output appimage
                 mv ewcalc*.AppImage "$BUILD_DIR/pkg/"
                 ;;
             *)

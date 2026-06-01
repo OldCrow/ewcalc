@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=EW Calculator
+GenericName=EW Engineering Calculator
+Comment=RF propagation, link budget, receiver, jamming, location and radar calculations
+Exec=ewcalc
+Icon=ewcalc
+Categories=Science;Engineering;Education;
+Keywords=EW;Electronic Warfare;RF;radar;propagation;link budget;
+Terminal=false
+StartupNotify=true
