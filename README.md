@@ -10,7 +10,7 @@ Three layers with clean separation:
 
 - **`libew`** — pure C++20 calculation library, no UI, no external dependencies
 - **`ewpresenter`** — platform-agnostic presenter/viewmodel layer
-- **`frontend/`** — platform-native UIs: WinUI 3 (Windows), AppKit (macOS), Qt6 (Linux)
+- **`frontend/`** — platform-native UIs: WinUI 3 (Windows), SwiftUI (macOS), Qt6 (Linux)
 
 ## libew modules
 
@@ -44,6 +44,8 @@ A console harness (`ewpresenter_harness`) exercises all presenters against defau
 
 ## Building
 
+### Core libraries and tests
+
 ```
 cmake -B build
 cmake --build build --config Release
@@ -53,15 +55,33 @@ ctest --test-dir build -C Release --output-on-failure
 To run the presenter harness:
 
 ```
-.\build\bin\Release\ewpresenter_harness.exe
+build/bin/Release/ewpresenter_harness
 ```
+
+### Platform frontends
+
+Platform build scripts are in `scripts/`. Each builds the native libs then the
+frontend, and accepts `--config Debug|Release` and (on Linux/macOS) `--package`
+to produce a distributable artifact.
+
+| Platform | Script | Package output |
+|----------|--------|----------------|
+| Windows | `scripts/build-windows.ps1` | (MSIX, future) |
+| macOS | `scripts/build-macos.sh` | signed + notarized `.dmg` |
+| Linux | `scripts/build-linux.sh` | `.AppImage` |
+
+macOS packaging requires a Developer ID Application certificate in the keychain
+and `xcrun notarytool` credentials stored under the `ewcalc-notarytool` profile.
 
 ## Current status
 
-**v0.1.0** — Phases 1 and 2 complete.
+**v0.3.0** — All five phases complete.
 
-- Phase 1 ✓ — `libew`: eight calculation modules, full test suite (6/6 passing)
+- Phase 1 ✓ — `libew`: eight calculation modules, full test suite
 - Phase 2 ✓ — `ewpresenter`: six presenters, formatter, validation, console harness
-- Phase 3 — Windows frontend (WinUI 3 / C++/WinRT)
-- Phase 4 — macOS frontend (AppKit / Obj-C++)
-- Phase 5 — Linux frontend (Qt6 Widgets)
+- Phase 3 ✓ — Windows frontend (WinUI 3 / C++/WinRT)
+- Phase 4 ✓ — macOS frontend (SwiftUI, C bridge, signed and notarized `.dmg`)
+- Phase 5 ✓ — Linux frontend (Qt6 Widgets, AppImage)
+
+Release artifacts (`.dmg`, `.AppImage`) are attached to each
+[GitHub Release](../../releases).
