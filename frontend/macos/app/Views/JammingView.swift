@@ -35,40 +35,44 @@ struct JammingView: View {
 
     var body: some View {
         Form {
-            Section("J/S Geometry") {
+            Section("Signal") {
                 InputRow("Signal ERP", unit: "dBm", value: $signalErp,
                          in: -100...200) { adapter.setSignalErp($0) }
-                InputRow("Jammer ERP", unit: "dBm", value: $jammerErp,
-                         in: -100...200) { adapter.setJammerErp($0) }
                 InputRow("Signal→Rx dist", unit: "km", value: $signalDist,
                          in: 0.01...10000, step: 0.1, decimals: 3) { adapter.setSignalDist($0) }
-                InputRow("Jammer→Rx dist", unit: "km", value: $jammerDist,
-                         in: 0.01...10000, step: 0.1, decimals: 3) { adapter.setJammerDist($0) }
                 InputRow("Signal Tx height", unit: "m", value: $signalHeight,
                          in: 0.1...100000, step: 0.5, decimals: 1) { adapter.setSignalHeight($0) }
+                InputRow("Signal BW", unit: "MHz", value: $signalBw,
+                         in: 0.001...1000, step: 0.001, decimals: 3) { adapter.setSignalBandwidth($0) }
+            }
+            Section("Jammer") {
+                InputRow("Jammer ERP", unit: "dBm", value: $jammerErp,
+                         in: -100...200) { adapter.setJammerErp($0) }
+                InputRow("Jammer→Rx dist", unit: "km", value: $jammerDist,
+                         in: 0.01...10000, step: 0.1, decimals: 3) { adapter.setJammerDist($0) }
                 InputRow("Jammer height", unit: "m", value: $jammerHeight,
                          in: 0.1...100000, step: 0.5, decimals: 1) { adapter.setJammerHeight($0) }
-                InputRow("Rx height", unit: "m", value: $rxHeight,
-                         in: 0.1...100000, step: 0.5, decimals: 1) { adapter.setRxHeight($0) }
+                InputRow("Hop range", unit: "MHz", value: $hopRange,
+                         in: 0.001...10000, step: 1)  { adapter.setHopRange($0) }
+            }
+            Section("Shared") {
                 InputRow("Frequency", unit: "MHz", value: $frequency,
                          in: 0.1...100000, step: 1)  { adapter.setFrequency($0) }
+                InputRow("Rx height", unit: "m", value: $rxHeight,
+                         in: 0.1...100000, step: 0.5, decimals: 1) { adapter.setRxHeight($0) }
                 InputRow("Rx gain → signal", unit: "dB", value: $rxGainSignal,
                          in: -30...60)  { adapter.setRxGainSignal($0) }
                 InputRow("Rx gain → jammer", unit: "dB", value: $rxGainJammer,
                          in: -30...60)  { adapter.setRxGainJammer($0) }
             }
-            Section("Partial-Band") {
-                InputRow("Signal BW", unit: "MHz", value: $signalBw,
-                         in: 0.001...1000, step: 0.001, decimals: 3) { adapter.setSignalBandwidth($0) }
-                InputRow("Hop range", unit: "MHz", value: $hopRange,
-                         in: 0.001...10000, step: 1)  { adapter.setHopRange($0) }
+            Section("J/S Analysis") {
+                ResultRow("J/S ratio",    cStr(adapter.output.js_ratio_str))
+                ResultRow("Signal at Rx", cStr(adapter.output.signal_at_rx_str))
+                ResultRow("Jammer at Rx", cStr(adapter.output.jammer_at_rx_str))
             }
-            Section("Results") {
-                ResultRow("J/S ratio",          cStr(adapter.output.js_ratio_str))
-                ResultRow("Signal at Rx",        cStr(adapter.output.signal_at_rx_str))
-                ResultRow("Jammer at Rx",        cStr(adapter.output.jammer_at_rx_str))
-                ResultRow("Optimum jammer BW",   cStr(adapter.output.optimum_bw_str))
-                ResultRow("Duty cycle",          cStr(adapter.output.duty_cycle_str))
+            Section("Partial-Band") {
+                ResultRow("Optimum jammer BW", cStr(adapter.output.optimum_bw_str))
+                ResultRow("Duty cycle",        cStr(adapter.output.duty_cycle_str))
             }
         }
         .formStyle(.grouped)
