@@ -107,5 +107,8 @@ set_target_properties(ewcalc PROPERTIES
     XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED                 "YES"
     # Notarization requires a secure timestamp in the signature.
     XCODE_ATTRIBUTE_OTHER_CODE_SIGN_FLAGS                 "--timestamp"
+    # Prevent Xcode injecting the get-task-allow debug entitlement;
+    # notarization rejects any binary that carries it.
+    XCODE_ATTRIBUTE_CODE_SIGN_INJECT_BASE_ENTITLEMENTS    "NO"
     XCODE_ATTRIBUTE_LD_RUNPATH_SEARCH_PATHS               "@executable_path/../Frameworks"
 )
