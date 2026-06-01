@@ -57,16 +57,10 @@ jobs:
       - name: Install CMake
         run: brew install cmake
 
-      - name: Build (native libs + frontend)
-        run: bash scripts/build-macos.sh --config Release
-
-      - name: Run tests
-        run: |
-          cmake -B build -DEWCALC_BUILD_TESTS=ON
-          cmake --build build --config Release --parallel
-          ctest --test-dir build --build-config Release --output-on-failure
-
-      - name: Sign, notarize and package DMG
+      # Import the cert and notarytool credentials BEFORE the build so the
+      # frontend is compiled and signed with the real Developer ID identity
+      # (including --timestamp) in a single build pass.
+      - name: Import signing certificate
         if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
         env:
           MACOS_CERTIFICATE:     ${{ secrets.MACOS_CERTIFICATE }}
@@ -75,7 +69,6 @@ jobs:
           APPLE_TEAM_ID:         ${{ secrets.APPLE_TEAM_ID }}
           APPLE_APP_SPECIFIC_PWD: ${{ secrets.APPLE_APP_SPECIFIC_PWD }}
         run: |
-          # ── Import Developer ID cert into a temporary keychain ──────────
           KEYCHAIN=$RUNNER_TEMP/ewcalc-signing.keychain-db
           security create-keychain -p "" $KEYCHAIN
           security set-keychain-settings -lut 21600 $KEYCHAIN
@@ -86,19 +79,24 @@ jobs:
           security set-key-partition-list -S apple-tool:,apple: -s -k "" $KEYCHAIN
           security list-keychain -d user -s $KEYCHAIN $(security list-keychains -d user | tr -d '"')
           rm /tmp/cert.p12
-
-          # ── Store notarytool credentials ────────────────────────────────
           xcrun notarytool store-credentials ewcalc-notarytool \
               --apple-id "$APPLE_ID" \
               --team-id "$APPLE_TEAM_ID" \
               --password "$APPLE_APP_SPECIFIC_PWD"
 
-          # ── Build, sign, notarize, package ──────────────────────────────
-          # The previous step built the frontend with ad-hoc signing (cert
-          # not yet present). Delete that stale build so cmake reconfigures
-          # with the real Developer ID identity and --timestamp flag.
-          rm -rf build/macos-frontend
-          bash scripts/build-macos.sh --config Release --package
+      - name: Build, sign, notarize and package (release)
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+        run: bash scripts/build-macos.sh --config Release --package
+
+      - name: Build (CI)
+        if: "!(startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch')"
+        run: bash scripts/build-macos.sh --config Release
+
+      - name: Run tests
+        run: |
+          cmake -B build -DEWCALC_BUILD_TESTS=ON
+          cmake --build build --config Release --parallel
+          ctest --test-dir build --build-config Release --output-on-failure
 
       - name: Upload DMG
         if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
