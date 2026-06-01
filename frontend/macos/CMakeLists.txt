@@ -105,5 +105,7 @@ set_target_properties(ewcalc PROPERTIES
     XCODE_ATTRIBUTE_DEVELOPMENT_TEAM                      "${EWCALC_TEAM_ID}"
     XCODE_ATTRIBUTE_CODE_SIGN_STYLE                       "Manual"
     XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED                 "YES"
+    # Notarization requires a secure timestamp in the signature.
+    XCODE_ATTRIBUTE_OTHER_CODE_SIGN_FLAGS                 "--timestamp"
     XCODE_ATTRIBUTE_LD_RUNPATH_SEARCH_PATHS               "@executable_path/../Frameworks"
 )

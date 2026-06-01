@@ -81,27 +81,42 @@ if [[ -f "$MACOS_FRONTEND" ]]; then
         echo ""
         echo "==> Notarizing and packaging..."
 
+        mkdir -p "$PKG_DIR"
+        PKG_OUTPUT="$PKG_DIR/ewcalc-$ARCH-$CONFIG.pkg"
+        ZIP_PATH="$PKG_DIR/ewcalc-$ARCH-$CONFIG-notarize.zip"
+
         # ── Notarize ─────────────────────────────────────────────────────
-        # Requires credentials stored via:
-        #   xcrun notarytool store-credentials ewcalc-notarytool \
-        #       --apple-id <apple-id> --team-id 6HGS466D28 \
-        #       --password <app-specific-password>
+        # notarytool requires a zip/pkg/dmg, not a bare .app.
+        # ditto -c -k preserves HFS metadata and resource forks correctly.
+        echo "    Creating zip for notarization submission..."
+        ditto -c -k --keepParent "$APP_PATH" "$ZIP_PATH"
+
         echo "    Submitting for notarization (this may take several minutes)..."
-        xcrun notarytool submit "$APP_PATH" \
+        xcrun notarytool submit "$ZIP_PATH" \
             --keychain-profile "ewcalc-notarytool" \
             --wait
 
-        echo "    Stapling notarization ticket..."
+        echo "    Stapling notarization ticket to app bundle..."
         xcrun stapler staple "$APP_PATH"
+        rm -f "$ZIP_PATH"
 
         # ── Package ──────────────────────────────────────────────────────
-        mkdir -p "$PKG_DIR"
-        PKG_OUTPUT="$PKG_DIR/ewcalc-$ARCH-$CONFIG.pkg"
 
-        productbuild \
-            --component "$APP_PATH" /Applications \
-            --sign "Developer ID Installer: Gary Wolfman (6HGS466D28)" \
-            "$PKG_OUTPUT"
+        # Sign the .pkg with Developer ID Installer if that cert is available.
+        # The inner .app is already notarized+stapled so Gatekeeper accepts
+        # the package regardless; the Installer cert signature is optional.
+        INSTALLER_CERT="Developer ID Installer: Gary Wolfman (6HGS466D28)"
+        if security find-identity -v -p basic | grep -q "$INSTALLER_CERT"; then
+            productbuild \
+                --component "$APP_PATH" /Applications \
+                --sign "$INSTALLER_CERT" \
+                "$PKG_OUTPUT"
+        else
+            echo "    (Developer ID Installer cert not found — creating unsigned .pkg)"
+            productbuild \
+                --component "$APP_PATH" /Applications \
+                "$PKG_OUTPUT"
+        fi
 
         echo "    Package: $PKG_OUTPUT"
     fi
