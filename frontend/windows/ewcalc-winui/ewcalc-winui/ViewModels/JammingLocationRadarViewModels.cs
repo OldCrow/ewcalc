@@ -33,6 +33,9 @@ public sealed class JammingViewModel : INotifyPropertyChanged
     public double DefaultFrequency       => _adapter.DefaultFrequency;
     public double DefaultSignalBandwidth => _adapter.DefaultSignalBandwidth;
     public double DefaultHopRange        => _adapter.DefaultHopRange;
+    // Presenter default is 0.0 for both; no adapter property getter needed.
+    public double DefaultRxGainSignal    => 0.0;
+    public double DefaultRxGainJammer    => 0.0;
 
     public JammingViewModel()
     {
@@ -49,6 +52,8 @@ public sealed class JammingViewModel : INotifyPropertyChanged
     public void SetJammerHeight   (double v) => _adapter.SetJammerHeight(v);
     public void SetRxHeight       (double v) => _adapter.SetRxHeight(v);
     public void SetFrequency      (double v) => _adapter.SetFrequency(v);
+    public void SetRxGainSignal   (double v) => _adapter.SetRxGainSignal(v);
+    public void SetRxGainJammer   (double v) => _adapter.SetRxGainJammer(v);
     public void SetSignalBandwidth(double v) => _adapter.SetSignalBandwidth(v);
     public void SetHopRange       (double v) => _adapter.SetHopRange(v);
 

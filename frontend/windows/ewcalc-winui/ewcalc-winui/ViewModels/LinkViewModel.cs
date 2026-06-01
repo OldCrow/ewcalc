@@ -13,7 +13,8 @@ public sealed class LinkViewModel : INotifyPropertyChanged
 
     private string _receivedPower = string.Empty, _pathLoss = string.Empty,
                    _linkMargin = string.Empty,    _fresnelZone = string.Empty,
-                   _regime = string.Empty,        _effectiveRange = string.Empty;
+                   _regime = string.Empty,        _effectiveRange = string.Empty,
+                   _rangeRegime = string.Empty;
     private bool _isValid = false;
 
     public string ReceivedPower  { get => _receivedPower;  private set => Set(ref _receivedPower,  value); }
@@ -22,6 +23,7 @@ public sealed class LinkViewModel : INotifyPropertyChanged
     public string FresnelZone    { get => _fresnelZone;    private set => Set(ref _fresnelZone,    value); }
     public string Regime         { get => _regime;         private set => Set(ref _regime,         value); }
     public string EffectiveRange { get => _effectiveRange; private set => Set(ref _effectiveRange, value); }
+    public string RangeRegime    { get => _rangeRegime;    private set => Set(ref _rangeRegime,    value); }
     public bool   IsValid        { get => _isValid;        private set => Set(ref _isValid,        value); }
 
     public double DefaultTxPower       => _adapter.DefaultTxPower;
@@ -54,7 +56,7 @@ public sealed class LinkViewModel : INotifyPropertyChanged
         ReceivedPower = o.ReceivedPowerStr; PathLoss = o.PathLossStr;
         LinkMargin = o.LinkMarginStr; FresnelZone = o.FresnelZoneStr;
         Regime = o.RegimeStr; EffectiveRange = o.EffectiveRangeStr;
-        IsValid = o.Valid;
+        RangeRegime = o.RangeRegimeStr; IsValid = o.Valid;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

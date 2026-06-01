@@ -22,7 +22,7 @@ public sealed partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        AppWindow.Resize(new Windows.Graphics.SizeInt32(1024, 700));
+        AppWindow.Resize(new Windows.Graphics.SizeInt32(860, 660));
         NavView.SelectedItem = NavPropagation;
         ContentFrame.Navigate(typeof(PropagationPage));
     }

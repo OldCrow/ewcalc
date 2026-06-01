@@ -95,6 +95,7 @@
                         <local:ResultRow Label="Fresnel zone"    Value="{x:Bind ViewModel.FresnelZone,    Mode=OneWay}" />
                         <local:ResultRow Label="Regime"          Value="{x:Bind ViewModel.Regime,         Mode=OneWay}" />
                         <local:ResultRow Label="Effective range" Value="{x:Bind ViewModel.EffectiveRange, Mode=OneWay}" />
+                        <local:ResultRow Label="Range regime"    Value="{x:Bind ViewModel.RangeRegime,    Mode=OneWay}" />
                     </StackPanel>
                 </Border>
             </StackPanel>

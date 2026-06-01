@@ -70,14 +70,22 @@
                 <TextBlock Text="SHARED" Style="{StaticResource SectionHeaderStyle}" />
                 <Border Style="{StaticResource InputCardStyle}">
                     <StackPanel Spacing="12">
-                        <NumberBox x:Name="FrequencyBox" Header="Frequency (MHz)"
+                        <NumberBox x:Name="FrequencyBox"    Header="Frequency (MHz)"
                                    Value="{x:Bind ViewModel.DefaultFrequency, Mode=OneTime}"
                                    Minimum="0.1" Maximum="100000" SmallChange="10"
                                    ValueChanged="FrequencyBox_ValueChanged" />
-                        <NumberBox x:Name="RxHeightBox"  Header="Rx height (m)"
+                        <NumberBox x:Name="RxHeightBox"     Header="Rx height (m)"
                                    Value="{x:Bind ViewModel.DefaultRxHeight, Mode=OneTime}"
                                    Minimum="0.1" Maximum="100000" SmallChange="1"
                                    ValueChanged="RxHeightBox_ValueChanged" />
+                        <NumberBox x:Name="RxGainSignalBox" Header="Rx gain → signal (dB)"
+                                   Value="{x:Bind ViewModel.DefaultRxGainSignal, Mode=OneTime}"
+                                   Minimum="-30" Maximum="60" SmallChange="0.5"
+                                   ValueChanged="RxGainSignalBox_ValueChanged" />
+                        <NumberBox x:Name="RxGainJammerBox" Header="Rx gain → jammer (dB)"
+                                   Value="{x:Bind ViewModel.DefaultRxGainJammer, Mode=OneTime}"
+                                   Minimum="-30" Maximum="60" SmallChange="0.5"
+                                   ValueChanged="RxGainJammerBox_ValueChanged" />
                     </StackPanel>
                 </Border>
             </StackPanel>

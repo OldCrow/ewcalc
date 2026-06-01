@@ -46,6 +46,8 @@ public sealed partial class JammingPage : Page
         FrequencyBox  .Setup(0.1,  100000.0);
         SignalBwBox   .Setup(0.001,  1000.0);
         HopRangeBox   .Setup(0.001, 10000.0);
+        RxGainSignalBox.Setup(-30.0,   60.0);
+        RxGainJammerBox.Setup(-30.0,   60.0);
     }
 
     private void SignalErpBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)     { if (!double.IsNaN(e.NewValue)) ViewModel.SetSignalErp(e.NewValue);       }
@@ -56,8 +58,10 @@ public sealed partial class JammingPage : Page
     private void JammerHeightBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)  { if (!double.IsNaN(e.NewValue)) ViewModel.SetJammerHeight(e.NewValue);    }
     private void RxHeightBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)      { if (!double.IsNaN(e.NewValue)) ViewModel.SetRxHeight(e.NewValue);        }
     private void FrequencyBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)     { if (!double.IsNaN(e.NewValue)) ViewModel.SetFrequency(e.NewValue);       }
-    private void SignalBwBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)      { if (!double.IsNaN(e.NewValue)) ViewModel.SetSignalBandwidth(e.NewValue); }
-    private void HopRangeBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)      { if (!double.IsNaN(e.NewValue)) ViewModel.SetHopRange(e.NewValue);        }
+    private void SignalBwBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)       { if (!double.IsNaN(e.NewValue)) ViewModel.SetSignalBandwidth(e.NewValue); }
+    private void HopRangeBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)       { if (!double.IsNaN(e.NewValue)) ViewModel.SetHopRange(e.NewValue);        }
+    private void RxGainSignalBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)  { if (!double.IsNaN(e.NewValue)) ViewModel.SetRxGainSignal(e.NewValue);   }
+    private void RxGainJammerBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)  { if (!double.IsNaN(e.NewValue)) ViewModel.SetRxGainJammer(e.NewValue);   }
 }
 
 public sealed partial class LocationPage : Page
