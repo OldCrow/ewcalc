@@ -72,7 +72,7 @@ jobs:
           MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
           APPLE_ID:              ${{ secrets.APPLE_ID }}
           APPLE_TEAM_ID:         ${{ secrets.APPLE_TEAM_ID }}
-          APPLE_APP_SPECIFIC_PWD:${{ secrets.APPLE_APP_SPECIFIC_PWD }}
+          APPLE_APP_SPECIFIC_PWD: ${{ secrets.APPLE_APP_SPECIFIC_PWD }}
         run: |
           # ── Import Developer ID cert into a temporary keychain ──────────
           KEYCHAIN=$RUNNER_TEMP/ewcalc-signing.keychain-db
