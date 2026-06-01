@@ -11,27 +11,39 @@
 LinkPage::LinkPage(QWidget* parent)
     : QWidget(parent)
 {
-    // ── Inputs ────────────────────────────────────────────────────────────────
-    QFormLayout* inForm = nullptr;
-    auto* inGroup = makeGroup(QStringLiteral("Inputs"), inForm);
+    // ── Transmitter ───────────────────────────────────────────────────────────
+    QFormLayout* txForm = nullptr;
+    auto* txGroup = makeGroup(QStringLiteral("Transmitter"), txForm);
 
-    auto* txPwrSb  = makeSpinBox(-50.0,  200.0,   presenter_.tx_power_dbm(),       1.0, 1);
-    auto* txGainSb = makeSpinBox(-30.0,   60.0,   presenter_.tx_gain_db(),          1.0, 1);
-    auto* rxGainSb = makeSpinBox(-30.0,   60.0,   presenter_.rx_gain_db(),          1.0, 1);
-    auto* distSb   = makeSpinBox(  0.01, 10000.0, presenter_.distance_km(),         0.1, 3);
-    auto* txHtSb   = makeSpinBox(  0.1,  100000.0, presenter_.tx_height_m(),        0.5, 1);
-    auto* rxHtSb   = makeSpinBox(  0.1,  100000.0, presenter_.rx_height_m(),        0.5, 1);
-    auto* freqSb   = makeSpinBox(  0.1,  100000.0, presenter_.frequency_mhz(),      1.0, 1);
-    auto* rxSensSb = makeSpinBox(-200.0,    0.0,  presenter_.rx_sensitivity_dbm(),  1.0, 1);
+    auto* txPwrSb  = makeSpinBox(-50.0,   200.0,   presenter_.tx_power_dbm(),  1.0, 1);
+    auto* txGainSb = makeSpinBox(-30.0,    60.0,   presenter_.tx_gain_db(),    1.0, 1);
+    auto* txHtSb   = makeSpinBox(  0.1, 100000.0,  presenter_.tx_height_m(),   0.5, 1);
 
-    inForm->addRow(QStringLiteral("Tx power (dBm):"),       txPwrSb);
-    inForm->addRow(QStringLiteral("Tx gain (dB):"),         txGainSb);
-    inForm->addRow(QStringLiteral("Rx gain (dB):"),         rxGainSb);
-    inForm->addRow(QStringLiteral("Distance (km):"),        distSb);
-    inForm->addRow(QStringLiteral("Tx height (m):"),        txHtSb);
-    inForm->addRow(QStringLiteral("Rx height (m):"),        rxHtSb);
-    inForm->addRow(QStringLiteral("Frequency (MHz):"),      freqSb);
-    inForm->addRow(QStringLiteral("Rx sensitivity (dBm):"), rxSensSb);
+    txForm->addRow(QStringLiteral("Tx power (dBm):"),  txPwrSb);
+    txForm->addRow(QStringLiteral("Tx gain (dB):"),    txGainSb);
+    txForm->addRow(QStringLiteral("Tx height (m):"),   txHtSb);
+
+    // ── Common ────────────────────────────────────────────────────────────────
+    QFormLayout* cmForm = nullptr;
+    auto* cmGroup = makeGroup(QStringLiteral("Common"), cmForm);
+
+    auto* distSb = makeSpinBox(  0.01, 10000.0,  presenter_.distance_km(),    0.1, 3);
+    auto* freqSb = makeSpinBox(  0.1,  100000.0, presenter_.frequency_mhz(), 1.0, 1);
+
+    cmForm->addRow(QStringLiteral("Distance (km):"),   distSb);
+    cmForm->addRow(QStringLiteral("Frequency (MHz):"), freqSb);
+
+    // ── Receiver ──────────────────────────────────────────────────────────────
+    QFormLayout* rxForm = nullptr;
+    auto* rxGroup = makeGroup(QStringLiteral("Receiver"), rxForm);
+
+    auto* rxGainSb = makeSpinBox(-30.0,    60.0,   presenter_.rx_gain_db(),           1.0, 1);
+    auto* rxHtSb   = makeSpinBox(  0.1, 100000.0,  presenter_.rx_height_m(),          0.5, 1);
+    auto* rxSensSb = makeSpinBox(-200.0,    0.0,   presenter_.rx_sensitivity_dbm(),   1.0, 1);
+
+    rxForm->addRow(QStringLiteral("Rx gain (dB):"),         rxGainSb);
+    rxForm->addRow(QStringLiteral("Rx height (m):"),        rxHtSb);
+    rxForm->addRow(QStringLiteral("Rx sensitivity (dBm):"), rxSensSb);
 
     // ── Outputs ───────────────────────────────────────────────────────────────
     QFormLayout* outForm = nullptr;
@@ -48,7 +60,9 @@ LinkPage::LinkPage(QWidget* parent)
     // ── Scroll container ──────────────────────────────────────────────────────
     auto* content = new QWidget;
     auto* vbox    = new QVBoxLayout(content);
-    vbox->addWidget(inGroup);
+    vbox->addWidget(txGroup);
+    vbox->addWidget(cmGroup);
+    vbox->addWidget(rxGroup);
     vbox->addWidget(outGroup);
     vbox->addStretch();
 
@@ -66,16 +80,16 @@ LinkPage::LinkPage(QWidget* parent)
             [this](double v){ presenter_.set_tx_power(v); });
     connect(txGainSb, &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_tx_gain(v); });
-    connect(rxGainSb, &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_rx_gain(v); });
-    connect(distSb,   &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_distance(v); });
     connect(txHtSb,   &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_tx_height(v); });
-    connect(rxHtSb,   &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_rx_height(v); });
+    connect(distSb,   &QDoubleSpinBox::valueChanged, this,
+            [this](double v){ presenter_.set_distance(v); });
     connect(freqSb,   &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_frequency(v); });
+    connect(rxGainSb, &QDoubleSpinBox::valueChanged, this,
+            [this](double v){ presenter_.set_rx_gain(v); });
+    connect(rxHtSb,   &QDoubleSpinBox::valueChanged, this,
+            [this](double v){ presenter_.set_rx_height(v); });
     connect(rxSensSb, &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_rx_sensitivity(v); });
 

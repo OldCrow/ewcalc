@@ -11,31 +11,49 @@
 JammingPage::JammingPage(QWidget* parent)
     : QWidget(parent)
 {
-    // ── J/S geometry inputs ───────────────────────────────────────────────────
-    QFormLayout* inForm = nullptr;
-    auto* inGroup = makeGroup(QStringLiteral("J/S Geometry"), inForm);
+    // ── Signal (Tx) ───────────────────────────────────────────────────────────
+    QFormLayout* sigForm = nullptr;
+    auto* sigGroup = makeGroup(QStringLiteral("Signal (Tx)"), sigForm);
 
-    auto* sigErpSb  = makeSpinBox(-100.0, 200.0, presenter_.signal_erp_dbm(),       1.0, 1);
-    auto* jamErpSb  = makeSpinBox(-100.0, 200.0, presenter_.jammer_erp_dbm(),       1.0, 1);
-    auto* sigDistSb = makeSpinBox(   0.01, 10000.0, presenter_.signal_to_rx_dist_km(), 0.1, 3);
-    auto* jamDistSb = makeSpinBox(   0.01, 10000.0, presenter_.jammer_to_rx_dist_km(),0.1, 3);
-    auto* sigHtSb   = makeSpinBox(   0.1,  100000.0, presenter_.signal_tx_height_m(), 0.5, 1);
-    auto* jamHtSb   = makeSpinBox(   0.1,  100000.0, presenter_.jammer_height_m(),    0.5, 1);
-    auto* rxHtSb    = makeSpinBox(   0.1,  100000.0, presenter_.rx_height_m(),        0.5, 1);
-    auto* freqSb    = makeSpinBox(   0.1,  100000.0, presenter_.frequency_mhz(),      1.0, 1);
-    auto* rxGainSigSb = makeSpinBox(-30.0, 60.0, 0.0, 1.0, 1);
-    auto* rxGainJamSb = makeSpinBox(-30.0, 60.0, 0.0, 1.0, 1);
+    auto* sigErpSb  = makeSpinBox(-100.0, 200.0,    presenter_.signal_erp_dbm(),          1.0, 1);
+    auto* sigHtSb   = makeSpinBox(   0.1, 100000.0, presenter_.signal_tx_height_m(),      0.5, 1);
+    auto* sigDistSb = makeSpinBox(  0.01, 10000.0,  presenter_.signal_to_rx_dist_km(),    0.1, 3);
 
-    inForm->addRow(QStringLiteral("Signal ERP (dBm):"),       sigErpSb);
-    inForm->addRow(QStringLiteral("Jammer ERP (dBm):"),       jamErpSb);
-    inForm->addRow(QStringLiteral("Signal→Rx dist (km):"),    sigDistSb);
-    inForm->addRow(QStringLiteral("Jammer→Rx dist (km):"),    jamDistSb);
-    inForm->addRow(QStringLiteral("Signal Tx height (m):"),   sigHtSb);
-    inForm->addRow(QStringLiteral("Jammer height (m):"),      jamHtSb);
-    inForm->addRow(QStringLiteral("Rx height (m):"),          rxHtSb);
-    inForm->addRow(QStringLiteral("Frequency (MHz):"),        freqSb);
-    inForm->addRow(QStringLiteral("Rx gain → signal (dB):"),  rxGainSigSb);
-    inForm->addRow(QStringLiteral("Rx gain → jammer (dB):"),  rxGainJamSb);
+    sigForm->addRow(QStringLiteral("Signal ERP (dBm):"),     sigErpSb);
+    sigForm->addRow(QStringLiteral("Signal Tx height (m):"), sigHtSb);
+    sigForm->addRow(QStringLiteral("Signal→Rx dist (km):"),  sigDistSb);
+
+    // ── Common ────────────────────────────────────────────────────────────────
+    QFormLayout* cmForm = nullptr;
+    auto* cmGroup = makeGroup(QStringLiteral("Common"), cmForm);
+
+    auto* freqSb = makeSpinBox(0.1, 100000.0, presenter_.frequency_mhz(), 1.0, 1);
+
+    cmForm->addRow(QStringLiteral("Frequency (MHz):"), freqSb);
+
+    // ── Jammer ────────────────────────────────────────────────────────────────
+    QFormLayout* jamForm = nullptr;
+    auto* jamGroup = makeGroup(QStringLiteral("Jammer"), jamForm);
+
+    auto* jamErpSb  = makeSpinBox(-100.0, 200.0,    presenter_.jammer_erp_dbm(),          1.0, 1);
+    auto* jamHtSb   = makeSpinBox(   0.1, 100000.0, presenter_.jammer_height_m(),         0.5, 1);
+    auto* jamDistSb = makeSpinBox(  0.01, 10000.0,  presenter_.jammer_to_rx_dist_km(),    0.1, 3);
+
+    jamForm->addRow(QStringLiteral("Jammer ERP (dBm):"),    jamErpSb);
+    jamForm->addRow(QStringLiteral("Jammer height (m):"),   jamHtSb);
+    jamForm->addRow(QStringLiteral("Jammer→Rx dist (km):"), jamDistSb);
+
+    // ── Receiver ──────────────────────────────────────────────────────────────
+    QFormLayout* rxForm = nullptr;
+    auto* rxGroup = makeGroup(QStringLiteral("Receiver"), rxForm);
+
+    auto* rxHtSb      = makeSpinBox(  0.1, 100000.0, presenter_.rx_height_m(), 0.5, 1);
+    auto* rxGainSigSb = makeSpinBox(-30.0,     60.0, 0.0,                      1.0, 1);
+    auto* rxGainJamSb = makeSpinBox(-30.0,     60.0, 0.0,                      1.0, 1);
+
+    rxForm->addRow(QStringLiteral("Rx height (m):"),          rxHtSb);
+    rxForm->addRow(QStringLiteral("Rx gain → signal (dB):"),  rxGainSigSb);
+    rxForm->addRow(QStringLiteral("Rx gain → jammer (dB):"),  rxGainJamSb);
 
     // ── Partial-band inputs ───────────────────────────────────────────────────
     QFormLayout* pbForm = nullptr;
@@ -60,7 +78,10 @@ JammingPage::JammingPage(QWidget* parent)
     // ── Scroll container ──────────────────────────────────────────────────────
     auto* content = new QWidget;
     auto* vbox    = new QVBoxLayout(content);
-    vbox->addWidget(inGroup);
+    vbox->addWidget(sigGroup);
+    vbox->addWidget(cmGroup);
+    vbox->addWidget(jamGroup);
+    vbox->addWidget(rxGroup);
     vbox->addWidget(pbGroup);
     vbox->addWidget(outGroup);
     vbox->addStretch();
@@ -75,25 +96,25 @@ JammingPage::JammingPage(QWidget* parent)
     outer->addWidget(scroll);
 
     // ── Signal wiring ─────────────────────────────────────────────────────────
-    connect(sigErpSb,   &QDoubleSpinBox::valueChanged, this,
+    connect(sigErpSb,    &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_signal_erp(v); });
-    connect(jamErpSb,   &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_jammer_erp(v); });
-    connect(sigDistSb,  &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_signal_to_rx_dist(v); });
-    connect(jamDistSb,  &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_jammer_to_rx_dist(v); });
-    connect(sigHtSb,    &QDoubleSpinBox::valueChanged, this,
+    connect(sigHtSb,     &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_signal_tx_height(v); });
-    connect(jamHtSb,    &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_jammer_height(v); });
-    connect(rxHtSb,     &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_rx_height(v); });
-    connect(freqSb,     &QDoubleSpinBox::valueChanged, this,
+    connect(sigDistSb,   &QDoubleSpinBox::valueChanged, this,
+            [this](double v){ presenter_.set_signal_to_rx_dist(v); });
+    connect(freqSb,      &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_frequency(v); });
-    connect(rxGainSigSb,&QDoubleSpinBox::valueChanged, this,
+    connect(jamErpSb,    &QDoubleSpinBox::valueChanged, this,
+            [this](double v){ presenter_.set_jammer_erp(v); });
+    connect(jamHtSb,     &QDoubleSpinBox::valueChanged, this,
+            [this](double v){ presenter_.set_jammer_height(v); });
+    connect(jamDistSb,   &QDoubleSpinBox::valueChanged, this,
+            [this](double v){ presenter_.set_jammer_to_rx_dist(v); });
+    connect(rxHtSb,      &QDoubleSpinBox::valueChanged, this,
+            [this](double v){ presenter_.set_rx_height(v); });
+    connect(rxGainSigSb, &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_rx_gain_signal(v); });
-    connect(rxGainJamSb,&QDoubleSpinBox::valueChanged, this,
+    connect(rxGainJamSb, &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_rx_gain_jammer(v); });
     connect(sigBwSb,    &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_signal_bandwidth(v); });
