@@ -89,6 +89,7 @@ set(SWIFT_SOURCES
     app/Views/LocationView.swift
     app/Views/RadarView.swift
     app/Views/DigitalView.swift
+    app/Views/ReferenceView.swift
 )
 
 # App icon (must be a resource inside the bundle)

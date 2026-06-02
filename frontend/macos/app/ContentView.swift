@@ -9,6 +9,7 @@ enum AppSection: String, CaseIterable, Identifiable {
     case location    = "Location"
     case radar       = "Radar"
     case digital     = "Digital / DSSS"
+    case reference   = "Reference"
 
     var id: String { rawValue }
 
@@ -21,8 +22,14 @@ enum AppSection: String, CaseIterable, Identifiable {
         case .location:    return "location.circle"
         case .radar:       return "scope"
         case .digital:     return "waveform.badge.plus"
+        case .reference:   return "book"
         }
     }
+
+    /// Ordered calculator pages — excludes the reference panel.
+    static let calculators: [AppSection] = [
+        .propagation, .link, .receiver, .jamming, .location, .radar, .digital
+    ]
 }
 
 struct ContentView: View {
@@ -31,9 +38,17 @@ struct ContentView: View {
 
     var body: some View {
         NavigationSplitView {
-            List(AppSection.allCases, selection: $selection) { section in
-                Label(section.rawValue, systemImage: section.icon)
-                    .tag(section)
+            List(selection: $selection) {
+                Section("Calculators") {
+                    ForEach(AppSection.calculators) { section in
+                        Label(section.rawValue, systemImage: section.icon)
+                            .tag(section)
+                    }
+                }
+                Section("Reference") {
+                    Label(AppSection.reference.rawValue, systemImage: AppSection.reference.icon)
+                        .tag(AppSection.reference)
+                }
             }
             .listStyle(.sidebar)
             .navigationSplitViewColumnWidth(min: 155, ideal: 170)
@@ -52,6 +67,7 @@ struct ContentView: View {
         case .location:    LocationView(adapter: store.location)
         case .radar:       RadarView(adapter: store.radar)
         case .digital:     DigitalView(adapter: store.digital)
+        case .reference:   ReferenceView()
         case .none:
             Text("Select a calculator")
                 .foregroundStyle(.secondary)

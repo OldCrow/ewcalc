@@ -70,9 +70,11 @@ struct JammingView: View {
                 InputRow("Rx height", unit: "m", value: $rxHeight,
                          in: 0.1...100000, step: 0.5, decimals: 1) { adapter.setRxHeight($0) }
                 InputRow("Rx gain → signal", unit: "dB", value: $rxGainSignal,
-                         in: -30...60)  { adapter.setRxGainSignal($0) }
+                         in: -30...60,
+                         help: "Receive antenna gain toward the signal transmitter — use the main lobe gain if the receiver antenna is pointed at the signal") { adapter.setRxGainSignal($0) }
                 InputRow("Rx gain → jammer", unit: "dB", value: $rxGainJammer,
-                         in: -30...60)  { adapter.setRxGainJammer($0) }
+                         in: -30...60,
+                         help: "Receive antenna gain toward the jammer — a directional antenna with low sidelobes can reject an off-axis jammer by 20–30 dB; sidelobes are typically −13 to −20 dBc") { adapter.setRxGainJammer($0) }
             }
             Section("J/S Analysis") {
                 ResultRow("J/S ratio",    cStr(adapter.output.js_ratio_str),
