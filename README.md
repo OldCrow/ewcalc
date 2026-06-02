@@ -16,27 +16,29 @@ Three layers with clean separation:
 
 | Module | Content |
 |--------|---------|
-| `core` | Strong-type units (`Dbm`, `Db`, `Km`, `Mhz`, …), constants |
-| `propagation` | FSPL, 2-ray ground reflection, Fresnel zone, knife-edge diffraction |
+| `core` | Strong-type units (`Dbm`, `Db`, `Km`, `Mhz`, `Kelvin`, …), constants |
+| `propagation` | FSPL, 2-ray ground reflection, Fresnel zone, knife-edge diffraction, earth bulge, radar horizon range |
 | `antenna` | ERP, gain conversions, beamwidth |
 | `link` | One-way link budget, effective range |
-| `receiver` | Sensitivity, cascaded noise figure (Friis), SFDR, digital DR |
+| `receiver` | Sensitivity, cascaded NF (Friis), SFDR, digital DR, noise temperature conversions |
 | `jamming` | J/S ratio, burnthrough range, partial-band optimization |
-| `location` | CEP from AOA bearing error, TDOA, and EEP |
-| `radar` | Radar range equation, pulse compression, coherent integration gain |
+| `location` | CEP from AOA bearing error, TDOA timing error, and EEP |
+| `radar` | Radar range equation, pulse compression, coherent integration gain, LPI advantage |
+| `digital` | Eb/N₀ ↔ SNR conversion, DSSS process gain, jamming margin, required J/S |
 
 ## ewpresenter
 
-Six presenters wrap the `libew` modules for use by any view layer:
+Seven presenters wrap the `libew` modules for use by any view layer:
 
 | Presenter | Inputs | Key outputs |
 |-----------|--------|-------------|
-| `PropagationPresenter` | distance, frequency, antenna heights | FSPL, 2-ray loss, Fresnel zone, regime |
+| `PropagationPresenter` | distance, frequency, antenna heights | FSPL, 2-ray loss, Fresnel zone, regime, earth bulge, radar horizon |
 | `LinkPresenter` | Tx power/gain, Rx gain, geometry, sensitivity | Received power, link margin, effective range |
-| `ReceiverPresenter` | Bandwidth, NF, SNR, stage chain, ADC bits | Sensitivity, cascaded NF, SFDR, digital DR |
-| `JammingPresenter` | Signal/jammer ERP, geometry, frequency | J/S ratio, partial-band optimum BW |
-| `LocationPresenter` | Bearing error, range, EEP semi-axes | CEP (AOA and EEP methods) |
-| `RadarPresenter` | Tx power, gain, RCS, frequency, NF | Max range, two-way loss, PC/integration gain |
+| `ReceiverPresenter` | Bandwidth, NF, SNR, stage chain, ADC bits | Sensitivity, cascaded NF, system noise temp, SFDR, digital DR |
+| `JammingPresenter` | Signal/jammer ERP, geometry, frequency, J/S threshold | J/S ratio, burnthrough range, partial-band optimum BW (N/A when hop range = 0) |
+| `LocationPresenter` | Bearing error, range, TDOA timing error, EEP semi-axes | CEP (AOA, TDOA, and EEP methods) |
+| `RadarPresenter` | Tx power, gain, RCS, frequency, NF, TB product | Max range, two-way loss, PC gain, coherent integration gain, LPI advantage |
+| `DigitalPresenter` | SNR, bandwidth, data rate, chip rate, required Eb/N₀, impl. loss | Eb/N₀, DSSS process gain, jamming margin, required J/S |
 
 Each presenter validates inputs, calls `libew`, and fires a `std::function` callback with formatted output strings. No platform types are exposed.
 
@@ -75,13 +77,16 @@ and `xcrun notarytool` credentials stored under the `ewcalc-notarytool` profile.
 
 ## Current status
 
-**v0.3.0** — All five phases complete.
+**v0.4.0** — EW101/102/103 foundational scope complete; macOS frontend fully updated.
 
-- Phase 1 ✓ — `libew`: eight calculation modules, full test suite
-- Phase 2 ✓ — `ewpresenter`: six presenters, formatter, validation, console harness
-- Phase 3 ✓ — Windows frontend (WinUI 3 / C++/WinRT)
-- Phase 4 ✓ — macOS frontend (SwiftUI, C bridge, signed and notarized `.dmg`)
-- Phase 5 ✓ — Linux frontend (Qt6 Widgets, AppImage)
+- Phase 1 ✓ — `libew`: nine calculation modules (added `digital`), full test harness
+- Phase 2 ✓ — `ewpresenter`: seven presenters; all new libew functions surfaced
+- Phase 3 ✓ — Windows frontend (WinUI 3 / C#) — at v0.3 feature level; v0.5 will bring to parity
+- Phase 4 ✓ — macOS frontend (SwiftUI) — fully updated: Digital/DSSS page, Reference panel,
+  tooltips on all fields, hop-range = 0 semantic for non-hopping signals
+- Phase 5 ✓ — Linux frontend (Qt6 Widgets) — at v0.3 feature level; v0.5 will bring to parity
+
+**v0.5** — planned: Windows and Linux frontends updated to match macOS v0.4 feature set.
 
 Release artifacts (`.dmg`, `.AppImage`) are attached to each
 [GitHub Release](../../releases).

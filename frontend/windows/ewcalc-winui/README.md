@@ -82,17 +82,20 @@ Each item's `NoiseFigureDb` and `GainDb` setters call `PushStages()` which
 rebuilds the full `StageInput[]` and calls `ReceiverAdapter.SetStages()`.
 Add/Remove buttons are bound to `ICommand` properties.
 
-## Next steps
+## Current state (v0.3 feature level)
 
-- Wire `Package.appxmanifest` identity from the existing PoC (copy the
-  `dev.OldCrow.ewcalc` identity into a new `Package.appxmanifest` alongside
-  the `.csproj` for packaged deployment).
-- Copy the `Assets/` folder from the PoC for tile images.
-- Implement `FieldErrorConverter` highlight on the `ResultRow` for link margin
-  (negative = red, positive = accent colour).
-- Add the Jamming geometry diagram (static SVG or XAML canvas showing the
-  signal transmitter / jammer / receiver triangle) to `JammingPage`.
-- Phase 4: `frontend/macos/` — Xcode project with AppKit/SwiftUI, consuming
-  ewpresenter via an Objective-C++ wrapper (`EWPresenterBridge`).
-- Phase 5: `frontend/linux/` — Qt6 CMake project, consuming ewpresenter
-  directly (no wrapper needed; Qt uses the same C++ ABI).
+This frontend currently covers the six original calculator pages (Propagation,
+Link Budget, Receiver, Jamming, Location, Radar) at v0.3 parity.
+
+## Planned for v0.5 (parity with macOS v0.4)
+
+- **Digital / DSSS page** — new `DigitalAdapter` + `DigitalPage.xaml` backed
+  by `DigitalPresenter` (Eb/N₀, DSSS process gain, jamming margin, required J/S).
+- **Reference panel** — static read-only page with copy-to-clipboard, matching
+  the macOS Reference panel content (antenna gain, SLL, noise floor, RCS, Eb/N₀).
+- **Extended outputs on existing pages** — earth bulge + radar horizon
+  (Propagation); system noise temp (Receiver); J/S threshold + burnthrough
+  (Jamming); TDOA CEP (Location); LPI advantage (Radar).
+- **hop\_range = 0** — allow zero in the Jamming page NumberBox; partial-band
+  results show N/A (presenter already handles this correctly).
+- MSIX packaging identity (`Package.appxmanifest`) for Store submission.
