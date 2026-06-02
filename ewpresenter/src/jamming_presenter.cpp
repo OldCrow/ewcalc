@@ -63,7 +63,8 @@ void JammingPresenter::set_signal_bandwidth(double mhz) noexcept {
 }
 void JammingPresenter::set_hop_range(double mhz) noexcept {
     hop_range_mhz_ = mhz;
-    hop_range_err_ = validate_positive_bounded(mhz, 0.001, 10000.0);
+    // 0 is valid: means non-hopping signal; partial-band analysis is N/A
+    hop_range_err_ = validate_bounds(mhz, 0.0, 10000.0);
     recompute(); fire();
 }
 void JammingPresenter::set_js_threshold(double db) noexcept {
@@ -77,25 +78,32 @@ void JammingPresenter::set_single_channel_js(double db) noexcept {
 }
 
 void JammingPresenter::recompute() noexcept {
-    output_.valid = (signal_erp_err_       == FieldError::none &&
-                     jammer_erp_err_       == FieldError::none &&
-                     signal_to_rx_err_     == FieldError::none &&
-                     jammer_to_rx_err_     == FieldError::none &&
-                     signal_height_err_    == FieldError::none &&
-                     jammer_height_err_    == FieldError::none &&
-                     rx_height_err_        == FieldError::none &&
-                     frequency_err_        == FieldError::none &&
-                     signal_bandwidth_err_ == FieldError::none &&
-                     hop_range_err_        == FieldError::none &&
-                     js_threshold_err_     == FieldError::none);
+    // J/S and burnthrough: require geometry inputs only
+    const bool js_valid = (signal_erp_err_    == FieldError::none &&
+                           jammer_erp_err_    == FieldError::none &&
+                           signal_to_rx_err_  == FieldError::none &&
+                           jammer_to_rx_err_  == FieldError::none &&
+                           signal_height_err_ == FieldError::none &&
+                           jammer_height_err_ == FieldError::none &&
+                           rx_height_err_     == FieldError::none &&
+                           frequency_err_     == FieldError::none &&
+                           js_threshold_err_  == FieldError::none);
 
-    if (!output_.valid) {
+    // Partial-band: additionally requires a positive hop range and signal bandwidth
+    const bool partial_band_valid = js_valid &&
+                                    signal_bandwidth_err_ == FieldError::none &&
+                                    hop_range_err_        == FieldError::none &&
+                                    hop_range_mhz_        > 0.0;
+
+    output_.valid = js_valid;
+
+    if (!js_valid) {
         output_.js_ratio_str          = DASH;
         output_.signal_at_rx_str      = DASH;
         output_.jammer_at_rx_str      = DASH;
-        output_.optimum_bw_str        = DASH;
-        output_.duty_cycle_str        = DASH;
         output_.burnthrough_range_str = DASH;
+        output_.optimum_bw_str        = "N/A";
+        output_.duty_cycle_str        = "N/A";
         return;
     }
 
@@ -108,18 +116,11 @@ void JammingPresenter::recompute() noexcept {
         Mhz{frequency_mhz_},
         Db{rx_gain_signal_db_}, Db{rx_gain_jammer_db_});
 
-    output_.js_ratio    = js.js_ratio;
-    output_.signal_at_rx= js.signal_power_at_receiver;
-    output_.jammer_at_rx= js.jammer_power_at_receiver;
+    output_.js_ratio     = js.js_ratio;
+    output_.signal_at_rx = js.signal_power_at_receiver;
+    output_.jammer_at_rx = js.jammer_power_at_receiver;
 
-    // Feed computed J/S into partial-band calculation
     single_channel_js_db_ = js.js_ratio.value;
-
-    const auto pb = libew::jamming::partial_band_jamming(
-        Mhz{signal_bandwidth_mhz_}, Mhz{hop_range_mhz_}, Db{single_channel_js_db_});
-
-    output_.optimum_bw = pb.optimum_jamming_bandwidth;
-    output_.duty_cycle = pb.duty_cycle;
 
     output_.burnthrough_range = libew::jamming::burnthrough_range(
         Dbm{signal_erp_dbm_}, Dbm{jammer_erp_dbm_},
@@ -130,9 +131,20 @@ void JammingPresenter::recompute() noexcept {
     output_.js_ratio_str          = format_db(output_.js_ratio);
     output_.signal_at_rx_str      = format_dbm(output_.signal_at_rx);
     output_.jammer_at_rx_str      = format_dbm(output_.jammer_at_rx);
-    output_.optimum_bw_str        = format_mhz(output_.optimum_bw, 3);
-    output_.duty_cycle_str        = format_percent(output_.duty_cycle);
     output_.burnthrough_range_str = format_km(output_.burnthrough_range);
+
+    if (partial_band_valid) {
+        const auto pb = libew::jamming::partial_band_jamming(
+            Mhz{signal_bandwidth_mhz_}, Mhz{hop_range_mhz_}, Db{single_channel_js_db_});
+        output_.optimum_bw = pb.optimum_jamming_bandwidth;
+        output_.duty_cycle = pb.duty_cycle;
+        output_.optimum_bw_str   = format_mhz(output_.optimum_bw, 3);
+        output_.duty_cycle_str   = format_percent(output_.duty_cycle);
+    } else {
+        // Non-hopping signal (hop_range = 0) or invalid BW inputs
+        output_.optimum_bw_str = "N/A";
+        output_.duty_cycle_str = "N/A";
+    }
 }
 
 void JammingPresenter::fire() noexcept {

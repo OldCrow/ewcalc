@@ -58,8 +58,8 @@ struct JammingView: View {
                 InputRow("Jammer height", unit: "m", value: $jammerHeight,
                          in: 0.1...100000, step: 0.5, decimals: 1) { adapter.setJammerHeight($0) }
                 InputRow("Hop range", unit: "MHz", value: $hopRange,
-                         in: 0.001...10000, step: 1,
-                         help: "Total frequency-hopping bandwidth of the target signal") { adapter.setHopRange($0) }
+                         in: 0...10000, step: 1,
+                         help: "Total frequency-hopping bandwidth of the target signal — set to 0 for a non-hopping (single-channel) signal; partial-band results will show N/A") { adapter.setHopRange($0) }
                 InputRow("J/S threshold", unit: "dB", value: $jsThreshold,
                          in: -30...30, step: 0.5,
                          help: "J/S level at which jamming is considered effective — used to calculate burnthrough range") { adapter.setJsThreshold($0) }
