@@ -78,4 +78,21 @@ Db knife_edge_diffraction_loss(
     return Db{-gd_db}; // positive = additional loss
 }
 
+Meters earth_bulge(Km d1, Km d2) noexcept {
+    // h_m = d1_km * d2_km * 1000 / (2 * R_eff_km)
+    //      = d1_km * d2_km / (2 * 8494.67 / 1000)
+    return Meters{
+        d1.value * d2.value * 1000.0
+        / (2.0 * constants::effective_earth_radius_km)
+    };
+}
+
+Km radar_horizon_range(Meters tx_height, Meters rx_height) noexcept {
+    // R_km = coeff * (sqrt(h_tx_m) + sqrt(h_rx_m))
+    return Km{
+        constants::radar_horizon_coeff
+        * (std::sqrt(tx_height.value) + std::sqrt(rx_height.value))
+    };
+}
+
 } // namespace libew::propagation

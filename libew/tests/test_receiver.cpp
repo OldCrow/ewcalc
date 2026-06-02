@@ -141,6 +141,60 @@ void test_sfdr_linearity() {
     ASSERT_NEAR(sfdr2.value - sfdr1.value, 2.0/3.0, 0.001);
 }
 
+// ---------------------------------------------------------------------------
+// Noise temperature conversions
+//
+// T_e = (NF_lin - 1) * T_ref,  T_ref = 290 K
+// NF  = 10·log10(1 + T_e / T_ref)
+// Source: IEEE standard; Adamy EW102.
+// ---------------------------------------------------------------------------
+
+void test_nf_from_noise_temp_at_t_ref() {
+    // T_e = 290 K = T_ref → NF_lin = 2 → NF_dB = 10*log10(2) = 3.010 dB
+    ASSERT_NEAR(nf_from_noise_temp(Kelvin{290.0}).value,
+                10.0 * std::log10(2.0), 0.001);
+}
+
+void test_nf_from_noise_temp_zero() {
+    // T_e = 0 K → NF = 0 dB (noiseless)
+    ASSERT_NEAR(nf_from_noise_temp(Kelvin{0.0}).value, 0.0, 1e-9);
+}
+
+void test_noise_temp_from_nf_roundtrip() {
+    // noise_temp_from_nf and nf_from_noise_temp are exact inverses
+    const Db nf_original{6.5};
+    const Kelvin te = noise_temp_from_nf(nf_original);
+    const Db nf_recovered = nf_from_noise_temp(te);
+    ASSERT_NEAR(nf_recovered.value, nf_original.value, 1e-9);
+}
+
+void test_noise_temp_from_nf_0db() {
+    // 0 dB NF → T_e = (1 - 1) * 290 = 0 K
+    ASSERT_NEAR(noise_temp_from_nf(0.0_dB).value, 0.0, 1e-9);
+}
+
+void test_loss_noise_temp_at_standard_temp() {
+    // At T_phys = 290 K: T_e = (L_lin - 1) * 290 = (NF_lin - 1) * T_ref
+    // This must equal the result of noise_temp_from_nf for the same loss value.
+    const Db loss{3.0}; // 3 dB
+    const Kelvin te_loss = loss_noise_temp(loss, Kelvin{290.0});
+    const Kelvin te_nf   = noise_temp_from_nf(loss);
+    ASSERT_NEAR(te_loss.value, te_nf.value, 1e-6);
+}
+
+void test_loss_noise_temp_at_zero_kelvin() {
+    // Cold component: T_phys = 0 K → T_e = 0 regardless of loss
+    ASSERT_NEAR(loss_noise_temp(10.0_dB, Kelvin{0.0}).value, 0.0, 1e-9);
+}
+
+void test_loss_noise_temp_better_than_standard_when_cold() {
+    // A cold component adds less noise than the same loss at 290 K
+    const Db loss{3.0};
+    const Kelvin te_cold = loss_noise_temp(loss, Kelvin{100.0});
+    const Kelvin te_warm = loss_noise_temp(loss, Kelvin{290.0});
+    ASSERT_TRUE(te_cold.value < te_warm.value);
+}
+
 int main() {
     std::cout << "=== test_receiver ===\n";
     RUN_TEST(test_sensitivity_1mhz_zero_nf_zero_snr);
@@ -157,5 +211,12 @@ int main() {
     RUN_TEST(test_sfdr_third_order_derivation);
     RUN_TEST(test_sfdr_second_order_derivation);
     RUN_TEST(test_sfdr_linearity);
+    RUN_TEST(test_nf_from_noise_temp_at_t_ref);
+    RUN_TEST(test_nf_from_noise_temp_zero);
+    RUN_TEST(test_noise_temp_from_nf_roundtrip);
+    RUN_TEST(test_noise_temp_from_nf_0db);
+    RUN_TEST(test_loss_noise_temp_at_standard_temp);
+    RUN_TEST(test_loss_noise_temp_at_zero_kelvin);
+    RUN_TEST(test_loss_noise_temp_better_than_standard_when_cold);
     return test::summary();
 }

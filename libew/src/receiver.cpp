@@ -1,4 +1,5 @@
 #include "libew/receiver/receiver.h"
+#include "libew/core/constants.h"
 #include "libew/core/units.h"
 #include <cmath>
 
@@ -53,6 +54,25 @@ Db analog_sfdr_third_order(Dbm sensitivity, Dbm third_order_ip) noexcept {
 Db digital_dynamic_range(int num_bits) noexcept {
     // DR ≈ 6.02 * N + 1.76  (dB)
     return Db{6.02 * static_cast<double>(num_bits) + 1.76};
+}
+
+Kelvin noise_temp_from_nf(Db noise_figure) noexcept {
+    // T_e = (NF_lin - 1) * T_ref
+    const double nf_lin = units::db_to_linear(noise_figure);
+    return Kelvin{(nf_lin - 1.0) * constants::standard_temperature_K};
+}
+
+Db nf_from_noise_temp(Kelvin noise_temp) noexcept {
+    // NF_dB = 10*log10(1 + T_e / T_ref)
+    return Db{
+        10.0 * std::log10(1.0 + noise_temp.value / constants::standard_temperature_K)
+    };
+}
+
+Kelvin loss_noise_temp(Db loss_db, Kelvin phys_temp) noexcept {
+    // T_e = (L_lin - 1) * T_phys
+    const double l_lin = units::db_to_linear(loss_db);
+    return Kelvin{(l_lin - 1.0) * phys_temp.value};
 }
 
 } // namespace libew::receiver

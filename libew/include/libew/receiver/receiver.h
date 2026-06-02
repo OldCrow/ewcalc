@@ -67,4 +67,30 @@ struct Stage {
 /// @return Dynamic range (dB)
 [[nodiscard]] Db digital_dynamic_range(int num_bits) noexcept;
 
+// ---------------------------------------------------------------------------
+// Noise temperature
+// ---------------------------------------------------------------------------
+
+/// Convert noise figure (dB) to equivalent noise temperature (K).
+/// T_e = (NF_linear - 1) * T_ref   where T_ref = 290 K
+/// @param noise_figure  Noise figure (dB)
+/// @return Equivalent noise temperature (K)
+[[nodiscard]] Kelvin noise_temp_from_nf(Db noise_figure) noexcept;
+
+/// Convert equivalent noise temperature (K) to noise figure (dB).
+/// NF = 10*log10(1 + T_e / T_ref)   where T_ref = 290 K
+/// @param noise_temp  Equivalent noise temperature (K)
+/// @return Noise figure (dB)
+[[nodiscard]] Db nf_from_noise_temp(Kelvin noise_temp) noexcept;
+
+/// Equivalent noise temperature of a passive lossy component at a given
+/// physical temperature.
+/// T_e = (L_linear - 1) * T_phys
+/// At T_phys = 290 K this equals (L-1)*290 = (NF-1)*T_ref, i.e. NF = L.
+/// At T_phys < 290 K the effective NF is better than the insertion loss.
+/// @param loss_db    Component insertion loss (dB, positive value)
+/// @param phys_temp  Physical temperature of the component (K)
+/// @return Equivalent noise temperature (K)
+[[nodiscard]] Kelvin loss_noise_temp(Db loss_db, Kelvin phys_temp) noexcept;
+
 } // namespace libew::receiver

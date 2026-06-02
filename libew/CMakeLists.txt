@@ -6,6 +6,7 @@ set(LIBEW_SOURCES
     src/jamming.cpp
     src/location.cpp
     src/radar.cpp
+    src/digital.cpp
 )
 
 add_library(libew STATIC ${LIBEW_SOURCES})

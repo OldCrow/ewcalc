@@ -51,6 +51,7 @@ struct MetersTag{};  ///< Distance (m)
 struct DegreesTag{}; ///< Angle (degrees)
 struct RadiansTag{}; ///< Angle (radians)
 struct SquareMetersTag{}; ///< Area — linear RCS (m²)
+struct KelvinTag   {};   ///< Temperature (K)
 
 // ---------------------------------------------------------------------------
 // Named quantity types
@@ -67,6 +68,7 @@ using Meters      = Quantity<MetersTag>;
 using Degrees     = Quantity<DegreesTag>;
 using Radians     = Quantity<RadiansTag>;
 using SquareMeters = Quantity<SquareMetersTag>;
+using Kelvin       = Quantity<KelvinTag>;
 
 // ---------------------------------------------------------------------------
 // Power-domain arithmetic
@@ -151,6 +153,8 @@ namespace literals {
     [[nodiscard]] constexpr Degrees operator""_deg(unsigned long long v) noexcept { return Degrees{static_cast<double>(v)}; }
     [[nodiscard]] constexpr Watts operator""_W  (long double v) noexcept { return Watts{static_cast<double>(v)}; }
     [[nodiscard]] constexpr Watts operator""_W  (unsigned long long v) noexcept { return Watts{static_cast<double>(v)}; }
+    [[nodiscard]] constexpr Kelvin operator""_K  (long double v) noexcept { return Kelvin{static_cast<double>(v)}; }
+    [[nodiscard]] constexpr Kelvin operator""_K  (unsigned long long v) noexcept { return Kelvin{static_cast<double>(v)}; }
 } // namespace literals
 
 } // namespace libew::units

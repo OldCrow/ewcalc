@@ -12,3 +12,4 @@
 #include "libew/jamming/jamming.h"
 #include "libew/location/location.h"
 #include "libew/radar/radar.h"
+#include "libew/digital/digital.h"

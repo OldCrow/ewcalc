@@ -141,6 +141,56 @@ void test_knife_edge_negative_v_approx() {
     ASSERT_TRUE(loss.value >= 0.0);   // loss is non-negative
 }
 
+// ---------------------------------------------------------------------------
+// Earth bulge: h_m = d1_km * d2_km / (2 * R_eff_km) * 1000
+// R_eff = (4/3) * 6371 = 8494.67 km
+// Source: Adamy EW101; ITU-R P.526 earth geometry.
+// ---------------------------------------------------------------------------
+
+void test_earth_bulge_symmetric_midpoint() {
+    // Total path = 20 km, midpoint: d1=d2=10 km
+    // h = 10*10*1000 / (2*8494.67) = 100000/16989.3 = 5.886 m
+    const double expected = 10.0 * 10.0 * 1000.0 / (2.0 * (4.0/3.0 * 6371.0));
+    ASSERT_NEAR(earth_bulge(10.0_km, 10.0_km).value, expected, 0.001);
+}
+
+void test_earth_bulge_asymmetric() {
+    // d1=5 km, d2=15 km: h = 5*15*1000 / (2*8494.67) = 75000/16989.3 = 4.414 m
+    const double expected = 5.0 * 15.0 * 1000.0 / (2.0 * (4.0/3.0 * 6371.0));
+    ASSERT_NEAR(earth_bulge(5.0_km, 15.0_km).value, expected, 0.001);
+}
+
+void test_earth_bulge_scales_quadratically_with_distance() {
+    // Doubling both d1 and d2 quadruples the bulge
+    const Meters h1 = earth_bulge(5.0_km, 5.0_km);
+    const Meters h2 = earth_bulge(10.0_km, 10.0_km);
+    ASSERT_NEAR(h2.value / h1.value, 4.0, 0.001);
+}
+
+// ---------------------------------------------------------------------------
+// Radar horizon range: R_km = 4.122 * (sqrt(h_tx_m) + sqrt(h_rx_m))
+// Source: Adamy EW101; standard k=4/3 earth radius formula.
+// ---------------------------------------------------------------------------
+
+void test_radar_horizon_single_end() {
+    // One end at h=10m, other at h=0m (ground): R = 4.122 * sqrt(10) = 13.03 km
+    const double expected = 4.122 * std::sqrt(10.0);
+    ASSERT_NEAR(radar_horizon_range(10.0_m, Meters{0.0}).value, expected, 0.01);
+}
+
+void test_radar_horizon_both_ends() {
+    // Both ends at 10m: R = 4.122 * (sqrt(10) + sqrt(10)) = 2 * 4.122 * sqrt(10)
+    const double expected = 2.0 * 4.122 * std::sqrt(10.0);
+    ASSERT_NEAR(radar_horizon_range(10.0_m, 10.0_m).value, expected, 0.01);
+}
+
+void test_radar_horizon_scales_with_sqrt_height() {
+    // Quadrupling height doubles the range contribution from that end
+    const Km r1 = radar_horizon_range(100.0_m, Meters{0.0});
+    const Km r2 = radar_horizon_range(400.0_m, Meters{0.0});
+    ASSERT_NEAR(r2.value / r1.value, 2.0, 0.001);
+}
+
 int main() {
     std::cout << "=== test_propagation ===\n";
     RUN_TEST(test_fspl_known_values);
@@ -155,5 +205,11 @@ int main() {
     RUN_TEST(test_knife_edge_on_los);
     RUN_TEST(test_knife_edge_clear_los);
     RUN_TEST(test_knife_edge_negative_v_approx);
+    RUN_TEST(test_earth_bulge_symmetric_midpoint);
+    RUN_TEST(test_earth_bulge_asymmetric);
+    RUN_TEST(test_earth_bulge_scales_quadratically_with_distance);
+    RUN_TEST(test_radar_horizon_single_end);
+    RUN_TEST(test_radar_horizon_both_ends);
+    RUN_TEST(test_radar_horizon_scales_with_sqrt_height);
     return test::summary();
 }

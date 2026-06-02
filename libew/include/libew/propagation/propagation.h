@@ -85,4 +85,30 @@ using namespace libew::units;
     Meters los_clearance,
     Mhz   frequency) noexcept;
 
+// ---------------------------------------------------------------------------
+// Earth geometry
+// ---------------------------------------------------------------------------
+
+/// Earth bulge — height the earth rises between two points on a propagation path.
+///
+/// For an obstacle at distance d1 from the transmitter and d2 from the receiver,
+/// the earth surface is h metres higher than the flat-earth chord.
+/// Formula: h = d1_km * d2_km / (2 * R_eff_km) * 1000  (R_eff = 8494.67 km for k=4/3)
+///
+/// @param d1  Distance from transmitter to the point of interest (km)
+/// @param d2  Distance from the point of interest to receiver (km)
+/// @return Earth bulge height (m, positive upward from flat-earth baseline)
+[[nodiscard]] Meters earth_bulge(Km d1, Km d2) noexcept;
+
+/// Radio/radar horizon range — maximum range at which a target of given height
+/// is visible over the curved earth (standard k=4/3 atmosphere).
+///
+/// Each end contributes sqrt(2 * R_eff * h) and the total is their sum:
+///   R_km = 4.122 * (sqrt(h_tx_m) + sqrt(h_rx_m))
+///
+/// @param tx_height  Transmitter/radar antenna height above ground (m)
+/// @param rx_height  Target or receive antenna height above ground (m)
+/// @return Total horizon range (km)
+[[nodiscard]] Km radar_horizon_range(Meters tx_height, Meters rx_height) noexcept;
+
 } // namespace libew::propagation

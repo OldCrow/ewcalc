@@ -43,4 +43,14 @@ inline constexpr double fresnel_zone_denominator = 24000.0;
 /// Digital receiver dynamic range per bit: approximately 6.02 dB/bit
 inline constexpr double dynamic_range_db_per_bit = 6.02;
 
+/// Effective earth radius for standard atmosphere (k-factor = 4/3).
+/// R_eff = (4/3) * 6371.0 km = 8494.67 km
+/// Used in earth bulge and radar horizon calculations.
+inline constexpr double effective_earth_radius_km = (4.0 / 3.0) * 6371.0;
+
+/// Radar/radio horizon coefficient: km per sqrt(metres) of antenna height.
+/// Derivation: sqrt(2 * R_eff_km / 1000) = sqrt(2 * 8494.67 / 1000) = 4.122
+/// Usage: R_horizon_km = radar_horizon_coeff * sqrt(h_m) for one end.
+inline constexpr double radar_horizon_coeff = 4.122;
+
 } // namespace libew::constants

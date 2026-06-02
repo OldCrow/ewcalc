@@ -5,6 +5,9 @@ set(LIBEW_TEST_SOURCES
     test_jamming.cpp
     test_location.cpp
     test_radar.cpp
+    test_link.cpp
+    test_antenna.cpp
+    test_digital.cpp
 )
 
 foreach(test_src ${LIBEW_TEST_SOURCES})
