@@ -29,6 +29,10 @@ public:
         std::string optimum_bw_str;
         std::string duty_cycle_str;
 
+        // Burnthrough range
+        Km  burnthrough_range{};
+        std::string burnthrough_range_str;
+
         bool valid{false};
     };
 
@@ -76,6 +80,10 @@ public:
     /// Frequency hopping range (MHz). Range: 0.001 – 10 000 MHz.
     void set_hop_range(double mhz) noexcept;
 
+    /// J/S threshold (dB) — the J/S level at which jamming is considered effective.
+    /// Used to compute burnthrough range. Range: -30 – 30 dB. Default: 0 dB.
+    void set_js_threshold(double db) noexcept;
+
     /// Single-channel J/S (dB) — feeds the partial-band calculation.
     /// Automatically updated from the J/S computation; can also be set manually.
     void set_single_channel_js(double db) noexcept;
@@ -96,6 +104,7 @@ public:
     [[nodiscard]] double frequency_mhz()        const noexcept { return frequency_mhz_; }
     [[nodiscard]] double signal_bandwidth_mhz() const noexcept { return signal_bandwidth_mhz_; }
     [[nodiscard]] double hop_range_mhz()        const noexcept { return hop_range_mhz_; }
+    [[nodiscard]] double js_threshold_db()      const noexcept { return js_threshold_db_; }
 
     void set_on_change(std::function<void(const Output&)> cb) noexcept {
         on_change_ = std::move(cb);
@@ -115,6 +124,7 @@ private:
     double signal_bandwidth_mhz_ {0.025};
     double hop_range_mhz_        {58.0};
     double single_channel_js_db_ {0.0};
+    double js_threshold_db_      {0.0};
 
     FieldError signal_erp_err_       {FieldError::none};
     FieldError jammer_erp_err_       {FieldError::none};
@@ -126,6 +136,7 @@ private:
     FieldError frequency_err_        {FieldError::none};
     FieldError signal_bandwidth_err_ {FieldError::none};
     FieldError hop_range_err_        {FieldError::none};
+    FieldError js_threshold_err_     {FieldError::none};
 
     Output output_;
     std::function<void(const Output&)> on_change_;

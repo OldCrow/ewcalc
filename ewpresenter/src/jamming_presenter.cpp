@@ -66,6 +66,11 @@ void JammingPresenter::set_hop_range(double mhz) noexcept {
     hop_range_err_ = validate_positive_bounded(mhz, 0.001, 10000.0);
     recompute(); fire();
 }
+void JammingPresenter::set_js_threshold(double db) noexcept {
+    js_threshold_db_  = db;
+    js_threshold_err_ = validate_bounds(db, -30.0, 30.0);
+    recompute(); fire();
+}
 void JammingPresenter::set_single_channel_js(double db) noexcept {
     single_channel_js_db_ = db;
     recompute(); fire();
@@ -81,14 +86,16 @@ void JammingPresenter::recompute() noexcept {
                      rx_height_err_        == FieldError::none &&
                      frequency_err_        == FieldError::none &&
                      signal_bandwidth_err_ == FieldError::none &&
-                     hop_range_err_        == FieldError::none);
+                     hop_range_err_        == FieldError::none &&
+                     js_threshold_err_     == FieldError::none);
 
     if (!output_.valid) {
-        output_.js_ratio_str      = DASH;
-        output_.signal_at_rx_str  = DASH;
-        output_.jammer_at_rx_str  = DASH;
-        output_.optimum_bw_str    = DASH;
-        output_.duty_cycle_str    = DASH;
+        output_.js_ratio_str          = DASH;
+        output_.signal_at_rx_str      = DASH;
+        output_.jammer_at_rx_str      = DASH;
+        output_.optimum_bw_str        = DASH;
+        output_.duty_cycle_str        = DASH;
+        output_.burnthrough_range_str = DASH;
         return;
     }
 
@@ -114,11 +121,18 @@ void JammingPresenter::recompute() noexcept {
     output_.optimum_bw = pb.optimum_jamming_bandwidth;
     output_.duty_cycle = pb.duty_cycle;
 
-    output_.js_ratio_str     = format_db(output_.js_ratio);
-    output_.signal_at_rx_str = format_dbm(output_.signal_at_rx);
-    output_.jammer_at_rx_str = format_dbm(output_.jammer_at_rx);
-    output_.optimum_bw_str   = format_mhz(output_.optimum_bw, 3);
-    output_.duty_cycle_str   = format_percent(output_.duty_cycle);
+    output_.burnthrough_range = libew::jamming::burnthrough_range(
+        Dbm{signal_erp_dbm_}, Dbm{jammer_erp_dbm_},
+        Km{jammer_to_rx_dist_km_},
+        Meters{jammer_height_m_}, Meters{rx_height_m_},
+        Mhz{frequency_mhz_}, Db{js_threshold_db_});
+
+    output_.js_ratio_str          = format_db(output_.js_ratio);
+    output_.signal_at_rx_str      = format_dbm(output_.signal_at_rx);
+    output_.jammer_at_rx_str      = format_dbm(output_.jammer_at_rx);
+    output_.optimum_bw_str        = format_mhz(output_.optimum_bw, 3);
+    output_.duty_cycle_str        = format_percent(output_.duty_cycle);
+    output_.burnthrough_range_str = format_km(output_.burnthrough_range);
 }
 
 void JammingPresenter::fire() noexcept {

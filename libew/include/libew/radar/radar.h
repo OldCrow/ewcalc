@@ -67,4 +67,15 @@ struct RadarRangeResult {
 /// Wavelength in meters from frequency in MHz (convenience function).
 [[nodiscard]] Meters wavelength_m(Mhz frequency) noexcept;
 
+/// LPI radar advantage — the detection-range advantage an LPI waveform gives
+/// against an intercept receiver relative to a conventional pulsed radar
+/// with the same average power and aperture.
+///
+/// LPI advantage = (1/4) * pulse_compression_gain_dB
+///               = 10·log10(time_bandwidth_product) / 4
+///
+/// @param time_bandwidth_product  Pulse width × bandwidth (dimensionless, ≥ 1)
+/// @return LPI advantage (dB)
+[[nodiscard]] Db lpi_advantage(double time_bandwidth_product) noexcept;
+
 } // namespace libew::radar

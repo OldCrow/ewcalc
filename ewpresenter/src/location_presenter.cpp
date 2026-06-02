@@ -13,6 +13,11 @@ void LocationPresenter::set_rms_bearing_error(double degrees) noexcept {
     rms_bearing_err_ = validate_positive_bounded(degrees, 0.01, 45.0);
     recompute(); fire();
 }
+void LocationPresenter::set_rms_time_error(double ns) noexcept {
+    rms_time_error_ns_  = ns;
+    rms_time_err_ = validate_positive_bounded(ns, 0.001, 100000.0);
+    recompute(); fire();
+}
 void LocationPresenter::set_aoa_range(double km) noexcept {
     aoa_range_km_ = km;
     aoa_range_err_ = validate_positive_bounded(km, 0.1, 10000.0);
@@ -30,13 +35,15 @@ void LocationPresenter::set_semi_minor(double km) noexcept {
 }
 
 void LocationPresenter::recompute() noexcept {
-    const bool aoa_valid = (rms_bearing_err_ == FieldError::none &&
-                            aoa_range_err_   == FieldError::none);
-    const bool eep_valid = (semi_major_err_ == FieldError::none &&
-                            semi_minor_err_ == FieldError::none &&
-                            semi_major_km_ >= semi_minor_km_);
+    const bool aoa_valid  = (rms_bearing_err_ == FieldError::none &&
+                             aoa_range_err_   == FieldError::none);
+    const bool tdoa_valid = (rms_time_err_  == FieldError::none &&
+                             aoa_range_err_ == FieldError::none);
+    const bool eep_valid  = (semi_major_err_ == FieldError::none &&
+                             semi_minor_err_ == FieldError::none &&
+                             semi_major_km_ >= semi_minor_km_);
 
-    output_.valid = aoa_valid && eep_valid;
+    output_.valid = aoa_valid && tdoa_valid && eep_valid;
 
     using namespace libew::units;
 
@@ -46,6 +53,14 @@ void LocationPresenter::recompute() noexcept {
         output_.cep_aoa_str = format_km(output_.cep_aoa);
     } else {
         output_.cep_aoa_str = DASH;
+    }
+
+    if (tdoa_valid) {
+        output_.cep_tdoa = libew::location::cep_from_tdoa_rms_error(
+            rms_time_error_ns_, Km{aoa_range_km_});
+        output_.cep_tdoa_str = format_km(output_.cep_tdoa);
+    } else {
+        output_.cep_tdoa_str = DASH;
     }
 
     if (eep_valid) {

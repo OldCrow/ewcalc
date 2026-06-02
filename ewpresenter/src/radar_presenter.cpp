@@ -91,11 +91,13 @@ void RadarPresenter::recompute() noexcept {
 
     output_.pulse_compression_gain   = libew::radar::pulse_compression_gain(time_bandwidth_product_);
     output_.coherent_integration_gain = libew::radar::coherent_integration_gain(num_pulses_);
+    output_.lpi_advantage             = libew::radar::lpi_advantage(time_bandwidth_product_);
 
     output_.max_range_str              = format_km(output_.max_range);
     output_.two_way_loss_str           = format_db(output_.two_way_loss);
     output_.pulse_compression_gain_str = format_db(output_.pulse_compression_gain);
     output_.coherent_integration_gain_str = format_db(output_.coherent_integration_gain);
+    output_.lpi_advantage_str          = format_db(output_.lpi_advantage);
 }
 
 void RadarPresenter::fire() noexcept {

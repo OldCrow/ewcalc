@@ -1,6 +1,7 @@
 #include "ewpresenter/receiver_presenter.h"
 #include "ewpresenter/formatter.h"
 #include "libew/receiver/receiver.h"
+#include "ewpresenter/validation.h"
 
 namespace ewpresenter {
 
@@ -57,11 +58,12 @@ void ReceiverPresenter::recompute() noexcept {
                      adc_bits_ >= 1 && adc_bits_ <= 64);
 
     if (!output_.valid) {
-        output_.sensitivity_str = DASH;
-        output_.cascaded_nf_str = DASH;
-        output_.sfdr2_str       = DASH;
-        output_.sfdr3_str       = DASH;
-        output_.digital_dr_str  = DASH;
+        output_.sensitivity_str       = DASH;
+        output_.cascaded_nf_str       = DASH;
+        output_.sfdr2_str             = DASH;
+        output_.sfdr3_str             = DASH;
+        output_.digital_dr_str        = DASH;
+        output_.system_noise_temp_str = DASH;
         return;
     }
 
@@ -92,11 +94,15 @@ void ReceiverPresenter::recompute() noexcept {
     // Digital DR
     output_.digital_dr = digital_dynamic_range(adc_bits_);
 
-    output_.sensitivity_str = format_dbm(output_.sensitivity);
-    output_.cascaded_nf_str = format_db(output_.cascaded_nf);
-    output_.sfdr2_str       = format_db(output_.sfdr_second_order);
-    output_.sfdr3_str       = format_db(output_.sfdr_third_order);
-    output_.digital_dr_str  = format_db(output_.digital_dr);
+    // System noise temperature derived from system NF input
+    output_.system_noise_temp = libew::receiver::noise_temp_from_nf(Db{noise_figure_db_});
+
+    output_.sensitivity_str       = format_dbm(output_.sensitivity);
+    output_.cascaded_nf_str       = format_db(output_.cascaded_nf);
+    output_.sfdr2_str             = format_db(output_.sfdr_second_order);
+    output_.sfdr3_str             = format_db(output_.sfdr_third_order);
+    output_.digital_dr_str        = format_db(output_.digital_dr);
+    output_.system_noise_temp_str = format_kelvin(output_.system_noise_temp);
 }
 
 void ReceiverPresenter::fire() noexcept {

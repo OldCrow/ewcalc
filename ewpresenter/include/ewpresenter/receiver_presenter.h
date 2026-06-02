@@ -35,6 +35,10 @@ public:
         Db  digital_dr{};
         std::string digital_dr_str;
 
+        // System noise temperature (from system NF input)
+        Kelvin system_noise_temp{};
+        std::string system_noise_temp_str;
+
         bool valid{false};
     };
 

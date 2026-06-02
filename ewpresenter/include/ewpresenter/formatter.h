@@ -54,4 +54,9 @@ using namespace libew::units;
 // ---------------------------------------------------------------------------
 [[nodiscard]] std::string format_regime(bool two_ray) noexcept; // "2-ray" or "LOS"
 
+// ---------------------------------------------------------------------------
+// Temperature
+// ---------------------------------------------------------------------------
+[[nodiscard]] std::string format_kelvin(Kelvin value, int decimals = 0); // "290 K"
+
 } // namespace ewpresenter

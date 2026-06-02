@@ -29,6 +29,10 @@ public:
         Db coherent_integration_gain{};
         std::string coherent_integration_gain_str;
 
+        // LPI advantage (from time-bandwidth product)
+        Db lpi_advantage{};
+        std::string lpi_advantage_str;
+
         bool valid{false};
     };
 

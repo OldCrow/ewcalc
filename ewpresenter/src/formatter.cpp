@@ -69,4 +69,8 @@ std::string format_regime(bool two_ray) noexcept {
     return two_ray ? "2-ray" : "LOS";
 }
 
+std::string format_kelvin(Kelvin value, int decimals) {
+    return fmt(value.value, decimals, "K");
+}
+
 } // namespace ewpresenter

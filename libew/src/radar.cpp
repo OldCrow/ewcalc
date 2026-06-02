@@ -67,4 +67,9 @@ Db coherent_integration_gain(int num_pulses) noexcept {
     return Db{10.0 * std::log10(static_cast<double>(num_pulses))};
 }
 
+Db lpi_advantage(double time_bandwidth_product) noexcept {
+    // LPI advantage = pulse_compression_gain / 4 = 10·log10(TB) / 4
+    return Db{10.0 * std::log10(time_bandwidth_product) / 4.0};
+}
+
 } // namespace libew::radar

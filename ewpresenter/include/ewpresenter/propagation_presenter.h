@@ -32,6 +32,12 @@ public:
         std::string path_loss_str;
         std::string regime_str;
 
+        // Earth geometry (from existing distance / height inputs)
+        Meters earth_bulge{};      ///< Earth rise at path midpoint (m)
+        Km     horizon_range{};    ///< Radar horizon range (km)
+        std::string earth_bulge_str;
+        std::string horizon_range_str;
+
         bool valid{false};
     };
 

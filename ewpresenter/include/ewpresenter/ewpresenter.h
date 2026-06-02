@@ -11,3 +11,4 @@
 #include "ewpresenter/jamming_presenter.h"
 #include "ewpresenter/location_presenter.h"
 #include "ewpresenter/radar_presenter.h"
+#include "ewpresenter/digital_presenter.h"

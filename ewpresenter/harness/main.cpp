@@ -146,6 +146,53 @@ int main() {
             p.output().valid ? "PASS" : "FAIL");
     }
 
+    // -----------------------------------------------------------------------
+    // 7. Digital / DSSS
+    //    Default: SNR=10dB, BW=1MHz, data_rate=0.1Mbps, chip_rate=10Mcps,
+    //             Eb/No_req=10dB, impl_loss=1dB
+    // -----------------------------------------------------------------------
+    section("Digital / DSSS");
+    {
+        ewpresenter::DigitalPresenter p;
+        const auto& out = p.output();
+        row("Valid",           out.valid ? "yes" : "NO");
+        row("Eb/N\xc2\xb0",   out.eb_no_str);          // Eb/N₀
+        row("Process gain",    out.process_gain_str);
+        row("Jamming margin",  out.jamming_margin_str);
+        row("Required J/S",    out.required_js_str);
+    }
+
+    // -----------------------------------------------------------------------
+    // 8. Check new fields on existing presenters
+    // -----------------------------------------------------------------------
+    section("Extended outputs");
+    {
+        ewpresenter::PropagationPresenter p;
+        const auto& out = p.output();
+        row("Earth bulge (midpt)",    out.earth_bulge_str);
+        row("Radar horizon",          out.horizon_range_str);
+    }
+    {
+        ewpresenter::ReceiverPresenter p;
+        const auto& out = p.output();
+        row("System noise temp",  out.system_noise_temp_str);
+    }
+    {
+        ewpresenter::JammingPresenter p;
+        const auto& out = p.output();
+        row("Burnthrough range", out.burnthrough_range_str);
+    }
+    {
+        ewpresenter::LocationPresenter p;
+        const auto& out = p.output();
+        row("CEP (TDOA)",  out.cep_tdoa_str);
+    }
+    {
+        ewpresenter::RadarPresenter p;
+        const auto& out = p.output();
+        row("LPI advantage", out.lpi_advantage_str);
+    }
+
     std::cout << "\nHarness complete.\n";
     return 0;
 }
