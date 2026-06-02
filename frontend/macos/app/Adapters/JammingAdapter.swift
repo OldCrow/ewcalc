@@ -30,6 +30,7 @@ final class JammingAdapter: ObservableObject {
     func setRxGainJammer(_ db: Double)      { ewp_jamming_set_rx_gain_jammer(ref, db) }
     func setSignalBandwidth(_ mhz: Double)  { ewp_jamming_set_signal_bandwidth(ref, mhz) }
     func setHopRange(_ mhz: Double)         { ewp_jamming_set_hop_range(ref, mhz) }
+    func setJsThreshold(_ db: Double)       { ewp_jamming_set_js_threshold(ref, db) }
 
     var defaultSignalErp:       Double { ewp_jamming_signal_erp(ref) }
     var defaultJammerErp:       Double { ewp_jamming_jammer_erp(ref) }
@@ -41,4 +42,5 @@ final class JammingAdapter: ObservableObject {
     var defaultFrequency:       Double { ewp_jamming_frequency(ref) }
     var defaultSignalBandwidth: Double { ewp_jamming_signal_bandwidth(ref) }
     var defaultHopRange:        Double { ewp_jamming_hop_range(ref) }
+    var defaultJsThreshold:     Double { ewp_jamming_js_threshold(ref) }
 }

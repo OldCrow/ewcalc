@@ -8,6 +8,7 @@ enum AppSection: String, CaseIterable, Identifiable {
     case jamming     = "Jamming"
     case location    = "Location"
     case radar       = "Radar"
+    case digital     = "Digital / DSSS"
 
     var id: String { rawValue }
 
@@ -19,6 +20,7 @@ enum AppSection: String, CaseIterable, Identifiable {
         case .jamming:     return "wifi.exclamationmark"
         case .location:    return "location.circle"
         case .radar:       return "scope"
+        case .digital:     return "waveform.badge.plus"
         }
     }
 }
@@ -49,6 +51,7 @@ struct ContentView: View {
         case .jamming:     JammingView(adapter: store.jamming)
         case .location:    LocationView(adapter: store.location)
         case .radar:       RadarView(adapter: store.radar)
+        case .digital:     DigitalView(adapter: store.digital)
         case .none:
             Text("Select a calculator")
                 .foregroundStyle(.secondary)

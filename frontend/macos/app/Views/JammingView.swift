@@ -16,6 +16,7 @@ struct JammingView: View {
     @State private var rxGainJammer:   Double
     @State private var signalBw:       Double
     @State private var hopRange:       Double
+    @State private var jsThreshold:    Double
 
     init(adapter: JammingAdapter) {
         self.adapter  = adapter
@@ -31,6 +32,7 @@ struct JammingView: View {
         _rxGainJammer = State(initialValue: 0.0)
         _signalBw     = State(initialValue: adapter.defaultSignalBandwidth)
         _hopRange     = State(initialValue: adapter.defaultHopRange)
+        _jsThreshold  = State(initialValue: adapter.defaultJsThreshold)
     }
 
     var body: some View {
@@ -54,6 +56,8 @@ struct JammingView: View {
                          in: 0.1...100000, step: 0.5, decimals: 1) { adapter.setJammerHeight($0) }
                 InputRow("Hop range", unit: "MHz", value: $hopRange,
                          in: 0.001...10000, step: 1)  { adapter.setHopRange($0) }
+                InputRow("J/S threshold", unit: "dB", value: $jsThreshold,
+                         in: -30...30, step: 0.5) { adapter.setJsThreshold($0) }
             }
             Section("Shared") {
                 InputRow("Frequency", unit: "MHz", value: $frequency,
@@ -69,6 +73,7 @@ struct JammingView: View {
                 ResultRow("J/S ratio",    cStr(adapter.output.js_ratio_str))
                 ResultRow("Signal at Rx", cStr(adapter.output.signal_at_rx_str))
                 ResultRow("Jammer at Rx", cStr(adapter.output.jammer_at_rx_str))
+                ResultRow("Burnthrough",  cStr(adapter.output.burnthrough_range_str))
             }
             Section("Partial-Band") {
                 ResultRow("Optimum jammer BW", cStr(adapter.output.optimum_bw_str))

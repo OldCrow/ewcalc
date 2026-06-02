@@ -35,6 +35,8 @@ struct PropagationView: View {
                 ResultRow("Fresnel crossover", cStr(adapter.output.fresnel_zone_str))
                 ResultRow("Path loss",         cStr(adapter.output.path_loss_str))
                 ResultRow("Regime",            cStr(adapter.output.regime_str))
+                ResultRow("Earth bulge (mid)", cStr(adapter.output.earth_bulge_str))
+                ResultRow("Radar horizon",     cStr(adapter.output.horizon_range_str))
             }
         }
         .formStyle(.grouped)

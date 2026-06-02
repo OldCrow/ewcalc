@@ -80,6 +80,7 @@ set(SWIFT_SOURCES
     app/Adapters/JammingAdapter.swift
     app/Adapters/LocationAdapter.swift
     app/Adapters/RadarAdapter.swift
+    app/Adapters/DigitalAdapter.swift
     app/Views/Shared.swift
     app/Views/PropagationView.swift
     app/Views/LinkView.swift
@@ -87,6 +88,7 @@ set(SWIFT_SOURCES
     app/Views/JammingView.swift
     app/Views/LocationView.swift
     app/Views/RadarView.swift
+    app/Views/DigitalView.swift
 )
 
 # App icon (must be a resource inside the bundle)

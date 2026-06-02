@@ -10,6 +10,7 @@
 #include <ewpresenter/jamming_presenter.h>
 #include <ewpresenter/location_presenter.h>
 #include <ewpresenter/radar_presenter.h>
+#include <ewpresenter/digital_presenter.h>
 
 #include <cstring>
 #include <vector>
@@ -34,11 +35,13 @@ struct PropagationWrapper {
 
 static EwpPropagationOutput to_c(const ewpresenter::PropagationPresenter::Output& o) noexcept {
     EwpPropagationOutput out{};
-    copy_str(out.fspl_str,        o.fspl_str);
-    copy_str(out.two_ray_loss_str,o.two_ray_loss_str);
-    copy_str(out.fresnel_zone_str,o.fresnel_zone_str);
-    copy_str(out.path_loss_str,   o.path_loss_str);
-    copy_str(out.regime_str,      o.regime_str);
+    copy_str(out.fspl_str,          o.fspl_str);
+    copy_str(out.two_ray_loss_str,  o.two_ray_loss_str);
+    copy_str(out.fresnel_zone_str,  o.fresnel_zone_str);
+    copy_str(out.path_loss_str,     o.path_loss_str);
+    copy_str(out.regime_str,        o.regime_str);
+    copy_str(out.earth_bulge_str,   o.earth_bulge_str);
+    copy_str(out.horizon_range_str, o.horizon_range_str);
     out.valid = o.valid;
     return out;
 }
@@ -74,11 +77,12 @@ struct ReceiverWrapper {
 
 static EwpReceiverOutput to_c(const ewpresenter::ReceiverPresenter::Output& o) noexcept {
     EwpReceiverOutput out{};
-    copy_str(out.sensitivity_str, o.sensitivity_str);
-    copy_str(out.cascaded_nf_str, o.cascaded_nf_str);
-    copy_str(out.sfdr2_str,       o.sfdr2_str);
-    copy_str(out.sfdr3_str,       o.sfdr3_str);
-    copy_str(out.digital_dr_str,  o.digital_dr_str);
+    copy_str(out.sensitivity_str,        o.sensitivity_str);
+    copy_str(out.cascaded_nf_str,        o.cascaded_nf_str);
+    copy_str(out.sfdr2_str,              o.sfdr2_str);
+    copy_str(out.sfdr3_str,              o.sfdr3_str);
+    copy_str(out.digital_dr_str,         o.digital_dr_str);
+    copy_str(out.system_noise_temp_str,  o.system_noise_temp_str);
     out.valid = o.valid;
     return out;
 }
@@ -93,11 +97,12 @@ struct JammingWrapper {
 
 static EwpJammingOutput to_c(const ewpresenter::JammingPresenter::Output& o) noexcept {
     EwpJammingOutput out{};
-    copy_str(out.js_ratio_str,     o.js_ratio_str);
-    copy_str(out.signal_at_rx_str, o.signal_at_rx_str);
-    copy_str(out.jammer_at_rx_str, o.jammer_at_rx_str);
-    copy_str(out.optimum_bw_str,   o.optimum_bw_str);
-    copy_str(out.duty_cycle_str,   o.duty_cycle_str);
+    copy_str(out.js_ratio_str,          o.js_ratio_str);
+    copy_str(out.signal_at_rx_str,      o.signal_at_rx_str);
+    copy_str(out.jammer_at_rx_str,      o.jammer_at_rx_str);
+    copy_str(out.optimum_bw_str,        o.optimum_bw_str);
+    copy_str(out.duty_cycle_str,        o.duty_cycle_str);
+    copy_str(out.burnthrough_range_str, o.burnthrough_range_str);
     out.valid = o.valid;
     return out;
 }
@@ -112,8 +117,9 @@ struct LocationWrapper {
 
 static EwpLocationOutput to_c(const ewpresenter::LocationPresenter::Output& o) noexcept {
     EwpLocationOutput out{};
-    copy_str(out.cep_aoa_str, o.cep_aoa_str);
-    copy_str(out.cep_eep_str, o.cep_eep_str);
+    copy_str(out.cep_aoa_str,  o.cep_aoa_str);
+    copy_str(out.cep_tdoa_str, o.cep_tdoa_str);
+    copy_str(out.cep_eep_str,  o.cep_eep_str);
     out.valid = o.valid;
     return out;
 }
@@ -128,10 +134,29 @@ struct RadarWrapper {
 
 static EwpRadarOutput to_c(const ewpresenter::RadarPresenter::Output& o) noexcept {
     EwpRadarOutput out{};
-    copy_str(out.max_range_str,    o.max_range_str);
-    copy_str(out.two_way_loss_str, o.two_way_loss_str);
-    copy_str(out.pc_gain_str,      o.pulse_compression_gain_str);
-    copy_str(out.ci_gain_str,      o.coherent_integration_gain_str);
+    copy_str(out.max_range_str,       o.max_range_str);
+    copy_str(out.two_way_loss_str,    o.two_way_loss_str);
+    copy_str(out.pc_gain_str,         o.pulse_compression_gain_str);
+    copy_str(out.ci_gain_str,         o.coherent_integration_gain_str);
+    copy_str(out.lpi_advantage_str,   o.lpi_advantage_str);
+    out.valid = o.valid;
+    return out;
+}
+
+// ── Digital ──────────────────────────────────────────────────────────────────
+
+struct DigitalWrapper {
+    ewpresenter::DigitalPresenter presenter;
+    EwpDigitalCallback cb = nullptr;
+    void* ctx = nullptr;
+};
+
+static EwpDigitalOutput to_c(const ewpresenter::DigitalPresenter::Output& o) noexcept {
+    EwpDigitalOutput out{};
+    copy_str(out.eb_no_str,          o.eb_no_str);
+    copy_str(out.process_gain_str,   o.process_gain_str);
+    copy_str(out.jamming_margin_str, o.jamming_margin_str);
+    copy_str(out.required_js_str,    o.required_js_str);
     out.valid = o.valid;
     return out;
 }
@@ -282,6 +307,7 @@ void ewp_jamming_set_rx_gain_signal(EwpJammingRef ref, double db) { cast<Jamming
 void ewp_jamming_set_rx_gain_jammer(EwpJammingRef ref, double db) { cast<JammingWrapper>(ref)->presenter.set_rx_gain_jammer(db); }
 void ewp_jamming_set_signal_bandwidth(EwpJammingRef ref, double mhz){ cast<JammingWrapper>(ref)->presenter.set_signal_bandwidth(mhz); }
 void ewp_jamming_set_hop_range(EwpJammingRef ref, double mhz)     { cast<JammingWrapper>(ref)->presenter.set_hop_range(mhz); }
+void ewp_jamming_set_js_threshold(EwpJammingRef ref, double db)   { cast<JammingWrapper>(ref)->presenter.set_js_threshold(db); }
 
 void ewp_jamming_set_callback(EwpJammingRef ref, EwpJammingCallback cb, void* ctx) {
     auto* w = cast<JammingWrapper>(ref); w->cb = cb; w->ctx = ctx;
@@ -297,6 +323,7 @@ double           ewp_jamming_rx_height(EwpJammingRef ref)        { return cast<J
 double           ewp_jamming_frequency(EwpJammingRef ref)        { return cast<JammingWrapper>(ref)->presenter.frequency_mhz(); }
 double           ewp_jamming_signal_bandwidth(EwpJammingRef ref) { return cast<JammingWrapper>(ref)->presenter.signal_bandwidth_mhz(); }
 double           ewp_jamming_hop_range(EwpJammingRef ref)        { return cast<JammingWrapper>(ref)->presenter.hop_range_mhz(); }
+double           ewp_jamming_js_threshold(EwpJammingRef ref)     { return cast<JammingWrapper>(ref)->presenter.js_threshold_db(); }
 EwpJammingOutput ewp_jamming_output(EwpJammingRef ref)           { return to_c(cast<JammingWrapper>(ref)->presenter.output()); }
 
 // ============================================================================
@@ -314,6 +341,7 @@ void ewp_location_destroy(EwpLocationRef ref) { delete cast<LocationWrapper>(ref
 
 void ewp_location_set_rms_bearing_error(EwpLocationRef ref, double deg){ cast<LocationWrapper>(ref)->presenter.set_rms_bearing_error(deg); }
 void ewp_location_set_aoa_range(EwpLocationRef ref, double km)         { cast<LocationWrapper>(ref)->presenter.set_aoa_range(km); }
+void ewp_location_set_rms_time_error(EwpLocationRef ref, double ns)    { cast<LocationWrapper>(ref)->presenter.set_rms_time_error(ns); }
 void ewp_location_set_semi_major(EwpLocationRef ref, double km)        { cast<LocationWrapper>(ref)->presenter.set_semi_major(km); }
 void ewp_location_set_semi_minor(EwpLocationRef ref, double km)        { cast<LocationWrapper>(ref)->presenter.set_semi_minor(km); }
 
@@ -323,6 +351,7 @@ void ewp_location_set_callback(EwpLocationRef ref, EwpLocationCallback cb, void*
 
 double            ewp_location_rms_bearing_error(EwpLocationRef ref) { return cast<LocationWrapper>(ref)->presenter.rms_bearing_error_deg(); }
 double            ewp_location_aoa_range(EwpLocationRef ref)         { return cast<LocationWrapper>(ref)->presenter.aoa_range_km(); }
+double            ewp_location_rms_time_error(EwpLocationRef ref)    { return cast<LocationWrapper>(ref)->presenter.rms_time_error_ns(); }
 double            ewp_location_semi_major(EwpLocationRef ref)        { return cast<LocationWrapper>(ref)->presenter.semi_major_km(); }
 double            ewp_location_semi_minor(EwpLocationRef ref)        { return cast<LocationWrapper>(ref)->presenter.semi_minor_km(); }
 EwpLocationOutput ewp_location_output(EwpLocationRef ref)            { return to_c(cast<LocationWrapper>(ref)->presenter.output()); }
@@ -366,5 +395,37 @@ double         ewp_radar_required_snr(EwpRadarRef ref)  { return cast<RadarWrapp
 double         ewp_radar_time_bandwidth(EwpRadarRef ref){ return cast<RadarWrapper>(ref)->presenter.time_bandwidth_product(); }
 int            ewp_radar_num_pulses(EwpRadarRef ref)    { return cast<RadarWrapper>(ref)->presenter.num_pulses(); }
 EwpRadarOutput ewp_radar_output(EwpRadarRef ref)        { return to_c(cast<RadarWrapper>(ref)->presenter.output()); }
+
+// ============================================================================
+// Digital implementation
+// ============================================================================
+
+EwpDigitalRef ewp_digital_create(void) {
+    auto* w = new DigitalWrapper();
+    w->presenter.set_on_change([w](const ewpresenter::DigitalPresenter::Output& o) {
+        if (w->cb) w->cb(to_c(o), w->ctx);
+    });
+    return w;
+}
+void ewp_digital_destroy(EwpDigitalRef ref) { delete cast<DigitalWrapper>(ref); }
+
+void ewp_digital_set_snr(EwpDigitalRef ref, double db)                { cast<DigitalWrapper>(ref)->presenter.set_snr(db); }
+void ewp_digital_set_bandwidth(EwpDigitalRef ref, double mhz)         { cast<DigitalWrapper>(ref)->presenter.set_bandwidth(mhz); }
+void ewp_digital_set_data_rate(EwpDigitalRef ref, double mbps)        { cast<DigitalWrapper>(ref)->presenter.set_data_rate(mbps); }
+void ewp_digital_set_chip_rate(EwpDigitalRef ref, double mcps)        { cast<DigitalWrapper>(ref)->presenter.set_chip_rate(mcps); }
+void ewp_digital_set_required_eb_no(EwpDigitalRef ref, double db)     { cast<DigitalWrapper>(ref)->presenter.set_required_eb_no(db); }
+void ewp_digital_set_implementation_loss(EwpDigitalRef ref, double db){ cast<DigitalWrapper>(ref)->presenter.set_implementation_loss(db); }
+
+void ewp_digital_set_callback(EwpDigitalRef ref, EwpDigitalCallback cb, void* ctx) {
+    auto* w = cast<DigitalWrapper>(ref); w->cb = cb; w->ctx = ctx;
+}
+
+double           ewp_digital_snr(EwpDigitalRef ref)                { return cast<DigitalWrapper>(ref)->presenter.snr_db(); }
+double           ewp_digital_bandwidth(EwpDigitalRef ref)          { return cast<DigitalWrapper>(ref)->presenter.bandwidth_mhz(); }
+double           ewp_digital_data_rate(EwpDigitalRef ref)          { return cast<DigitalWrapper>(ref)->presenter.data_rate_mhz(); }
+double           ewp_digital_chip_rate(EwpDigitalRef ref)          { return cast<DigitalWrapper>(ref)->presenter.chip_rate_mhz(); }
+double           ewp_digital_required_eb_no(EwpDigitalRef ref)     { return cast<DigitalWrapper>(ref)->presenter.required_eb_no_db(); }
+double           ewp_digital_implementation_loss(EwpDigitalRef ref){ return cast<DigitalWrapper>(ref)->presenter.implementation_loss_db(); }
+EwpDigitalOutput ewp_digital_output(EwpDigitalRef ref)             { return to_c(cast<DigitalWrapper>(ref)->presenter.output()); }
 
 } // extern "C"

@@ -71,6 +71,7 @@ struct ReceiverView: View {
             Section("Results") {
                 ResultRow("Sensitivity",      cStr(adapter.output.sensitivity_str))
                 ResultRow("Cascaded NF",      cStr(adapter.output.cascaded_nf_str))
+                ResultRow("Sys. noise temp",  cStr(adapter.output.system_noise_temp_str))
                 ResultRow("SFDR (2nd order)", cStr(adapter.output.sfdr2_str))
                 ResultRow("SFDR (3rd order)", cStr(adapter.output.sfdr3_str))
                 ResultRow("Digital DR",       cStr(adapter.output.digital_dr_str))

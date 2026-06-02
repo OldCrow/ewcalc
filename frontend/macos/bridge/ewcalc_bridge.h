@@ -26,6 +26,8 @@ typedef struct EwpPropagationOutput {
     char fresnel_zone_str[EWP_STR_MAX];
     char path_loss_str[EWP_STR_MAX];
     char regime_str[EWP_STR_MAX];
+    char earth_bulge_str[EWP_STR_MAX];
+    char horizon_range_str[EWP_STR_MAX];
     bool valid;
 } EwpPropagationOutput;
 
@@ -103,6 +105,7 @@ typedef struct EwpReceiverOutput {
     char sfdr2_str[EWP_STR_MAX];
     char sfdr3_str[EWP_STR_MAX];
     char digital_dr_str[EWP_STR_MAX];
+    char system_noise_temp_str[EWP_STR_MAX];
     bool valid;
 } EwpReceiverOutput;
 
@@ -143,6 +146,7 @@ typedef struct EwpJammingOutput {
     char jammer_at_rx_str[EWP_STR_MAX];
     char optimum_bw_str[EWP_STR_MAX];
     char duty_cycle_str[EWP_STR_MAX];
+    char burnthrough_range_str[EWP_STR_MAX];
     bool valid;
 } EwpJammingOutput;
 
@@ -164,6 +168,7 @@ void ewp_jamming_set_rx_gain_signal(EwpJammingRef ref, double db);
 void ewp_jamming_set_rx_gain_jammer(EwpJammingRef ref, double db);
 void ewp_jamming_set_signal_bandwidth(EwpJammingRef ref, double mhz);
 void ewp_jamming_set_hop_range(EwpJammingRef ref, double mhz);
+void ewp_jamming_set_js_threshold(EwpJammingRef ref, double db);
 void ewp_jamming_set_callback(EwpJammingRef ref, EwpJammingCallback cb, void* ctx);
 
 double        ewp_jamming_signal_erp(EwpJammingRef ref);
@@ -176,6 +181,7 @@ double        ewp_jamming_rx_height(EwpJammingRef ref);
 double        ewp_jamming_frequency(EwpJammingRef ref);
 double        ewp_jamming_signal_bandwidth(EwpJammingRef ref);
 double        ewp_jamming_hop_range(EwpJammingRef ref);
+double        ewp_jamming_js_threshold(EwpJammingRef ref);
 EwpJammingOutput ewp_jamming_output(EwpJammingRef ref);
 
 // ============================================================================
@@ -184,6 +190,7 @@ EwpJammingOutput ewp_jamming_output(EwpJammingRef ref);
 
 typedef struct EwpLocationOutput {
     char cep_aoa_str[EWP_STR_MAX];
+    char cep_tdoa_str[EWP_STR_MAX];
     char cep_eep_str[EWP_STR_MAX];
     bool valid;
 } EwpLocationOutput;
@@ -196,12 +203,14 @@ void           ewp_location_destroy(EwpLocationRef ref);
 
 void ewp_location_set_rms_bearing_error(EwpLocationRef ref, double deg);
 void ewp_location_set_aoa_range(EwpLocationRef ref, double km);
+void ewp_location_set_rms_time_error(EwpLocationRef ref, double ns);
 void ewp_location_set_semi_major(EwpLocationRef ref, double km);
 void ewp_location_set_semi_minor(EwpLocationRef ref, double km);
 void ewp_location_set_callback(EwpLocationRef ref, EwpLocationCallback cb, void* ctx);
 
 double         ewp_location_rms_bearing_error(EwpLocationRef ref);
 double         ewp_location_aoa_range(EwpLocationRef ref);
+double         ewp_location_rms_time_error(EwpLocationRef ref);
 double         ewp_location_semi_major(EwpLocationRef ref);
 double         ewp_location_semi_minor(EwpLocationRef ref);
 EwpLocationOutput ewp_location_output(EwpLocationRef ref);
@@ -215,6 +224,7 @@ typedef struct EwpRadarOutput {
     char two_way_loss_str[EWP_STR_MAX];
     char pc_gain_str[EWP_STR_MAX];
     char ci_gain_str[EWP_STR_MAX];
+    char lpi_advantage_str[EWP_STR_MAX];
     bool valid;
 } EwpRadarOutput;
 
@@ -247,6 +257,40 @@ double        ewp_radar_required_snr(EwpRadarRef ref);
 double        ewp_radar_time_bandwidth(EwpRadarRef ref);
 int           ewp_radar_num_pulses(EwpRadarRef ref);
 EwpRadarOutput ewp_radar_output(EwpRadarRef ref);
+
+// ============================================================================
+// Digital / Spread Spectrum
+// ============================================================================
+
+typedef struct EwpDigitalOutput {
+    char eb_no_str[EWP_STR_MAX];
+    char process_gain_str[EWP_STR_MAX];
+    char jamming_margin_str[EWP_STR_MAX];
+    char required_js_str[EWP_STR_MAX];
+    bool valid;
+} EwpDigitalOutput;
+
+typedef void* EwpDigitalRef;
+typedef void (*EwpDigitalCallback)(EwpDigitalOutput output, void* ctx);
+
+EwpDigitalRef ewp_digital_create(void);
+void          ewp_digital_destroy(EwpDigitalRef ref);
+
+void ewp_digital_set_snr(EwpDigitalRef ref, double db);
+void ewp_digital_set_bandwidth(EwpDigitalRef ref, double mhz);
+void ewp_digital_set_data_rate(EwpDigitalRef ref, double mbps);
+void ewp_digital_set_chip_rate(EwpDigitalRef ref, double mcps);
+void ewp_digital_set_required_eb_no(EwpDigitalRef ref, double db);
+void ewp_digital_set_implementation_loss(EwpDigitalRef ref, double db);
+void ewp_digital_set_callback(EwpDigitalRef ref, EwpDigitalCallback cb, void* ctx);
+
+double           ewp_digital_snr(EwpDigitalRef ref);
+double           ewp_digital_bandwidth(EwpDigitalRef ref);
+double           ewp_digital_data_rate(EwpDigitalRef ref);
+double           ewp_digital_chip_rate(EwpDigitalRef ref);
+double           ewp_digital_required_eb_no(EwpDigitalRef ref);
+double           ewp_digital_implementation_loss(EwpDigitalRef ref);
+EwpDigitalOutput ewp_digital_output(EwpDigitalRef ref);
 
 #ifdef __cplusplus
 }

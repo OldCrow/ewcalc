@@ -68,6 +68,7 @@ struct RadarView: View {
                 ResultRow("Two-way loss",             cStr(adapter.output.two_way_loss_str))
                 ResultRow("PC gain",                  cStr(adapter.output.pc_gain_str))
                 ResultRow("Coherent integration gain",cStr(adapter.output.ci_gain_str))
+                ResultRow("LPI advantage",            cStr(adapter.output.lpi_advantage_str))
             }
         }
         .formStyle(.grouped)
