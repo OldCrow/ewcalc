@@ -25,25 +25,35 @@ struct DigitalView: View {
         Form {
             Section("Digital Link") {
                 InputRow("Data rate", unit: "Mbps", value: $dataRate,
-                         in: 0.0001...10000, step: 0.01, decimals: 4) { adapter.setDataRate($0) }
+                         in: 0.0001...10000, step: 0.01, decimals: 4,
+                         help: "Information bit rate — shared between the Eb/N₀ conversion and DSSS process gain") { adapter.setDataRate($0) }
                 InputRow("Bandwidth", unit: "MHz", value: $bandwidth,
-                         in: 0.001...10000, step: 0.1, decimals: 3) { adapter.setBandwidth($0) }
+                         in: 0.001...10000, step: 0.1, decimals: 3,
+                         help: "Receiver noise bandwidth — wider than the data rate gives Eb/N₀ > SNR") { adapter.setBandwidth($0) }
                 InputRow("Received SNR", unit: "dB", value: $snr,
-                         in: -30...60)  { adapter.setSnr($0) }
+                         in: -30...60,
+                         help: "Carrier-to-noise ratio measured in the noise bandwidth") { adapter.setSnr($0) }
             }
             Section("DSSS") {
                 InputRow("Chip rate", unit: "Mcps", value: $chipRate,
-                         in: 0.0001...10000, step: 1, decimals: 3) { adapter.setChipRate($0) }
+                         in: 0.0001...10000, step: 1, decimals: 3,
+                         help: "Spread-spectrum chipping rate — determines the spreading bandwidth and process gain") { adapter.setChipRate($0) }
                 InputRow("Required Eb/N₀", unit: "dB", value: $requiredEbNo,
-                         in: -10...30, step: 0.5) { adapter.setRequiredEbNo($0) }
+                         in: -10...30, step: 0.5,
+                         help: "Minimum energy-per-bit to noise density for acceptable BER — typically 10–13 dB for BPSK/QPSK") { adapter.setRequiredEbNo($0) }
                 InputRow("Impl. loss", unit: "dB", value: $implementationLoss,
-                         in: 0...10, step: 0.5) { adapter.setImplementationLoss($0) }
+                         in: 0...10, step: 0.5,
+                         help: "Practical losses from non-ideal code synchronisation, filter roll-off, etc. — typically 1–3 dB") { adapter.setImplementationLoss($0) }
             }
             Section("Results") {
-                ResultRow("Eb/N₀",           cStr(adapter.output.eb_no_str))
-                ResultRow("Process gain",     cStr(adapter.output.process_gain_str))
-                ResultRow("Jamming margin",   cStr(adapter.output.jamming_margin_str))
-                ResultRow("Required J/S",     cStr(adapter.output.required_js_str))
+                ResultRow("Eb/N₀",           cStr(adapter.output.eb_no_str),
+                          help: "Energy-per-bit to noise density: SNR + 10·log₁₀(bandwidth / data rate)")
+                ResultRow("Process gain",     cStr(adapter.output.process_gain_str),
+                          help: "DSSS spreading gain: 10·log₁₀(chip rate / data rate)")
+                ResultRow("Jamming margin",   cStr(adapter.output.jamming_margin_str),
+                          help: "Process gain minus required Eb/N₀ minus implementation losses — positive means spreading gain exceeds jammer advantage")
+                ResultRow("Required J/S",     cStr(adapter.output.required_js_str),
+                          help: "J/S a jammer must achieve to overcome the spreading gain — negative means the jammer has an inherent advantage")
             }
         }
         .formStyle(.grouped)

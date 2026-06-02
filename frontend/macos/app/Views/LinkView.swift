@@ -29,11 +29,14 @@ struct LinkView: View {
         Form {
             Section("Transmitter") {
                 InputRow("Tx power", unit: "dBm", value: $txPower,
-                         in: -50...200)  { adapter.setTxPower($0) }
+                         in: -50...200,
+                         help: "Transmitter output power at the antenna port") { adapter.setTxPower($0) }
                 InputRow("Tx gain", unit: "dB", value: $txGain,
-                         in: -30...60)   { adapter.setTxGain($0) }
+                         in: -30...60,
+                         help: "Transmit antenna gain toward the receiver (dBi)") { adapter.setTxGain($0) }
                 InputRow("Frequency", unit: "MHz", value: $frequency,
-                         in: 0.1...100000, step: 1)  { adapter.setFrequency($0) }
+                         in: 0.1...100000, step: 1,
+                         help: "Carrier frequency — used to select the propagation regime") { adapter.setFrequency($0) }
             }
             Section("Geometry") {
                 InputRow("Distance", unit: "km", value: $distance,
@@ -45,18 +48,25 @@ struct LinkView: View {
             }
             Section("Receiver") {
                 InputRow("Rx gain", unit: "dB", value: $rxGain,
-                         in: -30...60)   { adapter.setRxGain($0) }
+                         in: -30...60,
+                         help: "Receive antenna gain toward the transmitter (dBi)") { adapter.setRxGain($0) }
                 InputRow("Rx sensitivity", unit: "dBm", value: $rxSensitivity,
-                         in: -200...0)   { adapter.setRxSensitivity($0) }
+                         in: -200...0,
+                         help: "Minimum signal level the receiver can detect; the link closes when received power ≥ sensitivity") { adapter.setRxSensitivity($0) }
             }
             Section("Results") {
-                ResultRow("Received power",  cStr(adapter.output.received_power_str))
+                ResultRow("Received power",  cStr(adapter.output.received_power_str),
+                          help: "Signal power at the receiver input: Ptx + Gtx + Grx − path loss")
                 ResultRow("Path loss",       cStr(adapter.output.path_loss_str))
-                ResultRow("Link margin",     cStr(adapter.output.link_margin_str))
-                ResultRow("Fresnel crossover",cStr(adapter.output.fresnel_zone_str))
+                ResultRow("Link margin",     cStr(adapter.output.link_margin_str),
+                          help: "Received power minus sensitivity — positive = link closed; negative = link failure")
+                ResultRow("Fresnel crossover",cStr(adapter.output.fresnel_zone_str),
+                          help: "Range at which ground reflection begins to dominate")
                 ResultRow("Regime",          cStr(adapter.output.regime_str))
-                ResultRow("Effective range", cStr(adapter.output.effective_range_str))
-                ResultRow("Range regime",    cStr(adapter.output.range_regime_str))
+                ResultRow("Effective range", cStr(adapter.output.effective_range_str),
+                          help: "Maximum range at which the link closes — where received power equals sensitivity")
+                ResultRow("Range regime",    cStr(adapter.output.range_regime_str),
+                          help: "Propagation model that limits the effective range")
             }
         }
         .formStyle(.grouped)

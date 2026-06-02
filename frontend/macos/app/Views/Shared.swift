@@ -25,6 +25,7 @@ struct InputRow: View {
     let step:     Double
     let decimals: Int
     let onChange: (Double) -> Void
+    let help:     String?
 
     init(
         _ label: String,
@@ -33,6 +34,7 @@ struct InputRow: View {
         in range: ClosedRange<Double>,
         step: Double = 1.0,
         decimals: Int = 1,
+        help: String? = nil,
         onChange: @escaping (Double) -> Void
     ) {
         self.label    = label
@@ -41,6 +43,7 @@ struct InputRow: View {
         self.range    = range
         self.step     = step
         self.decimals = decimals
+        self.help     = help
         self.onChange = onChange
     }
 
@@ -67,6 +70,7 @@ struct InputRow: View {
             }
         }
         .onChange(of: value) { onChange($0) }
+        .help(help ?? "")
     }
 }
 
@@ -76,10 +80,12 @@ struct InputRow: View {
 struct ResultRow: View {
     let label: String
     let value: String
+    let help:  String?
 
-    init(_ label: String, _ value: String) {
+    init(_ label: String, _ value: String, help: String? = nil) {
         self.label = label
         self.value = value
+        self.help  = help
     }
 
     var body: some View {
@@ -90,5 +96,6 @@ struct ResultRow: View {
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .monospaced()
         }
+        .help(help ?? "")
     }
 }

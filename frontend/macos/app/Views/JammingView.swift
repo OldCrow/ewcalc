@@ -39,25 +39,30 @@ struct JammingView: View {
         Form {
             Section("Signal") {
                 InputRow("Signal ERP", unit: "dBm", value: $signalErp,
-                         in: -100...200) { adapter.setSignalErp($0) }
+                         in: -100...200,
+                         help: "Effective radiated power of the desired signal: transmitter power + antenna gain") { adapter.setSignalErp($0) }
                 InputRow("Signal→Rx dist", unit: "km", value: $signalDist,
                          in: 0.01...10000, step: 0.1, decimals: 3) { adapter.setSignalDist($0) }
                 InputRow("Signal Tx height", unit: "m", value: $signalHeight,
                          in: 0.1...100000, step: 0.5, decimals: 1) { adapter.setSignalHeight($0) }
                 InputRow("Signal BW", unit: "MHz", value: $signalBw,
-                         in: 0.001...1000, step: 0.001, decimals: 3) { adapter.setSignalBandwidth($0) }
+                         in: 0.001...1000, step: 0.001, decimals: 3,
+                         help: "Occupied bandwidth of the target signal — used for partial-band jamming optimisation") { adapter.setSignalBandwidth($0) }
             }
             Section("Jammer") {
                 InputRow("Jammer ERP", unit: "dBm", value: $jammerErp,
-                         in: -100...200) { adapter.setJammerErp($0) }
+                         in: -100...200,
+                         help: "Effective radiated power of the jammer toward the receiver") { adapter.setJammerErp($0) }
                 InputRow("Jammer→Rx dist", unit: "km", value: $jammerDist,
                          in: 0.01...10000, step: 0.1, decimals: 3) { adapter.setJammerDist($0) }
                 InputRow("Jammer height", unit: "m", value: $jammerHeight,
                          in: 0.1...100000, step: 0.5, decimals: 1) { adapter.setJammerHeight($0) }
                 InputRow("Hop range", unit: "MHz", value: $hopRange,
-                         in: 0.001...10000, step: 1)  { adapter.setHopRange($0) }
+                         in: 0.001...10000, step: 1,
+                         help: "Total frequency-hopping bandwidth of the target signal") { adapter.setHopRange($0) }
                 InputRow("J/S threshold", unit: "dB", value: $jsThreshold,
-                         in: -30...30, step: 0.5) { adapter.setJsThreshold($0) }
+                         in: -30...30, step: 0.5,
+                         help: "J/S level at which jamming is considered effective — used to calculate burnthrough range") { adapter.setJsThreshold($0) }
             }
             Section("Shared") {
                 InputRow("Frequency", unit: "MHz", value: $frequency,
@@ -70,14 +75,18 @@ struct JammingView: View {
                          in: -30...60)  { adapter.setRxGainJammer($0) }
             }
             Section("J/S Analysis") {
-                ResultRow("J/S ratio",    cStr(adapter.output.js_ratio_str))
+                ResultRow("J/S ratio",    cStr(adapter.output.js_ratio_str),
+                          help: "Jammer-to-signal power ratio at the receiver input (dB)")
                 ResultRow("Signal at Rx", cStr(adapter.output.signal_at_rx_str))
                 ResultRow("Jammer at Rx", cStr(adapter.output.jammer_at_rx_str))
-                ResultRow("Burnthrough",  cStr(adapter.output.burnthrough_range_str))
+                ResultRow("Burnthrough",  cStr(adapter.output.burnthrough_range_str),
+                          help: "Signal range at which J/S falls to the threshold — the jammer becomes ineffective beyond this distance")
             }
             Section("Partial-Band") {
-                ResultRow("Optimum jammer BW", cStr(adapter.output.optimum_bw_str))
-                ResultRow("Duty cycle",        cStr(adapter.output.duty_cycle_str))
+                ResultRow("Optimum jammer BW", cStr(adapter.output.optimum_bw_str),
+                          help: "Narrowing the jamming bandwidth increases instantaneous J/S at the cost of hit probability; this is the optimum trade-off")
+                ResultRow("Duty cycle",        cStr(adapter.output.duty_cycle_str),
+                          help: "Fraction of the hopping band covered by the optimum jamming bandwidth")
             }
         }
         .formStyle(.grouped)

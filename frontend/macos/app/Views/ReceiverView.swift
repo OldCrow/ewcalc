@@ -28,15 +28,20 @@ struct ReceiverView: View {
         Form {
             Section("System Inputs") {
                 InputRow("Bandwidth", unit: "MHz", value: $bandwidth,
-                         in: 0.001...10000, step: 0.1, decimals: 3) { adapter.setBandwidth($0) }
+                         in: 0.001...10000, step: 0.1, decimals: 3,
+                         help: "IF noise bandwidth — wider bandwidth raises the noise floor and degrades sensitivity") { adapter.setBandwidth($0) }
                 InputRow("Noise figure", unit: "dB", value: $noiseFigure,
-                         in: 0...30, step: 0.5)   { adapter.setNoiseFigure($0) }
+                         in: 0...30, step: 0.5,
+                         help: "System noise figure — NF = 0 dB is ideal (noiseless); each additional dB raises the sensitivity floor") { adapter.setNoiseFigure($0) }
                 InputRow("Required SNR", unit: "dB", value: $requiredSnr,
-                         in: -20...50, step: 0.5) { adapter.setRequiredSnr($0) }
+                         in: -20...50, step: 0.5,
+                         help: "Minimum pre-detection SNR for acceptable output — depends on modulation and required BER") { adapter.setRequiredSnr($0) }
                 InputRow("IIP2", unit: "dBm", value: $iip2,
-                         in: -50...100)            { adapter.setSecondOrderIp($0) }
+                         in: -50...100,
+                         help: "Second-order input intercept point — sets the 2nd-order intermodulation floor") { adapter.setSecondOrderIp($0) }
                 InputRow("IIP3", unit: "dBm", value: $iip3,
-                         in: -50...100)            { adapter.setThirdOrderIp($0) }
+                         in: -50...100,
+                         help: "Third-order input intercept point — sets the 3rd-order intermodulation floor; typically the tighter limit") { adapter.setThirdOrderIp($0) }
                 LabeledContent("ADC bits") {
                     HStack(spacing: 4) {
                         TextField("", value: $adcBits, format: .number)
@@ -69,12 +74,18 @@ struct ReceiverView: View {
                 .buttonStyle(.borderless)
             }
             Section("Results") {
-                ResultRow("Sensitivity",      cStr(adapter.output.sensitivity_str))
-                ResultRow("Cascaded NF",      cStr(adapter.output.cascaded_nf_str))
-                ResultRow("Sys. noise temp",  cStr(adapter.output.system_noise_temp_str))
-                ResultRow("SFDR (2nd order)", cStr(adapter.output.sfdr2_str))
-                ResultRow("SFDR (3rd order)", cStr(adapter.output.sfdr3_str))
-                ResultRow("Digital DR",       cStr(adapter.output.digital_dr_str))
+                ResultRow("Sensitivity",      cStr(adapter.output.sensitivity_str),
+                          help: "Minimum detectable signal: −114 + 10·log₁₀(BW) + NF + SNR (dBm)")
+                ResultRow("Cascaded NF",      cStr(adapter.output.cascaded_nf_str),
+                          help: "System noise figure from the Friis formula across the stage chain — front-end stage dominates")
+                ResultRow("Sys. noise temp",  cStr(adapter.output.system_noise_temp_str),
+                          help: "Equivalent noise temperature: Tₑ = (NFₗᵢₙ − 1) × 290 K")
+                ResultRow("SFDR (2nd order)", cStr(adapter.output.sfdr2_str),
+                          help: "2nd-order spurious-free dynamic range: ⅔ × (IIP2 − sensitivity)")
+                ResultRow("SFDR (3rd order)", cStr(adapter.output.sfdr3_str),
+                          help: "3rd-order spurious-free dynamic range: ⅔ × (IIP3 − sensitivity) — usually the binding constraint")
+                ResultRow("Digital DR",       cStr(adapter.output.digital_dr_str),
+                          help: "ADC quantisation dynamic range: 6.02·N + 1.76 dB")
             }
         }
         .formStyle(.grouped)
