@@ -15,5 +15,7 @@ private:
     QLabel* fresnel_zone_;
     QLabel* path_loss_;
     QLabel* regime_;
+    QLabel* earth_bulge_;
+    QLabel* horizon_range_;
     void applyOutput(const ewpresenter::PropagationPresenter::Output& o);
 };

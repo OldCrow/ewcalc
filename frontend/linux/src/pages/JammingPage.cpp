@@ -47,20 +47,22 @@ JammingPage::JammingPage(QWidget* parent)
     QFormLayout* rxForm = nullptr;
     auto* rxGroup = makeGroup(QStringLiteral("Receiver"), rxForm);
 
-    auto* rxHtSb      = makeSpinBox(  0.1, 100000.0, presenter_.rx_height_m(), 0.5, 1);
-    auto* rxGainSigSb = makeSpinBox(-30.0,     60.0, 0.0,                      1.0, 1);
-    auto* rxGainJamSb = makeSpinBox(-30.0,     60.0, 0.0,                      1.0, 1);
+    auto* rxHtSb      = makeSpinBox(  0.1, 100000.0, presenter_.rx_height_m(),    0.5, 1);
+    auto* rxGainSigSb = makeSpinBox(-30.0,     60.0, 0.0,                          1.0, 1);
+    auto* rxGainJamSb = makeSpinBox(-30.0,     60.0, 0.0,                          1.0, 1);
+    auto* jsThreshSb  = makeSpinBox(-30.0,     30.0, presenter_.js_threshold_db(), 0.5, 1);
 
     rxForm->addRow(QStringLiteral("Rx height (m):"),          rxHtSb);
-    rxForm->addRow(QStringLiteral("Rx gain → signal (dB):"),  rxGainSigSb);
-    rxForm->addRow(QStringLiteral("Rx gain → jammer (dB):"),  rxGainJamSb);
+    rxForm->addRow(QStringLiteral("Rx gain \u2192 signal (dB):"),  rxGainSigSb);
+    rxForm->addRow(QStringLiteral("Rx gain \u2192 jammer (dB):"),  rxGainJamSb);
+    rxForm->addRow(QStringLiteral("J/S threshold (dB):"),     jsThreshSb);
 
     // ── Partial-band inputs ───────────────────────────────────────────────────
     QFormLayout* pbForm = nullptr;
     auto* pbGroup = makeGroup(QStringLiteral("Partial-Band"), pbForm);
 
     auto* sigBwSb  = makeSpinBox(0.001, 1000.0,  presenter_.signal_bandwidth_mhz(), 0.001, 3);
-    auto* hopRgSb  = makeSpinBox(0.001, 10000.0, presenter_.hop_range_mhz(),        1.0,   1);
+    auto* hopRgSb  = makeSpinBox(0.0,   10000.0, presenter_.hop_range_mhz(),        1.0,   1);
 
     pbForm->addRow(QStringLiteral("Signal BW (MHz):"),    sigBwSb);
     pbForm->addRow(QStringLiteral("Hop range (MHz):"),    hopRgSb);
@@ -69,11 +71,12 @@ JammingPage::JammingPage(QWidget* parent)
     QFormLayout* outForm = nullptr;
     auto* outGroup = makeGroup(QStringLiteral("Results"), outForm);
 
-    js_ratio_    = addResultRow(outForm, QStringLiteral("J/S ratio"));
-    signal_at_rx_= addResultRow(outForm, QStringLiteral("Signal at Rx"));
-    jammer_at_rx_= addResultRow(outForm, QStringLiteral("Jammer at Rx"));
-    optimum_bw_  = addResultRow(outForm, QStringLiteral("Optimum jammer BW"));
-    duty_cycle_  = addResultRow(outForm, QStringLiteral("Duty cycle"));
+    js_ratio_         = addResultRow(outForm, QStringLiteral("J/S ratio"));
+    signal_at_rx_     = addResultRow(outForm, QStringLiteral("Signal at Rx"));
+    jammer_at_rx_     = addResultRow(outForm, QStringLiteral("Jammer at Rx"));
+    optimum_bw_       = addResultRow(outForm, QStringLiteral("Optimum jammer BW"));
+    duty_cycle_       = addResultRow(outForm, QStringLiteral("Duty cycle"));
+    burnthrough_range_= addResultRow(outForm, QStringLiteral("Burnthrough range"));
 
     // ── Scroll container ──────────────────────────────────────────────────────
     auto* content = new QWidget;
@@ -116,6 +119,8 @@ JammingPage::JammingPage(QWidget* parent)
             [this](double v){ presenter_.set_rx_gain_signal(v); });
     connect(rxGainJamSb, &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_rx_gain_jammer(v); });
+    connect(jsThreshSb,  &QDoubleSpinBox::valueChanged, this,
+            [this](double v){ presenter_.set_js_threshold(v); });
     connect(sigBwSb,    &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_signal_bandwidth(v); });
     connect(hopRgSb,    &QDoubleSpinBox::valueChanged, this,
@@ -135,4 +140,5 @@ void JammingPage::applyOutput(const ewpresenter::JammingPresenter::Output& o)
     jammer_at_rx_->setText(QString::fromStdString(o.jammer_at_rx_str));
     optimum_bw_->setText(QString::fromStdString(o.optimum_bw_str));
     duty_cycle_->setText(QString::fromStdString(o.duty_cycle_str));
+    burnthrough_range_->setText(QString::fromStdString(o.burnthrough_range_str));
 }

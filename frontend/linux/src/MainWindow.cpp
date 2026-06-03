@@ -6,6 +6,8 @@
 #include "pages/JammingPage.h"
 #include "pages/LocationPage.h"
 #include "pages/RadarPage.h"
+#include "pages/DigitalPage.h"
+#include "pages/ReferencePage.h"
 
 #include <QHBoxLayout>
 #include <QListWidget>
@@ -25,8 +27,10 @@ MainWindow::MainWindow(QWidget* parent)
     nav_->setMinimumWidth(140);
     for (const auto* label : {
             "Propagation", "Link Budget", "Receiver",
-            "Jamming",     "Location",    "Radar" })
+            "Jamming",     "Location",    "Radar",
+            "Digital / DSSS" })
         nav_->addItem(QString::fromUtf8(label));
+    nav_->addItem(QStringLiteral("Reference"));
 
     // ── Pages ─────────────────────────────────────────────────────────────────
     stack_->addWidget(new PropagationPage);
@@ -35,6 +39,8 @@ MainWindow::MainWindow(QWidget* parent)
     stack_->addWidget(new JammingPage);
     stack_->addWidget(new LocationPage);
     stack_->addWidget(new RadarPage);
+    stack_->addWidget(new DigitalPage);
+    stack_->addWidget(new ReferencePage);
 
     connect(nav_, &QListWidget::currentRowChanged,
             stack_, &QStackedWidget::setCurrentIndex);

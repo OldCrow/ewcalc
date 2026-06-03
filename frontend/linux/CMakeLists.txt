@@ -55,6 +55,8 @@ set(SOURCES
     src/pages/JammingPage.cpp
     src/pages/LocationPage.cpp
     src/pages/RadarPage.cpp
+    src/pages/DigitalPage.cpp
+    src/pages/ReferencePage.cpp
 )
 
 add_executable(ewcalc ${SOURCES})

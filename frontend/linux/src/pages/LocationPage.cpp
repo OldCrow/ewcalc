@@ -21,27 +21,39 @@ LocationPage::LocationPage(QWidget* parent)
     aoaForm->addRow(QStringLiteral("RMS bearing error (°):"), rmsBeSb);
     aoaForm->addRow(QStringLiteral("Range (km):"),             aoaRgSb);
 
+    // ── TDOA inputs ───────────────────────────────────────────────────────────
+    QFormLayout* tdoaForm = nullptr;
+    auto* tdoaGroup = makeGroup(QStringLiteral("TDOA (Time Difference of Arrival)"), tdoaForm);
+
+    auto* rmsTimeSb  = makeSpinBox(0.001, 100000.0, presenter_.rms_time_error_ns(), 1.0, 3);
+    auto* baselineSb = makeSpinBox(0.1,   10000.0,  presenter_.baseline_km(),       1.0, 1);
+
+    tdoaForm->addRow(QStringLiteral("RMS timing error (ns):"), rmsTimeSb);
+    tdoaForm->addRow(QStringLiteral("Baseline (km):"),         baselineSb);
+
     // ── EEP inputs ────────────────────────────────────────────────────────────
     QFormLayout* eepForm = nullptr;
-    auto* eepGroup = makeGroup(QStringLiteral("EEP (Error Ellipse → CEP)"), eepForm);
+    auto* eepGroup = makeGroup(QStringLiteral("EEP (Error Ellipse \u2192 CEP)"), eepForm);
 
     auto* semiMajSb = makeSpinBox(0.001, 1000.0, presenter_.semi_major_km(), 0.1, 3);
     auto* semiMinSb = makeSpinBox(0.001, 1000.0, presenter_.semi_minor_km(), 0.1, 3);
 
-    eepForm->addRow(QStringLiteral("Semi-major 1σ (km):"), semiMajSb);
-    eepForm->addRow(QStringLiteral("Semi-minor 1σ (km):"), semiMinSb);
+    eepForm->addRow(QStringLiteral("Semi-major 1\u03c3 (km):"), semiMajSb);
+    eepForm->addRow(QStringLiteral("Semi-minor 1\u03c3 (km):"), semiMinSb);
 
     // ── Outputs ───────────────────────────────────────────────────────────────
     QFormLayout* outForm = nullptr;
     auto* outGroup = makeGroup(QStringLiteral("Results"), outForm);
 
-    cep_aoa_ = addResultRow(outForm, QStringLiteral("CEP (AOA)"));
-    cep_eep_ = addResultRow(outForm, QStringLiteral("CEP (EEP)"));
+    cep_aoa_  = addResultRow(outForm, QStringLiteral("CEP (AOA)"));
+    cep_tdoa_ = addResultRow(outForm, QStringLiteral("CEP (TDOA)"));
+    cep_eep_  = addResultRow(outForm, QStringLiteral("CEP (EEP)"));
 
     // ── Scroll container ──────────────────────────────────────────────────────
     auto* content = new QWidget;
     auto* vbox    = new QVBoxLayout(content);
     vbox->addWidget(aoaGroup);
+    vbox->addWidget(tdoaGroup);
     vbox->addWidget(eepGroup);
     vbox->addWidget(outGroup);
     vbox->addStretch();
@@ -56,13 +68,17 @@ LocationPage::LocationPage(QWidget* parent)
     outer->addWidget(scroll);
 
     // ── Signal wiring ─────────────────────────────────────────────────────────
-    connect(rmsBeSb,  &QDoubleSpinBox::valueChanged, this,
+    connect(rmsBeSb,   &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_rms_bearing_error(v); });
-    connect(aoaRgSb,  &QDoubleSpinBox::valueChanged, this,
+    connect(aoaRgSb,   &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_aoa_range(v); });
-    connect(semiMajSb,&QDoubleSpinBox::valueChanged, this,
+    connect(rmsTimeSb, &QDoubleSpinBox::valueChanged, this,
+            [this](double v){ presenter_.set_rms_time_error(v); });
+    connect(baselineSb,&QDoubleSpinBox::valueChanged, this,
+            [this](double v){ presenter_.set_baseline(v); });
+    connect(semiMajSb, &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_semi_major(v); });
-    connect(semiMinSb,&QDoubleSpinBox::valueChanged, this,
+    connect(semiMinSb, &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_semi_minor(v); });
 
     presenter_.set_on_change([this](const ewpresenter::LocationPresenter::Output& o){
@@ -75,5 +91,6 @@ LocationPage::LocationPage(QWidget* parent)
 void LocationPage::applyOutput(const ewpresenter::LocationPresenter::Output& o)
 {
     cep_aoa_->setText(QString::fromStdString(o.cep_aoa_str));
+    cep_tdoa_->setText(QString::fromStdString(o.cep_tdoa_str));
     cep_eep_->setText(QString::fromStdString(o.cep_eep_str));
 }

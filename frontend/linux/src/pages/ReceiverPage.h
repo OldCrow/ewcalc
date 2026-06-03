@@ -28,6 +28,7 @@ private:
     // Output labels
     QLabel* sensitivity_;
     QLabel* cascaded_nf_;
+    QLabel* system_noise_temp_;
     QLabel* sfdr2_;
     QLabel* sfdr3_;
     QLabel* digital_dr_;
