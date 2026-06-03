@@ -1,0 +1,66 @@
+<Page
+    x:Class="EwCalc.Views.DigitalPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:EwCalc.Views">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24,20,24,24" Spacing="8">
+
+            <StackPanel Margin="0,0,0,8">
+                <TextBlock Text="Digital / DSSS"
+                           Style="{ThemeResource TitleTextBlockStyle}" />
+                <TextBlock Text="Eb/N₀ conversion · DSSS process gain · Jamming margin"
+                           Style="{ThemeResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+
+            <TextBlock Text="DIGITAL LINK" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource InputCardStyle}">
+                <StackPanel Spacing="12">
+                    <NumberBox x:Name="DataRateBox" Header="Data rate (Mbps)"
+                               Value="{x:Bind ViewModel.DefaultDataRate, Mode=OneTime}"
+                               Minimum="0.0001" Maximum="10000" SmallChange="0.1"
+                               ValueChanged="DataRateBox_ValueChanged" />
+                    <NumberBox x:Name="BandwidthBox" Header="Bandwidth (MHz)"
+                               Value="{x:Bind ViewModel.DefaultBandwidth, Mode=OneTime}"
+                               Minimum="0.001" Maximum="10000" SmallChange="1"
+                               ValueChanged="BandwidthBox_ValueChanged" />
+                    <NumberBox x:Name="SnrBox" Header="SNR (dB)"
+                               Value="{x:Bind ViewModel.DefaultSnr, Mode=OneTime}"
+                               Minimum="-30" Maximum="60" SmallChange="0.5"
+                               ValueChanged="SnrBox_ValueChanged" />
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="DSSS" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource InputCardStyle}">
+                <StackPanel Spacing="12">
+                    <NumberBox x:Name="ChipRateBox" Header="Chip rate (Mcps)"
+                               Value="{x:Bind ViewModel.DefaultChipRate, Mode=OneTime}"
+                               Minimum="0.0001" Maximum="10000" SmallChange="1"
+                               ValueChanged="ChipRateBox_ValueChanged" />
+                    <NumberBox x:Name="RequiredEbNoBox" Header="Required Eb/N₀ (dB)"
+                               Value="{x:Bind ViewModel.DefaultRequiredEbNo, Mode=OneTime}"
+                               Minimum="-10" Maximum="30" SmallChange="0.5"
+                               ValueChanged="RequiredEbNoBox_ValueChanged" />
+                    <NumberBox x:Name="ImplLossBox" Header="Implementation loss (dB)"
+                               Value="{x:Bind ViewModel.DefaultImplementationLoss, Mode=OneTime}"
+                               Minimum="0" Maximum="10" SmallChange="0.1"
+                               ValueChanged="ImplLossBox_ValueChanged" />
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="RESULTS" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource ResultCardStyle}">
+                <StackPanel Spacing="0">
+                    <local:ResultRow Label="Eb/N₀"          Value="{x:Bind ViewModel.EbNo,          Mode=OneWay}" IsHighlighted="True" />
+                    <local:ResultRow Label="Process gain"   Value="{x:Bind ViewModel.ProcessGain,   Mode=OneWay}" />
+                    <local:ResultRow Label="Jamming margin" Value="{x:Bind ViewModel.JammingMargin, Mode=OneWay}" IsHighlighted="True" />
+                    <local:ResultRow Label="Required J/S"  Value="{x:Bind ViewModel.RequiredJs,    Mode=OneWay}" />
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

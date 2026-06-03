@@ -10,6 +10,7 @@ public value struct RadarOutput {
     System::String^ TwoWayLossStr;
     System::String^ PulseCompressionGainStr;
     System::String^ CoherentIntegrationGainStr;
+    System::String^ LpiAdvantageStr;
     bool Valid;
 };
 
@@ -60,6 +61,7 @@ private:
         s.TwoWayLossStr              = ToManaged(o.two_way_loss_str);
         s.PulseCompressionGainStr    = ToManaged(o.pulse_compression_gain_str);
         s.CoherentIntegrationGainStr = ToManaged(o.coherent_integration_gain_str);
+        s.LpiAdvantageStr            = ToManaged(o.lpi_advantage_str);
         s.Valid                      = o.valid;
         return s;
     }

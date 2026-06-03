@@ -1,0 +1,240 @@
+<Page
+    x:Class="EwCalc.Views.ReferencePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24,20,24,24" Spacing="8">
+
+            <StackPanel Margin="0,0,0,8">
+                <TextBlock Text="Reference"
+                           Style="{ThemeResource TitleTextBlockStyle}" />
+                <TextBlock Text="Common EW values for quick entry"
+                           Style="{ThemeResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+
+            <!-- Antenna Gain -->
+            <TextBlock Text="ANTENNA GAIN" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource ResultCardStyle}">
+                <StackPanel Spacing="0">
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Isotropic (reference)" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="0.0 dBi" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyAntGain0" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyAntGain0_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Short whip / rubber duck" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="0 dBi  (typical)" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyAntGain1" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyAntGain1_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Quarter-wave whip, ground-plane mount" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="2 dBi  (typical)" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyAntGain2" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyAntGain2_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Half-wave dipole" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="2.15 dBi  (0 dBd)" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyAntGain3" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyAntGain3_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="2-element Yagi" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="≈ 7 dBi" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyAntGain4" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyAntGain4_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="3-element Yagi" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="≈ 8.5 dBi" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyAntGain5" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyAntGain5_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="5-element Yagi" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="≈ 10.5 dBi" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyAntGain6" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyAntGain6_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="10-element Yagi" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="≈ 14 dBi" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyAntGain7" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyAntGain7_Click" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Antenna Sidelobe Levels -->
+            <TextBlock Text="ANTENNA SIDELOBE LEVELS (re main lobe)" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource ResultCardStyle}">
+                <StackPanel Spacing="0">
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Uniform aperture — 1st SLL" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="−13 dBc" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopySll0" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopySll0_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Taylor weighted — 1st SLL" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="−25 dBc" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopySll1" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopySll1_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Low-sidelobe array — 1st SLL" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="−35 dBc" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopySll2" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopySll2_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Typical back lobe" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="−25 to −35 dBc" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Border Grid.Column="2" Width="32" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Thermal Noise Floor -->
+            <TextBlock Text="THERMAL NOISE FLOOR  (kT, 290 K)" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource ResultCardStyle}">
+                <StackPanel Spacing="0">
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="1 Hz bandwidth" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="−174.0 dBm" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyNoise0" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyNoise0_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="1 kHz bandwidth" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="−144.0 dBm" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyNoise1" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyNoise1_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="1 MHz bandwidth" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="−114.0 dBm" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyNoise2" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyNoise2_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="10 MHz bandwidth" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="−104.0 dBm" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyNoise3" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyNoise3_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="100 MHz bandwidth" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="−94.0 dBm" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyNoise4" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyNoise4_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="1 GHz bandwidth" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="−84.0 dBm" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyNoise5" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyNoise5_Click" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Radar Cross Section -->
+            <TextBlock Text="RADAR CROSS SECTION (Typical)" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource ResultCardStyle}">
+                <StackPanel Spacing="0">
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Large aircraft (broadside)" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="+15 dBsm  (rep.)" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyRcs0" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyRcs0_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Fighter (broadside)" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="+7 dBsm  (rep.)" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyRcs1" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyRcs1_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Fighter (nose-on, conventional)" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="0 dBsm  (≈ 1 m²)" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyRcs2" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyRcs2_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="LO fighter (nose-on)" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="−15 dBsm  (rep.)" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyRcs3" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyRcs3_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Cruise missile" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="−7 dBsm  (rep.)" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyRcs4" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyRcs4_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Bird" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="−15 dBsm  (rep.)" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyRcs5" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyRcs5_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Ship (small, ∼1 000 t)" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="+25 dBsm  (rep.)" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyRcs6" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyRcs6_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Ship (large, >10 000 t)" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="+45 dBsm  (rep.)" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyRcs7" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyRcs7_Click" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Eb/N₀ Requirements -->
+            <TextBlock Text="Eb/N₀ REQUIREMENTS (AWGN)" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource ResultCardStyle}">
+                <StackPanel Spacing="0">
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="BPSK / QPSK,  BER 10⁻³" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="6.8 dB" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyEbNo0" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyEbNo0_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="BPSK / QPSK,  BER 10⁻⁵" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="9.6 dB" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyEbNo1" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyEbNo1_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="BPSK / QPSK,  BER 10⁻⁶" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="10.5 dB" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyEbNo2" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyEbNo2_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Non-coh. FSK, BER 10⁻³" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="≈ 13.5 dB" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyEbNo3" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyEbNo3_Click" />
+                    </Grid>
+                    <Grid MinHeight="36" Padding="0,4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="32" /></Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Non-coh. FSK, BER 10⁻⁵" Style="{StaticResource ResultLabelStyle}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="≈ 17.0 dB" Style="{StaticResource ResultValueStyle}" VerticalAlignment="Center" TextAlignment="Right" />
+                        <Button Grid.Column="2" x:Name="CopyEbNo4" Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Padding="4" VerticalAlignment="Center" Click="CopyEbNo4_Click" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

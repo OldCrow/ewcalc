@@ -18,6 +18,8 @@ public sealed partial class MainWindow : Window
         ("Jamming",     typeof(JammingPage)),
         ("Location",    typeof(LocationPage)),
         ("Radar",       typeof(RadarPage)),
+        ("Digital",     typeof(DigitalPage)),
+        ("Reference",   typeof(ReferencePage)),
     ];
 
     public MainWindow()

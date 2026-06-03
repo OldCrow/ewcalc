@@ -13,15 +13,18 @@ public sealed class PropagationViewModel : INotifyPropertyChanged
 
     private string _pathLoss = string.Empty, _fspl = string.Empty,
                    _twoRayLoss = string.Empty, _fresnel = string.Empty,
-                   _regime = string.Empty;
+                   _regime = string.Empty,
+                   _earthBulge = string.Empty, _horizonRange = string.Empty;
     private bool _isValid = false;
 
-    public string PathLoss   { get => _pathLoss;   private set => Set(ref _pathLoss,   value); }
-    public string Fspl       { get => _fspl;       private set => Set(ref _fspl,       value); }
-    public string TwoRayLoss { get => _twoRayLoss; private set => Set(ref _twoRayLoss, value); }
-    public string Fresnel    { get => _fresnel;    private set => Set(ref _fresnel,    value); }
-    public string Regime     { get => _regime;     private set => Set(ref _regime,     value); }
-    public bool   IsValid    { get => _isValid;    private set => Set(ref _isValid,    value); }
+    public string PathLoss    { get => _pathLoss;    private set => Set(ref _pathLoss,    value); }
+    public string Fspl        { get => _fspl;        private set => Set(ref _fspl,        value); }
+    public string TwoRayLoss  { get => _twoRayLoss;  private set => Set(ref _twoRayLoss,  value); }
+    public string Fresnel     { get => _fresnel;     private set => Set(ref _fresnel,     value); }
+    public string Regime      { get => _regime;      private set => Set(ref _regime,      value); }
+    public string EarthBulge  { get => _earthBulge;  private set => Set(ref _earthBulge,  value); }
+    public string HorizonRange { get => _horizonRange; private set => Set(ref _horizonRange, value); }
+    public bool   IsValid     { get => _isValid;     private set => Set(ref _isValid,     value); }
 
     private FieldValidationError _distanceError  = FieldValidationError.None;
     private FieldValidationError _frequencyError = FieldValidationError.None;
@@ -53,7 +56,9 @@ public sealed class PropagationViewModel : INotifyPropertyChanged
     private void ApplyOutput(PropagationOutput o)
     {
         PathLoss = o.PathLossStr; Fspl = o.FsplStr; TwoRayLoss = o.TwoRayLossStr;
-        Fresnel = o.FresnelZoneStr; Regime = o.RegimeStr; IsValid = o.Valid;
+        Fresnel = o.FresnelZoneStr; Regime = o.RegimeStr;
+        EarthBulge = o.EarthBulgeStr; HorizonRange = o.HorizonRangeStr;
+        IsValid = o.Valid;
         DistanceError = _adapter.DistanceError; FrequencyError = _adapter.FrequencyError;
         TxHeightError = _adapter.TxHeightError; RxHeightError = _adapter.RxHeightError;
     }

@@ -8,6 +8,7 @@ namespace EwPresenterNet {
 public value struct LocationOutput {
     System::String^ CepAoaStr;
     System::String^ CepEepStr;
+    System::String^ CepTdoaStr;
     bool Valid;
 };
 
@@ -23,11 +24,15 @@ public:
     void SetAoaRange       (double km)      { presenter_->set_aoa_range(RoundInput(km));              }
     void SetSemiMajor      (double km)      { presenter_->set_semi_major(RoundInput(km));             }
     void SetSemiMinor      (double km)      { presenter_->set_semi_minor(RoundInput(km));             }
+    void SetRmsTimeError   (double ns)      { presenter_->set_rms_time_error(RoundInput(ns));         }
+    void SetBaseline       (double km)      { presenter_->set_baseline(RoundInput(km));               }
 
     property double DefaultRmsBearingError { double get() { return presenter_->rms_bearing_error_deg(); } }
     property double DefaultAoaRange        { double get() { return presenter_->aoa_range_km();          } }
     property double DefaultSemiMajor       { double get() { return presenter_->semi_major_km();         } }
     property double DefaultSemiMinor       { double get() { return presenter_->semi_minor_km();         } }
+    property double DefaultRmsTimeError    { double get() { return presenter_->rms_time_error_ns();     } }
+    property double DefaultBaseline        { double get() { return presenter_->baseline_km();            } }
 
     property FieldValidationError RmsBearingError { FieldValidationError get() { return ToManaged(presenter_->rms_bearing_error()); } }
     property FieldValidationError AoaRangeError   { FieldValidationError get() { return ToManaged(presenter_->aoa_range_error());   } }
@@ -47,9 +52,10 @@ private:
 
     static LocationOutput Snapshot(const ewpresenter::LocationPresenter::Output& o) {
         LocationOutput s{};
-        s.CepAoaStr = ToManaged(o.cep_aoa_str);
-        s.CepEepStr = ToManaged(o.cep_eep_str);
-        s.Valid     = o.valid;
+        s.CepAoaStr  = ToManaged(o.cep_aoa_str);
+        s.CepEepStr  = ToManaged(o.cep_eep_str);
+        s.CepTdoaStr = ToManaged(o.cep_tdoa_str);
+        s.Valid      = o.valid;
         return s;
     }
 };

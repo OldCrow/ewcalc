@@ -93,8 +93,9 @@
             <TextBlock Text="SIGNAL PROCESSING GAIN" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource ResultCardStyle}">
                 <StackPanel Spacing="0">
-                    <local:ResultRow Label="Pulse compression gain"    Value="{x:Bind ViewModel.PcGain,  Mode=OneWay}" />
-                    <local:ResultRow Label="Coherent integration gain" Value="{x:Bind ViewModel.CohGain, Mode=OneWay}" />
+                    <local:ResultRow Label="Pulse compression gain"    Value="{x:Bind ViewModel.PcGain,        Mode=OneWay}" />
+                    <local:ResultRow Label="Coherent integration gain" Value="{x:Bind ViewModel.CohGain,       Mode=OneWay}" />
+                    <local:ResultRow Label="LPI advantage"             Value="{x:Bind ViewModel.LpiAdvantage,  Mode=OneWay}" />
                 </StackPanel>
             </Border>
 
