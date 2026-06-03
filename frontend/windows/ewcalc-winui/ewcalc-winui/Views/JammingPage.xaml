@@ -56,6 +56,10 @@
                                    Value="{x:Bind ViewModel.DefaultHopRange, Mode=OneTime}"
                                    Minimum="0" Maximum="10000" SmallChange="1"
                                    ValueChanged="HopRangeBox_ValueChanged" />
+                        <NumberBox x:Name="JsThresholdBox" Header="J/S threshold (dB)"
+                                   Value="{x:Bind ViewModel.DefaultJsThreshold, Mode=OneTime}"
+                                   Minimum="-30" Maximum="30" SmallChange="0.5"
+                                   ValueChanged="JsThresholdBox_ValueChanged" />
                     </StackPanel>
                 </Border>
 
@@ -78,10 +82,6 @@
                                    Value="{x:Bind ViewModel.DefaultRxGainJammer, Mode=OneTime}"
                                    Minimum="-30" Maximum="60" SmallChange="0.5"
                                    ValueChanged="RxGainJammerBox_ValueChanged" />
-                        <NumberBox x:Name="JsThresholdBox" Header="J/S threshold (dB)"
-                                   Value="{x:Bind ViewModel.DefaultJsThreshold, Mode=OneTime}"
-                                   Minimum="-30" Maximum="30" SmallChange="0.5"
-                                   ValueChanged="JsThresholdBox_ValueChanged" />
                     </StackPanel>
                 </Border>
             </StackPanel>
