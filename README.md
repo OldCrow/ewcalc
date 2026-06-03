@@ -77,16 +77,13 @@ and `xcrun notarytool` credentials stored under the `ewcalc-notarytool` profile.
 
 ## Current status
 
-**v0.4.0** — EW101/102/103 foundational scope complete; macOS frontend fully updated.
+**v0.5.0** — All three frontends at full feature parity.
 
-- Phase 1 ✓ — `libew`: nine calculation modules (added `digital`), full test harness
-- Phase 2 ✓ — `ewpresenter`: seven presenters; all new libew functions surfaced
-- Phase 3 ✓ — Windows frontend (WinUI 3 / C#) — at v0.3 feature level; v0.5 will bring to parity
-- Phase 4 ✓ — macOS frontend (SwiftUI) — fully updated: Digital/DSSS page, Reference panel,
-  tooltips on all fields, hop-range = 0 semantic for non-hopping signals
-- Phase 5 ✓ — Linux frontend (Qt6 Widgets) — at v0.3 feature level; v0.5 will bring to parity
-
-**v0.5** — planned: Windows and Linux frontends updated to match macOS v0.4 feature set.
+- Phase 1 ✓ — `libew`: nine calculation modules, full test harness; assessment fixes applied
+- Phase 2 ✓ — `ewpresenter`: seven presenters; all libew functions surfaced
+- Phase 3 ✓ — Windows frontend (WinUI 3 / C#) — Digital/DSSS page, Reference panel, extended pages
+- Phase 4 ✓ — macOS frontend (SwiftUI) — Digital/DSSS page, Reference panel, tooltips, TDOA baseline
+- Phase 5 ✓ — Linux frontend (Qt6 Widgets) — Digital/DSSS page, Reference panel, extended pages
 
 Release artifacts (`.dmg`, `.AppImage`) are attached to each
 [GitHub Release](../../releases).

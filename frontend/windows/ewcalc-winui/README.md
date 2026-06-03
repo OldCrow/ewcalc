@@ -82,12 +82,12 @@ Each item's `NoiseFigureDb` and `GainDb` setters call `PushStages()` which
 rebuilds the full `StageInput[]` and calls `ReceiverAdapter.SetStages()`.
 Add/Remove buttons are bound to `ICommand` properties.
 
-## Current state (v0.3 feature level)
+## Current state (v0.5 — full parity)
 
-This frontend currently covers the six original calculator pages (Propagation,
-Link Budget, Receiver, Jamming, Location, Radar) at v0.3 parity.
+This frontend covers all eight calculator pages (Propagation, Link Budget, Receiver,
+Jamming, Location, Radar, Digital/DSSS, Reference) at v0.5 parity with macOS.
 
-## Planned for v0.5 (parity with macOS v0.4)
+## Completed in v0.5 (from planned)
 
 - **Digital / DSSS page** — new `DigitalAdapter` + `DigitalPage.xaml` backed
   by `DigitalPresenter` (Eb/N₀, DSSS process gain, jamming margin, required J/S).
