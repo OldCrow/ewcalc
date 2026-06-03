@@ -14,6 +14,7 @@ public value struct ReceiverOutput {
     System::String^ Sfdr2Str;
     System::String^ Sfdr3Str;
     System::String^ DigitalDrStr;
+    System::String^ SystemNoiseTempStr;
     bool Valid;
 };
 
@@ -76,12 +77,13 @@ private:
 
     static ReceiverOutput Snapshot(const ewpresenter::ReceiverPresenter::Output& o) {
         ReceiverOutput s{};
-        s.SensitivityStr = ToManaged(o.sensitivity_str);
-        s.CascadedNfStr  = ToManaged(o.cascaded_nf_str);
-        s.Sfdr2Str       = ToManaged(o.sfdr2_str);
-        s.Sfdr3Str       = ToManaged(o.sfdr3_str);
-        s.DigitalDrStr   = ToManaged(o.digital_dr_str);
-        s.Valid          = o.valid;
+        s.SensitivityStr    = ToManaged(o.sensitivity_str);
+        s.CascadedNfStr     = ToManaged(o.cascaded_nf_str);
+        s.Sfdr2Str          = ToManaged(o.sfdr2_str);
+        s.Sfdr3Str          = ToManaged(o.sfdr3_str);
+        s.DigitalDrStr      = ToManaged(o.digital_dr_str);
+        s.SystemNoiseTempStr = ToManaged(o.system_noise_temp_str);
+        s.Valid             = o.valid;
         return s;
     }
 };

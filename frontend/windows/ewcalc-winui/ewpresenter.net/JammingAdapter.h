@@ -11,6 +11,7 @@ public value struct JammingOutput {
     System::String^ JammerAtRxStr;
     System::String^ OptimumBwStr;
     System::String^ DutyCycleStr;
+    System::String^ BurnthroughRangeStr;
     bool Valid;
 };
 
@@ -34,6 +35,7 @@ public:
     void SetRxGainJammer   (double db)     { presenter_->set_rx_gain_jammer(RoundInput(db));       }
     void SetSignalBandwidth(double mhz)    { presenter_->set_signal_bandwidth(RoundInput(mhz));    }
     void SetHopRange       (double mhz)    { presenter_->set_hop_range(RoundInput(mhz));           }
+    void SetJsThreshold    (double db)     { presenter_->set_js_threshold(RoundInput(db));          }
 
     property double DefaultSignalErp       { double get() { return presenter_->signal_erp_dbm();       } }
     property double DefaultJammerErp       { double get() { return presenter_->jammer_erp_dbm();       } }
@@ -45,6 +47,7 @@ public:
     property double DefaultFrequency       { double get() { return presenter_->frequency_mhz();        } }
     property double DefaultSignalBandwidth { double get() { return presenter_->signal_bandwidth_mhz(); } }
     property double DefaultHopRange        { double get() { return presenter_->hop_range_mhz();        } }
+    property double DefaultJsThreshold     { double get() { return presenter_->js_threshold_db();      } }
 
     property JammingOutput CurrentOutput { JammingOutput get() { return Snapshot(presenter_->output()); } }
 
@@ -59,12 +62,13 @@ private:
 
     static JammingOutput Snapshot(const ewpresenter::JammingPresenter::Output& o) {
         JammingOutput s{};
-        s.JsRatioStr    = ToManaged(o.js_ratio_str);
-        s.SignalAtRxStr = ToManaged(o.signal_at_rx_str);
-        s.JammerAtRxStr = ToManaged(o.jammer_at_rx_str);
-        s.OptimumBwStr  = ToManaged(o.optimum_bw_str);
-        s.DutyCycleStr  = ToManaged(o.duty_cycle_str);
-        s.Valid         = o.valid;
+        s.JsRatioStr          = ToManaged(o.js_ratio_str);
+        s.SignalAtRxStr       = ToManaged(o.signal_at_rx_str);
+        s.JammerAtRxStr       = ToManaged(o.jammer_at_rx_str);
+        s.OptimumBwStr        = ToManaged(o.optimum_bw_str);
+        s.DutyCycleStr        = ToManaged(o.duty_cycle_str);
+        s.BurnthroughRangeStr = ToManaged(o.burnthrough_range_str);
+        s.Valid               = o.valid;
         return s;
     }
 };

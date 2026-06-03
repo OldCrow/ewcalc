@@ -78,6 +78,28 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
+                <NavigationViewItemSeparator />
+
+                <NavigationViewItem
+                    x:Name="NavDigital"
+                    Tag="Digital"
+                    Content="Digital / DSSS">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE9F5;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItemSeparator />
+
+                <NavigationViewItem
+                    x:Name="NavReference"
+                    Tag="Reference"
+                    Content="Reference">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE736;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
             </NavigationView.MenuItems>
 
             <!-- No FooterMenuItems — IsSettingsVisible=False removes the built-in one -->

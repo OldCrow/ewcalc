@@ -54,7 +54,7 @@
                                    ValueChanged="JammerHeightBox_ValueChanged" />
                         <NumberBox x:Name="HopRangeBox"     Header="Hop range (MHz)"
                                    Value="{x:Bind ViewModel.DefaultHopRange, Mode=OneTime}"
-                                   Minimum="0.001" Maximum="10000" SmallChange="1"
+                                   Minimum="0" Maximum="10000" SmallChange="1"
                                    ValueChanged="HopRangeBox_ValueChanged" />
                     </StackPanel>
                 </Border>
@@ -78,6 +78,10 @@
                                    Value="{x:Bind ViewModel.DefaultRxGainJammer, Mode=OneTime}"
                                    Minimum="-30" Maximum="60" SmallChange="0.5"
                                    ValueChanged="RxGainJammerBox_ValueChanged" />
+                        <NumberBox x:Name="JsThresholdBox" Header="J/S threshold (dB)"
+                                   Value="{x:Bind ViewModel.DefaultJsThreshold, Mode=OneTime}"
+                                   Minimum="-30" Maximum="30" SmallChange="0.5"
+                                   ValueChanged="JsThresholdBox_ValueChanged" />
                     </StackPanel>
                 </Border>
             </StackPanel>
@@ -85,9 +89,10 @@
             <TextBlock Text="J/S ANALYSIS" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource ResultCardStyle}">
                 <StackPanel Spacing="0">
-                    <local:ResultRow Label="J/S ratio"    Value="{x:Bind ViewModel.JsRatio,    Mode=OneWay}" />
-                    <local:ResultRow Label="Signal at Rx" Value="{x:Bind ViewModel.SignalAtRx, Mode=OneWay}" />
-                    <local:ResultRow Label="Jammer at Rx" Value="{x:Bind ViewModel.JammerAtRx, Mode=OneWay}" />
+                    <local:ResultRow Label="J/S ratio"    Value="{x:Bind ViewModel.JsRatio,     Mode=OneWay}" />
+                    <local:ResultRow Label="Signal at Rx" Value="{x:Bind ViewModel.SignalAtRx,  Mode=OneWay}" />
+                    <local:ResultRow Label="Jammer at Rx" Value="{x:Bind ViewModel.JammerAtRx,  Mode=OneWay}" />
+                    <local:ResultRow Label="Burnthrough"  Value="{x:Bind ViewModel.Burnthrough, Mode=OneWay}" />
                 </StackPanel>
             </Border>
 

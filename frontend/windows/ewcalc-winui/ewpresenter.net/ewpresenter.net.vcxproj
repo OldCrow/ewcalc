@@ -94,6 +94,7 @@
     <ClCompile Include="JammingAdapter.cpp" />
     <ClCompile Include="LocationAdapter.cpp" />
     <ClCompile Include="RadarAdapter.cpp" />
+    <ClCompile Include="DigitalAdapter.cpp" />
   </ItemGroup>
 
   <ItemGroup>
@@ -105,6 +106,7 @@
     <ClInclude Include="JammingAdapter.h" />
     <ClInclude Include="LocationAdapter.h" />
     <ClInclude Include="RadarAdapter.h" />
+    <ClInclude Include="DigitalAdapter.h" />
   </ItemGroup>
 
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

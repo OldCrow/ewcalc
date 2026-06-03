@@ -12,6 +12,8 @@ public value struct PropagationOutput {
     System::String^ FresnelZoneStr;
     System::String^ PathLossStr;
     System::String^ RegimeStr;
+    System::String^ EarthBulgeStr;
+    System::String^ HorizonRangeStr;
     bool            TwoRayRegime;
     bool            Valid;
 };
@@ -61,6 +63,8 @@ private:
         s.FresnelZoneStr = ToManaged(o.fresnel_zone_str);
         s.PathLossStr    = ToManaged(o.path_loss_str);
         s.RegimeStr      = ToManaged(o.regime_str);
+        s.EarthBulgeStr  = ToManaged(o.earth_bulge_str);
+        s.HorizonRangeStr = ToManaged(o.horizon_range_str);
         s.TwoRayRegime   = o.two_ray_regime;
         s.Valid          = o.valid;
         return s;

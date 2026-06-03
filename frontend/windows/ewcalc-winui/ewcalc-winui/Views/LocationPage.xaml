@@ -9,7 +9,7 @@
 
             <StackPanel Margin="0,0,0,8">
                 <TextBlock Text="Emitter location" Style="{ThemeResource TitleTextBlockStyle}" />
-                <TextBlock Text="CEP from AOA bearing error · EEP semi-axes"
+                <TextBlock Text="CEP from AOA bearing error · TDOA timing · EEP semi-axes"
                            Style="{ThemeResource CaptionTextBlockStyle}"
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
             </StackPanel>
@@ -27,6 +27,22 @@
                                Minimum="0.1" Maximum="10000"
                                SpinButtonPlacementMode="Compact" SmallChange="1"
                                ValueChanged="AoaRangeBox_ValueChanged" />
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="TDOA METHOD" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource InputCardStyle}">
+                <StackPanel Spacing="12">
+                    <NumberBox x:Name="RmsTimeErrorBox" Header="RMS timing error (ns)"
+                               Value="{x:Bind ViewModel.DefaultRmsTimeError, Mode=OneTime}"
+                               Minimum="0.001" Maximum="100000"
+                               SpinButtonPlacementMode="Compact" SmallChange="1"
+                               ValueChanged="RmsTimeErrorBox_ValueChanged" />
+                    <NumberBox x:Name="BaselineBox" Header="Receiver baseline (km)"
+                               Value="{x:Bind ViewModel.DefaultBaseline, Mode=OneTime}"
+                               Minimum="0.1" Maximum="10000"
+                               SpinButtonPlacementMode="Compact" SmallChange="1"
+                               ValueChanged="BaselineBox_ValueChanged" />
                 </StackPanel>
             </Border>
 
@@ -49,8 +65,9 @@
             <TextBlock Text="RESULTS" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource ResultCardStyle}">
                 <StackPanel Spacing="0">
-                    <local:ResultRow Label="CEP (AOA method)" Value="{x:Bind ViewModel.CepAoa, Mode=OneWay}" IsHighlighted="True" />
-                    <local:ResultRow Label="CEP (EEP method)" Value="{x:Bind ViewModel.CepEep, Mode=OneWay}" IsHighlighted="True" />
+                    <local:ResultRow Label="CEP (AOA method)"  Value="{x:Bind ViewModel.CepAoa,  Mode=OneWay}" IsHighlighted="True" />
+                    <local:ResultRow Label="CEP (TDOA)"        Value="{x:Bind ViewModel.CepTdoa, Mode=OneWay}" IsHighlighted="True" />
+                    <local:ResultRow Label="CEP (EEP method)"  Value="{x:Bind ViewModel.CepEep,  Mode=OneWay}" IsHighlighted="True" />
                 </StackPanel>
             </Border>
             <InfoBar IsOpen="True" IsClosable="False" Severity="Informational"
