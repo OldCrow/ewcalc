@@ -15,15 +15,10 @@ PropagationPage::PropagationPage(QWidget* parent)
     QFormLayout* inForm = nullptr;
     auto* inGroup = makeGroup(QStringLiteral("Inputs"), inForm);
 
-    auto* distSb  = makeSpinBox(0.01, 10000.0, presenter_.distance_km(),   0.1, 3);
-    auto* freqSb  = makeSpinBox(0.1,  100000.0, presenter_.frequency_mhz(), 1.0, 1);
-    auto* txHtSb  = makeSpinBox(0.1,  100000.0, presenter_.tx_height_m(),   0.5, 1);
-    auto* rxHtSb  = makeSpinBox(0.1,  100000.0, presenter_.rx_height_m(),   0.5, 1);
-
-    inForm->addRow(QStringLiteral("Distance (km):"),      distSb);
-    inForm->addRow(QStringLiteral("Frequency (MHz):"),    freqSb);
-    inForm->addRow(QStringLiteral("Tx height (m):"),      txHtSb);
-    inForm->addRow(QStringLiteral("Rx height (m):"),      rxHtSb);
+    auto* distSb  = addSpinRow(inForm, QStringLiteral("Distance (km)"),    0.01, 10000.0,  presenter_.distance_km(),   0.1, 3);
+    auto* freqSb  = addSpinRow(inForm, QStringLiteral("Frequency (MHz)"),  0.1,  100000.0, presenter_.frequency_mhz(), 1.0, 1);
+    auto* txHtSb  = addSpinRow(inForm, QStringLiteral("Tx height (m)"),    0.1,  100000.0, presenter_.tx_height_m(),   0.5, 1);
+    auto* rxHtSb  = addSpinRow(inForm, QStringLiteral("Rx height (m)"),    0.1,  100000.0, presenter_.rx_height_m(),   0.5, 1);
 
     // ── Outputs ───────────────────────────────────────────────────────────────
     QFormLayout* outForm = nullptr;

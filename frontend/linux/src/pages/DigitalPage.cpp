@@ -15,25 +15,17 @@ DigitalPage::DigitalPage(QWidget* parent)
     QFormLayout* dlForm = nullptr;
     auto* dlGroup = makeGroup(QStringLiteral("Digital Link"), dlForm);
 
-    auto* dataRateSb = makeSpinBox(0.0001, 10000.0, presenter_.data_rate_mhz(),  0.01, 4);
-    auto* bwSb       = makeSpinBox(0.001,  10000.0, presenter_.bandwidth_mhz(),  0.1,  3);
-    auto* snrSb      = makeSpinBox(-30.0,     60.0, presenter_.snr_db(),         0.5,  1);
+    auto* dataRateSb = addSpinRow(dlForm, QStringLiteral("Data rate (Mbps)"),  0.0001, 10000.0, presenter_.data_rate_mhz(),  0.01, 4);
+    auto* bwSb       = addSpinRow(dlForm, QStringLiteral("Bandwidth (MHz)"),   0.001,  10000.0, presenter_.bandwidth_mhz(),  0.1,  3);
+    auto* snrSb      = addSpinRow(dlForm, QStringLiteral("Received SNR (dB)"), -30.0,     60.0, presenter_.snr_db(),         0.5,  1);
 
-    dlForm->addRow(QStringLiteral("Data rate (Mbps):"),  dataRateSb);
-    dlForm->addRow(QStringLiteral("Bandwidth (MHz):"),   bwSb);
-    dlForm->addRow(QStringLiteral("Received SNR (dB):"), snrSb);
-
-    // ── DSSS ──────────────────────────────────────────────────────────────────
+    // ── DSSS ────────────────────────────────────────────────────────────────
     QFormLayout* dsForm = nullptr;
     auto* dsGroup = makeGroup(QStringLiteral("DSSS"), dsForm);
 
-    auto* chipRateSb  = makeSpinBox(0.0001, 10000.0, presenter_.chip_rate_mhz(),            1.0, 3);
-    auto* reqEbNoSb   = makeSpinBox(-10.0,     30.0, presenter_.required_eb_no_db(),        0.5, 1);
-    auto* implLossSb  = makeSpinBox(0.0,       10.0, presenter_.implementation_loss_db(),   0.5, 1);
-
-    dsForm->addRow(QStringLiteral("Chip rate (Mcps):"),      chipRateSb);
-    dsForm->addRow(QStringLiteral("Required Eb/N\u2080 (dB):"), reqEbNoSb);
-    dsForm->addRow(QStringLiteral("Impl. loss (dB):"),       implLossSb);
+    auto* chipRateSb  = addSpinRow(dsForm, QStringLiteral("Chip rate (Mcps)"),       0.0001, 10000.0, presenter_.chip_rate_mhz(),           1.0, 3);
+    auto* reqEbNoSb   = addSpinRow(dsForm, QStringLiteral("Required Eb/N\u2080 (dB)"), -10.0,    30.0, presenter_.required_eb_no_db(),       0.5, 1);
+    auto* implLossSb  = addSpinRow(dsForm, QStringLiteral("Impl. loss (dB)"),          0.0,    10.0, presenter_.implementation_loss_db(),  0.5, 1);
 
     // ── Outputs ───────────────────────────────────────────────────────────────
     QFormLayout* outForm = nullptr;

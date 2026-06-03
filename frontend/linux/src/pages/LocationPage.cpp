@@ -15,31 +15,22 @@ LocationPage::LocationPage(QWidget* parent)
     QFormLayout* aoaForm = nullptr;
     auto* aoaGroup = makeGroup(QStringLiteral("AOA (Angle of Arrival)"), aoaForm);
 
-    auto* rmsBeSb = makeSpinBox(0.01, 45.0,    presenter_.rms_bearing_error_deg(), 0.1, 2);
-    auto* aoaRgSb = makeSpinBox(0.1,  10000.0, presenter_.aoa_range_km(),          1.0, 1);
+    auto* rmsBeSb = addSpinRow(aoaForm, QStringLiteral("RMS bearing error (\u00b0)"), 0.01, 45.0,    presenter_.rms_bearing_error_deg(), 0.1, 2);
+    auto* aoaRgSb = addSpinRow(aoaForm, QStringLiteral("Range (km)"),              0.1,  10000.0, presenter_.aoa_range_km(),          1.0, 1);
 
-    aoaForm->addRow(QStringLiteral("RMS bearing error (°):"), rmsBeSb);
-    aoaForm->addRow(QStringLiteral("Range (km):"),             aoaRgSb);
-
-    // ── TDOA inputs ───────────────────────────────────────────────────────────
+    // ── TDOA inputs ───────────────────────────────────────────────────────────────
     QFormLayout* tdoaForm = nullptr;
     auto* tdoaGroup = makeGroup(QStringLiteral("TDOA (Time Difference of Arrival)"), tdoaForm);
 
-    auto* rmsTimeSb  = makeSpinBox(0.001, 100000.0, presenter_.rms_time_error_ns(), 1.0, 3);
-    auto* baselineSb = makeSpinBox(0.1,   10000.0,  presenter_.baseline_km(),       1.0, 1);
+    auto* rmsTimeSb  = addSpinRow(tdoaForm, QStringLiteral("RMS timing error (ns)"), 0.001, 100000.0, presenter_.rms_time_error_ns(), 1.0, 3);
+    auto* baselineSb = addSpinRow(tdoaForm, QStringLiteral("Baseline (km)"),         0.1,   10000.0,  presenter_.baseline_km(),       1.0, 1);
 
-    tdoaForm->addRow(QStringLiteral("RMS timing error (ns):"), rmsTimeSb);
-    tdoaForm->addRow(QStringLiteral("Baseline (km):"),         baselineSb);
-
-    // ── EEP inputs ────────────────────────────────────────────────────────────
+    // ── EEP inputs ───────────────────────────────────────────────────────────────
     QFormLayout* eepForm = nullptr;
     auto* eepGroup = makeGroup(QStringLiteral("EEP (Error Ellipse \u2192 CEP)"), eepForm);
 
-    auto* semiMajSb = makeSpinBox(0.001, 1000.0, presenter_.semi_major_km(), 0.1, 3);
-    auto* semiMinSb = makeSpinBox(0.001, 1000.0, presenter_.semi_minor_km(), 0.1, 3);
-
-    eepForm->addRow(QStringLiteral("Semi-major 1\u03c3 (km):"), semiMajSb);
-    eepForm->addRow(QStringLiteral("Semi-minor 1\u03c3 (km):"), semiMinSb);
+    auto* semiMajSb = addSpinRow(eepForm, QStringLiteral("Semi-major 1\u03c3 (km)"), 0.001, 1000.0, presenter_.semi_major_km(), 0.1, 3);
+    auto* semiMinSb = addSpinRow(eepForm, QStringLiteral("Semi-minor 1\u03c3 (km)"), 0.001, 1000.0, presenter_.semi_minor_km(), 0.1, 3);
 
     // ── Outputs ───────────────────────────────────────────────────────────────
     QFormLayout* outForm = nullptr;

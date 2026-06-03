@@ -20,22 +20,12 @@ ReceiverPage::ReceiverPage(QWidget* parent)
     QFormLayout* inForm = nullptr;
     auto* inGroup = makeGroup(QStringLiteral("System Inputs"), inForm);
 
-    auto* bwSb     = makeSpinBox(0.001, 10000.0, presenter_.bandwidth_mhz(),       0.1, 3);
-    auto* nfSb     = makeSpinBox(0.0,     30.0,  presenter_.noise_figure_db(),     0.5, 1);
-    auto* snrSb    = makeSpinBox(-20.0,   50.0,  presenter_.required_snr_db(),     0.5, 1);
-    auto* iip2Sb   = makeSpinBox(-50.0,  100.0,  presenter_.second_order_ip_dbm(), 1.0, 1);
-    auto* iip3Sb   = makeSpinBox(-50.0,  100.0,  presenter_.third_order_ip_dbm(),  1.0, 1);
-
-    auto* adcSb = new QSpinBox;
-    adcSb->setRange(1, 64);
-    adcSb->setValue(presenter_.adc_bits());
-
-    inForm->addRow(QStringLiteral("Bandwidth (MHz):"), bwSb);
-    inForm->addRow(QStringLiteral("Noise figure (dB):"), nfSb);
-    inForm->addRow(QStringLiteral("Required SNR (dB):"), snrSb);
-    inForm->addRow(QStringLiteral("IIP2 (dBm):"), iip2Sb);
-    inForm->addRow(QStringLiteral("IIP3 (dBm):"), iip3Sb);
-    inForm->addRow(QStringLiteral("ADC bits:"), adcSb);
+    auto* bwSb   = addSpinRow(inForm, QStringLiteral("Bandwidth (MHz)"),    0.001, 10000.0, presenter_.bandwidth_mhz(),       0.1, 3);
+    auto* nfSb   = addSpinRow(inForm, QStringLiteral("Noise figure (dB)"),  0.0,     30.0,  presenter_.noise_figure_db(),     0.5, 1);
+    auto* snrSb  = addSpinRow(inForm, QStringLiteral("Required SNR (dB)"), -20.0,    50.0,  presenter_.required_snr_db(),     0.5, 1);
+    auto* iip2Sb = addSpinRow(inForm, QStringLiteral("IIP2 (dBm)"),        -50.0,   100.0,  presenter_.second_order_ip_dbm(), 1.0, 1);
+    auto* iip3Sb = addSpinRow(inForm, QStringLiteral("IIP3 (dBm)"),        -50.0,   100.0,  presenter_.third_order_ip_dbm(),  1.0, 1);
+    auto* adcSb  = addIntSpinRow(inForm, QStringLiteral("ADC bits"),        1, 64, presenter_.adc_bits());
 
     // ── Noise-chain stage cascade ─────────────────────────────────────────────
     auto* stageGroup = new QGroupBox(QStringLiteral("Noise Chain Stages"));
@@ -89,7 +79,7 @@ ReceiverPage::ReceiverPage(QWidget* parent)
             [this](double v){ presenter_.set_second_order_ip(v); });
     connect(iip3Sb, &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_third_order_ip(v); });
-    connect(adcSb, QOverload<int>::of(&QSpinBox::valueChanged), this,
+    connect(adcSb, &QSpinBox::valueChanged, this,
             [this](int v){ presenter_.set_adc_bits(v); });
 
     // ── Signal wiring: stage management ──────────────────────────────────────

@@ -11,39 +11,28 @@
 LinkPage::LinkPage(QWidget* parent)
     : QWidget(parent)
 {
-    // ── Transmitter ───────────────────────────────────────────────────────────
+    // ── Transmitter: Tx power, Tx gain, Frequency (matches macOS) ───────────
     QFormLayout* txForm = nullptr;
     auto* txGroup = makeGroup(QStringLiteral("Transmitter"), txForm);
 
-    auto* txPwrSb  = makeSpinBox(-50.0,   200.0,   presenter_.tx_power_dbm(),  1.0, 1);
-    auto* txGainSb = makeSpinBox(-30.0,    60.0,   presenter_.tx_gain_db(),    1.0, 1);
-    auto* txHtSb   = makeSpinBox(  0.1, 100000.0,  presenter_.tx_height_m(),   0.5, 1);
+    auto* txPwrSb  = addSpinRow(txForm, QStringLiteral("Tx power (dBm)"),  -50.0,   200.0,   presenter_.tx_power_dbm(),  1.0, 1);
+    auto* txGainSb = addSpinRow(txForm, QStringLiteral("Tx gain (dB)"),    -30.0,    60.0,   presenter_.tx_gain_db(),    1.0, 1);
+    auto* freqSb   = addSpinRow(txForm, QStringLiteral("Frequency (MHz)"),   0.1, 100000.0, presenter_.frequency_mhz(), 1.0, 1);
 
-    txForm->addRow(QStringLiteral("Tx power (dBm):"),  txPwrSb);
-    txForm->addRow(QStringLiteral("Tx gain (dB):"),    txGainSb);
-    txForm->addRow(QStringLiteral("Tx height (m):"),   txHtSb);
+    // ── Geometry: Distance, Tx height, Rx height (matches macOS) ────────────
+    QFormLayout* geoForm = nullptr;
+    auto* geoGroup = makeGroup(QStringLiteral("Geometry"), geoForm);
 
-    // ── Common ────────────────────────────────────────────────────────────────
-    QFormLayout* cmForm = nullptr;
-    auto* cmGroup = makeGroup(QStringLiteral("Common"), cmForm);
+    auto* distSb = addSpinRow(geoForm, QStringLiteral("Distance (km)"),   0.01, 10000.0,  presenter_.distance_km(),  0.1, 3);
+    auto* txHtSb = addSpinRow(geoForm, QStringLiteral("Tx height (m)"),    0.1, 100000.0, presenter_.tx_height_m(),  0.5, 1);
+    auto* rxHtSb = addSpinRow(geoForm, QStringLiteral("Rx height (m)"),    0.1, 100000.0, presenter_.rx_height_m(),  0.5, 1);
 
-    auto* distSb = makeSpinBox(  0.01, 10000.0,  presenter_.distance_km(),    0.1, 3);
-    auto* freqSb = makeSpinBox(  0.1,  100000.0, presenter_.frequency_mhz(), 1.0, 1);
-
-    cmForm->addRow(QStringLiteral("Distance (km):"),   distSb);
-    cmForm->addRow(QStringLiteral("Frequency (MHz):"), freqSb);
-
-    // ── Receiver ──────────────────────────────────────────────────────────────
+    // ── Receiver: Rx gain, Rx sensitivity (matches macOS) ─────────────────
     QFormLayout* rxForm = nullptr;
     auto* rxGroup = makeGroup(QStringLiteral("Receiver"), rxForm);
 
-    auto* rxGainSb = makeSpinBox(-30.0,    60.0,   presenter_.rx_gain_db(),           1.0, 1);
-    auto* rxHtSb   = makeSpinBox(  0.1, 100000.0,  presenter_.rx_height_m(),          0.5, 1);
-    auto* rxSensSb = makeSpinBox(-200.0,    0.0,   presenter_.rx_sensitivity_dbm(),   1.0, 1);
-
-    rxForm->addRow(QStringLiteral("Rx gain (dB):"),         rxGainSb);
-    rxForm->addRow(QStringLiteral("Rx height (m):"),        rxHtSb);
-    rxForm->addRow(QStringLiteral("Rx sensitivity (dBm):"), rxSensSb);
+    auto* rxGainSb = addSpinRow(rxForm, QStringLiteral("Rx gain (dB)"),        -30.0,    60.0,  presenter_.rx_gain_db(),          1.0, 1);
+    auto* rxSensSb = addSpinRow(rxForm, QStringLiteral("Rx sensitivity (dBm)"),-200.0,    0.0,  presenter_.rx_sensitivity_dbm(), 1.0, 1);
 
     // ── Outputs ───────────────────────────────────────────────────────────────
     QFormLayout* outForm = nullptr;
@@ -51,9 +40,9 @@ LinkPage::LinkPage(QWidget* parent)
 
     received_power_  = addResultRow(outForm, QStringLiteral("Received power"));
     path_loss_       = addResultRow(outForm, QStringLiteral("Path loss"));
+    link_margin_     = addResultRow(outForm, QStringLiteral("Link margin"));
     fresnel_zone_    = addResultRow(outForm, QStringLiteral("Fresnel crossover"));
     regime_          = addResultRow(outForm, QStringLiteral("Regime"));
-    link_margin_     = addResultRow(outForm, QStringLiteral("Link margin"));
     effective_range_ = addResultRow(outForm, QStringLiteral("Effective range"));
     range_regime_    = addResultRow(outForm, QStringLiteral("Range regime"));
 
@@ -61,7 +50,7 @@ LinkPage::LinkPage(QWidget* parent)
     auto* content = new QWidget;
     auto* vbox    = new QVBoxLayout(content);
     vbox->addWidget(txGroup);
-    vbox->addWidget(cmGroup);
+    vbox->addWidget(geoGroup);
     vbox->addWidget(rxGroup);
     vbox->addWidget(outGroup);
     vbox->addStretch();
@@ -75,21 +64,21 @@ LinkPage::LinkPage(QWidget* parent)
     outer->setContentsMargins(0, 0, 0, 0);
     outer->addWidget(scroll);
 
-    // ── Signal wiring ─────────────────────────────────────────────────────────
+    // ── Signal wiring ──────────────────────────────────────────────────────
     connect(txPwrSb,  &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_tx_power(v); });
     connect(txGainSb, &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_tx_gain(v); });
-    connect(txHtSb,   &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_tx_height(v); });
-    connect(distSb,   &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_distance(v); });
     connect(freqSb,   &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_frequency(v); });
-    connect(rxGainSb, &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_rx_gain(v); });
+    connect(distSb,   &QDoubleSpinBox::valueChanged, this,
+            [this](double v){ presenter_.set_distance(v); });
+    connect(txHtSb,   &QDoubleSpinBox::valueChanged, this,
+            [this](double v){ presenter_.set_tx_height(v); });
     connect(rxHtSb,   &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_rx_height(v); });
+    connect(rxGainSb, &QDoubleSpinBox::valueChanged, this,
+            [this](double v){ presenter_.set_rx_gain(v); });
     connect(rxSensSb, &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_rx_sensitivity(v); });
 

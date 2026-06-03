@@ -16,36 +16,21 @@ RadarPage::RadarPage(QWidget* parent)
     QFormLayout* inForm = nullptr;
     auto* inGroup = makeGroup(QStringLiteral("Radar Parameters"), inForm);
 
-    auto* txPwrSb  = makeSpinBox(-50.0,  200.0,    presenter_.tx_power_dbm(),    1.0, 1);
-    auto* antGainSb= makeSpinBox(-30.0,   60.0,    presenter_.antenna_gain_dbi(),1.0, 1);
-    auto* rcsSb    = makeSpinBox(-40.0,   60.0,    presenter_.target_rcs_dbsm(), 1.0, 1);
-    auto* freqSb   = makeSpinBox(  1.0, 100000.0,  presenter_.frequency_mhz(),   1.0, 1);
-    auto* losseSb  = makeSpinBox(  0.0,   30.0,    presenter_.system_losses_db(),0.5, 1);
-    auto* nfSb     = makeSpinBox(  0.0,   30.0,    presenter_.noise_figure_db(), 0.5, 1);
-    auto* bwSb     = makeSpinBox(  0.001, 10000.0, presenter_.bandwidth_mhz(),   0.1, 3);
-    auto* snrSb    = makeSpinBox(-10.0,   50.0,    presenter_.required_snr_db(), 0.5, 1);
+    auto* txPwrSb  = addSpinRow(inForm, QStringLiteral("Tx power (dBm)"),     -50.0,  200.0,    presenter_.tx_power_dbm(),    1.0, 1);
+    auto* antGainSb= addSpinRow(inForm, QStringLiteral("Antenna gain (dBi)"), -30.0,   60.0,    presenter_.antenna_gain_dbi(),1.0, 1);
+    auto* rcsSb    = addSpinRow(inForm, QStringLiteral("Target RCS (dBsm)"),  -40.0,   60.0,    presenter_.target_rcs_dbsm(), 1.0, 1);
+    auto* freqSb   = addSpinRow(inForm, QStringLiteral("Frequency (MHz)"),      1.0, 100000.0,  presenter_.frequency_mhz(),   1.0, 1);
+    auto* losseSb  = addSpinRow(inForm, QStringLiteral("System losses (dB)"),   0.0,   30.0,    presenter_.system_losses_db(),0.5, 1);
+    auto* nfSb     = addSpinRow(inForm, QStringLiteral("Noise figure (dB)"),    0.0,   30.0,    presenter_.noise_figure_db(), 0.5, 1);
+    auto* bwSb     = addSpinRow(inForm, QStringLiteral("Bandwidth (MHz)"),      0.001, 10000.0, presenter_.bandwidth_mhz(),   0.1, 3);
+    auto* snrSb    = addSpinRow(inForm, QStringLiteral("Required SNR (dB)"),  -10.0,   50.0,    presenter_.required_snr_db(), 0.5, 1);
 
-    inForm->addRow(QStringLiteral("Tx power (dBm):"),     txPwrSb);
-    inForm->addRow(QStringLiteral("Antenna gain (dBi):"), antGainSb);
-    inForm->addRow(QStringLiteral("Target RCS (dBsm):"),  rcsSb);
-    inForm->addRow(QStringLiteral("Frequency (MHz):"),    freqSb);
-    inForm->addRow(QStringLiteral("System losses (dB):"), losseSb);
-    inForm->addRow(QStringLiteral("Noise figure (dB):"),  nfSb);
-    inForm->addRow(QStringLiteral("Bandwidth (MHz):"),    bwSb);
-    inForm->addRow(QStringLiteral("Required SNR (dB):"),  snrSb);
-
-    // ── Signal processing inputs ──────────────────────────────────────────────
+    // ── Signal processing inputs ──────────────────────────────────────────────────
     QFormLayout* spForm = nullptr;
     auto* spGroup = makeGroup(QStringLiteral("Signal Processing"), spForm);
 
-    auto* tbSb = makeSpinBox(1.0, 1000000.0, presenter_.time_bandwidth_product(), 10.0, 0);
-
-    auto* npSb = new QSpinBox;
-    npSb->setRange(1, 100000);
-    npSb->setValue(presenter_.num_pulses());
-
-    spForm->addRow(QStringLiteral("Time-BW product:"),   tbSb);
-    spForm->addRow(QStringLiteral("Coherent pulses:"),   npSb);
+    auto* tbSb = addSpinRow(spForm, QStringLiteral("Time-BW product"), 1.0, 1000000.0, presenter_.time_bandwidth_product(), 10.0, 0);
+    auto* npSb = addIntSpinRow(spForm, QStringLiteral("Coherent pulses"), 1, 100000, presenter_.num_pulses());
 
     // ── Outputs ───────────────────────────────────────────────────────────────
     QFormLayout* outForm = nullptr;
@@ -93,7 +78,7 @@ RadarPage::RadarPage(QWidget* parent)
             [this](double v){ presenter_.set_required_snr(v); });
     connect(tbSb,     &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_time_bandwidth_product(v); });
-    connect(npSb, QOverload<int>::of(&QSpinBox::valueChanged), this,
+    connect(npSb, &QSpinBox::valueChanged, this,
             [this](int v){ presenter_.set_num_pulses(v); });
 
     presenter_.set_on_change([this](const ewpresenter::RadarPresenter::Output& o){
