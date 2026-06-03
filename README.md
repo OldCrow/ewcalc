@@ -77,7 +77,7 @@ and `xcrun notarytool` credentials stored under the `ewcalc-notarytool` profile.
 
 ## Current status
 
-**v0.5.1** — All three frontends at full feature parity; post-release layout polish.
+**v0.5.3** — All three frontends at full feature parity; layout polish complete.
 
 - Phase 1 ✓ — `libew`: nine calculation modules, full test harness; assessment fixes applied
 - Phase 2 ✓ — `ewpresenter`: seven presenters; all libew functions surfaced
