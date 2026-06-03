@@ -78,10 +78,15 @@ inline QSpinBox* addIntSpinRow(
 }
 
 /// Adds a read-only result row to a QFormLayout and returns the QLabel.
+/// Value text is right-aligned in monospaced font, matching the macOS ResultRow style.
 inline QLabel* addResultRow(QFormLayout* form, const QString& fieldLabel)
 {
     auto* lbl = new QLabel(QStringLiteral("\u2014")); // em-dash placeholder
     lbl->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    lbl->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    QFont f = lbl->font();
+    f.setFamily(QStringLiteral("monospace"));
+    lbl->setFont(f);
     form->addRow(fieldLabel + ':', lbl);
     return lbl;
 }
