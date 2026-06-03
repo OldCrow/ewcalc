@@ -34,6 +34,8 @@ PropagationPage::PropagationPage(QWidget* parent)
     fresnel_zone_= addResultRow(outForm, QStringLiteral("Fresnel crossover"));
     path_loss_   = addResultRow(outForm, QStringLiteral("Path loss"));
     regime_      = addResultRow(outForm, QStringLiteral("Regime"));
+    earth_bulge_ = addResultRow(outForm, QStringLiteral("Earth bulge (mid)"));
+    horizon_range_= addResultRow(outForm, QStringLiteral("Radar horizon"));
 
     // ── Scroll container ──────────────────────────────────────────────────────
     auto* content = new QWidget;
@@ -77,4 +79,6 @@ void PropagationPage::applyOutput(const ewpresenter::PropagationPresenter::Outpu
     fresnel_zone_->setText(QString::fromStdString(o.fresnel_zone_str));
     path_loss_->setText(QString::fromStdString(o.path_loss_str));
     regime_->setText(QString::fromStdString(o.regime_str));
+    earth_bulge_->setText(QString::fromStdString(o.earth_bulge_str));
+    horizon_range_->setText(QString::fromStdString(o.horizon_range_str));
 }

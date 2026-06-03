@@ -15,5 +15,6 @@ private:
     QLabel* jammer_at_rx_;
     QLabel* optimum_bw_;
     QLabel* duty_cycle_;
+    QLabel* burnthrough_range_;
     void applyOutput(const ewpresenter::JammingPresenter::Output& o);
 };

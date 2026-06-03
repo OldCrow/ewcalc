@@ -11,6 +11,7 @@ public:
 private:
     ewpresenter::LocationPresenter presenter_;
     QLabel* cep_aoa_;
+    QLabel* cep_tdoa_;
     QLabel* cep_eep_;
     void applyOutput(const ewpresenter::LocationPresenter::Output& o);
 };
