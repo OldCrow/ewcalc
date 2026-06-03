@@ -97,25 +97,32 @@ static void addRefRow(QFormLayout* form,
 {
     auto* valLbl = new QLabel(value);
     valLbl->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    valLbl->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
-    QWidget* cell = nullptr;
+    // All rows use the same HBox layout so value text aligns consistently:
+    // [value label — stretch] [copy button or fixed spacer — 26px]
+    auto* cell = new QWidget;
+    auto* hbox = new QHBoxLayout(cell);
+    hbox->setContentsMargins(0, 0, 0, 0);
+    hbox->setSpacing(4);
+    hbox->addWidget(valLbl, 1);
+
     if (!copyValue.isEmpty()) {
-        cell = new QWidget;
-        auto* hbox = new QHBoxLayout(cell);
-        hbox->setContentsMargins(0, 0, 0, 0);
-        hbox->setSpacing(4);
         auto* btn = new QPushButton(QStringLiteral("\u29c9"));
-        btn->setMaximumWidth(26);
+        btn->setFixedWidth(26);
         btn->setFlat(true);
         btn->setToolTip(QStringLiteral("Copy ") + copyValue);
         const QString cv = copyValue;
         QObject::connect(btn, &QPushButton::clicked, btn, [cv](){
             QGuiApplication::clipboard()->setText(cv);
         });
-        hbox->addWidget(valLbl, 1);
         hbox->addWidget(btn, 0);
     } else {
-        cell = valLbl;
+        // Fixed-width spacer keeps value text at the same right edge
+        // as rows that have a copy button.
+        auto* spacer = new QWidget;
+        spacer->setFixedWidth(26);
+        hbox->addWidget(spacer, 0);
     }
     form->addRow(label + ':', cell);
 }
