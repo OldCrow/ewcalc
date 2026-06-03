@@ -8,6 +8,10 @@ on:
     branches: [ main ]
   workflow_dispatch:             # allow manual runs to test secrets / packaging
 
+# Restrict GITHUB_TOKEN to read-only by default; the release job overrides to write.
+permissions:
+  contents: read
+
 # Cancel in-progress runs on the same branch/PR when a new commit arrives
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
