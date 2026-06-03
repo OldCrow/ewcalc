@@ -84,10 +84,6 @@ public:
     /// Used to compute burnthrough range. Range: -30 – 30 dB. Default: 0 dB.
     void set_js_threshold(double db) noexcept;
 
-    /// Single-channel J/S (dB) — feeds the partial-band calculation.
-    /// Automatically updated from the J/S computation; can also be set manually.
-    void set_single_channel_js(double db) noexcept;
-
     // -----------------------------------------------------------------------
     // Accessors
     // -----------------------------------------------------------------------
@@ -123,7 +119,6 @@ private:
     double rx_gain_jammer_db_    {0.0};
     double signal_bandwidth_mhz_ {0.025};
     double hop_range_mhz_        {58.0};
-    double single_channel_js_db_ {0.0};
     double js_threshold_db_      {0.0};
 
     FieldError signal_erp_err_       {FieldError::none};

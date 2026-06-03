@@ -19,21 +19,30 @@ void test_coherent_integration_gain() {
     ASSERT_NEAR(coherent_integration_gain(10).value, 10.0, 0.01);
 }
 
-void test_radar_range_sanity() {
-    // Sanity check: a modest radar should give a finite positive range
+void test_radar_range_computed() {
+    // Correctness test with analytically-derived expected value.
+    //
+    // Inputs: Pt=60 dBm, G=30 dBi, σ=0 dBsm, f=3 GHz, L=3 dB, NF=5 dB, B=1 MHz, SNR=13 dB
+    //
+    // Derivation (from radar_range equation in radar.cpp):
+    //   λ = c/f = 2.998e8/3e9 = 0.09993 m
+    //   noise_power = sensitivity(1 MHz, 5 dB NF, 0 dB SNR) = -114+0+5 = -109 dBm
+    //   numerator_dB = 60 + 2*30 + 20*log10(0.09993) + 0
+    //                  - 30*log10(4π) - (-109) - 13 - 3
+    //                ≈ 60 + 60 - 20.01 + 0 - 33.02 + 109 - 13 - 3 = 159.97 dB
+    //   R_m = 10^(159.97/40) = 10^3.999 ≈ 9990 m ≈ 10.0 km
+    // Harness output (default presenter inputs): 10.010 km
     const RadarRangeResult r = radar_range(
-        Dbm{60.0},   // 1 kW transmitter (60 dBm)
+        Dbm{60.0},   // 1 kW transmitter
         Db{30.0},    // 30 dBi antenna gain
-        Dbsm{0.0},   // 0 dBsm = 1 m² RCS
-        Mhz{3000.0}, // X-band (3 GHz)
-        Db{3.0},     // 3 dB system losses
-        Db{5.0},     // 5 dB noise figure
-        Mhz{1.0},    // 1 MHz bandwidth
-        Db{13.0}     // 13 dB SNR
+        Dbsm{0.0},   // 1 m² RCS
+        Mhz{3000.0}, // X-band
+        Db{3.0},     // system losses
+        Db{5.0},     // noise figure
+        Mhz{1.0},    // bandwidth
+        Db{13.0}     // required SNR
     );
-    // Should be in the range of tens to hundreds of km for these parameters
-    ASSERT_TRUE(r.max_range.value > 10.0);
-    ASSERT_TRUE(r.max_range.value < 1000.0);
+    ASSERT_NEAR(r.max_range.value, 10.01, 0.05);
     ASSERT_TRUE(r.two_way_loss.value > 0.0);
 }
 
@@ -48,7 +57,7 @@ int main() {
     std::cout << "=== test_radar ===\n";
     RUN_TEST(test_pulse_compression_gain);
     RUN_TEST(test_coherent_integration_gain);
-    RUN_TEST(test_radar_range_sanity);
+    RUN_TEST(test_radar_range_computed);
     RUN_TEST(test_wavelength);
     return test::summary();
 }

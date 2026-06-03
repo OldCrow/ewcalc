@@ -18,16 +18,25 @@ using namespace libew::units;
 /// @return CEP (km)
 [[nodiscard]] Km cep_from_rms_bearing_error(Degrees rms_bearing_error, Km range_to_emitter) noexcept;
 
-/// CEP from TDOA RMS timing error assuming ideal geometry.
-/// TDOA error in time converts to a range error via speed of light,
-/// then treated as RMS range-difference error in a hyperbolic system.
-/// CEP ≈ (c * rms_time_error) / 2
-/// where the result is a position error (m), then converted to km.
+/// CEP from TDOA RMS timing error.
+///
+/// For two receivers with baseline separation B and an emitter at range R,
+/// the position uncertainty in the cross-baseline direction (ideal perpendicular
+/// geometry, θ = 90° from baseline) is:
+///
+///   CEP_TDOA ≈ c·σ_t·R / (2·B)
+///
+/// The factor c·σ_t gives the range-difference uncertainty; R/B is the
+/// geometric dilution from range-difference to position.
+/// Source: Adamy EW101 emitter location chapter.
 ///
 /// @param rms_time_error_ns  RMS TDOA timing error (nanoseconds)
-/// @param range_to_emitter   Range from receivers to emitter (km)
+/// @param range_to_emitter   Slant range from receiver midpoint to emitter (km)
+/// @param baseline           Receiver separation distance (km)
 /// @return CEP (km)
-[[nodiscard]] Km cep_from_tdoa_rms_error(double rms_time_error_ns, Km range_to_emitter) noexcept;
+[[nodiscard]] Km cep_from_tdoa_rms_error(double rms_time_error_ns,
+                                          Km range_to_emitter,
+                                          Km baseline) noexcept;
 
 /// CEP from an Elliptical Error Probable (EEP) — exact for the symmetric case.
 /// For an ellipse with semi-axes a ≥ b:

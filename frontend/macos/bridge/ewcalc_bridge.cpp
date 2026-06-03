@@ -342,6 +342,7 @@ void ewp_location_destroy(EwpLocationRef ref) { delete cast<LocationWrapper>(ref
 void ewp_location_set_rms_bearing_error(EwpLocationRef ref, double deg){ cast<LocationWrapper>(ref)->presenter.set_rms_bearing_error(deg); }
 void ewp_location_set_aoa_range(EwpLocationRef ref, double km)         { cast<LocationWrapper>(ref)->presenter.set_aoa_range(km); }
 void ewp_location_set_rms_time_error(EwpLocationRef ref, double ns)    { cast<LocationWrapper>(ref)->presenter.set_rms_time_error(ns); }
+void ewp_location_set_baseline(EwpLocationRef ref, double km)          { cast<LocationWrapper>(ref)->presenter.set_baseline(km); }
 void ewp_location_set_semi_major(EwpLocationRef ref, double km)        { cast<LocationWrapper>(ref)->presenter.set_semi_major(km); }
 void ewp_location_set_semi_minor(EwpLocationRef ref, double km)        { cast<LocationWrapper>(ref)->presenter.set_semi_minor(km); }
 
@@ -352,6 +353,7 @@ void ewp_location_set_callback(EwpLocationRef ref, EwpLocationCallback cb, void*
 double            ewp_location_rms_bearing_error(EwpLocationRef ref) { return cast<LocationWrapper>(ref)->presenter.rms_bearing_error_deg(); }
 double            ewp_location_aoa_range(EwpLocationRef ref)         { return cast<LocationWrapper>(ref)->presenter.aoa_range_km(); }
 double            ewp_location_rms_time_error(EwpLocationRef ref)    { return cast<LocationWrapper>(ref)->presenter.rms_time_error_ns(); }
+double            ewp_location_baseline(EwpLocationRef ref)          { return cast<LocationWrapper>(ref)->presenter.baseline_km(); }
 double            ewp_location_semi_major(EwpLocationRef ref)        { return cast<LocationWrapper>(ref)->presenter.semi_major_km(); }
 double            ewp_location_semi_minor(EwpLocationRef ref)        { return cast<LocationWrapper>(ref)->presenter.semi_minor_km(); }
 EwpLocationOutput ewp_location_output(EwpLocationRef ref)            { return to_c(cast<LocationWrapper>(ref)->presenter.output()); }

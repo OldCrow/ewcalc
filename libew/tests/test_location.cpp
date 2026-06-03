@@ -48,6 +48,46 @@ void test_cep_aoa_zero_error() {
 }
 
 // ---------------------------------------------------------------------------
+// CEP from TDOA timing error.
+//
+// Formula: CEP_TDOA = c·σ_t·R / (2·B)
+//   c·σ_t = range-difference uncertainty
+//   R/B   = geometric dilution (position from range-difference)
+// Source: Adamy EW101 emitter location chapter.
+//
+// Reference derivation (σ_t=10 ns, R=100 km, B=10 km):
+//   σ_r = 2.99792458e8 * 10e-9 / 1000 = 2.99792e-3 km
+//   CEP  = 2.99792e-3 * 100 / (2*10) = 2.99792e-3 * 5 = 0.01499 km
+// ---------------------------------------------------------------------------
+
+void test_cep_tdoa_formula_derivation() {
+    const double sigma_r_km = 2.99792458e8 * 10.0e-9 / 1000.0;
+    const double expected   = sigma_r_km * 100.0 / (2.0 * 10.0);
+    ASSERT_NEAR(cep_from_tdoa_rms_error(10.0, 100.0_km, 10.0_km).value, expected, 1e-6);
+}
+
+void test_cep_tdoa_scales_with_range() {
+    // CEP doubles when range doubles (baseline and timing fixed)
+    const Km cep1 = cep_from_tdoa_rms_error(10.0, 100.0_km, 10.0_km);
+    const Km cep2 = cep_from_tdoa_rms_error(10.0, 200.0_km, 10.0_km);
+    ASSERT_NEAR(cep2.value / cep1.value, 2.0, 1e-9);
+}
+
+void test_cep_tdoa_scales_inversely_with_baseline() {
+    // Doubling the baseline halves CEP (better geometry)
+    const Km cep1 = cep_from_tdoa_rms_error(10.0, 100.0_km, 10.0_km);
+    const Km cep2 = cep_from_tdoa_rms_error(10.0, 100.0_km, 20.0_km);
+    ASSERT_NEAR(cep1.value / cep2.value, 2.0, 1e-9);
+}
+
+void test_cep_tdoa_scales_with_timing_error() {
+    // CEP doubles when timing error doubles (range and baseline fixed)
+    const Km cep1 = cep_from_tdoa_rms_error(10.0, 100.0_km, 10.0_km);
+    const Km cep2 = cep_from_tdoa_rms_error(20.0, 100.0_km, 10.0_km);
+    ASSERT_NEAR(cep2.value / cep1.value, 2.0, 1e-9);
+}
+
+// ---------------------------------------------------------------------------
 // CEP from EEP (Elliptical Error Probable).
 //
 // Formula: CEP ≈ 0.59 * (a + b)   where a ≥ b are the 1-sigma semi-axes.
@@ -82,6 +122,10 @@ int main() {
     RUN_TEST(test_cep_aoa_proportional_to_range);
     RUN_TEST(test_cep_aoa_proportional_to_tan_error);
     RUN_TEST(test_cep_aoa_zero_error);
+    RUN_TEST(test_cep_tdoa_formula_derivation);
+    RUN_TEST(test_cep_tdoa_scales_with_range);
+    RUN_TEST(test_cep_tdoa_scales_inversely_with_baseline);
+    RUN_TEST(test_cep_tdoa_scales_with_timing_error);
     RUN_TEST(test_cep_eep_formula_derivation);
     RUN_TEST(test_cep_eep_circular);
     RUN_TEST(test_cep_eep_scales_with_axes);

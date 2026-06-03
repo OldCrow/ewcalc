@@ -67,12 +67,25 @@ struct RadarRangeResult {
 /// Wavelength in meters from frequency in MHz (convenience function).
 [[nodiscard]] Meters wavelength_m(Mhz frequency) noexcept;
 
-/// LPI radar advantage — the detection-range advantage an LPI waveform gives
-/// against an intercept receiver relative to a conventional pulsed radar
-/// with the same average power and aperture.
+/// LPI radar advantage — the detection-range disadvantage a non-coherent
+/// intercept receiver suffers compared to a matched-filter PC radar with the
+/// same average power.
 ///
-/// LPI advantage = (1/4) * pulse_compression_gain_dB
-///               = 10·log10(time_bandwidth_product) / 4
+/// Comparison scenario (Adamy EW103, LPI radar chapter):
+///   - Radar uses pulse compression with time-bandwidth product TB.
+///   - Intercept receiver: energy-detecting (non-coherent), cannot perform
+///     matched filtering; integrates the uncompressed pulse at full bandwidth.
+///   - Radar receiver: matched filter with full PC gain of 10·log10(TB) dB.
+///
+/// The intercept receiver’s detection range scales as (peak power)^(1/2),
+/// the radar’s detection range scales as (average power)^(1/4) with PC gain.
+/// The range advantage of the intercept receiver over the radar scales as
+/// TB^(−1/4), so the LPI advantage (intercept range / radar range) in dB is:
+///
+///   LPI advantage = 10·log10(TB) / 4   (= pulse_compression_gain / 4)
+///
+/// Note: if the intercept receiver also uses a matched filter (worst case for
+/// the radar), the advantage collapses to 0 dB.
 ///
 /// @param time_bandwidth_product  Pulse width × bandwidth (dimensionless, ≥ 1)
 /// @return LPI advantage (dB)

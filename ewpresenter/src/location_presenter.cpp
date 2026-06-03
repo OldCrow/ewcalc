@@ -18,6 +18,11 @@ void LocationPresenter::set_rms_time_error(double ns) noexcept {
     rms_time_err_ = validate_positive_bounded(ns, 0.001, 100000.0);
     recompute(); fire();
 }
+void LocationPresenter::set_baseline(double km) noexcept {
+    baseline_km_  = km;
+    baseline_err_ = validate_positive_bounded(km, 0.1, 10000.0);
+    recompute(); fire();
+}
 void LocationPresenter::set_aoa_range(double km) noexcept {
     aoa_range_km_ = km;
     aoa_range_err_ = validate_positive_bounded(km, 0.1, 10000.0);
@@ -38,7 +43,8 @@ void LocationPresenter::recompute() noexcept {
     const bool aoa_valid  = (rms_bearing_err_ == FieldError::none &&
                              aoa_range_err_   == FieldError::none);
     const bool tdoa_valid = (rms_time_err_  == FieldError::none &&
-                             aoa_range_err_ == FieldError::none);
+                             aoa_range_err_ == FieldError::none &&
+                             baseline_err_  == FieldError::none);
     const bool eep_valid  = (semi_major_err_ == FieldError::none &&
                              semi_minor_err_ == FieldError::none &&
                              semi_major_km_ >= semi_minor_km_);
@@ -57,7 +63,7 @@ void LocationPresenter::recompute() noexcept {
 
     if (tdoa_valid) {
         output_.cep_tdoa = libew::location::cep_from_tdoa_rms_error(
-            rms_time_error_ns_, Km{aoa_range_km_});
+            rms_time_error_ns_, Km{aoa_range_km_}, Km{baseline_km_});
         output_.cep_tdoa_str = format_km(output_.cep_tdoa);
     } else {
         output_.cep_tdoa_str = DASH;

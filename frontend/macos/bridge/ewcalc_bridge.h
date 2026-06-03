@@ -204,6 +204,7 @@ void           ewp_location_destroy(EwpLocationRef ref);
 void ewp_location_set_rms_bearing_error(EwpLocationRef ref, double deg);
 void ewp_location_set_aoa_range(EwpLocationRef ref, double km);
 void ewp_location_set_rms_time_error(EwpLocationRef ref, double ns);
+void ewp_location_set_baseline(EwpLocationRef ref, double km);
 void ewp_location_set_semi_major(EwpLocationRef ref, double km);
 void ewp_location_set_semi_minor(EwpLocationRef ref, double km);
 void ewp_location_set_callback(EwpLocationRef ref, EwpLocationCallback cb, void* ctx);
@@ -211,6 +212,7 @@ void ewp_location_set_callback(EwpLocationRef ref, EwpLocationCallback cb, void*
 double         ewp_location_rms_bearing_error(EwpLocationRef ref);
 double         ewp_location_aoa_range(EwpLocationRef ref);
 double         ewp_location_rms_time_error(EwpLocationRef ref);
+double         ewp_location_baseline(EwpLocationRef ref);
 double         ewp_location_semi_major(EwpLocationRef ref);
 double         ewp_location_semi_minor(EwpLocationRef ref);
 EwpLocationOutput ewp_location_output(EwpLocationRef ref);

@@ -72,11 +72,6 @@ void JammingPresenter::set_js_threshold(double db) noexcept {
     js_threshold_err_ = validate_bounds(db, -30.0, 30.0);
     recompute(); fire();
 }
-void JammingPresenter::set_single_channel_js(double db) noexcept {
-    single_channel_js_db_ = db;
-    recompute(); fire();
-}
-
 void JammingPresenter::recompute() noexcept {
     // J/S and burnthrough: require geometry inputs only
     const bool js_valid = (signal_erp_err_    == FieldError::none &&
@@ -120,7 +115,7 @@ void JammingPresenter::recompute() noexcept {
     output_.signal_at_rx = js.signal_power_at_receiver;
     output_.jammer_at_rx = js.jammer_power_at_receiver;
 
-    single_channel_js_db_ = js.js_ratio.value;
+    const double computed_js_db = js.js_ratio.value;
 
     output_.burnthrough_range = libew::jamming::burnthrough_range(
         Dbm{signal_erp_dbm_}, Dbm{jammer_erp_dbm_},
@@ -135,7 +130,7 @@ void JammingPresenter::recompute() noexcept {
 
     if (partial_band_valid) {
         const auto pb = libew::jamming::partial_band_jamming(
-            Mhz{signal_bandwidth_mhz_}, Mhz{hop_range_mhz_}, Db{single_channel_js_db_});
+            Mhz{signal_bandwidth_mhz_}, Mhz{hop_range_mhz_}, Db{computed_js_db});
         output_.optimum_bw = pb.optimum_jamming_bandwidth;
         output_.duty_cycle = pb.duty_cycle;
         output_.optimum_bw_str   = format_mhz(output_.optimum_bw, 3);

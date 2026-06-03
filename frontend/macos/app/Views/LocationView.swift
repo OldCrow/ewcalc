@@ -7,6 +7,7 @@ struct LocationView: View {
     @State private var rmsBearingError: Double
     @State private var aoaRange:        Double
     @State private var rmsTimeError:    Double
+    @State private var baseline:        Double
     @State private var semiMajor:       Double
     @State private var semiMinor:       Double
 
@@ -15,6 +16,7 @@ struct LocationView: View {
         _rmsBearingError  = State(initialValue: adapter.defaultRmsBearingError)
         _aoaRange         = State(initialValue: adapter.defaultAoaRange)
         _rmsTimeError     = State(initialValue: adapter.defaultRmsTimeError)
+        _baseline         = State(initialValue: adapter.defaultBaseline)
         _semiMajor        = State(initialValue: adapter.defaultSemiMajor)
         _semiMinor        = State(initialValue: adapter.defaultSemiMinor)
     }
@@ -33,6 +35,9 @@ struct LocationView: View {
                 InputRow("RMS timing error", unit: "ns", value: $rmsTimeError,
                          in: 0.001...100000, step: 1, decimals: 3,
                          help: "RMS TDOA measurement error — converts to a range-difference error via speed of light") { adapter.setRmsTimeError($0) }
+                InputRow("Baseline", unit: "km", value: $baseline,
+                         in: 0.1...10000, step: 1,
+                         help: "Receiver separation distance — wider baseline reduces CEP: CEP = c·σ_t·R / (2·B)") { adapter.setBaseline($0) }
             }
             Section("EEP (Error Ellipse → CEP)") {
                 InputRow("Semi-major 1σ", unit: "km", value: $semiMajor,
@@ -46,7 +51,7 @@ struct LocationView: View {
                 ResultRow("CEP (AOA)",  cStr(adapter.output.cep_aoa_str),
                           help: "50% Circular Error Probable from angle-of-arrival: 1.2 × range × tan(RMS error)")
                 ResultRow("CEP (TDOA)", cStr(adapter.output.cep_tdoa_str),
-                          help: "50% Circular Error Probable from TDOA: position error ≈ c × RMS timing error / 2")
+                          help: "50% Circular Error Probable from TDOA: c·σ_t·R / (2·B) — improves with wider baseline or shorter range")
                 ResultRow("CEP (EEP)",  cStr(adapter.output.cep_eep_str),
                           help: "CEP from an Elliptical Error Probable: 0.59 × (semi-major + semi-minor)")
             }
