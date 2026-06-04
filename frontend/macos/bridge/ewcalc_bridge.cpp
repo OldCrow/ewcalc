@@ -40,8 +40,9 @@ static EwpPropagationOutput to_c(const ewpresenter::PropagationPresenter::Output
     copy_str(out.fresnel_zone_str,  o.fresnel_zone_str);
     copy_str(out.path_loss_str,     o.path_loss_str);
     copy_str(out.regime_str,        o.regime_str);
-    copy_str(out.earth_bulge_str,   o.earth_bulge_str);
-    copy_str(out.horizon_range_str, o.horizon_range_str);
+    copy_str(out.earth_bulge_str,      o.earth_bulge_str);
+    copy_str(out.horizon_range_str,    o.horizon_range_str);
+    copy_str(out.diffraction_loss_str, o.diffraction_loss_str);
     out.valid = o.valid;
     return out;
 }
@@ -182,21 +183,23 @@ EwpPropagationRef ewp_propagation_create(void) {
 }
 void ewp_propagation_destroy(EwpPropagationRef ref) { delete cast<PropagationWrapper>(ref); }
 
-void ewp_propagation_set_distance(EwpPropagationRef ref, double km)  { cast<PropagationWrapper>(ref)->presenter.set_distance(km); }
-void ewp_propagation_set_frequency(EwpPropagationRef ref, double mhz){ cast<PropagationWrapper>(ref)->presenter.set_frequency(mhz); }
-void ewp_propagation_set_tx_height(EwpPropagationRef ref, double m)  { cast<PropagationWrapper>(ref)->presenter.set_tx_height(m); }
-void ewp_propagation_set_rx_height(EwpPropagationRef ref, double m)  { cast<PropagationWrapper>(ref)->presenter.set_rx_height(m); }
+void ewp_propagation_set_distance(EwpPropagationRef ref, double km)            { cast<PropagationWrapper>(ref)->presenter.set_distance(km); }
+void ewp_propagation_set_frequency(EwpPropagationRef ref, double mhz)          { cast<PropagationWrapper>(ref)->presenter.set_frequency(mhz); }
+void ewp_propagation_set_tx_height(EwpPropagationRef ref, double m)            { cast<PropagationWrapper>(ref)->presenter.set_tx_height(m); }
+void ewp_propagation_set_rx_height(EwpPropagationRef ref, double m)            { cast<PropagationWrapper>(ref)->presenter.set_rx_height(m); }
+void ewp_propagation_set_obstruction_height(EwpPropagationRef ref, double m)   { cast<PropagationWrapper>(ref)->presenter.set_obstruction_height(m); }
 
 void ewp_propagation_set_callback(EwpPropagationRef ref, EwpPropagationCallback cb, void* ctx) {
     auto* w = cast<PropagationWrapper>(ref);
     w->cb = cb; w->ctx = ctx;
 }
 
-double               ewp_propagation_distance(EwpPropagationRef ref)  { return cast<PropagationWrapper>(ref)->presenter.distance_km(); }
-double               ewp_propagation_frequency(EwpPropagationRef ref) { return cast<PropagationWrapper>(ref)->presenter.frequency_mhz(); }
-double               ewp_propagation_tx_height(EwpPropagationRef ref) { return cast<PropagationWrapper>(ref)->presenter.tx_height_m(); }
-double               ewp_propagation_rx_height(EwpPropagationRef ref) { return cast<PropagationWrapper>(ref)->presenter.rx_height_m(); }
-EwpPropagationOutput ewp_propagation_output(EwpPropagationRef ref)    { return to_c(cast<PropagationWrapper>(ref)->presenter.output()); }
+double               ewp_propagation_distance(EwpPropagationRef ref)             { return cast<PropagationWrapper>(ref)->presenter.distance_km(); }
+double               ewp_propagation_frequency(EwpPropagationRef ref)            { return cast<PropagationWrapper>(ref)->presenter.frequency_mhz(); }
+double               ewp_propagation_tx_height(EwpPropagationRef ref)            { return cast<PropagationWrapper>(ref)->presenter.tx_height_m(); }
+double               ewp_propagation_rx_height(EwpPropagationRef ref)            { return cast<PropagationWrapper>(ref)->presenter.rx_height_m(); }
+double               ewp_propagation_obstruction_height(EwpPropagationRef ref)   { return cast<PropagationWrapper>(ref)->presenter.obstruction_height_m(); }
+EwpPropagationOutput ewp_propagation_output(EwpPropagationRef ref)               { return to_c(cast<PropagationWrapper>(ref)->presenter.output()); }
 
 // ============================================================================
 // Link implementation

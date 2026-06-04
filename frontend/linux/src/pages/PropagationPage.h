@@ -17,5 +17,6 @@ private:
     QLabel* regime_;
     QLabel* earth_bulge_;
     QLabel* horizon_range_;
+    QLabel* diffraction_loss_;
     void applyOutput(const ewpresenter::PropagationPresenter::Output& o);
 };

@@ -68,6 +68,12 @@
                                        Converter={StaticResource FieldErrorToBrush}}"
                                    ValueChanged="RxHeightBox_ValueChanged" />
                     </Grid>
+                    <NumberBox x:Name="ObstructionHeightBox"
+                               Header="Obstruction height (m)"
+                               Value="{x:Bind ViewModel.DefaultObstructionHeight, Mode=OneTime}"
+                               Minimum="0" Maximum="10000"
+                               SpinButtonPlacementMode="Compact" SmallChange="1"
+                               ValueChanged="ObstructionHeightBox_ValueChanged" />
                 </StackPanel>
             </Border>
 
@@ -81,8 +87,9 @@
                     <local:ResultRow Label="FSPL"             Value="{x:Bind ViewModel.Fspl,         Mode=OneWay}" />
                     <local:ResultRow Label="2-ray loss"       Value="{x:Bind ViewModel.TwoRayLoss,   Mode=OneWay}" />
                     <local:ResultRow Label="Fresnel zone dist." Value="{x:Bind ViewModel.Fresnel,    Mode=OneWay}" />
-                    <local:ResultRow Label="Earth bulge (mid)" Value="{x:Bind ViewModel.EarthBulge, Mode=OneWay}" />
-                    <local:ResultRow Label="Radar horizon"    Value="{x:Bind ViewModel.HorizonRange, Mode=OneWay}" />
+                    <local:ResultRow Label="Earth bulge (mid)" Value="{x:Bind ViewModel.EarthBulge,       Mode=OneWay}" />
+                    <local:ResultRow Label="Radar horizon"    Value="{x:Bind ViewModel.HorizonRange,     Mode=OneWay}" />
+                    <local:ResultRow Label="Diffraction loss" Value="{x:Bind ViewModel.DiffractionLoss,  Mode=OneWay}" />
                 </StackPanel>
             </Border>
 
