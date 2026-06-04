@@ -7,6 +7,7 @@
 #include "pages/LocationPage.h"
 #include "pages/RadarPage.h"
 #include "pages/DigitalPage.h"
+#include "pages/AntennaPage.h"
 #include "pages/ReferencePage.h"
 
 #include <QBrush>
@@ -68,6 +69,7 @@ MainWindow::MainWindow(QWidget* parent)
     // ── Calculators section ─────────────────────────────────────────────
     addHeader(QStringLiteral("Calculators"));
     addPage(QStringLiteral("Propagation"),   QStringLiteral("network-wireless"),         new PropagationPage);
+    addPage(QStringLiteral("Antenna"),       QStringLiteral("network-wireless"),         new AntennaPage);
     addPage(QStringLiteral("Link Budget"),   QStringLiteral("network-transmit-receive"), new LinkPage);
     addPage(QStringLiteral("Receiver"),      QStringLiteral("audio-card"),              new ReceiverPage);
     addPage(QStringLiteral("Jamming"),       QStringLiteral("emblem-important"),        new JammingPage);

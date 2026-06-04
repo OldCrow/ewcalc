@@ -56,6 +56,7 @@ set(SOURCES
     src/pages/LocationPage.cpp
     src/pages/RadarPage.cpp
     src/pages/DigitalPage.cpp
+    src/pages/AntennaPage.cpp
     src/pages/ReferencePage.cpp
 )
 

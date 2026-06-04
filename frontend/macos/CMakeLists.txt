@@ -81,6 +81,7 @@ set(SWIFT_SOURCES
     app/Adapters/LocationAdapter.swift
     app/Adapters/RadarAdapter.swift
     app/Adapters/DigitalAdapter.swift
+    app/Adapters/AntennaAdapter.swift
     app/Views/Shared.swift
     app/Views/PropagationView.swift
     app/Views/LinkView.swift
@@ -89,6 +90,7 @@ set(SWIFT_SOURCES
     app/Views/LocationView.swift
     app/Views/RadarView.swift
     app/Views/DigitalView.swift
+    app/Views/AntennaView.swift
     app/Views/ReferenceView.swift
 )
 

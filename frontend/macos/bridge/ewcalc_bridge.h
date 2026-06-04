@@ -28,6 +28,7 @@ typedef struct EwpPropagationOutput {
     char regime_str[EWP_STR_MAX];
     char earth_bulge_str[EWP_STR_MAX];
     char horizon_range_str[EWP_STR_MAX];
+    char diffraction_loss_str[EWP_STR_MAX];
     bool valid;
 } EwpPropagationOutput;
 
@@ -41,12 +42,14 @@ void ewp_propagation_set_distance(EwpPropagationRef ref, double km);
 void ewp_propagation_set_frequency(EwpPropagationRef ref, double mhz);
 void ewp_propagation_set_tx_height(EwpPropagationRef ref, double m);
 void ewp_propagation_set_rx_height(EwpPropagationRef ref, double m);
+void ewp_propagation_set_obstruction_height(EwpPropagationRef ref, double m);
 void ewp_propagation_set_callback(EwpPropagationRef ref, EwpPropagationCallback cb, void* ctx);
 
 double               ewp_propagation_distance(EwpPropagationRef ref);
 double               ewp_propagation_frequency(EwpPropagationRef ref);
 double               ewp_propagation_tx_height(EwpPropagationRef ref);
 double               ewp_propagation_rx_height(EwpPropagationRef ref);
+double               ewp_propagation_obstruction_height(EwpPropagationRef ref);
 EwpPropagationOutput ewp_propagation_output(EwpPropagationRef ref);
 
 // ============================================================================
@@ -266,6 +269,7 @@ EwpRadarOutput ewp_radar_output(EwpRadarRef ref);
 
 typedef struct EwpDigitalOutput {
     char eb_no_str[EWP_STR_MAX];
+    char snr_from_eb_no_str[EWP_STR_MAX];
     char process_gain_str[EWP_STR_MAX];
     char jamming_margin_str[EWP_STR_MAX];
     char required_js_str[EWP_STR_MAX];
@@ -293,6 +297,37 @@ double           ewp_digital_chip_rate(EwpDigitalRef ref);
 double           ewp_digital_required_eb_no(EwpDigitalRef ref);
 double           ewp_digital_implementation_loss(EwpDigitalRef ref);
 EwpDigitalOutput ewp_digital_output(EwpDigitalRef ref);
+
+// ============================================================================
+// Antenna
+// ============================================================================
+typedef struct EwpAntennaOutput {
+    char erp_str[EWP_STR_MAX];
+    char beamwidth_from_gain_str[EWP_STR_MAX];
+    char gain_from_beamwidth_str[EWP_STR_MAX];
+    char wavelength_str[EWP_STR_MAX];
+    bool valid;
+} EwpAntennaOutput;
+
+typedef void* EwpAntennaRef;
+typedef void (*EwpAntennaCallback)(EwpAntennaOutput output, void* ctx);
+
+EwpAntennaRef ewp_antenna_create(void);
+void          ewp_antenna_destroy(EwpAntennaRef ref);
+
+void ewp_antenna_set_gain(EwpAntennaRef ref, double dbi);
+void ewp_antenna_set_az_beamwidth(EwpAntennaRef ref, double deg);
+void ewp_antenna_set_el_beamwidth(EwpAntennaRef ref, double deg);
+void ewp_antenna_set_tx_power(EwpAntennaRef ref, double dbm);
+void ewp_antenna_set_frequency(EwpAntennaRef ref, double mhz);
+void ewp_antenna_set_callback(EwpAntennaRef ref, EwpAntennaCallback cb, void* ctx);
+
+double           ewp_antenna_gain(EwpAntennaRef ref);
+double           ewp_antenna_az_beamwidth(EwpAntennaRef ref);
+double           ewp_antenna_el_beamwidth(EwpAntennaRef ref);
+double           ewp_antenna_tx_power(EwpAntennaRef ref);
+double           ewp_antenna_frequency(EwpAntennaRef ref);
+EwpAntennaOutput ewp_antenna_output(EwpAntennaRef ref);
 
 #ifdef __cplusplus
 }

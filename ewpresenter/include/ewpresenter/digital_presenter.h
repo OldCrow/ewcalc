@@ -18,7 +18,9 @@ public:
     struct Output {
         // Eb/N₀ section
         Db  eb_no{};
-        std::string eb_no_str;       ///< Eb/N₀ from received SNR
+        std::string eb_no_str;            ///< Eb/N₀ from received SNR
+        Db  snr_from_eb_no{};
+        std::string snr_from_eb_no_str;   ///< SNR recovered from Eb/N₀ (inverse check)
 
         // DSSS section
         Db  process_gain{};

@@ -19,6 +19,7 @@ public sealed partial class MainWindow : Window
         ("Location",    typeof(LocationPage)),
         ("Radar",       typeof(RadarPage)),
         ("Digital",     typeof(DigitalPage)),
+        ("Antenna",     typeof(AntennaPage)),
         ("Reference",   typeof(ReferencePage)),
     ];
 

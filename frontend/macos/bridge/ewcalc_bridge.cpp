@@ -11,6 +11,7 @@
 #include <ewpresenter/location_presenter.h>
 #include <ewpresenter/radar_presenter.h>
 #include <ewpresenter/digital_presenter.h>
+#include <ewpresenter/antenna_presenter.h>
 
 #include <cstring>
 #include <vector>
@@ -40,8 +41,9 @@ static EwpPropagationOutput to_c(const ewpresenter::PropagationPresenter::Output
     copy_str(out.fresnel_zone_str,  o.fresnel_zone_str);
     copy_str(out.path_loss_str,     o.path_loss_str);
     copy_str(out.regime_str,        o.regime_str);
-    copy_str(out.earth_bulge_str,   o.earth_bulge_str);
-    copy_str(out.horizon_range_str, o.horizon_range_str);
+    copy_str(out.earth_bulge_str,      o.earth_bulge_str);
+    copy_str(out.horizon_range_str,    o.horizon_range_str);
+    copy_str(out.diffraction_loss_str, o.diffraction_loss_str);
     out.valid = o.valid;
     return out;
 }
@@ -153,10 +155,29 @@ struct DigitalWrapper {
 
 static EwpDigitalOutput to_c(const ewpresenter::DigitalPresenter::Output& o) noexcept {
     EwpDigitalOutput out{};
-    copy_str(out.eb_no_str,          o.eb_no_str);
-    copy_str(out.process_gain_str,   o.process_gain_str);
-    copy_str(out.jamming_margin_str, o.jamming_margin_str);
-    copy_str(out.required_js_str,    o.required_js_str);
+    copy_str(out.eb_no_str,           o.eb_no_str);
+    copy_str(out.snr_from_eb_no_str,  o.snr_from_eb_no_str);
+    copy_str(out.process_gain_str,    o.process_gain_str);
+    copy_str(out.jamming_margin_str,  o.jamming_margin_str);
+    copy_str(out.required_js_str,     o.required_js_str);
+    out.valid = o.valid;
+    return out;
+}
+
+// ── Antenna ──────────────────────────────────────────────────────────────────
+
+struct AntennaWrapper {
+    ewpresenter::AntennaPresenter presenter;
+    EwpAntennaCallback cb = nullptr;
+    void* ctx = nullptr;
+};
+
+static EwpAntennaOutput to_c(const ewpresenter::AntennaPresenter::Output& o) noexcept {
+    EwpAntennaOutput out{};
+    copy_str(out.erp_str,                 o.erp_str);
+    copy_str(out.beamwidth_from_gain_str, o.beamwidth_from_gain_str);
+    copy_str(out.gain_from_beamwidth_str, o.gain_from_beamwidth_str);
+    copy_str(out.wavelength_str,          o.wavelength_str);
     out.valid = o.valid;
     return out;
 }
@@ -182,21 +203,23 @@ EwpPropagationRef ewp_propagation_create(void) {
 }
 void ewp_propagation_destroy(EwpPropagationRef ref) { delete cast<PropagationWrapper>(ref); }
 
-void ewp_propagation_set_distance(EwpPropagationRef ref, double km)  { cast<PropagationWrapper>(ref)->presenter.set_distance(km); }
-void ewp_propagation_set_frequency(EwpPropagationRef ref, double mhz){ cast<PropagationWrapper>(ref)->presenter.set_frequency(mhz); }
-void ewp_propagation_set_tx_height(EwpPropagationRef ref, double m)  { cast<PropagationWrapper>(ref)->presenter.set_tx_height(m); }
-void ewp_propagation_set_rx_height(EwpPropagationRef ref, double m)  { cast<PropagationWrapper>(ref)->presenter.set_rx_height(m); }
+void ewp_propagation_set_distance(EwpPropagationRef ref, double km)            { cast<PropagationWrapper>(ref)->presenter.set_distance(km); }
+void ewp_propagation_set_frequency(EwpPropagationRef ref, double mhz)          { cast<PropagationWrapper>(ref)->presenter.set_frequency(mhz); }
+void ewp_propagation_set_tx_height(EwpPropagationRef ref, double m)            { cast<PropagationWrapper>(ref)->presenter.set_tx_height(m); }
+void ewp_propagation_set_rx_height(EwpPropagationRef ref, double m)            { cast<PropagationWrapper>(ref)->presenter.set_rx_height(m); }
+void ewp_propagation_set_obstruction_height(EwpPropagationRef ref, double m)   { cast<PropagationWrapper>(ref)->presenter.set_obstruction_height(m); }
 
 void ewp_propagation_set_callback(EwpPropagationRef ref, EwpPropagationCallback cb, void* ctx) {
     auto* w = cast<PropagationWrapper>(ref);
     w->cb = cb; w->ctx = ctx;
 }
 
-double               ewp_propagation_distance(EwpPropagationRef ref)  { return cast<PropagationWrapper>(ref)->presenter.distance_km(); }
-double               ewp_propagation_frequency(EwpPropagationRef ref) { return cast<PropagationWrapper>(ref)->presenter.frequency_mhz(); }
-double               ewp_propagation_tx_height(EwpPropagationRef ref) { return cast<PropagationWrapper>(ref)->presenter.tx_height_m(); }
-double               ewp_propagation_rx_height(EwpPropagationRef ref) { return cast<PropagationWrapper>(ref)->presenter.rx_height_m(); }
-EwpPropagationOutput ewp_propagation_output(EwpPropagationRef ref)    { return to_c(cast<PropagationWrapper>(ref)->presenter.output()); }
+double               ewp_propagation_distance(EwpPropagationRef ref)             { return cast<PropagationWrapper>(ref)->presenter.distance_km(); }
+double               ewp_propagation_frequency(EwpPropagationRef ref)            { return cast<PropagationWrapper>(ref)->presenter.frequency_mhz(); }
+double               ewp_propagation_tx_height(EwpPropagationRef ref)            { return cast<PropagationWrapper>(ref)->presenter.tx_height_m(); }
+double               ewp_propagation_rx_height(EwpPropagationRef ref)            { return cast<PropagationWrapper>(ref)->presenter.rx_height_m(); }
+double               ewp_propagation_obstruction_height(EwpPropagationRef ref)   { return cast<PropagationWrapper>(ref)->presenter.obstruction_height_m(); }
+EwpPropagationOutput ewp_propagation_output(EwpPropagationRef ref)               { return to_c(cast<PropagationWrapper>(ref)->presenter.output()); }
 
 // ============================================================================
 // Link implementation
@@ -429,5 +452,35 @@ double           ewp_digital_chip_rate(EwpDigitalRef ref)          { return cast
 double           ewp_digital_required_eb_no(EwpDigitalRef ref)     { return cast<DigitalWrapper>(ref)->presenter.required_eb_no_db(); }
 double           ewp_digital_implementation_loss(EwpDigitalRef ref){ return cast<DigitalWrapper>(ref)->presenter.implementation_loss_db(); }
 EwpDigitalOutput ewp_digital_output(EwpDigitalRef ref)             { return to_c(cast<DigitalWrapper>(ref)->presenter.output()); }
+
+// ============================================================================
+// Antenna implementation
+// ============================================================================
+
+EwpAntennaRef ewp_antenna_create(void) {
+    auto* w = new AntennaWrapper();
+    w->presenter.set_on_change([w](const ewpresenter::AntennaPresenter::Output& o) {
+        if (w->cb) w->cb(to_c(o), w->ctx);
+    });
+    return w;
+}
+void ewp_antenna_destroy(EwpAntennaRef ref) { delete cast<AntennaWrapper>(ref); }
+
+void ewp_antenna_set_gain(EwpAntennaRef ref, double dbi)       { cast<AntennaWrapper>(ref)->presenter.set_gain(dbi); }
+void ewp_antenna_set_az_beamwidth(EwpAntennaRef ref, double deg){ cast<AntennaWrapper>(ref)->presenter.set_az_beamwidth(deg); }
+void ewp_antenna_set_el_beamwidth(EwpAntennaRef ref, double deg){ cast<AntennaWrapper>(ref)->presenter.set_el_beamwidth(deg); }
+void ewp_antenna_set_tx_power(EwpAntennaRef ref, double dbm)   { cast<AntennaWrapper>(ref)->presenter.set_tx_power(dbm); }
+void ewp_antenna_set_frequency(EwpAntennaRef ref, double mhz)  { cast<AntennaWrapper>(ref)->presenter.set_frequency(mhz); }
+
+void ewp_antenna_set_callback(EwpAntennaRef ref, EwpAntennaCallback cb, void* ctx) {
+    auto* w = cast<AntennaWrapper>(ref); w->cb = cb; w->ctx = ctx;
+}
+
+double           ewp_antenna_gain(EwpAntennaRef ref)         { return cast<AntennaWrapper>(ref)->presenter.gain_dbi(); }
+double           ewp_antenna_az_beamwidth(EwpAntennaRef ref) { return cast<AntennaWrapper>(ref)->presenter.az_beamwidth_deg(); }
+double           ewp_antenna_el_beamwidth(EwpAntennaRef ref) { return cast<AntennaWrapper>(ref)->presenter.el_beamwidth_deg(); }
+double           ewp_antenna_tx_power(EwpAntennaRef ref)     { return cast<AntennaWrapper>(ref)->presenter.tx_power_dbm(); }
+double           ewp_antenna_frequency(EwpAntennaRef ref)    { return cast<AntennaWrapper>(ref)->presenter.frequency_mhz(); }
+EwpAntennaOutput ewp_antenna_output(EwpAntennaRef ref)       { return to_c(cast<AntennaWrapper>(ref)->presenter.output()); }
 
 } // extern "C"

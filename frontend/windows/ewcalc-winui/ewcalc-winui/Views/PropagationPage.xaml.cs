@@ -11,10 +11,11 @@ public sealed partial class PropagationPage : Page
 
     public PropagationPage() {
         InitializeComponent();
-        DistanceBox .Setup(0.01,     10000.0);
-        FrequencyBox.Setup(0.1,     100000.0);
-        TxHeightBox .Setup(0.1,     100000.0);
-        RxHeightBox .Setup(0.1,     100000.0);
+        DistanceBox         .Setup(0.01,  10000.0);
+        FrequencyBox        .Setup(0.1,  100000.0);
+        TxHeightBox         .Setup(0.1,  100000.0);
+        RxHeightBox         .Setup(0.1,  100000.0);
+        ObstructionHeightBox.Setup(0.0,   10000.0);
     }
 
     private void DistanceBox_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs e)
@@ -28,4 +29,7 @@ public sealed partial class PropagationPage : Page
 
     private void RxHeightBox_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs e)
     { if (!double.IsNaN(e.NewValue)) ViewModel.SetRxHeight(e.NewValue); }
+
+    private void ObstructionHeightBox_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs e)
+    { if (!double.IsNaN(e.NewValue)) ViewModel.SetObstructionHeight(e.NewValue); }
 }

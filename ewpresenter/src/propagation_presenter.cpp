@@ -32,11 +32,18 @@ void PropagationPresenter::set_rx_height(double meters) noexcept {
     recompute(); fire();
 }
 
+void PropagationPresenter::set_obstruction_height(double meters) noexcept {
+    obstruction_height_m_   = meters;
+    obstruction_height_err_ = validate_non_negative(meters);
+    recompute(); fire();
+}
+
 void PropagationPresenter::recompute() noexcept {
-    output_.valid = (distance_err_  == FieldError::none &&
-                     frequency_err_ == FieldError::none &&
-                     tx_height_err_ == FieldError::none &&
-                     rx_height_err_ == FieldError::none);
+    output_.valid = (distance_err_          == FieldError::none &&
+                     frequency_err_         == FieldError::none &&
+                     tx_height_err_         == FieldError::none &&
+                     rx_height_err_         == FieldError::none &&
+                     obstruction_height_err_== FieldError::none);
 
     if (!output_.valid) {
         output_.fspl_str          = "\xe2\x80\x94"; // em dash
@@ -44,8 +51,9 @@ void PropagationPresenter::recompute() noexcept {
         output_.fresnel_zone_str  = "\xe2\x80\x94";
         output_.path_loss_str     = "\xe2\x80\x94";
         output_.regime_str        = "\xe2\x80\x94";
-        output_.earth_bulge_str   = "\xe2\x80\x94";
-        output_.horizon_range_str = "\xe2\x80\x94";
+        output_.earth_bulge_str      = "\xe2\x80\x94";
+        output_.horizon_range_str    = "\xe2\x80\x94";
+        output_.diffraction_loss_str = "\xe2\x80\x94";
         return;
     }
 
@@ -74,6 +82,13 @@ void PropagationPresenter::recompute() noexcept {
 
     output_.earth_bulge_str   = format_m(output_.earth_bulge, 1);
     output_.horizon_range_str = format_km(output_.horizon_range);
+
+    // Knife-edge diffraction — obstacle at path midpoint
+    const double los_mid  = (tx_height_m_ + rx_height_m_) / 2.0;
+    const double clearance = los_mid - output_.earth_bulge.value - obstruction_height_m_;
+    output_.diffraction_loss = libew::propagation::knife_edge_diffraction_loss(
+        half_d, half_d, Meters{clearance}, f);
+    output_.diffraction_loss_str = format_db(output_.diffraction_loss);
 }
 
 void PropagationPresenter::fire() noexcept {
