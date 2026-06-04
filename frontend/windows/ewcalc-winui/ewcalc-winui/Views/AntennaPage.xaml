@@ -1,0 +1,60 @@
+<Page
+    x:Class="EwCalc.Views.AntennaPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:EwCalc.Views">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24,20,24,24" Spacing="8">
+
+            <StackPanel Margin="0,0,0,8">
+                <TextBlock Text="Antenna" Style="{ThemeResource TitleTextBlockStyle}" />
+                <TextBlock Text="ERP · Beamwidth · Gain · Wavelength"
+                           Style="{ThemeResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+
+            <TextBlock Text="ANTENNA PARAMETERS" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource InputCardStyle}">
+                <StackPanel Spacing="12">
+                    <NumberBox x:Name="GainBox"        Header="Gain (dBi)"
+                               Value="{x:Bind ViewModel.DefaultGain, Mode=OneTime}"
+                               Minimum="-10" Maximum="60"
+                               SpinButtonPlacementMode="Compact" SmallChange="0.5"
+                               ValueChanged="GainBox_ValueChanged" />
+                    <NumberBox x:Name="AzBeamwidthBox" Header="Az beamwidth (deg)"
+                               Value="{x:Bind ViewModel.DefaultAzBeamwidth, Mode=OneTime}"
+                               Minimum="0.1" Maximum="360"
+                               SpinButtonPlacementMode="Compact" SmallChange="1"
+                               ValueChanged="AzBeamwidthBox_ValueChanged" />
+                    <NumberBox x:Name="ElBeamwidthBox" Header="El beamwidth (deg)"
+                               Value="{x:Bind ViewModel.DefaultElBeamwidth, Mode=OneTime}"
+                               Minimum="0.1" Maximum="360"
+                               SpinButtonPlacementMode="Compact" SmallChange="1"
+                               ValueChanged="ElBeamwidthBox_ValueChanged" />
+                    <NumberBox x:Name="TxPowerBox"     Header="Tx power (dBm)"
+                               Value="{x:Bind ViewModel.DefaultTxPower, Mode=OneTime}"
+                               Minimum="-30" Maximum="100"
+                               SpinButtonPlacementMode="Compact" SmallChange="1"
+                               ValueChanged="TxPowerBox_ValueChanged" />
+                    <NumberBox x:Name="FrequencyBox"   Header="Frequency (MHz)"
+                               Value="{x:Bind ViewModel.DefaultFrequency, Mode=OneTime}"
+                               Minimum="0.1" Maximum="100000"
+                               SpinButtonPlacementMode="Compact" SmallChange="10"
+                               ValueChanged="FrequencyBox_ValueChanged" />
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="RESULTS" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource ResultCardStyle}">
+                <StackPanel Spacing="0">
+                    <local:ResultRow Label="ERP"                 Value="{x:Bind ViewModel.Erp,               Mode=OneWay}" IsHighlighted="True" />
+                    <local:ResultRow Label="Beamwidth from gain" Value="{x:Bind ViewModel.BeamwidthFromGain, Mode=OneWay}" />
+                    <local:ResultRow Label="Gain from beamwidth" Value="{x:Bind ViewModel.GainFromBeamwidth, Mode=OneWay}" />
+                    <local:ResultRow Label="Wavelength"          Value="{x:Bind ViewModel.Wavelength,        Mode=OneWay}" />
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

@@ -1,5 +1,5 @@
 // Views/PageCodeBehinds.cs
-// Code-behind for Link, Jamming, Location, Radar, Receiver, Home, Digital, and Reference pages.
+// Code-behind for Link, Jamming, Location, Radar, Receiver, Home, Digital, Antenna, and Reference pages.
 using EwCalc.Helpers;
 using EwCalc.ViewModels;
 using Microsoft.UI.Xaml.Controls;
@@ -181,6 +181,25 @@ public sealed partial class DigitalPage : Page
     private void ChipRateBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)     { if (!double.IsNaN(e.NewValue)) ViewModel.SetChipRate(e.NewValue);           }
     private void RequiredEbNoBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e) { if (!double.IsNaN(e.NewValue)) ViewModel.SetRequiredEbNo(e.NewValue);       }
     private void ImplLossBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)     { if (!double.IsNaN(e.NewValue)) ViewModel.SetImplementationLoss(e.NewValue); }
+}
+
+public sealed partial class AntennaPage : Page
+{
+    public AntennaViewModel ViewModel { get; } = new();
+    public AntennaPage() {
+        InitializeComponent();
+        GainBox       .Setup(-10.0,   60.0);
+        AzBeamwidthBox.Setup(0.1,    360.0);
+        ElBeamwidthBox.Setup(0.1,    360.0);
+        TxPowerBox    .Setup(-30.0,  100.0);
+        FrequencyBox  .Setup(0.1, 100000.0);
+    }
+
+    private void GainBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)        { if (!double.IsNaN(e.NewValue)) ViewModel.SetGain(e.NewValue);        }
+    private void AzBeamwidthBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e) { if (!double.IsNaN(e.NewValue)) ViewModel.SetAzBeamwidth(e.NewValue); }
+    private void ElBeamwidthBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e) { if (!double.IsNaN(e.NewValue)) ViewModel.SetElBeamwidth(e.NewValue); }
+    private void TxPowerBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)     { if (!double.IsNaN(e.NewValue)) ViewModel.SetTxPower(e.NewValue);     }
+    private void FrequencyBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)   { if (!double.IsNaN(e.NewValue)) ViewModel.SetFrequency(e.NewValue);   }
 }
 
 public sealed partial class ReferencePage : Page

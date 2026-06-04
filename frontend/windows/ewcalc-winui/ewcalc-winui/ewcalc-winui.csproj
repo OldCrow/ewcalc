@@ -41,6 +41,7 @@
     <Page Include="Views\LocationPage.xaml">        <Generator>MSBuild:Compile</Generator></Page>
     <Page Include="Views\RadarPage.xaml">           <Generator>MSBuild:Compile</Generator></Page>
     <Page Include="Views\DigitalPage.xaml">         <Generator>MSBuild:Compile</Generator></Page>
+    <Page Include="Views\AntennaPage.xaml">          <Generator>MSBuild:Compile</Generator></Page>
     <Page Include="Views\ReferencePage.xaml">       <Generator>MSBuild:Compile</Generator></Page>
     <Page Include="Views\HomePage.xaml">            <Generator>MSBuild:Compile</Generator></Page>
     <Page Include="Views\ResultRow.xaml">           <Generator>MSBuild:Compile</Generator></Page>

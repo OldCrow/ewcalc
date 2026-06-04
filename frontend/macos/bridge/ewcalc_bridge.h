@@ -298,6 +298,37 @@ double           ewp_digital_required_eb_no(EwpDigitalRef ref);
 double           ewp_digital_implementation_loss(EwpDigitalRef ref);
 EwpDigitalOutput ewp_digital_output(EwpDigitalRef ref);
 
+// ============================================================================
+// Antenna
+// ============================================================================
+typedef struct EwpAntennaOutput {
+    char erp_str[EWP_STR_MAX];
+    char beamwidth_from_gain_str[EWP_STR_MAX];
+    char gain_from_beamwidth_str[EWP_STR_MAX];
+    char wavelength_str[EWP_STR_MAX];
+    bool valid;
+} EwpAntennaOutput;
+
+typedef void* EwpAntennaRef;
+typedef void (*EwpAntennaCallback)(EwpAntennaOutput output, void* ctx);
+
+EwpAntennaRef ewp_antenna_create(void);
+void          ewp_antenna_destroy(EwpAntennaRef ref);
+
+void ewp_antenna_set_gain(EwpAntennaRef ref, double dbi);
+void ewp_antenna_set_az_beamwidth(EwpAntennaRef ref, double deg);
+void ewp_antenna_set_el_beamwidth(EwpAntennaRef ref, double deg);
+void ewp_antenna_set_tx_power(EwpAntennaRef ref, double dbm);
+void ewp_antenna_set_frequency(EwpAntennaRef ref, double mhz);
+void ewp_antenna_set_callback(EwpAntennaRef ref, EwpAntennaCallback cb, void* ctx);
+
+double           ewp_antenna_gain(EwpAntennaRef ref);
+double           ewp_antenna_az_beamwidth(EwpAntennaRef ref);
+double           ewp_antenna_el_beamwidth(EwpAntennaRef ref);
+double           ewp_antenna_tx_power(EwpAntennaRef ref);
+double           ewp_antenna_frequency(EwpAntennaRef ref);
+EwpAntennaOutput ewp_antenna_output(EwpAntennaRef ref);
+
 #ifdef __cplusplus
 }
 #endif

@@ -7,6 +7,7 @@
 #include "pages/LocationPage.h"
 #include "pages/RadarPage.h"
 #include "pages/DigitalPage.h"
+#include "pages/AntennaPage.h"
 #include "pages/ReferencePage.h"
 
 #include <QBrush>
@@ -74,6 +75,7 @@ MainWindow::MainWindow(QWidget* parent)
     addPage(QStringLiteral("Location"),      QStringLiteral("find-location"),           new LocationPage);
     addPage(QStringLiteral("Radar"),         QStringLiteral("system-search"),           new RadarPage);
     addPage(QStringLiteral("Digital / DSSS"),QStringLiteral("media-playback-start"),    new DigitalPage);
+    addPage(QStringLiteral("Antenna"),       QStringLiteral("network-wireless"),         new AntennaPage);
 
     // ── Reference section ───────────────────────────────────────────────
     addSpacer();

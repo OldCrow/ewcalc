@@ -87,6 +87,15 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
+                <NavigationViewItem
+                    x:Name="NavAntenna"
+                    Tag="Antenna"
+                    Content="Antenna">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE704;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
                 <NavigationViewItemSeparator />
                 <NavigationViewItemHeader Content="REFERENCE" />
 
