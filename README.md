@@ -1,8 +1,8 @@
 # ewcalc — EW Engineering Calculator
 
-A multi-platform electronic warfare engineering calculator covering RF link budgets,
-propagation models, receiver performance, jamming analysis, emitter location, and
-basic radar — based on the EW101 series by David Adamy.
+A multi-platform electronic warfare engineering calculator covering antenna analysis,
+RF propagation, link budgets, receiver performance, jamming analysis, emitter location,
+radar, and spread-spectrum communications — based on the EW101 series by David Adamy.
 
 ## Architecture
 
@@ -24,21 +24,22 @@ Three layers with clean separation:
 | `jamming` | J/S ratio, burnthrough range, partial-band optimization |
 | `location` | CEP from AOA bearing error, TDOA timing error, and EEP |
 | `radar` | Radar range equation, pulse compression, coherent integration gain, LPI advantage |
-| `digital` | Eb/N₀ ↔ SNR conversion, DSSS process gain, jamming margin, required J/S |
+| `digital` | Eb/N₀ ↔ SNR conversion (both directions), DSSS process gain, jamming margin, required J/S |
 
 ## ewpresenter
 
-Seven presenters wrap the `libew` modules for use by any view layer:
+Eight presenters wrap the `libew` modules for use by any view layer:
 
 | Presenter | Inputs | Key outputs |
 |-----------|--------|-------------|
-| `PropagationPresenter` | distance, frequency, antenna heights | FSPL, 2-ray loss, Fresnel zone, regime, earth bulge, radar horizon |
+| `PropagationPresenter` | distance, frequency, antenna heights, obstruction height | FSPL, 2-ray loss, Fresnel zone, regime, earth bulge, radar horizon, knife-edge diffraction loss |
+| `AntennaPresenter` | gain, az/el beamwidth, Tx power, frequency | ERP, beamwidth from gain, gain from beamwidth, wavelength |
 | `LinkPresenter` | Tx power/gain, Rx gain, geometry, sensitivity | Received power, link margin, effective range |
 | `ReceiverPresenter` | Bandwidth, NF, SNR, stage chain, ADC bits | Sensitivity, cascaded NF, system noise temp, SFDR, digital DR |
 | `JammingPresenter` | Signal/jammer ERP, geometry, frequency, J/S threshold | J/S ratio, burnthrough range, partial-band optimum BW (N/A when hop range = 0) |
 | `LocationPresenter` | Bearing error, range, TDOA timing error, EEP semi-axes | CEP (AOA, TDOA, and EEP methods) |
 | `RadarPresenter` | Tx power, gain, RCS, frequency, NF, TB product | Max range, two-way loss, PC gain, coherent integration gain, LPI advantage |
-| `DigitalPresenter` | SNR, bandwidth, data rate, chip rate, required Eb/N₀, impl. loss | Eb/N₀, DSSS process gain, jamming margin, required J/S |
+| `DigitalPresenter` | SNR, bandwidth, data rate, chip rate, required Eb/N₀, impl. loss | Eb/N₀, SNR from Eb/N₀, DSSS process gain, jamming margin, required J/S |
 
 Each presenter validates inputs, calls `libew`, and fires a `std::function` callback with formatted output strings. No platform types are exposed.
 
@@ -77,13 +78,13 @@ and `xcrun notarytool` credentials stored under the `ewcalc-notarytool` profile.
 
 ## Current status
 
-**v0.5.3** — All three frontends at full feature parity; layout polish complete.
+**v0.6.0** — Antenna calculator added across all platforms; knife-edge diffraction and SNR↔Eb/N₀ wired up.
 
-- Phase 1 ✓ — `libew`: nine calculation modules, full test harness; assessment fixes applied
-- Phase 2 ✓ — `ewpresenter`: seven presenters; all libew functions surfaced
-- Phase 3 ✓ — Windows frontend (WinUI 3 / C#) — Digital/DSSS page, Reference panel, extended pages
-- Phase 4 ✓ — macOS frontend (SwiftUI) — Digital/DSSS page, Reference panel, tooltips, TDOA baseline
-- Phase 5 ✓ — Linux frontend (Qt6 Widgets) — Digital/DSSS page, Reference panel, extended pages
+- Phase 1 ✓ — `libew`: nine calculation modules, full test harness
+- Phase 2 ✓ — `ewpresenter`: eight presenters; all libew functions surfaced
+- Phase 3 ✓ — Windows frontend (WinUI 3 / C#) — Antenna page, diffraction input, extended outputs
+- Phase 4 ✓ — macOS frontend (SwiftUI) — Antenna page, diffraction input, extended outputs
+- Phase 5 ✓ — Linux frontend (Qt6 Widgets) — Antenna page, diffraction input, extended outputs
 
 Release artifacts (`.dmg`, `.AppImage`) are attached to each
 [GitHub Release](../../releases).

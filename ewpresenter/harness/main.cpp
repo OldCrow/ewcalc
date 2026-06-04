@@ -130,7 +130,22 @@ int main() {
     }
 
     // -----------------------------------------------------------------------
-    // 7. Validation — inject a bad input and verify the presenter invalidates
+    // 7. Antenna
+    //    Default: 0 dBi gain, 60°/60° beamwidth, 30 dBm Tx, 1000 MHz
+    // -----------------------------------------------------------------------
+    section("Antenna");
+    {
+        ewpresenter::AntennaPresenter p;
+        const auto& out = p.output();
+        row("Valid",                out.valid ? "yes" : "NO");
+        row("ERP",                  out.erp_str);
+        row("Beamwidth from gain",  out.beamwidth_from_gain_str);
+        row("Gain from beamwidth",  out.gain_from_beamwidth_str);
+        row("Wavelength",           out.wavelength_str);
+    }
+
+    // -----------------------------------------------------------------------
+    // 8. Validation — inject a bad input and verify the presenter invalidates
     // -----------------------------------------------------------------------
     section("Validation");
     {
@@ -147,7 +162,7 @@ int main() {
     }
 
     // -----------------------------------------------------------------------
-    // 7. Digital / DSSS
+    // 9. Digital / DSSS
     //    Default: SNR=10dB, BW=1MHz, data_rate=0.1Mbps, chip_rate=10Mcps,
     //             Eb/No_req=10dB, impl_loss=1dB
     // -----------------------------------------------------------------------
@@ -157,20 +172,24 @@ int main() {
         const auto& out = p.output();
         row("Valid",           out.valid ? "yes" : "NO");
         row("Eb/N\xc2\xb0",   out.eb_no_str);          // Eb/N₀
+        row("SNR from Eb/N\xc2\xb0", out.snr_from_eb_no_str);
         row("Process gain",    out.process_gain_str);
         row("Jamming margin",  out.jamming_margin_str);
         row("Required J/S",    out.required_js_str);
     }
 
     // -----------------------------------------------------------------------
-    // 8. Check new fields on existing presenters
+    // 10. Extended / secondary outputs
     // -----------------------------------------------------------------------
     section("Extended outputs");
     {
         ewpresenter::PropagationPresenter p;
+        // Set a 50 m obstacle at midpoint to exercise diffraction
+        p.set_obstruction_height(50.0);
         const auto& out = p.output();
-        row("Earth bulge (midpt)",    out.earth_bulge_str);
-        row("Radar horizon",          out.horizon_range_str);
+        row("Earth bulge (midpt)",  out.earth_bulge_str);
+        row("Radar horizon",        out.horizon_range_str);
+        row("Diffraction loss (h=50m)", out.diffraction_loss_str);
     }
     {
         ewpresenter::ReceiverPresenter p;

@@ -10,11 +10,13 @@ ewcalc-winui.sln
 ├── ewpresenter.net/       C++/CLI (.vcxproj) — bridges native libs to C#
 │   ├── MarshalHelper.h    std::string → System::String^, FieldError → enum
 │   ├── PropagationAdapter.h/.cpp
+│   ├── AntennaAdapter.h/.cpp
 │   ├── LinkAdapter.h/.cpp
 │   ├── ReceiverAdapter.h/.cpp   (includes stage chain management)
 │   ├── JammingAdapter.h/.cpp
 │   ├── LocationAdapter.h/.cpp
-│   └── RadarAdapter.h/.cpp
+│   ├── RadarAdapter.h/.cpp
+│   └── DigitalAdapter.h/.cpp
 │
 └── ewcalc-winui/          C# WinUI 3 (.csproj)
     ├── App.xaml            Loads XamlControlsResources — the key Phase 3.1 unlock
@@ -22,18 +24,22 @@ ewcalc-winui.sln
     ├── Helpers/
     │   └── FieldErrorConverter.cs   FieldValidationError → BorderBrush / tooltip
     ├── ViewModels/
-    │   ├── PropagationViewModel.cs
-    │   ├── LinkViewModel.cs
-    │   ├── ReceiverViewModel.cs     (+ StageItemViewModel, RelayCommand)
-    │   └── JammingLocationRadarViewModels.cs
+│   ├── PropagationViewModel.cs
+│   ├── AntennaViewModel.cs
+│   ├── LinkViewModel.cs
+│   ├── ReceiverViewModel.cs     (+ StageItemViewModel, RelayCommand)
+│   ├── JammingLocationRadarViewModels.cs
+│   └── DigitalViewModel.cs
     └── Views/
         ├── ResultRow.xaml/.cs       Shared label/value row control
         ├── PropagationPage.xaml/.cs
+        ├── AntennaPage.xaml
         ├── LinkPage.xaml/.cs
         ├── ReceiverPage.xaml/.cs
         ├── JammingPage.xaml/.cs
         ├── LocationPage.xaml/.cs
-        └── RadarPage.xaml/.cs
+        ├── RadarPage.xaml/.cs
+        └── DigitalPage.xaml
 ```
 
 ## Build order
@@ -64,10 +70,10 @@ direct C++ interop with the full type system, and the managed ref classes it
 produces are first-class .NET objects — no unsafe code in the C# layer.
 
 ### Why NavigationView rather than TabView?
-The six calculators have very different visual weight and input count. A TabView
-would clip labels at typical window widths. NavigationView provides grouping
-(Propagation / Analysis), compact mode on narrow windows, and natural room for
-future calculators or a Settings page without restructuring the shell.
+The calculators have very different visual weight and input count. A TabView
+    would clip labels at typical window widths. NavigationView provides grouping
+    (Propagation / Analysis), compact mode on narrow windows, and natural room for
+    additional calculators or a Settings page without restructuring the shell.
 
 ### Binding strategy
 - `x:Bind Mode=OneTime` for default values (NumberBox initial values).
@@ -82,10 +88,18 @@ Each item's `NoiseFigureDb` and `GainDb` setters call `PushStages()` which
 rebuilds the full `StageInput[]` and calls `ReceiverAdapter.SetStages()`.
 Add/Remove buttons are bound to `ICommand` properties.
 
-## Current state (v0.5 — full parity)
+## Current state (v0.6 — full parity)
 
-This frontend covers all eight calculator pages (Propagation, Link Budget, Receiver,
-Jamming, Location, Radar, Digital/DSSS, Reference) at v0.5 parity with macOS.
+This frontend covers all nine calculator pages (Propagation, Antenna, Link Budget,
+Receiver, Jamming, Location, Radar, Digital/DSSS, Reference) at v0.6 parity with macOS.
+
+## Completed in v0.6
+
+- **Antenna page** — new `AntennaAdapter` + `AntennaPage.xaml` backed by `AntennaPresenter`
+  (ERP, beamwidth from gain, gain from beamwidth, wavelength).
+- **Knife-edge diffraction** — new obstruction height input and diffraction loss output on
+  the Propagation page.
+- **SNR from Eb/N₀** — additional output on the Digital/DSSS page.
 
 ## Completed in v0.5 (from planned)
 
