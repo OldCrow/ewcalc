@@ -153,10 +153,11 @@ struct DigitalWrapper {
 
 static EwpDigitalOutput to_c(const ewpresenter::DigitalPresenter::Output& o) noexcept {
     EwpDigitalOutput out{};
-    copy_str(out.eb_no_str,          o.eb_no_str);
-    copy_str(out.process_gain_str,   o.process_gain_str);
-    copy_str(out.jamming_margin_str, o.jamming_margin_str);
-    copy_str(out.required_js_str,    o.required_js_str);
+    copy_str(out.eb_no_str,           o.eb_no_str);
+    copy_str(out.snr_from_eb_no_str,  o.snr_from_eb_no_str);
+    copy_str(out.process_gain_str,    o.process_gain_str);
+    copy_str(out.jamming_margin_str,  o.jamming_margin_str);
+    copy_str(out.required_js_str,     o.required_js_str);
     out.valid = o.valid;
     return out;
 }

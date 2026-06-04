@@ -49,6 +49,7 @@ void DigitalPresenter::recompute() noexcept {
 
     if (!output_.valid) {
         output_.eb_no_str          = DASH;
+        output_.snr_from_eb_no_str = DASH;
         output_.process_gain_str   = DASH;
         output_.jamming_margin_str = DASH;
         output_.required_js_str    = DASH;
@@ -59,6 +60,9 @@ void DigitalPresenter::recompute() noexcept {
 
     output_.eb_no = libew::digital::eb_no_from_snr(
         Db{snr_db_}, Mhz{bandwidth_mhz_}, Mhz{data_rate_mhz_});
+
+    output_.snr_from_eb_no = libew::digital::snr_from_eb_no(
+        output_.eb_no, Mhz{bandwidth_mhz_}, Mhz{data_rate_mhz_});
 
     output_.process_gain = libew::digital::dsss_process_gain(
         Mhz{chip_rate_mhz_}, Mhz{data_rate_mhz_});
@@ -74,6 +78,7 @@ void DigitalPresenter::recompute() noexcept {
         Db{implementation_loss_db_});
 
     output_.eb_no_str          = format_db(output_.eb_no);
+    output_.snr_from_eb_no_str = format_db(output_.snr_from_eb_no);
     output_.process_gain_str   = format_db(output_.process_gain);
     output_.jamming_margin_str = format_db(output_.jamming_margin);
     output_.required_js_str    = format_db(output_.required_js);

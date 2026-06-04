@@ -7,6 +7,7 @@ namespace EwPresenterNet {
 
 public value struct DigitalOutput {
     System::String^ EbNoStr;
+    System::String^ SnrFromEbNoStr;
     System::String^ ProcessGainStr;
     System::String^ JammingMarginStr;
     System::String^ RequiredJsStr;
@@ -49,6 +50,7 @@ private:
     static DigitalOutput Snapshot(const ewpresenter::DigitalPresenter::Output& o) {
         DigitalOutput s{};
         s.EbNoStr          = ToManaged(o.eb_no_str);
+        s.SnrFromEbNoStr   = ToManaged(o.snr_from_eb_no_str);
         s.ProcessGainStr   = ToManaged(o.process_gain_str);
         s.JammingMarginStr = ToManaged(o.jamming_margin_str);
         s.RequiredJsStr    = ToManaged(o.required_js_str);
