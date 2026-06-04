@@ -38,6 +38,10 @@ public:
         std::string earth_bulge_str;
         std::string horizon_range_str;
 
+        // Knife-edge diffraction
+        Db   diffraction_loss{};
+        std::string diffraction_loss_str;
+
         bool valid{false};
     };
 
@@ -58,21 +62,27 @@ public:
     /// Receive antenna height above ground (m). Valid range: 0.1 – 100 000 m.
     void set_rx_height(double meters) noexcept;
 
+    /// Knife-edge obstacle height above flat-earth baseline (m). Valid range: 0 – 10 000 m.
+    /// Default 0 = no obstruction (loss = 0 dB).
+    void set_obstruction_height(double meters) noexcept;
+
     // -----------------------------------------------------------------------
     // Accessors
     // -----------------------------------------------------------------------
     [[nodiscard]] const Output& output() const noexcept { return output_; }
     [[nodiscard]] bool is_valid() const noexcept { return output_.valid; }
 
-    [[nodiscard]] double distance_km()   const noexcept { return distance_km_; }
-    [[nodiscard]] double frequency_mhz() const noexcept { return frequency_mhz_; }
-    [[nodiscard]] double tx_height_m()   const noexcept { return tx_height_m_; }
-    [[nodiscard]] double rx_height_m()   const noexcept { return rx_height_m_; }
+    [[nodiscard]] double distance_km()          const noexcept { return distance_km_; }
+    [[nodiscard]] double frequency_mhz()        const noexcept { return frequency_mhz_; }
+    [[nodiscard]] double tx_height_m()          const noexcept { return tx_height_m_; }
+    [[nodiscard]] double rx_height_m()          const noexcept { return rx_height_m_; }
+    [[nodiscard]] double obstruction_height_m() const noexcept { return obstruction_height_m_; }
 
-    [[nodiscard]] FieldError distance_error()   const noexcept { return distance_err_; }
-    [[nodiscard]] FieldError frequency_error()  const noexcept { return frequency_err_; }
-    [[nodiscard]] FieldError tx_height_error()  const noexcept { return tx_height_err_; }
-    [[nodiscard]] FieldError rx_height_error()  const noexcept { return rx_height_err_; }
+    [[nodiscard]] FieldError distance_error()           const noexcept { return distance_err_; }
+    [[nodiscard]] FieldError frequency_error()          const noexcept { return frequency_err_; }
+    [[nodiscard]] FieldError tx_height_error()          const noexcept { return tx_height_err_; }
+    [[nodiscard]] FieldError rx_height_error()          const noexcept { return rx_height_err_; }
+    [[nodiscard]] FieldError obstruction_height_error() const noexcept { return obstruction_height_err_; }
 
     // -----------------------------------------------------------------------
     // Callback — fired after every recompute (valid or not)
@@ -83,15 +93,17 @@ public:
 
 private:
     // Inputs (stored as raw doubles; views read/write doubles)
-    double distance_km_   {32.6};
-    double frequency_mhz_ {100.0};
-    double tx_height_m_   {10.0};
-    double rx_height_m_   {10.0};
+    double distance_km_          {32.6};
+    double frequency_mhz_        {100.0};
+    double tx_height_m_          {10.0};
+    double rx_height_m_          {10.0};
+    double obstruction_height_m_ {0.0};
 
-    FieldError distance_err_  {FieldError::none};
-    FieldError frequency_err_ {FieldError::none};
-    FieldError tx_height_err_ {FieldError::none};
-    FieldError rx_height_err_ {FieldError::none};
+    FieldError distance_err_          {FieldError::none};
+    FieldError frequency_err_         {FieldError::none};
+    FieldError tx_height_err_         {FieldError::none};
+    FieldError rx_height_err_         {FieldError::none};
+    FieldError obstruction_height_err_{FieldError::none};
 
     Output output_;
     std::function<void(const Output&)> on_change_;

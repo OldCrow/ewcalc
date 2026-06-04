@@ -19,13 +19,15 @@ final class PropagationAdapter: ObservableObject {
 
     deinit { ewp_propagation_destroy(ref) }
 
-    func setDistance(_ km: Double)   { ewp_propagation_set_distance(ref, km) }
-    func setFrequency(_ mhz: Double) { ewp_propagation_set_frequency(ref, mhz) }
-    func setTxHeight(_ m: Double)    { ewp_propagation_set_tx_height(ref, m) }
-    func setRxHeight(_ m: Double)    { ewp_propagation_set_rx_height(ref, m) }
+    func setDistance(_ km: Double)             { ewp_propagation_set_distance(ref, km) }
+    func setFrequency(_ mhz: Double)           { ewp_propagation_set_frequency(ref, mhz) }
+    func setTxHeight(_ m: Double)              { ewp_propagation_set_tx_height(ref, m) }
+    func setRxHeight(_ m: Double)              { ewp_propagation_set_rx_height(ref, m) }
+    func setObstructionHeight(_ m: Double)     { ewp_propagation_set_obstruction_height(ref, m) }
 
-    var defaultDistance:  Double { ewp_propagation_distance(ref) }
-    var defaultFrequency: Double { ewp_propagation_frequency(ref) }
-    var defaultTxHeight:  Double { ewp_propagation_tx_height(ref) }
-    var defaultRxHeight:  Double { ewp_propagation_rx_height(ref) }
+    var defaultDistance:          Double { ewp_propagation_distance(ref) }
+    var defaultFrequency:         Double { ewp_propagation_frequency(ref) }
+    var defaultTxHeight:          Double { ewp_propagation_tx_height(ref) }
+    var defaultRxHeight:          Double { ewp_propagation_rx_height(ref) }
+    var defaultObstructionHeight: Double { ewp_propagation_obstruction_height(ref) }
 }

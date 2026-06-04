@@ -14,6 +14,7 @@ public value struct PropagationOutput {
     System::String^ RegimeStr;
     System::String^ EarthBulgeStr;
     System::String^ HorizonRangeStr;
+    System::String^ DiffractionLossStr;
     bool            TwoRayRegime;
     bool            Valid;
 };
@@ -26,15 +27,17 @@ public:
     ~PropagationAdapter();
     !PropagationAdapter();
 
-    void SetDistance (double km)     { presenter_->set_distance (RoundInput(km));     }
-    void SetFrequency(double mhz)    { presenter_->set_frequency(RoundInput(mhz));   }
-    void SetTxHeight (double meters) { presenter_->set_tx_height(RoundInput(meters)); }
-    void SetRxHeight (double meters) { presenter_->set_rx_height(RoundInput(meters)); }
+    void SetDistance          (double km)     { presenter_->set_distance          (RoundInput(km));     }
+    void SetFrequency         (double mhz)    { presenter_->set_frequency         (RoundInput(mhz));   }
+    void SetTxHeight          (double meters) { presenter_->set_tx_height         (RoundInput(meters)); }
+    void SetRxHeight          (double meters) { presenter_->set_rx_height         (RoundInput(meters)); }
+    void SetObstructionHeight (double meters) { presenter_->set_obstruction_height(RoundInput(meters)); }
 
-    property double DefaultDistance  { double get() { return presenter_->distance_km();   } }
-    property double DefaultFrequency { double get() { return presenter_->frequency_mhz(); } }
-    property double DefaultTxHeight  { double get() { return presenter_->tx_height_m();   } }
-    property double DefaultRxHeight  { double get() { return presenter_->rx_height_m();   } }
+    property double DefaultDistance          { double get() { return presenter_->distance_km();          } }
+    property double DefaultFrequency         { double get() { return presenter_->frequency_mhz();        } }
+    property double DefaultTxHeight          { double get() { return presenter_->tx_height_m();          } }
+    property double DefaultRxHeight          { double get() { return presenter_->rx_height_m();          } }
+    property double DefaultObstructionHeight { double get() { return presenter_->obstruction_height_m(); } }
 
     property FieldValidationError DistanceError  { FieldValidationError get() { return ToManaged(presenter_->distance_error());   } }
     property FieldValidationError FrequencyError { FieldValidationError get() { return ToManaged(presenter_->frequency_error());  } }
@@ -63,9 +66,10 @@ private:
         s.FresnelZoneStr = ToManaged(o.fresnel_zone_str);
         s.PathLossStr    = ToManaged(o.path_loss_str);
         s.RegimeStr      = ToManaged(o.regime_str);
-        s.EarthBulgeStr  = ToManaged(o.earth_bulge_str);
-        s.HorizonRangeStr = ToManaged(o.horizon_range_str);
-        s.TwoRayRegime   = o.two_ray_regime;
+        s.EarthBulgeStr      = ToManaged(o.earth_bulge_str);
+        s.HorizonRangeStr    = ToManaged(o.horizon_range_str);
+        s.DiffractionLossStr = ToManaged(o.diffraction_loss_str);
+        s.TwoRayRegime       = o.two_ray_regime;
         s.Valid          = o.valid;
         return s;
     }

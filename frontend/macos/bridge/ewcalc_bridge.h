@@ -28,6 +28,7 @@ typedef struct EwpPropagationOutput {
     char regime_str[EWP_STR_MAX];
     char earth_bulge_str[EWP_STR_MAX];
     char horizon_range_str[EWP_STR_MAX];
+    char diffraction_loss_str[EWP_STR_MAX];
     bool valid;
 } EwpPropagationOutput;
 
@@ -41,12 +42,14 @@ void ewp_propagation_set_distance(EwpPropagationRef ref, double km);
 void ewp_propagation_set_frequency(EwpPropagationRef ref, double mhz);
 void ewp_propagation_set_tx_height(EwpPropagationRef ref, double m);
 void ewp_propagation_set_rx_height(EwpPropagationRef ref, double m);
+void ewp_propagation_set_obstruction_height(EwpPropagationRef ref, double m);
 void ewp_propagation_set_callback(EwpPropagationRef ref, EwpPropagationCallback cb, void* ctx);
 
 double               ewp_propagation_distance(EwpPropagationRef ref);
 double               ewp_propagation_frequency(EwpPropagationRef ref);
 double               ewp_propagation_tx_height(EwpPropagationRef ref);
 double               ewp_propagation_rx_height(EwpPropagationRef ref);
+double               ewp_propagation_obstruction_height(EwpPropagationRef ref);
 EwpPropagationOutput ewp_propagation_output(EwpPropagationRef ref);
 
 // ============================================================================

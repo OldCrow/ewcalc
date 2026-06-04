@@ -4,17 +4,19 @@ import SwiftUI
 struct PropagationView: View {
     @ObservedObject var adapter: PropagationAdapter
 
-    @State private var distance:  Double
-    @State private var frequency: Double
-    @State private var txHeight:  Double
-    @State private var rxHeight:  Double
+    @State private var distance:           Double
+    @State private var frequency:          Double
+    @State private var txHeight:           Double
+    @State private var rxHeight:           Double
+    @State private var obstructionHeight:  Double
 
     init(adapter: PropagationAdapter) {
         self.adapter = adapter
-        _distance  = State(initialValue: adapter.defaultDistance)
-        _frequency = State(initialValue: adapter.defaultFrequency)
-        _txHeight  = State(initialValue: adapter.defaultTxHeight)
-        _rxHeight  = State(initialValue: adapter.defaultRxHeight)
+        _distance          = State(initialValue: adapter.defaultDistance)
+        _frequency         = State(initialValue: adapter.defaultFrequency)
+        _txHeight          = State(initialValue: adapter.defaultTxHeight)
+        _rxHeight          = State(initialValue: adapter.defaultRxHeight)
+        _obstructionHeight = State(initialValue: adapter.defaultObstructionHeight)
     }
 
     var body: some View {
@@ -32,6 +34,9 @@ struct PropagationView: View {
                 InputRow("Rx height", unit: "m", value: $rxHeight,
                          in: 0.1...100000, step: 0.5, decimals: 1,
                          help: "Receive antenna height above ground — determines the Fresnel zone crossover distance") { adapter.setRxHeight($0) }
+                InputRow("Obstruction height", unit: "m", value: $obstructionHeight,
+                         in: 0...10000, step: 1, decimals: 1,
+                         help: "Knife-edge obstacle height above flat-earth baseline at path midpoint — 0 = no obstruction") { adapter.setObstructionHeight($0) }
             }
             Section("Results") {
                 ResultRow("FSPL",              cStr(adapter.output.fspl_str),
@@ -48,6 +53,8 @@ struct PropagationView: View {
                           help: "Height the earth surface rises at the path midpoint under a standard k = 4/3 atmosphere")
                 ResultRow("Radar horizon",     cStr(adapter.output.horizon_range_str),
                           help: "Maximum visibility range combining both antenna heights: 4.12 × (√h_tx + √h_rx) km")
+                ResultRow("Diffraction loss",   cStr(adapter.output.diffraction_loss_str),
+                          help: "Knife-edge diffraction loss at path midpoint using the Fresnel diffraction parameter")
             }
         }
         .formStyle(.grouped)
