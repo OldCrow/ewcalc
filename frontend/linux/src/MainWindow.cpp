@@ -69,13 +69,13 @@ MainWindow::MainWindow(QWidget* parent)
     // ── Calculators section ─────────────────────────────────────────────
     addHeader(QStringLiteral("Calculators"));
     addPage(QStringLiteral("Propagation"),   QStringLiteral("network-wireless"),         new PropagationPage);
+    addPage(QStringLiteral("Antenna"),       QStringLiteral("network-wireless"),         new AntennaPage);
     addPage(QStringLiteral("Link Budget"),   QStringLiteral("network-transmit-receive"), new LinkPage);
     addPage(QStringLiteral("Receiver"),      QStringLiteral("audio-card"),              new ReceiverPage);
     addPage(QStringLiteral("Jamming"),       QStringLiteral("emblem-important"),        new JammingPage);
     addPage(QStringLiteral("Location"),      QStringLiteral("find-location"),           new LocationPage);
     addPage(QStringLiteral("Radar"),         QStringLiteral("system-search"),           new RadarPage);
     addPage(QStringLiteral("Digital / DSSS"),QStringLiteral("media-playback-start"),    new DigitalPage);
-    addPage(QStringLiteral("Antenna"),       QStringLiteral("network-wireless"),         new AntennaPage);
 
     // ── Reference section ───────────────────────────────────────────────
     addSpacer();

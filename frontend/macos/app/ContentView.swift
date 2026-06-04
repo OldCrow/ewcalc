@@ -30,7 +30,7 @@ enum AppSection: String, CaseIterable, Identifiable {
 
     /// Ordered calculator pages — excludes the reference panel.
     static let calculators: [AppSection] = [
-        .propagation, .link, .receiver, .jamming, .location, .radar, .digital, .antenna
+        .propagation, .antenna, .link, .receiver, .jamming, .location, .radar, .digital
     ]
 }
 
