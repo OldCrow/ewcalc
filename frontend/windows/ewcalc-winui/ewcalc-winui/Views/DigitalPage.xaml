@@ -54,10 +54,11 @@
             <TextBlock Text="RESULTS" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource ResultCardStyle}">
                 <StackPanel Spacing="0">
-                    <local:ResultRow Label="Eb/N₀"          Value="{x:Bind ViewModel.EbNo,          Mode=OneWay}" IsHighlighted="True" />
-                    <local:ResultRow Label="Process gain"   Value="{x:Bind ViewModel.ProcessGain,   Mode=OneWay}" />
-                    <local:ResultRow Label="Jamming margin" Value="{x:Bind ViewModel.JammingMargin, Mode=OneWay}" IsHighlighted="True" />
-                    <local:ResultRow Label="Required J/S"  Value="{x:Bind ViewModel.RequiredJs,    Mode=OneWay}" />
+                    <local:ResultRow Label="Eb/N₀"            Value="{x:Bind ViewModel.EbNo,          Mode=OneWay}" IsHighlighted="True" />
+                    <local:ResultRow Label="SNR (from Eb/No)" Value="{x:Bind ViewModel.SnrFromEbNo,   Mode=OneWay}" />
+                    <local:ResultRow Label="Process gain"     Value="{x:Bind ViewModel.ProcessGain,   Mode=OneWay}" />
+                    <local:ResultRow Label="Jamming margin"   Value="{x:Bind ViewModel.JammingMargin, Mode=OneWay}" IsHighlighted="True" />
+                    <local:ResultRow Label="Required J/S"    Value="{x:Bind ViewModel.RequiredJs,    Mode=OneWay}" />
                 </StackPanel>
             </Border>
 

@@ -266,6 +266,7 @@ EwpRadarOutput ewp_radar_output(EwpRadarRef ref);
 
 typedef struct EwpDigitalOutput {
     char eb_no_str[EWP_STR_MAX];
+    char snr_from_eb_no_str[EWP_STR_MAX];
     char process_gain_str[EWP_STR_MAX];
     char jamming_margin_str[EWP_STR_MAX];
     char required_js_str[EWP_STR_MAX];
