@@ -2,7 +2,7 @@
 import Foundation
 
 /// Top-level store injected as an environment object.
-/// Owns all seven presenter adapters for the lifetime of the app.
+/// Owns all eight presenter adapters for the lifetime of the app.
 final class EwCalcStore: ObservableObject {
     let propagation = PropagationAdapter()
     let link        = LinkAdapter()
@@ -11,4 +11,5 @@ final class EwCalcStore: ObservableObject {
     let location    = LocationAdapter()
     let radar       = RadarAdapter()
     let digital     = DigitalAdapter()
+    let antenna     = AntennaAdapter()
 }

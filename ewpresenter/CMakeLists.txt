@@ -7,6 +7,7 @@ set(EWPRESENTER_SOURCES
     src/location_presenter.cpp
     src/radar_presenter.cpp
     src/digital_presenter.cpp
+    src/antenna_presenter.cpp
 )
 
 add_library(ewpresenter STATIC ${EWPRESENTER_SOURCES})

@@ -11,6 +11,7 @@
 #include <ewpresenter/location_presenter.h>
 #include <ewpresenter/radar_presenter.h>
 #include <ewpresenter/digital_presenter.h>
+#include <ewpresenter/antenna_presenter.h>
 
 #include <cstring>
 #include <vector>
@@ -157,6 +158,24 @@ static EwpDigitalOutput to_c(const ewpresenter::DigitalPresenter::Output& o) noe
     copy_str(out.process_gain_str,   o.process_gain_str);
     copy_str(out.jamming_margin_str, o.jamming_margin_str);
     copy_str(out.required_js_str,    o.required_js_str);
+    out.valid = o.valid;
+    return out;
+}
+
+// ── Antenna ──────────────────────────────────────────────────────────────────
+
+struct AntennaWrapper {
+    ewpresenter::AntennaPresenter presenter;
+    EwpAntennaCallback cb = nullptr;
+    void* ctx = nullptr;
+};
+
+static EwpAntennaOutput to_c(const ewpresenter::AntennaPresenter::Output& o) noexcept {
+    EwpAntennaOutput out{};
+    copy_str(out.erp_str,                 o.erp_str);
+    copy_str(out.beamwidth_from_gain_str, o.beamwidth_from_gain_str);
+    copy_str(out.gain_from_beamwidth_str, o.gain_from_beamwidth_str);
+    copy_str(out.wavelength_str,          o.wavelength_str);
     out.valid = o.valid;
     return out;
 }
@@ -429,5 +448,35 @@ double           ewp_digital_chip_rate(EwpDigitalRef ref)          { return cast
 double           ewp_digital_required_eb_no(EwpDigitalRef ref)     { return cast<DigitalWrapper>(ref)->presenter.required_eb_no_db(); }
 double           ewp_digital_implementation_loss(EwpDigitalRef ref){ return cast<DigitalWrapper>(ref)->presenter.implementation_loss_db(); }
 EwpDigitalOutput ewp_digital_output(EwpDigitalRef ref)             { return to_c(cast<DigitalWrapper>(ref)->presenter.output()); }
+
+// ============================================================================
+// Antenna implementation
+// ============================================================================
+
+EwpAntennaRef ewp_antenna_create(void) {
+    auto* w = new AntennaWrapper();
+    w->presenter.set_on_change([w](const ewpresenter::AntennaPresenter::Output& o) {
+        if (w->cb) w->cb(to_c(o), w->ctx);
+    });
+    return w;
+}
+void ewp_antenna_destroy(EwpAntennaRef ref) { delete cast<AntennaWrapper>(ref); }
+
+void ewp_antenna_set_gain(EwpAntennaRef ref, double dbi)       { cast<AntennaWrapper>(ref)->presenter.set_gain(dbi); }
+void ewp_antenna_set_az_beamwidth(EwpAntennaRef ref, double deg){ cast<AntennaWrapper>(ref)->presenter.set_az_beamwidth(deg); }
+void ewp_antenna_set_el_beamwidth(EwpAntennaRef ref, double deg){ cast<AntennaWrapper>(ref)->presenter.set_el_beamwidth(deg); }
+void ewp_antenna_set_tx_power(EwpAntennaRef ref, double dbm)   { cast<AntennaWrapper>(ref)->presenter.set_tx_power(dbm); }
+void ewp_antenna_set_frequency(EwpAntennaRef ref, double mhz)  { cast<AntennaWrapper>(ref)->presenter.set_frequency(mhz); }
+
+void ewp_antenna_set_callback(EwpAntennaRef ref, EwpAntennaCallback cb, void* ctx) {
+    auto* w = cast<AntennaWrapper>(ref); w->cb = cb; w->ctx = ctx;
+}
+
+double           ewp_antenna_gain(EwpAntennaRef ref)         { return cast<AntennaWrapper>(ref)->presenter.gain_dbi(); }
+double           ewp_antenna_az_beamwidth(EwpAntennaRef ref) { return cast<AntennaWrapper>(ref)->presenter.az_beamwidth_deg(); }
+double           ewp_antenna_el_beamwidth(EwpAntennaRef ref) { return cast<AntennaWrapper>(ref)->presenter.el_beamwidth_deg(); }
+double           ewp_antenna_tx_power(EwpAntennaRef ref)     { return cast<AntennaWrapper>(ref)->presenter.tx_power_dbm(); }
+double           ewp_antenna_frequency(EwpAntennaRef ref)    { return cast<AntennaWrapper>(ref)->presenter.frequency_mhz(); }
+EwpAntennaOutput ewp_antenna_output(EwpAntennaRef ref)       { return to_c(cast<AntennaWrapper>(ref)->presenter.output()); }
 
 } // extern "C"
