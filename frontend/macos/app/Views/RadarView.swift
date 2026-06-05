@@ -79,6 +79,8 @@ struct RadarView: View {
                           help: "Coherent integration SNR gain: 10·log₁₀(number of pulses)")
                 ResultRow("LPI advantage",            cStr(adapter.output.lpi_advantage_str),
                           help: "Detection-range advantage an LPI waveform has against an intercept receiver: PC gain ÷ 4")
+                ResultRow("Target RCS",               cStr(adapter.output.target_rcs_str),
+                          help: "Target radar cross-section (dB relative to 1 m²) — shown here with dBsm suffix so the result panel is self-contained")
             }
         }
         .formStyle(.grouped)

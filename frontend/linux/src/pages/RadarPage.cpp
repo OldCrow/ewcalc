@@ -38,6 +38,7 @@ RadarPage::RadarPage(QWidget* parent)
 
     max_range_    = addResultRow(outForm, QStringLiteral("Max range"));
     two_way_loss_ = addResultRow(outForm, QStringLiteral("Two-way loss"));
+    target_rcs_   = addResultRow(outForm, QStringLiteral("Target RCS"));
     pc_gain_      = addResultRow(outForm, QStringLiteral("PC gain"));
     ci_gain_      = addResultRow(outForm, QStringLiteral("Coherent integration gain"));
     lpi_advantage_= addResultRow(outForm, QStringLiteral("LPI advantage"));
@@ -92,6 +93,7 @@ void RadarPage::applyOutput(const ewpresenter::RadarPresenter::Output& o)
 {
     max_range_->setText(QString::fromStdString(o.max_range_str));
     two_way_loss_->setText(QString::fromStdString(o.two_way_loss_str));
+    target_rcs_->setText(QString::fromStdString(o.target_rcs_str));
     pc_gain_->setText(QString::fromStdString(o.pulse_compression_gain_str));
     ci_gain_->setText(QString::fromStdString(o.coherent_integration_gain_str));
     lpi_advantage_->setText(QString::fromStdString(o.lpi_advantage_str));

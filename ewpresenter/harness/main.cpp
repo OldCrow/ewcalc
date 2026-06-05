@@ -77,12 +77,14 @@ int main() {
     {
         ewpresenter::ReceiverPresenter p;
         const auto& out = p.output();
-        row("Valid",          out.valid ? "yes" : "NO");
-        row("Sensitivity",    out.sensitivity_str);
-        row("Cascaded NF",    out.cascaded_nf_str);
-        row("SFDR2",          out.sfdr2_str);
-        row("SFDR3",          out.sfdr3_str);
-        row("Digital DR",     out.digital_dr_str);
+        row("Valid",           out.valid ? "yes" : "NO");
+        row("Sensitivity",     out.sensitivity_str);
+        row("Cascaded NF",     out.cascaded_nf_str);
+        row("Sys. noise temp", out.system_noise_temp_str);
+        row("Sys. NF equiv.",  out.system_nf_str);
+        row("SFDR2",           out.sfdr2_str);
+        row("SFDR3",           out.sfdr3_str);
+        row("Digital DR",      out.digital_dr_str);
     }
 
     // -----------------------------------------------------------------------
@@ -125,6 +127,7 @@ int main() {
         row("Valid",               out.valid ? "yes" : "NO");
         row("Max range",           out.max_range_str);
         row("Two-way loss",        out.two_way_loss_str);
+        row("Target RCS",          out.target_rcs_str);
         row("PC gain (TB=100)",    out.pulse_compression_gain_str);
         row("Coh. int. gain (N=16)", out.coherent_integration_gain_str);
     }

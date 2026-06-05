@@ -12,6 +12,7 @@ private:
     ewpresenter::RadarPresenter presenter_;
     QLabel* max_range_;
     QLabel* two_way_loss_;
+    QLabel* target_rcs_;
     QLabel* pc_gain_;
     QLabel* ci_gain_;
     QLabel* lpi_advantage_;

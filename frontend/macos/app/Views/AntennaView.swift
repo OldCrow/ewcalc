@@ -32,9 +32,11 @@ struct AntennaView: View {
                          in: 0.1...360,
                          help: "Elevation 3 dB beamwidth") { adapter.setElBeamwidth($0) }
                 InputRow("Tx power", unit: "dBm", value: $txPower,
-                         in: -30...100) { adapter.setTxPower($0) }
+                         in: -30...100,
+                         help: "Transmitter output power — used to compute ERP") { adapter.setTxPower($0) }
                 InputRow("Frequency", unit: "MHz", value: $frequency,
-                         in: 0.1...100000, step: 10, decimals: 1) { adapter.setFrequency($0) }
+                         in: 0.1...100000, step: 10, decimals: 1,
+                         help: "Carrier frequency — used to compute free-space wavelength") { adapter.setFrequency($0) }
             }
             Section("Results") {
                 ResultRow("ERP",                 cStr(adapter.output.erp_str),

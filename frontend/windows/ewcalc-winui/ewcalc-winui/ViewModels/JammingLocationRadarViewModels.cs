@@ -121,7 +121,7 @@ public sealed class RadarViewModel : INotifyPropertyChanged
 
     private string _maxRange = string.Empty, _twoWayLoss = string.Empty,
                    _pcGain = string.Empty,   _cohGain = string.Empty,
-                   _lpiAdvantage = string.Empty;
+                   _lpiAdvantage = string.Empty, _targetRcs = string.Empty;
     private bool _isValid = false;
 
     public string MaxRange      { get => _maxRange;      private set => Set(ref _maxRange,      value); }
@@ -129,6 +129,7 @@ public sealed class RadarViewModel : INotifyPropertyChanged
     public string PcGain        { get => _pcGain;        private set => Set(ref _pcGain,        value); }
     public string CohGain       { get => _cohGain;       private set => Set(ref _cohGain,       value); }
     public string LpiAdvantage  { get => _lpiAdvantage;  private set => Set(ref _lpiAdvantage,  value); }
+    public string TargetRcs     { get => _targetRcs;     private set => Set(ref _targetRcs,     value); }
     public bool   IsValid       { get => _isValid;       private set => Set(ref _isValid,       value); }
 
     public double DefaultTxPower           => _adapter.DefaultTxPower;
@@ -164,7 +165,7 @@ public sealed class RadarViewModel : INotifyPropertyChanged
     {
         MaxRange = o.MaxRangeStr; TwoWayLoss = o.TwoWayLossStr;
         PcGain = o.PulseCompressionGainStr; CohGain = o.CoherentIntegrationGainStr;
-        LpiAdvantage = o.LpiAdvantageStr; IsValid = o.Valid;
+        LpiAdvantage = o.LpiAdvantageStr; TargetRcs = o.TargetRcsStr; IsValid = o.Valid;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

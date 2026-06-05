@@ -85,6 +85,7 @@ static EwpReceiverOutput to_c(const ewpresenter::ReceiverPresenter::Output& o) n
     copy_str(out.sfdr3_str,              o.sfdr3_str);
     copy_str(out.digital_dr_str,         o.digital_dr_str);
     copy_str(out.system_noise_temp_str,  o.system_noise_temp_str);
+    copy_str(out.system_nf_str,          o.system_nf_str);
     out.valid = o.valid;
     return out;
 }
@@ -141,6 +142,7 @@ static EwpRadarOutput to_c(const ewpresenter::RadarPresenter::Output& o) noexcep
     copy_str(out.pc_gain_str,         o.pulse_compression_gain_str);
     copy_str(out.ci_gain_str,         o.coherent_integration_gain_str);
     copy_str(out.lpi_advantage_str,   o.lpi_advantage_str);
+    copy_str(out.target_rcs_str,      o.target_rcs_str);
     out.valid = o.valid;
     return out;
 }

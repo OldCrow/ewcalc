@@ -109,6 +109,7 @@ typedef struct EwpReceiverOutput {
     char sfdr3_str[EWP_STR_MAX];
     char digital_dr_str[EWP_STR_MAX];
     char system_noise_temp_str[EWP_STR_MAX];
+    char system_nf_str[EWP_STR_MAX];
     bool valid;
 } EwpReceiverOutput;
 
@@ -230,6 +231,7 @@ typedef struct EwpRadarOutput {
     char pc_gain_str[EWP_STR_MAX];
     char ci_gain_str[EWP_STR_MAX];
     char lpi_advantage_str[EWP_STR_MAX];
+    char target_rcs_str[EWP_STR_MAX];
     bool valid;
 } EwpRadarOutput;
 

@@ -55,7 +55,8 @@ public sealed class ReceiverViewModel : INotifyPropertyChanged
 
     private string _sensitivity = string.Empty, _cascadedNf = string.Empty,
                    _sfdr2 = string.Empty,       _sfdr3 = string.Empty,
-                   _digitalDr = string.Empty,   _systemNoiseTemp = string.Empty;
+                   _digitalDr = string.Empty,   _systemNoiseTemp = string.Empty,
+                   _systemNf = string.Empty;
     private bool _isValid = false;
 
     public string Sensitivity    { get => _sensitivity;    private set => Set(ref _sensitivity,    value); }
@@ -64,6 +65,7 @@ public sealed class ReceiverViewModel : INotifyPropertyChanged
     public string Sfdr3          { get => _sfdr3;          private set => Set(ref _sfdr3,          value); }
     public string DigitalDr      { get => _digitalDr;      private set => Set(ref _digitalDr,      value); }
     public string SystemNoiseTemp { get => _systemNoiseTemp; private set => Set(ref _systemNoiseTemp, value); }
+    public string SystemNf       { get => _systemNf;       private set => Set(ref _systemNf,       value); }
     public bool   IsValid        { get => _isValid;        private set => Set(ref _isValid,        value); }
 
     public double DefaultBandwidth     => _adapter.DefaultBandwidth;
@@ -121,7 +123,7 @@ public sealed class ReceiverViewModel : INotifyPropertyChanged
     {
         Sensitivity = o.SensitivityStr; CascadedNf = o.CascadedNfStr;
         Sfdr2 = o.Sfdr2Str; Sfdr3 = o.Sfdr3Str; DigitalDr = o.DigitalDrStr;
-        SystemNoiseTemp = o.SystemNoiseTempStr; IsValid = o.Valid;
+        SystemNoiseTemp = o.SystemNoiseTempStr; SystemNf = o.SystemNfStr; IsValid = o.Valid;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

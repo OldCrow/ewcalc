@@ -80,6 +80,8 @@ struct ReceiverView: View {
                           help: "System noise figure from the Friis formula across the stage chain — front-end stage dominates")
                 ResultRow("Sys. noise temp",  cStr(adapter.output.system_noise_temp_str),
                           help: "Equivalent noise temperature: Tₑ = (NFₗᵢₙ − 1) × 290 K")
+                ResultRow("Sys. NF equiv.",    cStr(adapter.output.system_nf_str),
+                          help: "System NF re-derived from system noise temperature — confirms the round-trip conversion")
                 ResultRow("SFDR (2nd order)", cStr(adapter.output.sfdr2_str),
                           help: "2nd-order spurious-free dynamic range: ⅔ × (IIP2 − sensitivity)")
                 ResultRow("SFDR (3rd order)", cStr(adapter.output.sfdr3_str),

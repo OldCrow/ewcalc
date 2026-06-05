@@ -87,6 +87,7 @@
                 <StackPanel Spacing="0">
                     <local:ResultRow Label="Max range"    Value="{x:Bind ViewModel.MaxRange,   Mode=OneWay}" IsHighlighted="True" />
                     <local:ResultRow Label="Two-way loss" Value="{x:Bind ViewModel.TwoWayLoss, Mode=OneWay}" />
+                    <local:ResultRow Label="Target RCS"   Value="{x:Bind ViewModel.TargetRcs,  Mode=OneWay}" />
                 </StackPanel>
             </Border>
 

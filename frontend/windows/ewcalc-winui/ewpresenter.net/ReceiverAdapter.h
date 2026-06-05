@@ -15,6 +15,7 @@ public value struct ReceiverOutput {
     System::String^ Sfdr3Str;
     System::String^ DigitalDrStr;
     System::String^ SystemNoiseTempStr;
+    System::String^ SystemNfStr;
     bool Valid;
 };
 
@@ -83,7 +84,8 @@ private:
         s.Sfdr3Str          = ToManaged(o.sfdr3_str);
         s.DigitalDrStr      = ToManaged(o.digital_dr_str);
         s.SystemNoiseTempStr = ToManaged(o.system_noise_temp_str);
-        s.Valid             = o.valid;
+        s.SystemNfStr        = ToManaged(o.system_nf_str);
+        s.Valid              = o.valid;
         return s;
     }
 };

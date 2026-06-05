@@ -71,10 +71,11 @@ void RadarPresenter::recompute() noexcept {
                      num_pulses_ >= 1 && num_pulses_ <= 100000);
 
     if (!output_.valid) {
-        output_.max_range_str              = DASH;
-        output_.two_way_loss_str           = DASH;
-        output_.pulse_compression_gain_str = DASH;
+        output_.max_range_str                 = DASH;
+        output_.two_way_loss_str              = DASH;
+        output_.pulse_compression_gain_str    = DASH;
         output_.coherent_integration_gain_str = DASH;
+        output_.target_rcs_str                = DASH;
         return;
     }
 
@@ -93,11 +94,13 @@ void RadarPresenter::recompute() noexcept {
     output_.coherent_integration_gain = libew::radar::coherent_integration_gain(num_pulses_);
     output_.lpi_advantage             = libew::radar::lpi_advantage(time_bandwidth_product_);
 
-    output_.max_range_str              = format_km(output_.max_range);
-    output_.two_way_loss_str           = format_db(output_.two_way_loss);
-    output_.pulse_compression_gain_str = format_db(output_.pulse_compression_gain);
+    output_.target_rcs                    = Dbsm{target_rcs_dbsm_};
+    output_.max_range_str                 = format_km(output_.max_range);
+    output_.two_way_loss_str              = format_db(output_.two_way_loss);
+    output_.pulse_compression_gain_str    = format_db(output_.pulse_compression_gain);
     output_.coherent_integration_gain_str = format_db(output_.coherent_integration_gain);
-    output_.lpi_advantage_str          = format_db(output_.lpi_advantage);
+    output_.lpi_advantage_str             = format_db(output_.lpi_advantage);
+    output_.target_rcs_str                = format_dbsm(output_.target_rcs);
 }
 
 void RadarPresenter::fire() noexcept {

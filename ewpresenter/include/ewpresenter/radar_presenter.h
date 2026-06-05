@@ -33,6 +33,10 @@ public:
         Db lpi_advantage{};
         std::string lpi_advantage_str;
 
+        // Target RCS (formatted with unit suffix for self-contained result panels)
+        Dbsm target_rcs{};
+        std::string target_rcs_str;
+
         bool valid{false};
     };
 

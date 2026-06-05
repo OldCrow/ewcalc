@@ -47,6 +47,7 @@ ReceiverPage::ReceiverPage(QWidget* parent)
     sensitivity_       = addResultRow(outForm, QStringLiteral("Sensitivity"));
     cascaded_nf_       = addResultRow(outForm, QStringLiteral("Cascaded NF"));
     system_noise_temp_ = addResultRow(outForm, QStringLiteral("Sys. noise temp"));
+    system_nf_         = addResultRow(outForm, QStringLiteral("Sys. NF equiv."));
     sfdr2_             = addResultRow(outForm, QStringLiteral("SFDR (2nd order)"));
     sfdr3_             = addResultRow(outForm, QStringLiteral("SFDR (3rd order)"));
     digital_dr_        = addResultRow(outForm, QStringLiteral("Digital DR"));
@@ -178,6 +179,7 @@ void ReceiverPage::applyOutput(const ewpresenter::ReceiverPresenter::Output& o)
     sensitivity_->setText(QString::fromStdString(o.sensitivity_str));
     cascaded_nf_->setText(QString::fromStdString(o.cascaded_nf_str));
     system_noise_temp_->setText(QString::fromStdString(o.system_noise_temp_str));
+    system_nf_->setText(QString::fromStdString(o.system_nf_str));
     sfdr2_->setText(QString::fromStdString(o.sfdr2_str));
     sfdr3_->setText(QString::fromStdString(o.sfdr3_str));
     digital_dr_->setText(QString::fromStdString(o.digital_dr_str));
