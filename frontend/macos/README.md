@@ -105,7 +105,7 @@ Each Swift adapter class wraps the C bridge for one presenter. It:
 adding a new Swift file, add it to the `SWIFT_SOURCES` list in
 `frontend/macos/CMakeLists.txt`.
 
-## Current state (v0.6)
+## Current state (v0.6.2)
 
 Nine calculator pages: Propagation, Antenna, Link Budget, Receiver,
 Jamming, Location, Radar, Digital/DSSS, and Reference.

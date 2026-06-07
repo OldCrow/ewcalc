@@ -89,7 +89,7 @@ clears it when the input is valid. This keeps all validation logic in the
 presenter layer — the Qt layer only reacts to the `FieldError` value it
 receives from the output struct.
 
-## Current state (v0.6)
+## Current state (v0.6.2)
 
 Nine calculator pages: Propagation, Antenna, Link Budget, Receiver,
 Jamming, Location, Radar, Digital/DSSS, and Reference.
