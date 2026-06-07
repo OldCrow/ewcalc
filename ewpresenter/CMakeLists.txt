@@ -14,7 +14,6 @@ add_library(ewpresenter STATIC ${EWPRESENTER_SOURCES})
 
 target_include_directories(ewpresenter PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
 )
 
 target_link_libraries(ewpresenter PUBLIC libew)
@@ -27,3 +26,7 @@ else()
 endif()
 
 add_subdirectory(harness)
+
+if(EWCALC_BUILD_TESTS)
+    add_subdirectory(tests)
+endif()

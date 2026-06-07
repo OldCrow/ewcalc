@@ -13,7 +13,6 @@ add_library(libew STATIC ${LIBEW_SOURCES})
 
 target_include_directories(libew PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
 )
 
 target_compile_features(libew PUBLIC cxx_std_20)

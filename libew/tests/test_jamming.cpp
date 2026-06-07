@@ -41,14 +41,16 @@ void test_partial_band_zero_js() {
 }
 
 void test_partial_band_negative_js() {
-    // single-channel J/S = 0 dB (spreadsheet shows this case exactly)
-    // BW_opt = 0.025 * 10^0 = 0.025 MHz, duty = 0.025/58 = 0.000431
+    // J/S = -10 dB: jammer weaker than signal on each channel.
+    // BW_opt = 0.025 * 10^(-10/10) = 0.025 * 0.1 = 0.0025 MHz
+    // duty   = 0.0025 / 58.0 ≈ 4.310e-5
     const PartialBandResult r = partial_band_jamming(
         0.025_MHz,
         58.0_MHz,
-        0.0_dB
+        -10.0_dB
     );
-    ASSERT_NEAR(r.duty_cycle, 0.000431, 0.0001);
+    ASSERT_NEAR(r.optimum_jamming_bandwidth.value, 0.0025, 1e-6);
+    ASSERT_NEAR(r.duty_cycle, 0.0025 / 58.0, 1e-7);
 }
 
 void test_js_ratio_self_screen() {
