@@ -1,13 +1,21 @@
 # AGENTS.md
 
-This file provides guidance to WARP (warp.dev) when working with code in this repository.
+This file provides project-scoped guidance to AI agents and contributors working in this repository.
 
 ## Commands
 
+**Requires CMake ≥ 3.20.** The default CMake build produces `libew`, `ewpresenter`, and the test suite. To include a platform GUI target, set `EWCALC_BUILD_FRONTEND=ON` or use the platform build scripts instead (see "Platform frontend builds" below).
+
 ### Build (core libs + presenter harness)
+```bash
+# macOS/Linux (single-config generators: specify build type at configure time)
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build --parallel
 ```
-cmake -B build
-cmake --build build --config Release
+```powershell
+# Windows (multi-config generator: build type set at build time)
+cmake -B build -G "Visual Studio 17 2022" -A x64
+cmake --build build --config Release --parallel
 ```
 
 ### Run all tests
@@ -31,11 +39,25 @@ build/bin/ewpresenter_harness
 ### Platform frontend builds
 ```
 bash scripts/build-macos.sh [--config Debug|Release] [--package]
-bash scripts/build-linux.sh [--config Debug|Release] [--package deb|rpm|appimage]
+bash scripts/build-linux.sh [--config Debug|Release] [--package deb|rpm|appimage]  # Note: Qt6 frontend not yet implemented; core libs and tests build fully
 scripts\build-windows.ps1 [-Config Release]
 ```
 
-On macOS, always unset Homebrew LLVM overrides before building (the script does this automatically) to avoid ABI mismatches against the 13.0 deployment target.
+On macOS, always unset Homebrew LLVM environment overrides before building (the script does this automatically). If running CMake directly, unset them manually first:
+
+```bash
+unset LDFLAGS CPPFLAGS CC CXX
+```
+
+Homebrew sets `CC`/`CXX`/`LDFLAGS` to point to Homebrew LLVM's libc++, which is ABI-incompatible with the macOS 13.0 deployment target used by the macOS frontend.
+
+## Platform build prerequisites
+
+- **macOS:** Xcode (with Swift and SwiftUI support) from the Mac App Store. Minimum deployment target: macOS 13.0. For the core libs and tests only (no GUI), Xcode Command Line Tools (`xcode-select --install`) are sufficient.
+- **Linux:** Qt6 base development libraries (`apt install qt6-base-dev` on Debian/Ubuntu, or equivalent). A C++20 compiler (GCC ≥ 12 or Clang ≥ 14) and CMake ≥ 3.20 are also required. **Note:** The Qt6 frontend is not yet complete; the core libs and tests build fully on Linux.
+- **Windows:** Visual Studio 2022 with the C++ and Windows App SDK workloads (for WinUI 3 support). Install from https://aka.ms/vs/17/release/vs_buildtools.exe, `winget install Microsoft.VisualStudio.2022.Community`, or `choco install visualstudio2022`. CMake ≥ 3.20: `winget install Kitware.CMake` or `choco install cmake`.
+
+> **Windows tool paths vary** by installation method (direct installer, `winget`, `chocolatey`, Microsoft Store, etc.). VS Build Tools and full VS editions use different default directories. See libhmm or libstats `AGENTS.md` for the `vcvars64.bat` path alternatives and auto-detection via `vswhere.exe`.
 
 ## Architecture
 
