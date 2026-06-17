@@ -3,6 +3,7 @@
 /// @file link_presenter.h
 /// @brief Presenter for one-way link budget and effective range.
 
+#include "ewpresenter/presenter_base.h"
 #include "ewpresenter/validation.h"
 #include "libew/core/units.h"
 #include <functional>
@@ -12,7 +13,8 @@ namespace ewpresenter {
 
 using namespace libew::units;
 
-class LinkPresenter {
+class LinkPresenter : public PresenterBase<LinkPresenter> {
+    friend PresenterBase<LinkPresenter>;
 public:
     struct Output {
         // One-way link

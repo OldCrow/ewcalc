@@ -12,16 +12,28 @@ namespace EwPresenterNet {
 
 static void JammingDispatch(void* cookie, const ewpresenter::JammingPresenter::Output* out) {
     auto h = System::Runtime::InteropServices::GCHandle::FromIntPtr(System::IntPtr(cookie));
-    safe_cast<JammingAdapter^>(h.Target)->FireChanged(*out);
+    if (!h.IsAllocated) return;
+    auto adapter = safe_cast<JammingAdapter^>(h.Target);
+    if (adapter != nullptr) adapter->FireChanged(*out);
 }
 
 JammingAdapter::JammingAdapter() : presenter_(new ewpresenter::JammingPresenter()) {
     handle_ = System::Runtime::InteropServices::GCHandle::Alloc(this);
-    void* cookie = System::Runtime::InteropServices::GCHandle::ToIntPtr(handle_).ToPointer();
-    presenter_->set_on_change(MakeJammingCB(&JammingDispatch, cookie));
+    try {
+        void* cookie = System::Runtime::InteropServices::GCHandle::ToIntPtr(handle_).ToPointer();
+        presenter_->set_on_change(MakeJammingCB(&JammingDispatch, cookie));
+    } catch (...) {
+        if (handle_.IsAllocated) handle_.Free();
+        throw;
+    }
 }
 
-JammingAdapter::~JammingAdapter()  { delete presenter_; presenter_ = nullptr; if (handle_.IsAllocated) handle_.Free(); }
-JammingAdapter::!JammingAdapter()  { delete presenter_; presenter_ = nullptr; if (handle_.IsAllocated) handle_.Free(); }
+JammingAdapter::~JammingAdapter() {
+    if (presenter_) presenter_->set_on_change(nullptr);
+    delete presenter_; presenter_ = nullptr;
+    if (handle_.IsAllocated) handle_.Free();
+    System::GC::SuppressFinalize(this);
+}
+JammingAdapter::!JammingAdapter() { delete presenter_; presenter_ = nullptr; if (handle_.IsAllocated) handle_.Free(); }
 
 } // namespace EwPresenterNet

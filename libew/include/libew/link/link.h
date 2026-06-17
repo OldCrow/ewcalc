@@ -14,10 +14,10 @@ using namespace libew::units;
 // ---------------------------------------------------------------------------
 
 struct OnewayLinkResult {
-    Dbm received_power;        ///< Received signal power at receiver input (dBm)
-    Db  path_loss;             ///< Total propagation path loss (dB, positive)
-    Km  fresnel_zone_distance; ///< Fresnel zone crossover distance (km)
-    bool two_ray_regime;       ///< True if 2-ray propagation applies at this range
+    Dbm received_power;           ///< Received signal power at receiver input (dBm)
+    Db  path_loss;                ///< Total propagation path loss (dB, positive)
+    Km  fresnel_zone_distance;    ///< Fresnel zone crossover distance (km)
+    bool two_ray_regime{false};   ///< True if 2-ray propagation applies at this range
 };
 
 /// Compute received power for a one-way RF link.
@@ -47,8 +47,8 @@ struct OnewayLinkResult {
 // ---------------------------------------------------------------------------
 
 struct EffectiveRangeResult {
-    Km   range;          ///< Maximum range at which received power ≥ sensitivity (km)
-    bool two_ray_regime; ///< True if the effective range falls in the 2-ray regime
+    Km   range;               ///< Maximum range at which received power ≥ sensitivity (km)
+    bool two_ray_regime{false}; ///< True if the effective range falls in the 2-ray regime
 };
 
 /// Compute effective communication range — the maximum distance at which the

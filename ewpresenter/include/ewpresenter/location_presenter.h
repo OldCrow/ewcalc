@@ -3,6 +3,7 @@
 /// @file location_presenter.h
 /// @brief Presenter for emitter location accuracy (CEP from AOA bearing error and EEP).
 
+#include "ewpresenter/presenter_base.h"
 #include "ewpresenter/validation.h"
 #include "libew/core/units.h"
 #include <functional>
@@ -12,7 +13,8 @@ namespace ewpresenter {
 
 using namespace libew::units;
 
-class LocationPresenter {
+class LocationPresenter : public PresenterBase<LocationPresenter> {
+    friend PresenterBase<LocationPresenter>;
 public:
     struct Output {
         // AOA section

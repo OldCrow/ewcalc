@@ -4,6 +4,7 @@
 
 #include "ewcalc_bridge.h"
 
+#include <cassert>
 #include <ewpresenter/propagation_presenter.h>
 #include <ewpresenter/link_presenter.h>
 #include <ewpresenter/receiver_presenter.h>
@@ -21,6 +22,7 @@ namespace {
 // Copy a std::string into a fixed-size C char array, always null-terminating.
 template<std::size_t N>
 void copy_str(char (&dst)[N], const std::string& src) noexcept {
+    assert(src.size() < N && "Formatter output exceeds bridge buffer — increase EWP_STR_MAX");
     std::size_t n = std::min(src.size(), N - 1);
     std::memcpy(dst, src.data(), n);
     dst[n] = '\0';
@@ -139,8 +141,8 @@ static EwpRadarOutput to_c(const ewpresenter::RadarPresenter::Output& o) noexcep
     EwpRadarOutput out{};
     copy_str(out.max_range_str,       o.max_range_str);
     copy_str(out.two_way_loss_str,    o.two_way_loss_str);
-    copy_str(out.pc_gain_str,         o.pulse_compression_gain_str);
-    copy_str(out.ci_gain_str,         o.coherent_integration_gain_str);
+    copy_str(out.pulse_compression_gain_str,    o.pulse_compression_gain_str);
+    copy_str(out.coherent_integration_gain_str, o.coherent_integration_gain_str);
     copy_str(out.lpi_advantage_str,   o.lpi_advantage_str);
     copy_str(out.target_rcs_str,      o.target_rcs_str);
     out.valid = o.valid;
@@ -187,6 +189,11 @@ static EwpAntennaOutput to_c(const ewpresenter::AntennaPresenter::Output& o) noe
 // Helper: cast opaque ref to wrapper pointer
 template<typename W>
 W* cast(void* ref) noexcept { return static_cast<W*>(ref); }
+
+// Convert C++ FieldError to C EwpFieldError (values are identical by design).
+static EwpFieldError to_c(ewpresenter::FieldError e) noexcept {
+    return static_cast<EwpFieldError>(e);
+}
 
 } // namespace
 
@@ -484,5 +491,78 @@ double           ewp_antenna_el_beamwidth(EwpAntennaRef ref) { return cast<Anten
 double           ewp_antenna_tx_power(EwpAntennaRef ref)     { return cast<AntennaWrapper>(ref)->presenter.tx_power_dbm(); }
 double           ewp_antenna_frequency(EwpAntennaRef ref)    { return cast<AntennaWrapper>(ref)->presenter.frequency_mhz(); }
 EwpAntennaOutput ewp_antenna_output(EwpAntennaRef ref)       { return to_c(cast<AntennaWrapper>(ref)->presenter.output()); }
+
+// ============================================================================
+// Per-field error accessors
+// ============================================================================
+
+// Propagation
+EwpFieldError ewp_propagation_distance_error(EwpPropagationRef ref)           { return to_c(cast<PropagationWrapper>(ref)->presenter.distance_error()); }
+EwpFieldError ewp_propagation_frequency_error(EwpPropagationRef ref)          { return to_c(cast<PropagationWrapper>(ref)->presenter.frequency_error()); }
+EwpFieldError ewp_propagation_tx_height_error(EwpPropagationRef ref)          { return to_c(cast<PropagationWrapper>(ref)->presenter.tx_height_error()); }
+EwpFieldError ewp_propagation_rx_height_error(EwpPropagationRef ref)          { return to_c(cast<PropagationWrapper>(ref)->presenter.rx_height_error()); }
+EwpFieldError ewp_propagation_obstruction_height_error(EwpPropagationRef ref) { return to_c(cast<PropagationWrapper>(ref)->presenter.obstruction_height_error()); }
+// Link
+EwpFieldError ewp_link_tx_power_error(EwpLinkRef ref)      { return to_c(cast<LinkWrapper>(ref)->presenter.tx_power_error()); }
+EwpFieldError ewp_link_tx_gain_error(EwpLinkRef ref)        { return to_c(cast<LinkWrapper>(ref)->presenter.tx_gain_error()); }
+EwpFieldError ewp_link_rx_gain_error(EwpLinkRef ref)        { return to_c(cast<LinkWrapper>(ref)->presenter.rx_gain_error()); }
+EwpFieldError ewp_link_distance_error(EwpLinkRef ref)       { return to_c(cast<LinkWrapper>(ref)->presenter.distance_error()); }
+EwpFieldError ewp_link_tx_height_error(EwpLinkRef ref)      { return to_c(cast<LinkWrapper>(ref)->presenter.tx_height_error()); }
+EwpFieldError ewp_link_rx_height_error(EwpLinkRef ref)      { return to_c(cast<LinkWrapper>(ref)->presenter.rx_height_error()); }
+EwpFieldError ewp_link_frequency_error(EwpLinkRef ref)      { return to_c(cast<LinkWrapper>(ref)->presenter.frequency_error()); }
+EwpFieldError ewp_link_rx_sensitivity_error(EwpLinkRef ref) { return to_c(cast<LinkWrapper>(ref)->presenter.rx_sensitivity_error()); }
+// Receiver
+EwpFieldError ewp_receiver_bandwidth_error(EwpReceiverRef ref)       { return to_c(cast<ReceiverWrapper>(ref)->presenter.bandwidth_error()); }
+EwpFieldError ewp_receiver_noise_figure_error(EwpReceiverRef ref)    { return to_c(cast<ReceiverWrapper>(ref)->presenter.noise_figure_error()); }
+EwpFieldError ewp_receiver_required_snr_error(EwpReceiverRef ref)    { return to_c(cast<ReceiverWrapper>(ref)->presenter.required_snr_error()); }
+EwpFieldError ewp_receiver_second_order_ip_error(EwpReceiverRef ref) { return to_c(cast<ReceiverWrapper>(ref)->presenter.second_order_ip_error()); }
+EwpFieldError ewp_receiver_third_order_ip_error(EwpReceiverRef ref)  { return to_c(cast<ReceiverWrapper>(ref)->presenter.third_order_ip_error()); }
+EwpFieldError ewp_receiver_adc_bits_error(EwpReceiverRef ref)        { return to_c(cast<ReceiverWrapper>(ref)->presenter.adc_bits_error()); }
+EwpFieldError ewp_receiver_stage_nf_error(EwpReceiverRef ref)        { return to_c(cast<ReceiverWrapper>(ref)->presenter.stage_nf_error()); }
+// Jamming
+EwpFieldError ewp_jamming_signal_erp_error(EwpJammingRef ref)        { return to_c(cast<JammingWrapper>(ref)->presenter.signal_erp_error()); }
+EwpFieldError ewp_jamming_jammer_erp_error(EwpJammingRef ref)        { return to_c(cast<JammingWrapper>(ref)->presenter.jammer_erp_error()); }
+EwpFieldError ewp_jamming_signal_dist_error(EwpJammingRef ref)       { return to_c(cast<JammingWrapper>(ref)->presenter.signal_to_rx_dist_error()); }
+EwpFieldError ewp_jamming_jammer_dist_error(EwpJammingRef ref)       { return to_c(cast<JammingWrapper>(ref)->presenter.jammer_to_rx_dist_error()); }
+EwpFieldError ewp_jamming_signal_height_error(EwpJammingRef ref)     { return to_c(cast<JammingWrapper>(ref)->presenter.signal_tx_height_error()); }
+EwpFieldError ewp_jamming_jammer_height_error(EwpJammingRef ref)     { return to_c(cast<JammingWrapper>(ref)->presenter.jammer_height_error()); }
+EwpFieldError ewp_jamming_rx_height_error(EwpJammingRef ref)         { return to_c(cast<JammingWrapper>(ref)->presenter.rx_height_error()); }
+EwpFieldError ewp_jamming_frequency_error(EwpJammingRef ref)         { return to_c(cast<JammingWrapper>(ref)->presenter.frequency_error()); }
+EwpFieldError ewp_jamming_rx_gain_signal_error(EwpJammingRef ref)    { return to_c(cast<JammingWrapper>(ref)->presenter.rx_gain_signal_error()); }
+EwpFieldError ewp_jamming_rx_gain_jammer_error(EwpJammingRef ref)    { return to_c(cast<JammingWrapper>(ref)->presenter.rx_gain_jammer_error()); }
+EwpFieldError ewp_jamming_signal_bandwidth_error(EwpJammingRef ref)  { return to_c(cast<JammingWrapper>(ref)->presenter.signal_bandwidth_error()); }
+EwpFieldError ewp_jamming_hop_range_error(EwpJammingRef ref)         { return to_c(cast<JammingWrapper>(ref)->presenter.hop_range_error()); }
+EwpFieldError ewp_jamming_js_threshold_error(EwpJammingRef ref)      { return to_c(cast<JammingWrapper>(ref)->presenter.js_threshold_error()); }
+// Location
+EwpFieldError ewp_location_rms_bearing_field_error(EwpLocationRef ref) { return to_c(cast<LocationWrapper>(ref)->presenter.rms_bearing_error()); }
+EwpFieldError ewp_location_aoa_range_error(EwpLocationRef ref)         { return to_c(cast<LocationWrapper>(ref)->presenter.aoa_range_error()); }
+EwpFieldError ewp_location_rms_time_field_error(EwpLocationRef ref)    { return to_c(cast<LocationWrapper>(ref)->presenter.rms_time_error()); }
+EwpFieldError ewp_location_baseline_error(EwpLocationRef ref)          { return to_c(cast<LocationWrapper>(ref)->presenter.baseline_error()); }
+EwpFieldError ewp_location_semi_major_error(EwpLocationRef ref)        { return to_c(cast<LocationWrapper>(ref)->presenter.semi_major_error()); }
+EwpFieldError ewp_location_semi_minor_error(EwpLocationRef ref)        { return to_c(cast<LocationWrapper>(ref)->presenter.semi_minor_error()); }
+// Radar
+EwpFieldError ewp_radar_tx_power_error(EwpRadarRef ref)      { return to_c(cast<RadarWrapper>(ref)->presenter.tx_power_error()); }
+EwpFieldError ewp_radar_antenna_gain_error(EwpRadarRef ref)  { return to_c(cast<RadarWrapper>(ref)->presenter.antenna_gain_error()); }
+EwpFieldError ewp_radar_target_rcs_error(EwpRadarRef ref)    { return to_c(cast<RadarWrapper>(ref)->presenter.target_rcs_error()); }
+EwpFieldError ewp_radar_frequency_error(EwpRadarRef ref)     { return to_c(cast<RadarWrapper>(ref)->presenter.frequency_error()); }
+EwpFieldError ewp_radar_system_losses_error(EwpRadarRef ref) { return to_c(cast<RadarWrapper>(ref)->presenter.system_losses_error()); }
+EwpFieldError ewp_radar_noise_figure_error(EwpRadarRef ref)  { return to_c(cast<RadarWrapper>(ref)->presenter.noise_figure_error()); }
+EwpFieldError ewp_radar_bandwidth_error(EwpRadarRef ref)     { return to_c(cast<RadarWrapper>(ref)->presenter.bandwidth_error()); }
+EwpFieldError ewp_radar_required_snr_error(EwpRadarRef ref)  { return to_c(cast<RadarWrapper>(ref)->presenter.required_snr_error()); }
+EwpFieldError ewp_radar_time_bandwidth_error(EwpRadarRef ref){ return to_c(cast<RadarWrapper>(ref)->presenter.time_bandwidth_product_error()); }
+EwpFieldError ewp_radar_num_pulses_error(EwpRadarRef ref)    { return to_c(cast<RadarWrapper>(ref)->presenter.num_pulses_error()); }
+// Digital
+EwpFieldError ewp_digital_snr_error(EwpDigitalRef ref)                 { return to_c(cast<DigitalWrapper>(ref)->presenter.snr_error()); }
+EwpFieldError ewp_digital_bandwidth_error(EwpDigitalRef ref)           { return to_c(cast<DigitalWrapper>(ref)->presenter.bandwidth_error()); }
+EwpFieldError ewp_digital_data_rate_error(EwpDigitalRef ref)           { return to_c(cast<DigitalWrapper>(ref)->presenter.data_rate_error()); }
+EwpFieldError ewp_digital_chip_rate_error(EwpDigitalRef ref)           { return to_c(cast<DigitalWrapper>(ref)->presenter.chip_rate_error()); }
+EwpFieldError ewp_digital_required_eb_no_error(EwpDigitalRef ref)      { return to_c(cast<DigitalWrapper>(ref)->presenter.required_eb_no_error()); }
+EwpFieldError ewp_digital_implementation_loss_error(EwpDigitalRef ref) { return to_c(cast<DigitalWrapper>(ref)->presenter.implementation_loss_error()); }
+// Antenna
+EwpFieldError ewp_antenna_gain_error(EwpAntennaRef ref)         { return to_c(cast<AntennaWrapper>(ref)->presenter.gain_error()); }
+EwpFieldError ewp_antenna_az_beamwidth_error(EwpAntennaRef ref) { return to_c(cast<AntennaWrapper>(ref)->presenter.az_beamwidth_error()); }
+EwpFieldError ewp_antenna_el_beamwidth_error(EwpAntennaRef ref) { return to_c(cast<AntennaWrapper>(ref)->presenter.el_beamwidth_error()); }
+EwpFieldError ewp_antenna_tx_power_error(EwpAntennaRef ref)     { return to_c(cast<AntennaWrapper>(ref)->presenter.tx_power_error()); }
+EwpFieldError ewp_antenna_frequency_error(EwpAntennaRef ref)    { return to_c(cast<AntennaWrapper>(ref)->presenter.frequency_error()); }
 
 } // extern "C"

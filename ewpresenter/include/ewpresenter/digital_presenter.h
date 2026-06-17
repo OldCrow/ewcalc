@@ -4,6 +4,7 @@
 /// @brief Presenter for digital link Eb/N₀ conversion and DSSS spread-spectrum
 ///        jamming analysis.
 
+#include "ewpresenter/presenter_base.h"
 #include "ewpresenter/validation.h"
 #include "libew/core/units.h"
 #include <functional>
@@ -13,7 +14,8 @@ namespace ewpresenter {
 
 using namespace libew::units;
 
-class DigitalPresenter {
+class DigitalPresenter : public PresenterBase<DigitalPresenter> {
+    friend PresenterBase<DigitalPresenter>;
 public:
     struct Output {
         // Eb/N₀ section

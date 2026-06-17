@@ -9,34 +9,22 @@ static constexpr const char* DASH = "\xe2\x80\x94";
 DigitalPresenter::DigitalPresenter() noexcept { recompute(); }
 
 void DigitalPresenter::set_snr(double db) noexcept {
-    snr_db_  = db;
-    snr_err_ = validate_bounds(db, -30.0, 60.0);
-    recompute(); fire();
+    update_field(db, snr_db_, snr_err_, validate_bounds(db, -30.0, 60.0));
 }
 void DigitalPresenter::set_bandwidth(double mhz) noexcept {
-    bandwidth_mhz_ = mhz;
-    bandwidth_err_ = validate_positive_bounded(mhz, 0.001, 10000.0);
-    recompute(); fire();
+    update_field(mhz, bandwidth_mhz_, bandwidth_err_, validate_positive_bounded(mhz, 0.001, 10000.0));
 }
 void DigitalPresenter::set_data_rate(double mbps) noexcept {
-    data_rate_mhz_ = mbps;
-    data_rate_err_ = validate_positive_bounded(mbps, 0.0001, 10000.0);
-    recompute(); fire();
+    update_field(mbps, data_rate_mhz_, data_rate_err_, validate_positive_bounded(mbps, 0.0001, 10000.0));
 }
 void DigitalPresenter::set_chip_rate(double mcps) noexcept {
-    chip_rate_mhz_ = mcps;
-    chip_rate_err_ = validate_positive_bounded(mcps, 0.0001, 10000.0);
-    recompute(); fire();
+    update_field(mcps, chip_rate_mhz_, chip_rate_err_, validate_positive_bounded(mcps, 0.0001, 10000.0));
 }
 void DigitalPresenter::set_required_eb_no(double db) noexcept {
-    required_eb_no_db_  = db;
-    required_eb_no_err_ = validate_bounds(db, -10.0, 30.0);
-    recompute(); fire();
+    update_field(db, required_eb_no_db_, required_eb_no_err_, validate_bounds(db, -10.0, 30.0));
 }
 void DigitalPresenter::set_implementation_loss(double db) noexcept {
-    implementation_loss_db_ = db;
-    impl_loss_err_ = validate_bounds(db, 0.0, 10.0);
-    recompute(); fire();
+    update_field(db, implementation_loss_db_, impl_loss_err_, validate_bounds(db, 0.0, 10.0));
 }
 
 void DigitalPresenter::recompute() noexcept {

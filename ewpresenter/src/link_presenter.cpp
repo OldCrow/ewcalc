@@ -9,44 +9,28 @@ static constexpr const char* DASH = "\xe2\x80\x94";
 LinkPresenter::LinkPresenter() noexcept { recompute(); }
 
 void LinkPresenter::set_tx_power(double dbm) noexcept {
-    tx_power_dbm_ = dbm;
-    tx_power_err_ = validate_bounds(dbm, -50.0, 200.0);
-    recompute(); fire();
+    update_field(dbm, tx_power_dbm_, tx_power_err_, validate_bounds(dbm, -50.0, 200.0));
 }
 void LinkPresenter::set_tx_gain(double db) noexcept {
-    tx_gain_db_ = db;
-    tx_gain_err_ = validate_bounds(db, -30.0, 60.0);
-    recompute(); fire();
+    update_field(db, tx_gain_db_, tx_gain_err_, validate_bounds(db, -30.0, 60.0));
 }
 void LinkPresenter::set_rx_gain(double db) noexcept {
-    rx_gain_db_ = db;
-    rx_gain_err_ = validate_bounds(db, -30.0, 60.0);
-    recompute(); fire();
+    update_field(db, rx_gain_db_, rx_gain_err_, validate_bounds(db, -30.0, 60.0));
 }
 void LinkPresenter::set_distance(double km) noexcept {
-    distance_km_ = km;
-    distance_err_ = validate_positive_bounded(km, 0.01, 10000.0);
-    recompute(); fire();
+    update_field(km, distance_km_, distance_err_, validate_positive_bounded(km, 0.01, 10000.0));
 }
 void LinkPresenter::set_tx_height(double meters) noexcept {
-    tx_height_m_ = meters;
-    tx_height_err_ = validate_positive_bounded(meters, 0.1, 100000.0);
-    recompute(); fire();
+    update_field(meters, tx_height_m_, tx_height_err_, validate_positive_bounded(meters, 0.1, 100000.0));
 }
 void LinkPresenter::set_rx_height(double meters) noexcept {
-    rx_height_m_ = meters;
-    rx_height_err_ = validate_positive_bounded(meters, 0.1, 100000.0);
-    recompute(); fire();
+    update_field(meters, rx_height_m_, rx_height_err_, validate_positive_bounded(meters, 0.1, 100000.0));
 }
 void LinkPresenter::set_frequency(double mhz) noexcept {
-    frequency_mhz_ = mhz;
-    frequency_err_ = validate_positive_bounded(mhz, 0.1, 100000.0);
-    recompute(); fire();
+    update_field(mhz, frequency_mhz_, frequency_err_, validate_positive_bounded(mhz, 0.1, 100000.0));
 }
 void LinkPresenter::set_rx_sensitivity(double dbm) noexcept {
-    rx_sensitivity_dbm_ = dbm;
-    rx_sensitivity_err_ = validate_bounds(dbm, -200.0, 0.0);
-    recompute(); fire();
+    update_field(dbm, rx_sensitivity_dbm_, rx_sensitivity_err_, validate_bounds(dbm, -200.0, 0.0));
 }
 
 void LinkPresenter::recompute() noexcept {

@@ -16,6 +16,16 @@ extern "C" {
 /// Maximum length of any formatted result string (including null terminator).
 #define EWP_STR_MAX 80
 
+/// Validation status for a single input field.
+/// Numeric values match ewpresenter::FieldError exactly.
+typedef enum {
+    EWP_FIELD_OK               = 0, ///< Value is valid.
+    EWP_FIELD_BELOW_MINIMUM    = 1, ///< Value is below the minimum for this field.
+    EWP_FIELD_ABOVE_MAXIMUM    = 2, ///< Value exceeds the maximum for this field.
+    EWP_FIELD_INVALID_ZERO     = 3, ///< Value is zero where it must be strictly positive.
+    EWP_FIELD_INVALID_NEGATIVE = 4  ///< Value is negative where it must be non-negative.
+} EwpFieldError;
+
 // ============================================================================
 // Propagation
 // ============================================================================
@@ -50,6 +60,11 @@ double               ewp_propagation_frequency(EwpPropagationRef ref);
 double               ewp_propagation_tx_height(EwpPropagationRef ref);
 double               ewp_propagation_rx_height(EwpPropagationRef ref);
 double               ewp_propagation_obstruction_height(EwpPropagationRef ref);
+EwpFieldError ewp_propagation_distance_error(EwpPropagationRef ref);
+EwpFieldError ewp_propagation_frequency_error(EwpPropagationRef ref);
+EwpFieldError ewp_propagation_tx_height_error(EwpPropagationRef ref);
+EwpFieldError ewp_propagation_rx_height_error(EwpPropagationRef ref);
+EwpFieldError ewp_propagation_obstruction_height_error(EwpPropagationRef ref);
 EwpPropagationOutput ewp_propagation_output(EwpPropagationRef ref);
 
 // ============================================================================
@@ -91,6 +106,14 @@ double      ewp_link_tx_height(EwpLinkRef ref);
 double      ewp_link_rx_height(EwpLinkRef ref);
 double      ewp_link_frequency(EwpLinkRef ref);
 double      ewp_link_rx_sensitivity(EwpLinkRef ref);
+EwpFieldError ewp_link_tx_power_error(EwpLinkRef ref);
+EwpFieldError ewp_link_tx_gain_error(EwpLinkRef ref);
+EwpFieldError ewp_link_rx_gain_error(EwpLinkRef ref);
+EwpFieldError ewp_link_distance_error(EwpLinkRef ref);
+EwpFieldError ewp_link_tx_height_error(EwpLinkRef ref);
+EwpFieldError ewp_link_rx_height_error(EwpLinkRef ref);
+EwpFieldError ewp_link_frequency_error(EwpLinkRef ref);
+EwpFieldError ewp_link_rx_sensitivity_error(EwpLinkRef ref);
 EwpLinkOutput ewp_link_output(EwpLinkRef ref);
 
 // ============================================================================
@@ -138,6 +161,13 @@ double         ewp_receiver_third_order_ip(EwpReceiverRef ref);
 int            ewp_receiver_adc_bits(EwpReceiverRef ref);
 int            ewp_receiver_stage_count(EwpReceiverRef ref);
 EwpStageInput  ewp_receiver_stage(EwpReceiverRef ref, int index);
+EwpFieldError ewp_receiver_bandwidth_error(EwpReceiverRef ref);
+EwpFieldError ewp_receiver_noise_figure_error(EwpReceiverRef ref);
+EwpFieldError ewp_receiver_required_snr_error(EwpReceiverRef ref);
+EwpFieldError ewp_receiver_second_order_ip_error(EwpReceiverRef ref);
+EwpFieldError ewp_receiver_third_order_ip_error(EwpReceiverRef ref);
+EwpFieldError ewp_receiver_adc_bits_error(EwpReceiverRef ref);
+EwpFieldError ewp_receiver_stage_nf_error(EwpReceiverRef ref);
 EwpReceiverOutput ewp_receiver_output(EwpReceiverRef ref);
 
 // ============================================================================
@@ -186,6 +216,19 @@ double        ewp_jamming_frequency(EwpJammingRef ref);
 double        ewp_jamming_signal_bandwidth(EwpJammingRef ref);
 double        ewp_jamming_hop_range(EwpJammingRef ref);
 double        ewp_jamming_js_threshold(EwpJammingRef ref);
+EwpFieldError ewp_jamming_signal_erp_error(EwpJammingRef ref);
+EwpFieldError ewp_jamming_jammer_erp_error(EwpJammingRef ref);
+EwpFieldError ewp_jamming_signal_dist_error(EwpJammingRef ref);
+EwpFieldError ewp_jamming_jammer_dist_error(EwpJammingRef ref);
+EwpFieldError ewp_jamming_signal_height_error(EwpJammingRef ref);
+EwpFieldError ewp_jamming_jammer_height_error(EwpJammingRef ref);
+EwpFieldError ewp_jamming_rx_height_error(EwpJammingRef ref);
+EwpFieldError ewp_jamming_frequency_error(EwpJammingRef ref);
+EwpFieldError ewp_jamming_rx_gain_signal_error(EwpJammingRef ref);
+EwpFieldError ewp_jamming_rx_gain_jammer_error(EwpJammingRef ref);
+EwpFieldError ewp_jamming_signal_bandwidth_error(EwpJammingRef ref);
+EwpFieldError ewp_jamming_hop_range_error(EwpJammingRef ref);
+EwpFieldError ewp_jamming_js_threshold_error(EwpJammingRef ref);
 EwpJammingOutput ewp_jamming_output(EwpJammingRef ref);
 
 // ============================================================================
@@ -219,6 +262,14 @@ double         ewp_location_rms_time_error(EwpLocationRef ref);
 double         ewp_location_baseline(EwpLocationRef ref);
 double         ewp_location_semi_major(EwpLocationRef ref);
 double         ewp_location_semi_minor(EwpLocationRef ref);
+// Note: rms_bearing_error and rms_time_error name the physical quantity (degrees/ns);
+// _field_error suffix distinguishes the validation-status accessors.
+EwpFieldError ewp_location_rms_bearing_field_error(EwpLocationRef ref);
+EwpFieldError ewp_location_aoa_range_error(EwpLocationRef ref);
+EwpFieldError ewp_location_rms_time_field_error(EwpLocationRef ref);
+EwpFieldError ewp_location_baseline_error(EwpLocationRef ref);
+EwpFieldError ewp_location_semi_major_error(EwpLocationRef ref);
+EwpFieldError ewp_location_semi_minor_error(EwpLocationRef ref);
 EwpLocationOutput ewp_location_output(EwpLocationRef ref);
 
 // ============================================================================
@@ -228,8 +279,8 @@ EwpLocationOutput ewp_location_output(EwpLocationRef ref);
 typedef struct EwpRadarOutput {
     char max_range_str[EWP_STR_MAX];
     char two_way_loss_str[EWP_STR_MAX];
-    char pc_gain_str[EWP_STR_MAX];
-    char ci_gain_str[EWP_STR_MAX];
+    char pulse_compression_gain_str[EWP_STR_MAX];
+    char coherent_integration_gain_str[EWP_STR_MAX];
     char lpi_advantage_str[EWP_STR_MAX];
     char target_rcs_str[EWP_STR_MAX];
     bool valid;
@@ -263,6 +314,16 @@ double        ewp_radar_bandwidth(EwpRadarRef ref);
 double        ewp_radar_required_snr(EwpRadarRef ref);
 double        ewp_radar_time_bandwidth(EwpRadarRef ref);
 int           ewp_radar_num_pulses(EwpRadarRef ref);
+EwpFieldError ewp_radar_tx_power_error(EwpRadarRef ref);
+EwpFieldError ewp_radar_antenna_gain_error(EwpRadarRef ref);
+EwpFieldError ewp_radar_target_rcs_error(EwpRadarRef ref);
+EwpFieldError ewp_radar_frequency_error(EwpRadarRef ref);
+EwpFieldError ewp_radar_system_losses_error(EwpRadarRef ref);
+EwpFieldError ewp_radar_noise_figure_error(EwpRadarRef ref);
+EwpFieldError ewp_radar_bandwidth_error(EwpRadarRef ref);
+EwpFieldError ewp_radar_required_snr_error(EwpRadarRef ref);
+EwpFieldError ewp_radar_time_bandwidth_error(EwpRadarRef ref);
+EwpFieldError ewp_radar_num_pulses_error(EwpRadarRef ref);
 EwpRadarOutput ewp_radar_output(EwpRadarRef ref);
 
 // ============================================================================
@@ -298,6 +359,12 @@ double           ewp_digital_data_rate(EwpDigitalRef ref);
 double           ewp_digital_chip_rate(EwpDigitalRef ref);
 double           ewp_digital_required_eb_no(EwpDigitalRef ref);
 double           ewp_digital_implementation_loss(EwpDigitalRef ref);
+EwpFieldError ewp_digital_snr_error(EwpDigitalRef ref);
+EwpFieldError ewp_digital_bandwidth_error(EwpDigitalRef ref);
+EwpFieldError ewp_digital_data_rate_error(EwpDigitalRef ref);
+EwpFieldError ewp_digital_chip_rate_error(EwpDigitalRef ref);
+EwpFieldError ewp_digital_required_eb_no_error(EwpDigitalRef ref);
+EwpFieldError ewp_digital_implementation_loss_error(EwpDigitalRef ref);
 EwpDigitalOutput ewp_digital_output(EwpDigitalRef ref);
 
 // ============================================================================
@@ -329,6 +396,11 @@ double           ewp_antenna_az_beamwidth(EwpAntennaRef ref);
 double           ewp_antenna_el_beamwidth(EwpAntennaRef ref);
 double           ewp_antenna_tx_power(EwpAntennaRef ref);
 double           ewp_antenna_frequency(EwpAntennaRef ref);
+EwpFieldError ewp_antenna_gain_error(EwpAntennaRef ref);
+EwpFieldError ewp_antenna_az_beamwidth_error(EwpAntennaRef ref);
+EwpFieldError ewp_antenna_el_beamwidth_error(EwpAntennaRef ref);
+EwpFieldError ewp_antenna_tx_power_error(EwpAntennaRef ref);
+EwpFieldError ewp_antenna_frequency_error(EwpAntennaRef ref);
 EwpAntennaOutput ewp_antenna_output(EwpAntennaRef ref);
 
 #ifdef __cplusplus

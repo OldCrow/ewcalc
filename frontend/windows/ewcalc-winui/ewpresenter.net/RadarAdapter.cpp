@@ -12,16 +12,28 @@ namespace EwPresenterNet {
 
 static void RadarDispatch(void* cookie, const ewpresenter::RadarPresenter::Output* out) {
     auto h = System::Runtime::InteropServices::GCHandle::FromIntPtr(System::IntPtr(cookie));
-    safe_cast<RadarAdapter^>(h.Target)->FireChanged(*out);
+    if (!h.IsAllocated) return;
+    auto adapter = safe_cast<RadarAdapter^>(h.Target);
+    if (adapter != nullptr) adapter->FireChanged(*out);
 }
 
 RadarAdapter::RadarAdapter() : presenter_(new ewpresenter::RadarPresenter()) {
     handle_ = System::Runtime::InteropServices::GCHandle::Alloc(this);
-    void* cookie = System::Runtime::InteropServices::GCHandle::ToIntPtr(handle_).ToPointer();
-    presenter_->set_on_change(MakeRadarCB(&RadarDispatch, cookie));
+    try {
+        void* cookie = System::Runtime::InteropServices::GCHandle::ToIntPtr(handle_).ToPointer();
+        presenter_->set_on_change(MakeRadarCB(&RadarDispatch, cookie));
+    } catch (...) {
+        if (handle_.IsAllocated) handle_.Free();
+        throw;
+    }
 }
 
-RadarAdapter::~RadarAdapter()  { delete presenter_; presenter_ = nullptr; if (handle_.IsAllocated) handle_.Free(); }
-RadarAdapter::!RadarAdapter()  { delete presenter_; presenter_ = nullptr; if (handle_.IsAllocated) handle_.Free(); }
+RadarAdapter::~RadarAdapter() {
+    if (presenter_) presenter_->set_on_change(nullptr);
+    delete presenter_; presenter_ = nullptr;
+    if (handle_.IsAllocated) handle_.Free();
+    System::GC::SuppressFinalize(this);
+}
+RadarAdapter::!RadarAdapter() { delete presenter_; presenter_ = nullptr; if (handle_.IsAllocated) handle_.Free(); }
 
 } // namespace EwPresenterNet

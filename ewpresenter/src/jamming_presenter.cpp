@@ -9,68 +9,44 @@ static constexpr const char* DASH = "\xe2\x80\x94";
 JammingPresenter::JammingPresenter() noexcept { recompute(); }
 
 void JammingPresenter::set_signal_erp(double dbm) noexcept {
-    signal_erp_dbm_ = dbm;
-    signal_erp_err_ = validate_bounds(dbm, -100.0, 200.0);
-    recompute(); fire();
+    update_field(dbm, signal_erp_dbm_, signal_erp_err_, validate_bounds(dbm, -100.0, 200.0));
 }
 void JammingPresenter::set_jammer_erp(double dbm) noexcept {
-    jammer_erp_dbm_ = dbm;
-    jammer_erp_err_ = validate_bounds(dbm, -100.0, 200.0);
-    recompute(); fire();
+    update_field(dbm, jammer_erp_dbm_, jammer_erp_err_, validate_bounds(dbm, -100.0, 200.0));
 }
 void JammingPresenter::set_signal_to_rx_dist(double km) noexcept {
-    signal_to_rx_dist_km_ = km;
-    signal_to_rx_err_ = validate_positive_bounded(km, 0.01, 10000.0);
-    recompute(); fire();
+    update_field(km, signal_to_rx_dist_km_, signal_to_rx_err_, validate_positive_bounded(km, 0.01, 10000.0));
 }
 void JammingPresenter::set_jammer_to_rx_dist(double km) noexcept {
-    jammer_to_rx_dist_km_ = km;
-    jammer_to_rx_err_ = validate_positive_bounded(km, 0.01, 10000.0);
-    recompute(); fire();
+    update_field(km, jammer_to_rx_dist_km_, jammer_to_rx_err_, validate_positive_bounded(km, 0.01, 10000.0));
 }
 void JammingPresenter::set_signal_tx_height(double meters) noexcept {
-    signal_tx_height_m_ = meters;
-    signal_height_err_ = validate_positive_bounded(meters, 0.1, 100000.0);
-    recompute(); fire();
+    update_field(meters, signal_tx_height_m_, signal_height_err_, validate_positive_bounded(meters, 0.1, 100000.0));
 }
 void JammingPresenter::set_jammer_height(double meters) noexcept {
-    jammer_height_m_ = meters;
-    jammer_height_err_ = validate_positive_bounded(meters, 0.1, 100000.0);
-    recompute(); fire();
+    update_field(meters, jammer_height_m_, jammer_height_err_, validate_positive_bounded(meters, 0.1, 100000.0));
 }
 void JammingPresenter::set_rx_height(double meters) noexcept {
-    rx_height_m_ = meters;
-    rx_height_err_ = validate_positive_bounded(meters, 0.1, 100000.0);
-    recompute(); fire();
+    update_field(meters, rx_height_m_, rx_height_err_, validate_positive_bounded(meters, 0.1, 100000.0));
 }
 void JammingPresenter::set_frequency(double mhz) noexcept {
-    frequency_mhz_ = mhz;
-    frequency_err_ = validate_positive_bounded(mhz, 0.1, 100000.0);
-    recompute(); fire();
+    update_field(mhz, frequency_mhz_, frequency_err_, validate_positive_bounded(mhz, 0.1, 100000.0));
 }
 void JammingPresenter::set_rx_gain_signal(double db) noexcept {
-    rx_gain_signal_db_ = db;
-    recompute(); fire();
+    update_field(db, rx_gain_signal_db_, rx_gain_signal_err_, validate_bounds(db, -30.0, 60.0));
 }
 void JammingPresenter::set_rx_gain_jammer(double db) noexcept {
-    rx_gain_jammer_db_ = db;
-    recompute(); fire();
+    update_field(db, rx_gain_jammer_db_, rx_gain_jammer_err_, validate_bounds(db, -30.0, 60.0));
 }
 void JammingPresenter::set_signal_bandwidth(double mhz) noexcept {
-    signal_bandwidth_mhz_ = mhz;
-    signal_bandwidth_err_ = validate_positive_bounded(mhz, 0.001, 1000.0);
-    recompute(); fire();
+    update_field(mhz, signal_bandwidth_mhz_, signal_bandwidth_err_, validate_positive_bounded(mhz, 0.001, 1000.0));
 }
 void JammingPresenter::set_hop_range(double mhz) noexcept {
-    hop_range_mhz_ = mhz;
     // 0 is valid: means non-hopping signal; partial-band analysis is N/A
-    hop_range_err_ = validate_bounds(mhz, 0.0, 10000.0);
-    recompute(); fire();
+    update_field(mhz, hop_range_mhz_, hop_range_err_, validate_bounds(mhz, 0.0, 10000.0));
 }
 void JammingPresenter::set_js_threshold(double db) noexcept {
-    js_threshold_db_  = db;
-    js_threshold_err_ = validate_bounds(db, -30.0, 30.0);
-    recompute(); fire();
+    update_field(db, js_threshold_db_, js_threshold_err_, validate_bounds(db, -30.0, 30.0));
 }
 void JammingPresenter::recompute() noexcept {
     // J/S and burnthrough: require geometry inputs only
@@ -82,6 +58,8 @@ void JammingPresenter::recompute() noexcept {
                            jammer_height_err_ == FieldError::none &&
                            rx_height_err_     == FieldError::none &&
                            frequency_err_     == FieldError::none &&
+                           rx_gain_signal_err_== FieldError::none &&
+                           rx_gain_jammer_err_== FieldError::none &&
                            js_threshold_err_  == FieldError::none);
 
     // Partial-band: additionally requires a positive hop range and signal bandwidth

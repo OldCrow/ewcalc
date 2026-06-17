@@ -3,6 +3,7 @@
 /// @file propagation_presenter.h
 /// @brief Presenter for RF propagation path loss calculations.
 
+#include "ewpresenter/presenter_base.h"
 #include "ewpresenter/validation.h"
 #include "libew/core/units.h"
 #include <functional>
@@ -12,7 +13,8 @@ namespace ewpresenter {
 
 using namespace libew::units;
 
-class PropagationPresenter {
+class PropagationPresenter : public PresenterBase<PropagationPresenter> {
+    friend PresenterBase<PropagationPresenter>;
 public:
     // -----------------------------------------------------------------------
     // Output — all fields updated atomically on each recompute()

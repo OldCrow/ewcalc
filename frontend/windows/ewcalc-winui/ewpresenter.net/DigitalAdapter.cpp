@@ -12,16 +12,28 @@ namespace EwPresenterNet {
 
 static void DigitalDispatch(void* cookie, const ewpresenter::DigitalPresenter::Output* out) {
     auto h = System::Runtime::InteropServices::GCHandle::FromIntPtr(System::IntPtr(cookie));
-    safe_cast<DigitalAdapter^>(h.Target)->FireChanged(*out);
+    if (!h.IsAllocated) return;
+    auto adapter = safe_cast<DigitalAdapter^>(h.Target);
+    if (adapter != nullptr) adapter->FireChanged(*out);
 }
 
 DigitalAdapter::DigitalAdapter() : presenter_(new ewpresenter::DigitalPresenter()) {
     handle_ = System::Runtime::InteropServices::GCHandle::Alloc(this);
-    void* cookie = System::Runtime::InteropServices::GCHandle::ToIntPtr(handle_).ToPointer();
-    presenter_->set_on_change(MakeDigitalCB(&DigitalDispatch, cookie));
+    try {
+        void* cookie = System::Runtime::InteropServices::GCHandle::ToIntPtr(handle_).ToPointer();
+        presenter_->set_on_change(MakeDigitalCB(&DigitalDispatch, cookie));
+    } catch (...) {
+        if (handle_.IsAllocated) handle_.Free();
+        throw;
+    }
 }
 
-DigitalAdapter::~DigitalAdapter()  { delete presenter_; presenter_ = nullptr; if (handle_.IsAllocated) handle_.Free(); }
-DigitalAdapter::!DigitalAdapter()  { delete presenter_; presenter_ = nullptr; if (handle_.IsAllocated) handle_.Free(); }
+DigitalAdapter::~DigitalAdapter() {
+    if (presenter_) presenter_->set_on_change(nullptr);
+    delete presenter_; presenter_ = nullptr;
+    if (handle_.IsAllocated) handle_.Free();
+    System::GC::SuppressFinalize(this);
+}
+DigitalAdapter::!DigitalAdapter() { delete presenter_; presenter_ = nullptr; if (handle_.IsAllocated) handle_.Free(); }
 
 } // namespace EwPresenterNet

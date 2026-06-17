@@ -88,10 +88,14 @@ Each item's `NoiseFigureDb` and `GainDb` setters call `PushStages()` which
 rebuilds the full `StageInput[]` and calls `ReceiverAdapter.SetStages()`.
 Add/Remove buttons are bound to `ICommand` properties.
 
-## Current state (v0.6.2)
+## Current state (v0.6.3)
 
 This frontend covers all nine calculator pages (Propagation, Antenna, Link Budget,
 Receiver, Jamming, Location, Radar, Digital/DSSS, Reference) at v0.6 parity with macOS.
+
+## Completed in v0.6.3
+
+All 8 C++/CLI adapter lifetime bugs fixed: GCHandle double-free (`GC::SuppressFinalize` in destructors), use-after-free (`set_on_change(nullptr)` before `delete presenter_`), stale handle access (`IsAllocated` guard in dispatch functions), and constructor exception safety. Presenter validation gaps closed (Jamming receive gain bounds, Receiver stage NF, `num_pulses`/`adc_bits` moved to setter error fields).
 
 ## Completed in v0.6.2
 

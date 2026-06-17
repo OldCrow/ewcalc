@@ -7,7 +7,7 @@ int main(int argc, char* argv[])
     QApplication app(argc, argv);
     app.setApplicationName(QStringLiteral("ewcalc"));
     app.setApplicationDisplayName(QStringLiteral("EW Calculator"));
-    app.setApplicationVersion(QStringLiteral("0.6.2"));
+    app.setApplicationVersion(QStringLiteral("0.6.3"));
 
     MainWindow w;
     w.show();

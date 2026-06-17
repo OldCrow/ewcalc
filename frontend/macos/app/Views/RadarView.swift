@@ -73,9 +73,9 @@ struct RadarView: View {
                 ResultRow("Max range",                cStr(adapter.output.max_range_str),
                           help: "Maximum detection range at the required SNR with no signal processing gain applied")
                 ResultRow("Two-way loss",             cStr(adapter.output.two_way_loss_str))
-                ResultRow("PC gain",                  cStr(adapter.output.pc_gain_str),
+                ResultRow("PC gain",                  cStr(adapter.output.pulse_compression_gain_str),
                           help: "Pulse compression SNR gain: 10·log₁₀(time-bandwidth product)")
-                ResultRow("Coherent integration gain",cStr(adapter.output.ci_gain_str),
+                ResultRow("Coherent integration gain",cStr(adapter.output.coherent_integration_gain_str),
                           help: "Coherent integration SNR gain: 10·log₁₀(number of pulses)")
                 ResultRow("LPI advantage",            cStr(adapter.output.lpi_advantage_str),
                           help: "Detection-range advantage an LPI waveform has against an intercept receiver: PC gain ÷ 4")

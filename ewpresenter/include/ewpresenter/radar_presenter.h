@@ -3,6 +3,7 @@
 /// @file radar_presenter.h
 /// @brief Presenter for radar range equation and signal processing gain.
 
+#include "ewpresenter/presenter_base.h"
 #include "ewpresenter/validation.h"
 #include "libew/core/units.h"
 #include <functional>
@@ -12,7 +13,8 @@ namespace ewpresenter {
 
 using namespace libew::units;
 
-class RadarPresenter {
+class RadarPresenter : public PresenterBase<RadarPresenter> {
+    friend PresenterBase<RadarPresenter>;
 public:
     struct Output {
         // Radar range equation
@@ -94,6 +96,16 @@ public:
     [[nodiscard]] double required_snr_db()         const noexcept { return required_snr_db_; }
     [[nodiscard]] double time_bandwidth_product()  const noexcept { return time_bandwidth_product_; }
     [[nodiscard]] int    num_pulses()              const noexcept { return num_pulses_; }
+    [[nodiscard]] FieldError tx_power_error()               const noexcept { return tx_power_err_; }
+    [[nodiscard]] FieldError antenna_gain_error()           const noexcept { return antenna_gain_err_; }
+    [[nodiscard]] FieldError target_rcs_error()             const noexcept { return target_rcs_err_; }
+    [[nodiscard]] FieldError frequency_error()              const noexcept { return frequency_err_; }
+    [[nodiscard]] FieldError system_losses_error()          const noexcept { return system_losses_err_; }
+    [[nodiscard]] FieldError noise_figure_error()           const noexcept { return noise_figure_err_; }
+    [[nodiscard]] FieldError bandwidth_error()              const noexcept { return bandwidth_err_; }
+    [[nodiscard]] FieldError required_snr_error()           const noexcept { return required_snr_err_; }
+    [[nodiscard]] FieldError time_bandwidth_product_error() const noexcept { return tb_product_err_; }
+    [[nodiscard]] FieldError num_pulses_error()             const noexcept { return num_pulses_err_; }
 
     void set_on_change(std::function<void(const Output&)> cb) noexcept {
         on_change_ = std::move(cb);
@@ -120,6 +132,7 @@ private:
     FieldError bandwidth_err_   {FieldError::none};
     FieldError required_snr_err_{FieldError::none};
     FieldError tb_product_err_  {FieldError::none};
+    FieldError num_pulses_err_  {FieldError::none};
 
     Output output_;
     std::function<void(const Output&)> on_change_;

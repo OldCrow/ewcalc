@@ -9,29 +9,19 @@ static constexpr const char* DASH = "\xe2\x80\x94";
 AntennaPresenter::AntennaPresenter() noexcept { recompute(); }
 
 void AntennaPresenter::set_gain(double dbi) noexcept {
-    gain_dbi_  = dbi;
-    gain_err_  = validate_bounds(dbi, -10.0, 60.0);
-    recompute(); fire();
+    update_field(dbi, gain_dbi_, gain_err_, validate_bounds(dbi, -10.0, 60.0));
 }
 void AntennaPresenter::set_az_beamwidth(double deg) noexcept {
-    az_beamwidth_deg_ = deg;
-    az_bw_err_        = validate_positive_bounded(deg, 0.1, 360.0);
-    recompute(); fire();
+    update_field(deg, az_beamwidth_deg_, az_bw_err_, validate_positive_bounded(deg, 0.1, 360.0));
 }
 void AntennaPresenter::set_el_beamwidth(double deg) noexcept {
-    el_beamwidth_deg_ = deg;
-    el_bw_err_        = validate_positive_bounded(deg, 0.1, 360.0);
-    recompute(); fire();
+    update_field(deg, el_beamwidth_deg_, el_bw_err_, validate_positive_bounded(deg, 0.1, 360.0));
 }
 void AntennaPresenter::set_tx_power(double dbm) noexcept {
-    tx_power_dbm_ = dbm;
-    tx_power_err_ = validate_bounds(dbm, -30.0, 100.0);
-    recompute(); fire();
+    update_field(dbm, tx_power_dbm_, tx_power_err_, validate_bounds(dbm, -30.0, 100.0));
 }
 void AntennaPresenter::set_frequency(double mhz) noexcept {
-    frequency_mhz_ = mhz;
-    frequency_err_ = validate_positive_bounded(mhz, 0.1, 100000.0);
-    recompute(); fire();
+    update_field(mhz, frequency_mhz_, frequency_err_, validate_positive_bounded(mhz, 0.1, 100000.0));
 }
 
 void AntennaPresenter::recompute() noexcept {

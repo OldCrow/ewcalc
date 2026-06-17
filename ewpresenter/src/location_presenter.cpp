@@ -9,34 +9,22 @@ static constexpr const char* DASH = "\xe2\x80\x94";
 LocationPresenter::LocationPresenter() noexcept { recompute(); }
 
 void LocationPresenter::set_rms_bearing_error(double degrees) noexcept {
-    rms_bearing_error_deg_ = degrees;
-    rms_bearing_err_ = validate_positive_bounded(degrees, 0.01, 45.0);
-    recompute(); fire();
+    update_field(degrees, rms_bearing_error_deg_, rms_bearing_err_, validate_positive_bounded(degrees, 0.01, 45.0));
 }
 void LocationPresenter::set_rms_time_error(double ns) noexcept {
-    rms_time_error_ns_  = ns;
-    rms_time_err_ = validate_positive_bounded(ns, 0.001, 100000.0);
-    recompute(); fire();
+    update_field(ns, rms_time_error_ns_, rms_time_err_, validate_positive_bounded(ns, 0.001, 100000.0));
 }
 void LocationPresenter::set_baseline(double km) noexcept {
-    baseline_km_  = km;
-    baseline_err_ = validate_positive_bounded(km, 0.1, 10000.0);
-    recompute(); fire();
+    update_field(km, baseline_km_, baseline_err_, validate_positive_bounded(km, 0.1, 10000.0));
 }
 void LocationPresenter::set_aoa_range(double km) noexcept {
-    aoa_range_km_ = km;
-    aoa_range_err_ = validate_positive_bounded(km, 0.1, 10000.0);
-    recompute(); fire();
+    update_field(km, aoa_range_km_, aoa_range_err_, validate_positive_bounded(km, 0.1, 10000.0));
 }
 void LocationPresenter::set_semi_major(double km) noexcept {
-    semi_major_km_ = km;
-    semi_major_err_ = validate_positive_bounded(km, 0.001, 1000.0);
-    recompute(); fire();
+    update_field(km, semi_major_km_, semi_major_err_, validate_positive_bounded(km, 0.001, 1000.0));
 }
 void LocationPresenter::set_semi_minor(double km) noexcept {
-    semi_minor_km_ = km;
-    semi_minor_err_ = validate_positive_bounded(km, 0.001, 1000.0);
-    recompute(); fire();
+    update_field(km, semi_minor_km_, semi_minor_err_, validate_positive_bounded(km, 0.001, 1000.0));
 }
 
 void LocationPresenter::recompute() noexcept {

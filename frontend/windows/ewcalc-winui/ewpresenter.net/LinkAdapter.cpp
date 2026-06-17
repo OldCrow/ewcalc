@@ -12,16 +12,28 @@ namespace EwPresenterNet {
 
 static void LinkDispatch(void* cookie, const ewpresenter::LinkPresenter::Output* out) {
     auto h = System::Runtime::InteropServices::GCHandle::FromIntPtr(System::IntPtr(cookie));
-    safe_cast<LinkAdapter^>(h.Target)->FireChanged(*out);
+    if (!h.IsAllocated) return;
+    auto adapter = safe_cast<LinkAdapter^>(h.Target);
+    if (adapter != nullptr) adapter->FireChanged(*out);
 }
 
 LinkAdapter::LinkAdapter() : presenter_(new ewpresenter::LinkPresenter()) {
     handle_ = System::Runtime::InteropServices::GCHandle::Alloc(this);
-    void* cookie = System::Runtime::InteropServices::GCHandle::ToIntPtr(handle_).ToPointer();
-    presenter_->set_on_change(MakeLinkCB(&LinkDispatch, cookie));
+    try {
+        void* cookie = System::Runtime::InteropServices::GCHandle::ToIntPtr(handle_).ToPointer();
+        presenter_->set_on_change(MakeLinkCB(&LinkDispatch, cookie));
+    } catch (...) {
+        if (handle_.IsAllocated) handle_.Free();
+        throw;
+    }
 }
 
-LinkAdapter::~LinkAdapter()  { delete presenter_; presenter_ = nullptr; if (handle_.IsAllocated) handle_.Free(); }
-LinkAdapter::!LinkAdapter()  { delete presenter_; presenter_ = nullptr; if (handle_.IsAllocated) handle_.Free(); }
+LinkAdapter::~LinkAdapter() {
+    if (presenter_) presenter_->set_on_change(nullptr);
+    delete presenter_; presenter_ = nullptr;
+    if (handle_.IsAllocated) handle_.Free();
+    System::GC::SuppressFinalize(this);
+}
+LinkAdapter::!LinkAdapter() { delete presenter_; presenter_ = nullptr; if (handle_.IsAllocated) handle_.Free(); }
 
 } // namespace EwPresenterNet

@@ -81,7 +81,7 @@ struct JammingResult {
 
 struct PartialBandResult {
     Mhz    optimum_jamming_bandwidth; ///< Optimum jamming bandwidth (MHz)
-    double duty_cycle;                ///< Fraction of hop range covered
+    double duty_cycle{0.0};           ///< Fraction of hop range covered
 };
 
 /// Compute optimum partial-band jamming parameters.

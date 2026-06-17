@@ -78,6 +78,8 @@ and `xcrun notarytool` credentials stored under the `ewcalc-notarytool` profile.
 
 ## Current status
 
+**v0.6.3** — Architecture review remediation: C++/CLI adapter lifetime safety (double-free, use-after-free, stale GCHandle access, constructor exception safety); presenter validation gaps closed (Jamming gains, Receiver stage NF, `num_pulses`/`adc_bits` error fields); C bridge per-field error accessors (`EwpFieldError`); bridge and formatter integration tests; `PresenterBase<Derived>` CRTP base eliminates setter boilerplate across all 8 presenters; cppcheck clean.
+
 **v0.6.2** — Bug fix: `DigitalPresenter` validity split (invalid DSSS inputs no longer suppress Eb/N₀); ewpresenter assertion test suite; harness registered in CI.
 
 **v0.6.0** — Antenna calculator added across all platforms; knife-edge diffraction and SNR↔Eb/N₀ wired up.

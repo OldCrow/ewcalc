@@ -22,10 +22,14 @@ std::string format_dbw(Dbw value, int decimals) {
     return fmt(value.value, decimals, "dBW");
 }
 
+static constexpr double kWattsDisplayThreshold = 1.0;    ///< Display in mW below this.
+static constexpr double kMilliwattsPerWatt      = 1000.0; ///< Scale factor mW → W.
+static constexpr double kPercentMultiplier      = 100.0;  ///< Fraction → percent.
+
 std::string format_watts(Watts value) {
     // Auto-scale: display in mW if < 1 W
-    if (std::abs(value.value) < 1.0 && value.value != 0.0) {
-        return fmt(value.value * 1000.0, 3, "mW");
+    if (std::abs(value.value) < kWattsDisplayThreshold && value.value != 0.0) {
+        return fmt(value.value * kMilliwattsPerWatt, 3, "mW");
     }
     return fmt(value.value, 3, "W");
 }
@@ -62,7 +66,7 @@ std::string format_degrees(Degrees value, int decimals) {
 }
 
 std::string format_percent(double fraction, int decimals) {
-    return fmt(fraction * 100.0, decimals, "%");
+    return fmt(fraction * kPercentMultiplier, decimals, "%");
 }
 
 std::string format_regime(bool two_ray) noexcept {

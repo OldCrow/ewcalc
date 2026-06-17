@@ -3,6 +3,7 @@
 /// @file receiver_presenter.h
 /// @brief Presenter for receiver sensitivity, cascaded noise figure, and dynamic range.
 
+#include "ewpresenter/presenter_base.h"
 #include "ewpresenter/validation.h"
 #include "libew/core/units.h"
 #include "libew/receiver/receiver.h"
@@ -14,7 +15,8 @@ namespace ewpresenter {
 
 using namespace libew::units;
 
-class ReceiverPresenter {
+class ReceiverPresenter : public PresenterBase<ReceiverPresenter> {
+    friend PresenterBase<ReceiverPresenter>;
 public:
     struct Output {
         // Sensitivity section
@@ -73,6 +75,9 @@ public:
     /// Replace a single stage; index 0 = front-end.
     void set_stage(std::size_t index, StageInput stage) noexcept;
 
+    /// Replace a single stage; returns false if index is out of range.
+    [[nodiscard]] bool try_set_stage(std::size_t index, StageInput stage) noexcept;
+
     // -----------------------------------------------------------------------
     // Dynamic range inputs
     // -----------------------------------------------------------------------
@@ -104,6 +109,8 @@ public:
     [[nodiscard]] FieldError required_snr_error()    const noexcept { return required_snr_err_; }
     [[nodiscard]] FieldError second_order_ip_error() const noexcept { return second_order_ip_err_; }
     [[nodiscard]] FieldError third_order_ip_error()  const noexcept { return third_order_ip_err_; }
+    [[nodiscard]] FieldError adc_bits_error()         const noexcept { return adc_bits_err_; }
+    [[nodiscard]] FieldError stage_nf_error()         const noexcept { return stage_nf_err_; }
 
     void set_on_change(std::function<void(const Output&)> cb) noexcept {
         on_change_ = std::move(cb);
@@ -129,6 +136,8 @@ private:
     FieldError required_snr_err_    {FieldError::none};
     FieldError second_order_ip_err_ {FieldError::none};
     FieldError third_order_ip_err_  {FieldError::none};
+    FieldError adc_bits_err_        {FieldError::none};
+    FieldError stage_nf_err_        {FieldError::none};
 
     Output output_;
     std::function<void(const Output&)> on_change_;

@@ -3,6 +3,7 @@
 /// @file antenna_presenter.h
 /// @brief Presenter for antenna gain, ERP, beamwidth, and wavelength.
 
+#include "ewpresenter/presenter_base.h"
 #include "ewpresenter/validation.h"
 #include "libew/core/units.h"
 #include <functional>
@@ -12,7 +13,8 @@ namespace ewpresenter {
 
 using namespace libew::units;
 
-class AntennaPresenter {
+class AntennaPresenter : public PresenterBase<AntennaPresenter> {
+    friend PresenterBase<AntennaPresenter>;  ///< Allows base to call recompute/fire.
 public:
     struct Output {
         // ERP
@@ -66,6 +68,12 @@ public:
     [[nodiscard]] double tx_power_dbm()    const noexcept { return tx_power_dbm_; }
     [[nodiscard]] double frequency_mhz()   const noexcept { return frequency_mhz_; }
 
+    [[nodiscard]] FieldError gain_error()          const noexcept { return gain_err_; }
+    [[nodiscard]] FieldError az_beamwidth_error()   const noexcept { return az_bw_err_; }
+    [[nodiscard]] FieldError el_beamwidth_error()   const noexcept { return el_bw_err_; }
+    [[nodiscard]] FieldError tx_power_error()       const noexcept { return tx_power_err_; }
+    [[nodiscard]] FieldError frequency_error()      const noexcept { return frequency_err_; }
+
     void set_on_change(std::function<void(const Output&)> cb) noexcept {
         on_change_ = std::move(cb);
     }
@@ -86,8 +94,8 @@ private:
     Output output_;
     std::function<void(const Output&)> on_change_;
 
-    void recompute() noexcept;
-    void fire() noexcept;
+    void recompute() noexcept; ///< CRTP hook — called by PresenterBase::update_field.
+    void fire() noexcept;      ///< CRTP hook — called by PresenterBase::update_field.
 };
 
 } // namespace ewpresenter

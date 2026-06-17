@@ -1,6 +1,7 @@
 #include "libew/link/link.h"
 #include "libew/propagation/propagation.h"
 #include "libew/core/constants.h"
+#include <cassert>
 #include <cmath>
 
 namespace libew::link {
@@ -35,6 +36,10 @@ EffectiveRangeResult effective_range(
     Mhz    frequency,
     Dbm    rx_sensitivity) noexcept
 {
+    // Presenter validates heights ≥ 0.1 m; assert catches misuse by other callers.
+    assert(tx_height.value > 0.0 && "tx_height must be positive");
+    assert(rx_height.value > 0.0 && "rx_height must be positive");
+    assert(frequency.value > 0.0 && "frequency must be positive");
     // Available margin above sensitivity
     const double margin_db = (tx_power + tx_gain + rx_gain - rx_sensitivity).value;
 

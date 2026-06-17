@@ -9,33 +9,19 @@ PropagationPresenter::PropagationPresenter() noexcept {
 }
 
 void PropagationPresenter::set_distance(double km) noexcept {
-    distance_km_  = km;
-    distance_err_ = validate_positive_bounded(km, 0.01, 10000.0);
-    recompute(); fire();
+    update_field(km, distance_km_, distance_err_, validate_positive_bounded(km, 0.01, 10000.0));
 }
-
 void PropagationPresenter::set_frequency(double mhz) noexcept {
-    frequency_mhz_  = mhz;
-    frequency_err_  = validate_positive_bounded(mhz, 0.1, 100000.0);
-    recompute(); fire();
+    update_field(mhz, frequency_mhz_, frequency_err_, validate_positive_bounded(mhz, 0.1, 100000.0));
 }
-
 void PropagationPresenter::set_tx_height(double meters) noexcept {
-    tx_height_m_  = meters;
-    tx_height_err_ = validate_positive_bounded(meters, 0.1, 100000.0);
-    recompute(); fire();
+    update_field(meters, tx_height_m_, tx_height_err_, validate_positive_bounded(meters, 0.1, 100000.0));
 }
-
 void PropagationPresenter::set_rx_height(double meters) noexcept {
-    rx_height_m_  = meters;
-    rx_height_err_ = validate_positive_bounded(meters, 0.1, 100000.0);
-    recompute(); fire();
+    update_field(meters, rx_height_m_, rx_height_err_, validate_positive_bounded(meters, 0.1, 100000.0));
 }
-
 void PropagationPresenter::set_obstruction_height(double meters) noexcept {
-    obstruction_height_m_   = meters;
-    obstruction_height_err_ = validate_non_negative(meters);
-    recompute(); fire();
+    update_field(meters, obstruction_height_m_, obstruction_height_err_, validate_non_negative(meters));
 }
 
 void PropagationPresenter::recompute() noexcept {
