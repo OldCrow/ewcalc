@@ -88,10 +88,14 @@ Each item's `NoiseFigureDb` and `GainDb` setters call `PushStages()` which
 rebuilds the full `StageInput[]` and calls `ReceiverAdapter.SetStages()`.
 Add/Remove buttons are bound to `ICommand` properties.
 
-## Current state (v0.6.3)
+## Current state (v0.6.4)
 
 This frontend covers all nine calculator pages (Propagation, Antenna, Link Budget,
 Receiver, Jamming, Location, Radar, Digital/DSSS, Reference) at v0.6 parity with macOS.
+
+## Completed in v0.6.4
+
+Finalizer use-after-free fixed in all 8 adapters (`set_on_change(nullptr)` added to each `!AdapterName()` finalizer). `RadarAdapter` gains 10 `FieldValidationError` properties matching `LinkAdapter`. `LinkOutput` gains `TwoRayRegime` and `RangeTwoRayRegime` booleans for conditional UI formatting. `CallbackBridge.h` deleted (dead code).
 
 ## Completed in v0.6.3
 

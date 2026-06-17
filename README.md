@@ -78,6 +78,8 @@ and `xcrun notarytool` credentials stored under the `ewcalc-notarytool` profile.
 
 ## Current status
 
+**v0.6.4** — Bug fixes from follow-on review: finalizer use-after-free in all 8 C++/CLI adapters; `ewp_receiver_stage()`/`ewp_receiver_set_stages()` UB and null-pointer guards; `copy_str` production truncation sentinel; `lpi_advantage_str` missing DASH; `chip_rate < data_rate` DSSS guard; `LocationPresenter` EEP axis error field + independent sub-section validity; `ReceiverPresenter` `system_nf` now derives from cascaded NF; NaN stage NF fix; `RadarAdapter` FieldError properties; `LinkOutput` two-ray-regime booleans; `CallbackBridge.h` dead code removed.
+
 **v0.6.3** — Architecture review remediation: C++/CLI adapter lifetime safety (double-free, use-after-free, stale GCHandle access, constructor exception safety); presenter validation gaps closed (Jamming gains, Receiver stage NF, `num_pulses`/`adc_bits` error fields); C bridge per-field error accessors (`EwpFieldError`); bridge and formatter integration tests; `PresenterBase<Derived>` CRTP base eliminates setter boilerplate across all 8 presenters; cppcheck clean.
 
 **v0.6.2** — Bug fix: `DigitalPresenter` validity split (invalid DSSS inputs no longer suppress Eb/N₀); ewpresenter assertion test suite; harness registered in CI.
