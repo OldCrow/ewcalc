@@ -1,6 +1,7 @@
 #include "libew/jamming/jamming.h"
 #include "libew/propagation/propagation.h"
 #include "libew/core/constants.h"
+#include <cassert>
 #include <cmath>
 #include <algorithm>
 
@@ -62,6 +63,8 @@ PartialBandResult partial_band_jamming(
     Mhz hop_range_bandwidth,
     Db  single_channel_js) noexcept
 {
+    // Presenter ensures hop_range > 0 before calling; assert catches direct callers.
+    assert(hop_range_bandwidth.value > 0.0 && "hop_range_bandwidth must be positive");
     // If single-channel J/S >= 0 dB, jam full hop range for maximum coverage
     if (single_channel_js.value >= 0.0) {
         const double duty = std::min(

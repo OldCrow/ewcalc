@@ -49,6 +49,20 @@ public:
     property double DefaultHopRange        { double get() { return presenter_->hop_range_mhz();        } }
     property double DefaultJsThreshold     { double get() { return presenter_->js_threshold_db();      } }
 
+    property FieldValidationError SignalErpError       { FieldValidationError get() { return ToManaged(presenter_->signal_erp_error());         } }
+    property FieldValidationError JammerErpError       { FieldValidationError get() { return ToManaged(presenter_->jammer_erp_error());         } }
+    property FieldValidationError SignalDistError      { FieldValidationError get() { return ToManaged(presenter_->signal_to_rx_dist_error());  } }
+    property FieldValidationError JammerDistError      { FieldValidationError get() { return ToManaged(presenter_->jammer_to_rx_dist_error());  } }
+    property FieldValidationError SignalHeightError    { FieldValidationError get() { return ToManaged(presenter_->signal_tx_height_error());   } }
+    property FieldValidationError JammerHeightError    { FieldValidationError get() { return ToManaged(presenter_->jammer_height_error());      } }
+    property FieldValidationError RxHeightError        { FieldValidationError get() { return ToManaged(presenter_->rx_height_error());          } }
+    property FieldValidationError FrequencyError       { FieldValidationError get() { return ToManaged(presenter_->frequency_error());          } }
+    property FieldValidationError RxGainSignalError    { FieldValidationError get() { return ToManaged(presenter_->rx_gain_signal_error());     } }
+    property FieldValidationError RxGainJammerError    { FieldValidationError get() { return ToManaged(presenter_->rx_gain_jammer_error());     } }
+    property FieldValidationError SignalBandwidthError { FieldValidationError get() { return ToManaged(presenter_->signal_bandwidth_error());   } }
+    property FieldValidationError HopRangeError        { FieldValidationError get() { return ToManaged(presenter_->hop_range_error());          } }
+    property FieldValidationError JsThresholdError     { FieldValidationError get() { return ToManaged(presenter_->js_threshold_error());       } }
+
     property JammingOutput CurrentOutput { JammingOutput get() { return Snapshot(presenter_->output()); } }
 
     event JammingChangedHandler^ Changed;

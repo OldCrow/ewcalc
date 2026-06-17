@@ -36,8 +36,12 @@ public:
 
     property FieldValidationError RmsBearingError { FieldValidationError get() { return ToManaged(presenter_->rms_bearing_error()); } }
     property FieldValidationError AoaRangeError   { FieldValidationError get() { return ToManaged(presenter_->aoa_range_error());   } }
+    property FieldValidationError RmsTimeError    { FieldValidationError get() { return ToManaged(presenter_->rms_time_error());    } }
+    property FieldValidationError BaselineError   { FieldValidationError get() { return ToManaged(presenter_->baseline_error());    } }
     property FieldValidationError SemiMajorError  { FieldValidationError get() { return ToManaged(presenter_->semi_major_error());  } }
     property FieldValidationError SemiMinorError  { FieldValidationError get() { return ToManaged(presenter_->semi_minor_error());  } }
+    /// Above_maximum on semi_minor when semi_minor > semi_major; None otherwise.
+    property FieldValidationError EepAxisError    { FieldValidationError get() { return ToManaged(presenter_->eep_axis_error());    } }
 
     property LocationOutput CurrentOutput { LocationOutput get() { return Snapshot(presenter_->output()); } }
 

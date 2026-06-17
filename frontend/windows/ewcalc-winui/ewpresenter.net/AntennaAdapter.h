@@ -33,6 +33,12 @@ public:
     property double DefaultTxPower     { double get() { return presenter_->tx_power_dbm();      } }
     property double DefaultFrequency   { double get() { return presenter_->frequency_mhz();     } }
 
+    property FieldValidationError GainError         { FieldValidationError get() { return ToManaged(presenter_->gain_error());          } }
+    property FieldValidationError AzBeamwidthError  { FieldValidationError get() { return ToManaged(presenter_->az_beamwidth_error());   } }
+    property FieldValidationError ElBeamwidthError  { FieldValidationError get() { return ToManaged(presenter_->el_beamwidth_error());   } }
+    property FieldValidationError TxPowerError      { FieldValidationError get() { return ToManaged(presenter_->tx_power_error());       } }
+    property FieldValidationError FrequencyError    { FieldValidationError get() { return ToManaged(presenter_->frequency_error());      } }
+
     property AntennaOutput CurrentOutput { AntennaOutput get() { return Snapshot(presenter_->output()); } }
 
     event AntennaChangedHandler^ Changed;

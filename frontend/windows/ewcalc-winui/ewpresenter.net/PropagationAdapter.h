@@ -39,10 +39,11 @@ public:
     property double DefaultRxHeight          { double get() { return presenter_->rx_height_m();          } }
     property double DefaultObstructionHeight { double get() { return presenter_->obstruction_height_m(); } }
 
-    property FieldValidationError DistanceError  { FieldValidationError get() { return ToManaged(presenter_->distance_error());   } }
-    property FieldValidationError FrequencyError { FieldValidationError get() { return ToManaged(presenter_->frequency_error());  } }
-    property FieldValidationError TxHeightError  { FieldValidationError get() { return ToManaged(presenter_->tx_height_error());  } }
-    property FieldValidationError RxHeightError  { FieldValidationError get() { return ToManaged(presenter_->rx_height_error());  } }
+    property FieldValidationError DistanceError          { FieldValidationError get() { return ToManaged(presenter_->distance_error());           } }
+    property FieldValidationError FrequencyError         { FieldValidationError get() { return ToManaged(presenter_->frequency_error());          } }
+    property FieldValidationError TxHeightError          { FieldValidationError get() { return ToManaged(presenter_->tx_height_error());          } }
+    property FieldValidationError RxHeightError          { FieldValidationError get() { return ToManaged(presenter_->rx_height_error());          } }
+    property FieldValidationError ObstructionHeightError { FieldValidationError get() { return ToManaged(presenter_->obstruction_height_error()); } }
 
     property PropagationOutput CurrentOutput {
         PropagationOutput get() { return Snapshot(presenter_->output()); }

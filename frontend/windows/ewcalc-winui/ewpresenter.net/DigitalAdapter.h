@@ -36,6 +36,13 @@ public:
     property double DefaultRequiredEbNo       { double get() { return presenter_->required_eb_no_db();        } }
     property double DefaultImplementationLoss { double get() { return presenter_->implementation_loss_db();   } }
 
+    property FieldValidationError SnrError                { FieldValidationError get() { return ToManaged(presenter_->snr_error());                 } }
+    property FieldValidationError BandwidthError          { FieldValidationError get() { return ToManaged(presenter_->bandwidth_error());            } }
+    property FieldValidationError DataRateError           { FieldValidationError get() { return ToManaged(presenter_->data_rate_error());            } }
+    property FieldValidationError ChipRateError           { FieldValidationError get() { return ToManaged(presenter_->chip_rate_error());            } }
+    property FieldValidationError RequiredEbNoError       { FieldValidationError get() { return ToManaged(presenter_->required_eb_no_error());       } }
+    property FieldValidationError ImplementationLossError { FieldValidationError get() { return ToManaged(presenter_->implementation_loss_error());  } }
+
     property DigitalOutput CurrentOutput { DigitalOutput get() { return Snapshot(presenter_->output()); } }
 
     event DigitalChangedHandler^ Changed;

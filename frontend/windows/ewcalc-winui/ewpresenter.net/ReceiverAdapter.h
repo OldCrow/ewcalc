@@ -64,6 +64,8 @@ public:
     property FieldValidationError RequiredSnrError   { FieldValidationError get() { return ToManaged(presenter_->required_snr_error());    } }
     property FieldValidationError SecondOrderIpError { FieldValidationError get() { return ToManaged(presenter_->second_order_ip_error()); } }
     property FieldValidationError ThirdOrderIpError  { FieldValidationError get() { return ToManaged(presenter_->third_order_ip_error());  } }
+    property FieldValidationError AdcBitsError        { FieldValidationError get() { return ToManaged(presenter_->adc_bits_error());        } }
+    property FieldValidationError StageNfError        { FieldValidationError get() { return ToManaged(presenter_->stage_nf_error());        } }
 
     property ReceiverOutput CurrentOutput { ReceiverOutput get() { return Snapshot(presenter_->output()); } }
 
