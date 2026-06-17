@@ -3,6 +3,7 @@
 #include "libew/receiver/receiver.h"
 #include "ewpresenter/validation.h"
 #include <algorithm>
+#include <iterator>
 
 namespace ewpresenter {
 
