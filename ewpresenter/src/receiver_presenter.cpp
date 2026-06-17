@@ -23,7 +23,7 @@ void ReceiverPresenter::set_required_snr(double db) noexcept {
 void ReceiverPresenter::set_stages(std::vector<StageInput> new_stages) noexcept {
     stages_ = std::move(new_stages);
     stage_nf_err_ = std::any_of(stages_.cbegin(), stages_.cend(),
-        [](const StageInput& s) { return s.noise_figure_db < 0.0; })
+        [](const StageInput& s) { return !(s.noise_figure_db >= 0.0); })  // catches NaN
         ? FieldError::invalid_negative : FieldError::none;
     recompute(); fire();
 }
@@ -31,7 +31,7 @@ bool ReceiverPresenter::try_set_stage(std::size_t index, StageInput stage) noexc
     if (index >= stages_.size()) return false;
     stages_[index] = stage;
     stage_nf_err_ = std::any_of(stages_.cbegin(), stages_.cend(),
-        [](const StageInput& s) { return s.noise_figure_db < 0.0; })
+        [](const StageInput& s) { return !(s.noise_figure_db >= 0.0); })  // catches NaN
         ? FieldError::invalid_negative : FieldError::none;
     recompute(); fire();
     return true;
@@ -97,8 +97,9 @@ void ReceiverPresenter::recompute() noexcept {
     // Digital DR
     output_.digital_dr = digital_dynamic_range(adc_bits_);
 
-    // System noise temperature and equivalent NF (both derived from system NF input)
-    output_.system_noise_temp = libew::receiver::noise_temp_from_nf(Db{noise_figure_db_});
+    // System noise temperature and equivalent NF derived from the cascaded Friis result,
+    // not the raw input NF (which would be a trivial identity round-trip).
+    output_.system_noise_temp = libew::receiver::noise_temp_from_nf(output_.cascaded_nf);
     output_.system_nf         = libew::receiver::nf_from_noise_temp(output_.system_noise_temp);
 
     output_.sensitivity_str       = format_dbm(output_.sensitivity);

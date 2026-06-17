@@ -13,6 +13,8 @@ public value struct LinkOutput {
     System::String^ EffectiveRangeStr;
     System::String^ RangeRegimeStr;
     System::String^ LinkMarginStr;
+    bool TwoRayRegime;
+    bool RangeTwoRayRegime;
     bool Valid;
 };
 
@@ -68,10 +70,12 @@ private:
         s.PathLossStr       = ToManaged(o.path_loss_str);
         s.FresnelZoneStr    = ToManaged(o.fresnel_zone_str);
         s.RegimeStr         = ToManaged(o.regime_str);
-        s.EffectiveRangeStr = ToManaged(o.effective_range_str);
-        s.RangeRegimeStr    = ToManaged(o.range_regime_str);
-        s.LinkMarginStr     = ToManaged(o.link_margin_str);
-        s.Valid             = o.valid;
+        s.EffectiveRangeStr  = ToManaged(o.effective_range_str);
+        s.RangeRegimeStr     = ToManaged(o.range_regime_str);
+        s.LinkMarginStr      = ToManaged(o.link_margin_str);
+        s.TwoRayRegime       = o.two_ray_regime;
+        s.RangeTwoRayRegime  = o.range_two_ray_regime;
+        s.Valid              = o.valid;
         return s;
     }
 };

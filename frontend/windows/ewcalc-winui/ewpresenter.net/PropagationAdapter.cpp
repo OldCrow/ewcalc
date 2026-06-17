@@ -45,6 +45,7 @@ PropagationAdapter::~PropagationAdapter() {
 }
 
 PropagationAdapter::!PropagationAdapter() {
+    if (presenter_) presenter_->set_on_change(nullptr);
     delete presenter_; presenter_ = nullptr;
     if (handle_.IsAllocated) handle_.Free();
 }

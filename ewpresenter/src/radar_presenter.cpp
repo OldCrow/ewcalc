@@ -58,6 +58,7 @@ void RadarPresenter::recompute() noexcept {
         output_.two_way_loss_str              = DASH;
         output_.pulse_compression_gain_str    = DASH;
         output_.coherent_integration_gain_str = DASH;
+        output_.lpi_advantage_str             = DASH;
         output_.target_rcs_str                = DASH;
         return;
     }

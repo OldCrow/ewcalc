@@ -33,11 +33,14 @@ void DigitalPresenter::recompute() noexcept {
                               bandwidth_err_ == FieldError::none &&
                               data_rate_err_ == FieldError::none);
 
-    // DSSS section: additionally requires chip rate, required Eb/N₀, and implementation loss.
+    // DSSS section: additionally requires chip rate >= data rate, required Eb/N₀, and
+    // implementation loss. chip_rate < data_rate gives a physically nonsensical negative
+    // process gain; treat the combination as invalid rather than displaying a bad result.
     const bool dsss_valid = eb_no_valid &&
                             chip_rate_err_      == FieldError::none &&
                             required_eb_no_err_ == FieldError::none &&
-                            impl_loss_err_      == FieldError::none;
+                            impl_loss_err_      == FieldError::none &&
+                            chip_rate_mhz_      >= data_rate_mhz_;
 
     output_.valid = eb_no_valid;
 

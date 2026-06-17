@@ -34,6 +34,6 @@ RadarAdapter::~RadarAdapter() {
     if (handle_.IsAllocated) handle_.Free();
     System::GC::SuppressFinalize(this);
 }
-RadarAdapter::!RadarAdapter() { delete presenter_; presenter_ = nullptr; if (handle_.IsAllocated) handle_.Free(); }
+RadarAdapter::!RadarAdapter() { if (presenter_) presenter_->set_on_change(nullptr); delete presenter_; presenter_ = nullptr; if (handle_.IsAllocated) handle_.Free(); }
 
 } // namespace EwPresenterNet

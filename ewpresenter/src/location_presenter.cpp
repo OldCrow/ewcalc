@@ -33,11 +33,18 @@ void LocationPresenter::recompute() noexcept {
     const bool tdoa_valid = (rms_time_err_  == FieldError::none &&
                              aoa_range_err_ == FieldError::none &&
                              baseline_err_  == FieldError::none);
+    // Cross-field: semi_minor must not exceed semi_major.
+    eep_axis_err_ = (semi_major_err_ == FieldError::none &&
+                     semi_minor_err_ == FieldError::none &&
+                     semi_major_km_  <  semi_minor_km_)
+                    ? FieldError::above_maximum : FieldError::none;
     const bool eep_valid  = (semi_major_err_ == FieldError::none &&
                              semi_minor_err_ == FieldError::none &&
-                             semi_major_km_ >= semi_minor_km_);
+                             eep_axis_err_   == FieldError::none);
 
-    output_.valid = aoa_valid && tdoa_valid && eep_valid;
+    // valid is true if any sub-section can produce output; each section independently
+    // dashes its own string when invalid, so callers should check per-section strings.
+    output_.valid = aoa_valid || tdoa_valid || eep_valid;
 
     using namespace libew::units;
 

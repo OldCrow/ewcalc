@@ -270,6 +270,8 @@ EwpFieldError ewp_location_rms_time_field_error(EwpLocationRef ref);
 EwpFieldError ewp_location_baseline_error(EwpLocationRef ref);
 EwpFieldError ewp_location_semi_major_error(EwpLocationRef ref);
 EwpFieldError ewp_location_semi_minor_error(EwpLocationRef ref);
+/// Set to EWP_FIELD_ABOVE_MAXIMUM when semi_minor > semi_major; EWP_FIELD_OK otherwise.
+EwpFieldError ewp_location_eep_axis_error(EwpLocationRef ref);
 EwpLocationOutput ewp_location_output(EwpLocationRef ref);
 
 // ============================================================================

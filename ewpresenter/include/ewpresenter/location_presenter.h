@@ -81,6 +81,8 @@ public:
     [[nodiscard]] FieldError baseline_error()     const noexcept { return baseline_err_; }
     [[nodiscard]] FieldError semi_major_error()   const noexcept { return semi_major_err_; }
     [[nodiscard]] FieldError semi_minor_error()   const noexcept { return semi_minor_err_; }
+    /// Set to above_maximum on semi_minor when semi_minor > semi_major; none otherwise.
+    [[nodiscard]] FieldError eep_axis_error()     const noexcept { return eep_axis_err_; }
 
     void set_on_change(std::function<void(const Output&)> cb) noexcept {
         on_change_ = std::move(cb);
@@ -100,6 +102,7 @@ private:
     FieldError baseline_err_    {FieldError::none};
     FieldError semi_major_err_  {FieldError::none};
     FieldError semi_minor_err_  {FieldError::none};
+    FieldError eep_axis_err_    {FieldError::none};
 
     Output output_;
     std::function<void(const Output&)> on_change_;

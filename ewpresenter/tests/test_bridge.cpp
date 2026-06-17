@@ -173,7 +173,9 @@ void test_location_defaults_valid() {
 void test_location_invalid_bearing_error() {
     EwpLocationRef ref = ewp_location_create();
     ewp_location_set_rms_bearing_error(ref, 0.0);   // must be > 0
-    ASSERT_FALSE(ewp_location_output(ref).valid);
+    // With OR validity: output.valid is true because TDOA and EEP sub-sections
+    // are still valid; only the AOA string is dashed.
+    ASSERT_TRUE(ewp_location_output(ref).valid);
     ASSERT_TRUE(ewp_location_rms_bearing_field_error(ref) == EWP_FIELD_INVALID_ZERO);
     ewp_location_set_rms_bearing_error(ref, 1.0);
     ASSERT_TRUE(ewp_location_output(ref).valid);

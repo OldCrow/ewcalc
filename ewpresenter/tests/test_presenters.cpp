@@ -185,6 +185,20 @@ void test_digital_validity_split_dsss_invalid() {
     ASSERT_FALSE(p.output().process_gain_str == "N/A");
 }
 
+void test_digital_chip_rate_below_data_rate() {
+    // chip_rate < data_rate is physically invalid (negative process gain);
+    // DSSS outputs must be N/A; Eb/N₀ section must remain valid.
+    ewpresenter::DigitalPresenter p;
+    p.set_chip_rate(0.05);   // less than default data_rate (0.1 Mbps)
+    ASSERT_TRUE(p.output().valid);                          // Eb/N₀ valid
+    ASSERT_TRUE(p.output().process_gain_str   == "N/A");
+    ASSERT_TRUE(p.output().jamming_margin_str == "N/A");
+    ASSERT_TRUE(p.output().required_js_str    == "N/A");
+    p.set_chip_rate(10.0);   // restore
+    ASSERT_TRUE(p.output().valid);
+    ASSERT_FALSE(p.output().process_gain_str == "N/A");
+}
+
 void test_digital_validity_split_snr_invalid() {
     // An invalid SNR must suppress all outputs including Eb/N₀.
     static constexpr const char* DASH = "\xe2\x80\x94";
@@ -264,6 +278,7 @@ int main() {
     RUN_TEST(test_digital_snr_roundtrip);
     RUN_TEST(test_digital_dsss_values);
     RUN_TEST(test_digital_validity_split_dsss_invalid);
+    RUN_TEST(test_digital_chip_rate_below_data_rate);
     RUN_TEST(test_digital_validity_split_snr_invalid);
 
     RUN_TEST(test_radar_default_valid);

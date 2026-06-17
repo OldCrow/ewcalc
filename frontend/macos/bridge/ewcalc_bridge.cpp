@@ -20,12 +20,20 @@
 namespace {
 
 // Copy a std::string into a fixed-size C char array, always null-terminating.
+// Debug: asserts no truncation occurs. Release: writes a visible sentinel so
+// truncation is always detectable in production UI output (test_formatter
+// is the primary guard — all formatter outputs must be < N bytes).
 template<std::size_t N>
 void copy_str(char (&dst)[N], const std::string& src) noexcept {
     assert(src.size() < N && "Formatter output exceeds bridge buffer — increase EWP_STR_MAX");
-    std::size_t n = std::min(src.size(), N - 1);
-    std::memcpy(dst, src.data(), n);
-    dst[n] = '\0';
+    if (src.size() < N) {
+        std::memcpy(dst, src.data(), src.size());
+        dst[src.size()] = '\0';
+    } else {
+        static constexpr char kTrunc[] = "~TRUNC~";
+        static_assert(sizeof(kTrunc) <= N, "EWP_STR_MAX is too small for truncation sentinel");
+        std::memcpy(dst, kTrunc, sizeof(kTrunc));  // includes null terminator
+    }
 }
 
 // ── Propagation ──────────────────────────────────────────────────────────────
@@ -287,6 +295,10 @@ void ewp_receiver_set_third_order_ip(EwpReceiverRef ref, double dbm) { cast<Rece
 void ewp_receiver_set_adc_bits(EwpReceiverRef ref, int bits)         { cast<ReceiverWrapper>(ref)->presenter.set_adc_bits(bits); }
 
 void ewp_receiver_set_stages(EwpReceiverRef ref, const EwpStageInput* stages, int count) {
+    if (count <= 0 || stages == nullptr) {
+        cast<ReceiverWrapper>(ref)->presenter.set_stages({});
+        return;
+    }
     std::vector<ewpresenter::ReceiverPresenter::StageInput> v;
     v.reserve(static_cast<std::size_t>(count));
     for (int i = 0; i < count; ++i)
@@ -309,8 +321,11 @@ int ewp_receiver_stage_count(EwpReceiverRef ref) {
     return static_cast<int>(cast<ReceiverWrapper>(ref)->presenter.stages().size());
 }
 EwpStageInput ewp_receiver_stage(EwpReceiverRef ref, int index) {
-    const auto& s = cast<ReceiverWrapper>(ref)->presenter.stages()[static_cast<std::size_t>(index)];
-    return {s.noise_figure_db, s.gain_db};
+    if (index < 0) return {};
+    const auto& stages = cast<ReceiverWrapper>(ref)->presenter.stages();
+    const auto  idx    = static_cast<std::size_t>(index);
+    if (idx >= stages.size()) return {};
+    return {stages[idx].noise_figure_db, stages[idx].gain_db};
 }
 EwpReceiverOutput ewp_receiver_output(EwpReceiverRef ref) { return to_c(cast<ReceiverWrapper>(ref)->presenter.output()); }
 
@@ -540,6 +555,7 @@ EwpFieldError ewp_location_rms_time_field_error(EwpLocationRef ref)    { return 
 EwpFieldError ewp_location_baseline_error(EwpLocationRef ref)          { return to_c(cast<LocationWrapper>(ref)->presenter.baseline_error()); }
 EwpFieldError ewp_location_semi_major_error(EwpLocationRef ref)        { return to_c(cast<LocationWrapper>(ref)->presenter.semi_major_error()); }
 EwpFieldError ewp_location_semi_minor_error(EwpLocationRef ref)        { return to_c(cast<LocationWrapper>(ref)->presenter.semi_minor_error()); }
+EwpFieldError ewp_location_eep_axis_error(EwpLocationRef ref)          { return to_c(cast<LocationWrapper>(ref)->presenter.eep_axis_error()); }
 // Radar
 EwpFieldError ewp_radar_tx_power_error(EwpRadarRef ref)      { return to_c(cast<RadarWrapper>(ref)->presenter.tx_power_error()); }
 EwpFieldError ewp_radar_antenna_gain_error(EwpRadarRef ref)  { return to_c(cast<RadarWrapper>(ref)->presenter.antenna_gain_error()); }

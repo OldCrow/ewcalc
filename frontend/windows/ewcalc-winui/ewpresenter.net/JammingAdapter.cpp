@@ -34,6 +34,6 @@ JammingAdapter::~JammingAdapter() {
     if (handle_.IsAllocated) handle_.Free();
     System::GC::SuppressFinalize(this);
 }
-JammingAdapter::!JammingAdapter() { delete presenter_; presenter_ = nullptr; if (handle_.IsAllocated) handle_.Free(); }
+JammingAdapter::!JammingAdapter() { if (presenter_) presenter_->set_on_change(nullptr); delete presenter_; presenter_ = nullptr; if (handle_.IsAllocated) handle_.Free(); }
 
 } // namespace EwPresenterNet

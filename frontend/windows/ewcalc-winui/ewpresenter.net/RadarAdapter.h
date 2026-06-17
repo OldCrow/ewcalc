@@ -45,6 +45,17 @@ public:
     property double DefaultTimeBandwidthProd { double get() { return presenter_->time_bandwidth_product(); } }
     property int    DefaultNumPulses         { int    get() { return presenter_->num_pulses();             } }
 
+    property FieldValidationError TxPowerError           { FieldValidationError get() { return ToManaged(presenter_->tx_power_error());               } }
+    property FieldValidationError AntennaGainError       { FieldValidationError get() { return ToManaged(presenter_->antenna_gain_error());           } }
+    property FieldValidationError TargetRcsError         { FieldValidationError get() { return ToManaged(presenter_->target_rcs_error());             } }
+    property FieldValidationError FrequencyError         { FieldValidationError get() { return ToManaged(presenter_->frequency_error());               } }
+    property FieldValidationError SystemLossesError      { FieldValidationError get() { return ToManaged(presenter_->system_losses_error());          } }
+    property FieldValidationError NoiseFigureError       { FieldValidationError get() { return ToManaged(presenter_->noise_figure_error());           } }
+    property FieldValidationError BandwidthError         { FieldValidationError get() { return ToManaged(presenter_->bandwidth_error());               } }
+    property FieldValidationError RequiredSnrError       { FieldValidationError get() { return ToManaged(presenter_->required_snr_error());           } }
+    property FieldValidationError TimeBandwidthProdError { FieldValidationError get() { return ToManaged(presenter_->time_bandwidth_product_error()); } }
+    property FieldValidationError NumPulsesError         { FieldValidationError get() { return ToManaged(presenter_->num_pulses_error());             } }
+
     property RadarOutput CurrentOutput { RadarOutput get() { return Snapshot(presenter_->output()); } }
 
     event RadarChangedHandler^ Changed;

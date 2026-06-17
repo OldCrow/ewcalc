@@ -34,6 +34,6 @@ AntennaAdapter::~AntennaAdapter() {
     if (handle_.IsAllocated) handle_.Free();
     System::GC::SuppressFinalize(this);
 }
-AntennaAdapter::!AntennaAdapter() { delete presenter_; presenter_ = nullptr; if (handle_.IsAllocated) handle_.Free(); }
+AntennaAdapter::!AntennaAdapter() { if (presenter_) presenter_->set_on_change(nullptr); delete presenter_; presenter_ = nullptr; if (handle_.IsAllocated) handle_.Free(); }
 
 } // namespace EwPresenterNet
