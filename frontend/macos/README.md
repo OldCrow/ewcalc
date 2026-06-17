@@ -105,10 +105,13 @@ Each Swift adapter class wraps the C bridge for one presenter. It:
 adding a new Swift file, add it to the `SWIFT_SOURCES` list in
 `frontend/macos/CMakeLists.txt`.
 
-## Current state (v0.6.4)
+## Current state (v0.6.5)
 
 Nine calculator pages: Propagation, Antenna, Link Budget, Receiver,
 Jamming, Location, Radar, Digital/DSSS, and Reference.
+
+No macOS bridge or Swift changes in v0.6.5 — all work was in the
+Windows C++/CLI adapter headers (see root README).
 
 Bridge fixes in v0.6.4: `ewp_receiver_stage()` bounds check (negative/OOB index UB); `ewp_receiver_set_stages()` null-pointer and negative-count guards; `copy_str` production truncation sentinel; `ewp_location_eep_axis_error()` accessor added.
 

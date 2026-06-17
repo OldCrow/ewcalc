@@ -88,10 +88,14 @@ Each item's `NoiseFigureDb` and `GainDb` setters call `PushStages()` which
 rebuilds the full `StageInput[]` and calls `ReceiverAdapter.SetStages()`.
 Add/Remove buttons are bound to `ICommand` properties.
 
-## Current state (v0.6.4)
+## Current state (v0.6.5)
 
 This frontend covers all nine calculator pages (Propagation, Antenna, Link Budget,
 Receiver, Jamming, Location, Radar, Digital/DSSS, Reference) at v0.6 parity with macOS.
+
+## Completed in v0.6.5
+
+All 8 C++/CLI adapter headers now expose a complete set of `FieldValidationError` properties. `AntennaAdapter` (5 fields), `DigitalAdapter` (6 fields), and `JammingAdapter` (13 fields) had zero; `LocationAdapter`, `ReceiverAdapter`, and `PropagationAdapter` were missing recently-added fields. All adapters now match `LinkAdapter` and `RadarAdapter` for per-field error exposure.
 
 ## Completed in v0.6.4
 
