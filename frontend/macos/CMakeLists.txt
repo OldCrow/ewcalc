@@ -116,7 +116,7 @@ set_target_properties(ewcalc PROPERTIES
     MACOSX_BUNDLE_ICON_FILE          "AppIcon.icns"
     MACOSX_BUNDLE_BUNDLE_IDENTIFIER  "com.oldcrow.ewcalc"
     MACOSX_BUNDLE_BUNDLE_NAME        "EW Calculator"
-    MACOSX_BUNDLE_SHORT_VERSION_STRING "0.6.5"
+    MACOSX_BUNDLE_SHORT_VERSION_STRING "0.6.6"
     MACOSX_BUNDLE_BUNDLE_VERSION     "1"
 
     # Xcode build settings (only effective with -G Xcode)

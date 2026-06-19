@@ -78,6 +78,8 @@ and `xcrun notarytool` credentials stored under the `ewcalc-notarytool` profile.
 
 ## Current status
 
+**v0.6.6** — Architectural audit fixes: SFDR2 coefficient corrected to 1/2; presenter validators reject non-finite values; Receiver stage gain validation; public API invalid-input sentinels; full 2-ray burnthrough inversion; `Dbsm - Dbsm -> Db`; formatter dash sentinel consolidation; macOS receiver stage-state fix; Windows obstruction-height error binding and stage reindexing.
+
 **v0.6.5** — Complete `FieldValidationError` coverage across all 8 Windows C++/CLI adapters (Antenna, Digital, Jamming were 0/N; Location, Receiver, Propagation were partial); `partial_band_jamming` domain guard assert.
 
 **v0.6.4** — Bug fixes from follow-on review: finalizer use-after-free in all 8 C++/CLI adapters; `ewp_receiver_stage()`/`ewp_receiver_set_stages()` UB and null-pointer guards; `copy_str` production truncation sentinel; `lpi_advantage_str` missing DASH; `chip_rate < data_rate` DSSS guard; `LocationPresenter` EEP axis error field + independent sub-section validity; `ReceiverPresenter` `system_nf` now derives from cascaded NF; NaN stage NF fix; `RadarAdapter` FieldError properties; `LinkOutput` two-ray-regime booleans; `CallbackBridge.h` dead code removed.

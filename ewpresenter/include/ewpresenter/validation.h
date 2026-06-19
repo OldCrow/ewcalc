@@ -7,11 +7,19 @@
 /// before passing them to libew. No exceptions are thrown; all errors are
 /// expressed as FieldError values.
 
-#include <cmath>
 #include <cstdint>
+#include <limits>
 #include <string_view>
 
 namespace ewpresenter {
+
+/// constexpr-friendly finite check for C++20/MSVC, where std::isfinite is not
+/// constexpr. NaN is the only floating-point value that does not equal itself.
+[[nodiscard]] constexpr bool is_finite(double value) noexcept {
+    return value == value
+        && value != std::numeric_limits<double>::infinity()
+        && value != -std::numeric_limits<double>::infinity();
+}
 
 /// Reason an input field failed validation.
 enum class FieldError : uint8_t {
@@ -42,7 +50,7 @@ enum class FieldError : uint8_t {
 [[nodiscard]] constexpr FieldError validate_bounds(
     double value, double min_val, double max_val) noexcept
 {
-    if (!std::isfinite(value)) return FieldError::not_finite;
+    if (!is_finite(value)) return FieldError::not_finite;
     if (value < min_val) return FieldError::below_minimum;
     if (value > max_val) return FieldError::above_maximum;
     return FieldError::none;
@@ -50,14 +58,14 @@ enum class FieldError : uint8_t {
 
 /// Validate that a value is strictly positive.
 [[nodiscard]] constexpr FieldError validate_positive(double value) noexcept {
-    if (!std::isfinite(value)) return FieldError::not_finite;
+    if (!is_finite(value)) return FieldError::not_finite;
     if (value <= 0.0) return FieldError::invalid_zero;
     return FieldError::none;
 }
 
 /// Validate that a value is non-negative.
 [[nodiscard]] constexpr FieldError validate_non_negative(double value) noexcept {
-    if (!std::isfinite(value)) return FieldError::not_finite;
+    if (!is_finite(value)) return FieldError::not_finite;
     if (value < 0.0) return FieldError::invalid_negative;
     return FieldError::none;
 }
@@ -66,7 +74,7 @@ enum class FieldError : uint8_t {
 [[nodiscard]] constexpr FieldError validate_positive_bounded(
     double value, double min_val, double max_val) noexcept
 {
-    if (!std::isfinite(value)) return FieldError::not_finite;
+    if (!is_finite(value)) return FieldError::not_finite;
     if (value <= 0.0) return FieldError::invalid_zero;
     return validate_bounds(value, min_val, max_val);
 }

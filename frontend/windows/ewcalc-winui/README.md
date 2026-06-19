@@ -46,7 +46,7 @@ ewcalc-winui.sln
 
 **Step 1 — Build the native libraries with CMake** (from the repo root):
 ```
-cmake -B build -DEWCALC_BUILD_GUI=OFF
+cmake -B build -DEWCALC_BUILD_FRONTEND=OFF
 cmake --build build --config Release
 ```
 This produces `build\lib\Release\libew.lib` and `build\lib\Release\ewpresenter.lib`.
@@ -88,10 +88,16 @@ Each item's `NoiseFigureDb` and `GainDb` setters call `PushStages()` which
 rebuilds the full `StageInput[]` and calls `ReceiverAdapter.SetStages()`.
 Add/Remove buttons are bound to `ICommand` properties.
 
-## Current state (v0.6.5)
+## Current state (v0.6.6)
 
 This frontend covers all nine calculator pages (Propagation, Antenna, Link Budget,
 Receiver, Jamming, Location, Radar, Digital/DSSS, Reference) at v0.6 parity with macOS.
+
+## Completed in v0.6.6
+
+Propagation now binds `ObstructionHeightError` to the obstruction-height `NumberBox`.
+Receiver stage labels now reindex after removal. `FieldValidationError.NotFinite`
+was added for non-finite presenter inputs.
 
 ## Completed in v0.6.5
 

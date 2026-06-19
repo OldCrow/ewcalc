@@ -59,7 +59,7 @@ if (-not (Test-Path $BuildDir)) {
 
 Push-Location $RepoRoot
 try {
-    cmake -B build -DEWCALC_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=$Config
+    cmake -B build -DEWCALC_BUILD_TESTS=OFF
     if ($LASTEXITCODE -ne 0) { throw "CMake configure failed (exit $LASTEXITCODE)" }
 
     cmake --build build --config $Config --parallel
