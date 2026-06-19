@@ -7,8 +7,6 @@
 
 namespace ewpresenter {
 
-static constexpr const char* DASH = "\xe2\x80\x94";
-
 ReceiverPresenter::ReceiverPresenter() noexcept { recompute(); }
 
 void ReceiverPresenter::set_bandwidth(double mhz) noexcept {
@@ -20,18 +18,22 @@ void ReceiverPresenter::set_noise_figure(double db) noexcept {
 void ReceiverPresenter::set_required_snr(double db) noexcept {
     update_field(db, required_snr_db_, required_snr_err_, validate_bounds(db, -20.0, 50.0));
 }
+// Returns true if a stage has an invalid NF or non-finite gain.
+static bool stage_invalid(const ReceiverPresenter::StageInput& s) noexcept {
+    return !(s.noise_figure_db >= 0.0)   // catches NaN and negative NF
+        || !std::isfinite(s.gain_db);    // gain may be negative (loss), but must be finite
+}
+
 void ReceiverPresenter::set_stages(std::vector<StageInput> new_stages) noexcept {
     stages_ = std::move(new_stages);
-    stage_nf_err_ = std::any_of(stages_.cbegin(), stages_.cend(),
-        [](const StageInput& s) { return !(s.noise_figure_db >= 0.0); })  // catches NaN
+    stage_nf_err_ = std::any_of(stages_.cbegin(), stages_.cend(), stage_invalid)
         ? FieldError::invalid_negative : FieldError::none;
     recompute(); fire();
 }
 bool ReceiverPresenter::try_set_stage(std::size_t index, StageInput stage) noexcept {
     if (index >= stages_.size()) return false;
     stages_[index] = stage;
-    stage_nf_err_ = std::any_of(stages_.cbegin(), stages_.cend(),
-        [](const StageInput& s) { return !(s.noise_figure_db >= 0.0); })  // catches NaN
+    stage_nf_err_ = std::any_of(stages_.cbegin(), stages_.cend(), stage_invalid)
         ? FieldError::invalid_negative : FieldError::none;
     recompute(); fire();
     return true;
@@ -61,13 +63,13 @@ void ReceiverPresenter::recompute() noexcept {
                      stage_nf_err_        == FieldError::none);
 
     if (!output_.valid) {
-        output_.sensitivity_str       = DASH;
-        output_.cascaded_nf_str       = DASH;
-        output_.sfdr2_str             = DASH;
-        output_.sfdr3_str             = DASH;
-        output_.digital_dr_str        = DASH;
-        output_.system_noise_temp_str = DASH;
-        output_.system_nf_str          = DASH;
+        output_.sensitivity_str       = kDash;
+        output_.cascaded_nf_str       = kDash;
+        output_.sfdr2_str             = kDash;
+        output_.sfdr3_str             = kDash;
+        output_.digital_dr_str        = kDash;
+        output_.system_noise_temp_str = kDash;
+        output_.system_nf_str         = kDash;
         return;
     }
 

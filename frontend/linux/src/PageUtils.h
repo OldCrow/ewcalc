@@ -13,6 +13,9 @@
 
 /// Creates a QDoubleSpinBox without adding it to a layout.
 /// Used for spinboxes that live inside custom layouts (e.g. stage rows).
+/// Ownership: the caller must either pass a non-null parent to take immediate
+/// ownership, or add the returned spinbox to a layout (which re-parents it)
+/// before any exception can be thrown — otherwise the widget will leak.
 inline QDoubleSpinBox* makeSpinBox(
     double minVal, double maxVal, double initVal,
     double step = 1.0, int decimals = 3,

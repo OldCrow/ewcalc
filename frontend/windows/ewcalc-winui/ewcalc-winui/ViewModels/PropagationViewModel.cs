@@ -28,15 +28,17 @@ public sealed class PropagationViewModel : INotifyPropertyChanged
     public string DiffractionLoss { get => _diffractionLoss; private set => Set(ref _diffractionLoss, value); }
     public bool   IsValid         { get => _isValid;         private set => Set(ref _isValid,         value); }
 
-    private FieldValidationError _distanceError  = FieldValidationError.None;
-    private FieldValidationError _frequencyError = FieldValidationError.None;
-    private FieldValidationError _txHeightError  = FieldValidationError.None;
-    private FieldValidationError _rxHeightError  = FieldValidationError.None;
+    private FieldValidationError _distanceError          = FieldValidationError.None;
+    private FieldValidationError _frequencyError         = FieldValidationError.None;
+    private FieldValidationError _txHeightError          = FieldValidationError.None;
+    private FieldValidationError _rxHeightError          = FieldValidationError.None;
+    private FieldValidationError _obstructionHeightError = FieldValidationError.None;
 
-    public FieldValidationError DistanceError  { get => _distanceError;  private set => Set(ref _distanceError,  value); }
-    public FieldValidationError FrequencyError { get => _frequencyError; private set => Set(ref _frequencyError, value); }
-    public FieldValidationError TxHeightError  { get => _txHeightError;  private set => Set(ref _txHeightError,  value); }
-    public FieldValidationError RxHeightError  { get => _rxHeightError;  private set => Set(ref _rxHeightError,  value); }
+    public FieldValidationError DistanceError          { get => _distanceError;          private set => Set(ref _distanceError,          value); }
+    public FieldValidationError FrequencyError         { get => _frequencyError;         private set => Set(ref _frequencyError,         value); }
+    public FieldValidationError TxHeightError          { get => _txHeightError;          private set => Set(ref _txHeightError,          value); }
+    public FieldValidationError RxHeightError          { get => _rxHeightError;          private set => Set(ref _rxHeightError,          value); }
+    public FieldValidationError ObstructionHeightError { get => _obstructionHeightError; private set => Set(ref _obstructionHeightError, value); }
 
     public double DefaultDistance          => _adapter.DefaultDistance;
     public double DefaultFrequency         => _adapter.DefaultFrequency;
@@ -66,6 +68,7 @@ public sealed class PropagationViewModel : INotifyPropertyChanged
         IsValid = o.Valid;
         DistanceError = _adapter.DistanceError; FrequencyError = _adapter.FrequencyError;
         TxHeightError = _adapter.TxHeightError; RxHeightError = _adapter.RxHeightError;
+        ObstructionHeightError = _adapter.ObstructionHeightError;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

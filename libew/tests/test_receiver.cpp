@@ -118,8 +118,10 @@ void test_digital_dr_each_bit_adds_6db() {
 }
 
 // ---------------------------------------------------------------------------
-// SFDR: SFDR = (2/3) * (IP - sensitivity)
-// Source: Adamy EW101; standard intermodulation analysis result.
+// SFDR
+// 2nd order: SFDR2 = (1/2) * (IIP2 - S)   — IM2 grows at 2:1 slope
+// 3rd order: SFDR3 = (2/3) * (IIP3 - S)   — IM3 grows at 3:1 slope
+// Source: Razavi RF Microelectronics; Pozar Microwave Engineering.
 // ---------------------------------------------------------------------------
 
 void test_sfdr_third_order_derivation() {
@@ -130,15 +132,22 @@ void test_sfdr_third_order_derivation() {
 
 void test_sfdr_second_order_derivation() {
     // sensitivity = -100 dBm, IP2 = 50 dBm
-    // SFDR2 = (2/3) * (50 - (-100)) = (2/3) * 150 = 100 dB
-    ASSERT_NEAR(analog_sfdr_second_order(Dbm{-100.0}, Dbm{50.0}).value, 100.0, 0.001);
+    // SFDR2 = (1/2) * (50 - (-100)) = (1/2) * 150 = 75 dB
+    ASSERT_NEAR(analog_sfdr_second_order(Dbm{-100.0}, Dbm{50.0}).value, 75.0, 0.001);
 }
 
-void test_sfdr_linearity() {
+void test_sfdr_linearity_third_order() {
     // Each dB increase in IP3 adds 2/3 dB to SFDR3
     const Db sfdr1 = analog_sfdr_third_order(Dbm{-100.0}, Dbm{10.0});
     const Db sfdr2 = analog_sfdr_third_order(Dbm{-100.0}, Dbm{11.0});
     ASSERT_NEAR(sfdr2.value - sfdr1.value, 2.0/3.0, 0.001);
+}
+
+void test_sfdr_linearity_second_order() {
+    // Each dB increase in IP2 adds 1/2 dB to SFDR2
+    const Db sfdr1 = analog_sfdr_second_order(Dbm{-100.0}, Dbm{10.0});
+    const Db sfdr2 = analog_sfdr_second_order(Dbm{-100.0}, Dbm{11.0});
+    ASSERT_NEAR(sfdr2.value - sfdr1.value, 0.5, 0.001);
 }
 
 // ---------------------------------------------------------------------------
@@ -210,7 +219,8 @@ int main() {
     RUN_TEST(test_digital_dr_each_bit_adds_6db);
     RUN_TEST(test_sfdr_third_order_derivation);
     RUN_TEST(test_sfdr_second_order_derivation);
-    RUN_TEST(test_sfdr_linearity);
+    RUN_TEST(test_sfdr_linearity_third_order);
+    RUN_TEST(test_sfdr_linearity_second_order);
     RUN_TEST(test_nf_from_noise_temp_at_t_ref);
     RUN_TEST(test_nf_from_noise_temp_zero);
     RUN_TEST(test_noise_temp_from_nf_roundtrip);

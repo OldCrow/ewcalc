@@ -1,8 +1,9 @@
 #include "libew/jamming/jamming.h"
 #include "libew/propagation/propagation.h"
 #include "libew/core/constants.h"
-#include <cassert>
+#include "libew/core/units.h"
 #include <cmath>
+#include <limits>
 #include <algorithm>
 
 namespace libew::jamming {
@@ -35,12 +36,13 @@ Km burnthrough_range(
     Dbm    signal_erp,
     Dbm    jammer_erp,
     Km     jammer_to_rx_dist,
+    Meters signal_tx_height,
     Meters jammer_height,
     Meters rx_height,
     Mhz    frequency,
     Db     js_threshold) noexcept
 {
-    // Jammer power at receiver (fixed geometry)
+    // Jammer power at receiver (fixed geometry, selects LOS or 2-ray automatically)
     const Db  j_loss = propagation::path_loss(jammer_to_rx_dist, jammer_height, rx_height, frequency);
     const Dbm j_rx   = jammer_erp - j_loss;
 
@@ -48,14 +50,30 @@ Km burnthrough_range(
     // j_rx - s_rx = js_threshold  =>  s_rx = j_rx - js_threshold
     const Dbm s_rx_needed = j_rx - js_threshold;
 
-    // Required margin from signal ERP over path loss
+    // Required link margin: ERP minus the needed received power
     const double margin_db = (signal_erp - s_rx_needed).value;
 
-    // Solve for range assuming LOS initially
-    // margin = 32.44 + 20*log10(d) + 20*log10(f)  =>  d = 10^((margin - 32.44 - 20*log10(f)) / 20)
-    const double los_exp = (margin_db - constants::fspl_constant_km_mhz
-                            - 20.0 * std::log10(frequency.value)) / 20.0;
-    return Km{std::pow(10.0, los_exp)};
+    // LOS analytical inversion:
+    // margin = 32.44 + 20*log10(d) + 20*log10(f)
+    // => d_los = 10^((margin - 32.44 - 20*log10(f)) / 20)
+    const double los_exp  = (margin_db - constants::fspl_constant_km_mhz
+                             - 20.0 * std::log10(frequency.value)) / 20.0;
+    const Km los_range{std::pow(10.0, los_exp)};
+
+    // Fresnel zone crossover for the signal path
+    const Km fz = propagation::fresnel_zone_distance(signal_tx_height, rx_height, frequency);
+
+    if (los_range.value <= fz.value) {
+        return los_range;  // LOS regime applies
+    }
+
+    // 2-ray analytical inversion (signal path beyond Fresnel zone crossover):
+    // margin = 120 + 40*log10(d) - 20*log10(h_tx) - 20*log10(h_rx)
+    // => d_2ray = 10^((margin - 120 + 20*log10(h_tx) + 20*log10(h_rx)) / 40)
+    const double two_ray_exp = (margin_db - constants::two_ray_constant_km
+                                + 20.0 * std::log10(signal_tx_height.value)
+                                + 20.0 * std::log10(rx_height.value)) / 40.0;
+    return Km{std::pow(10.0, two_ray_exp)};
 }
 
 PartialBandResult partial_band_jamming(
@@ -63,8 +81,9 @@ PartialBandResult partial_band_jamming(
     Mhz hop_range_bandwidth,
     Db  single_channel_js) noexcept
 {
-    // Presenter ensures hop_range > 0 before calling; assert catches direct callers.
-    assert(hop_range_bandwidth.value > 0.0 && "hop_range_bandwidth must be positive");
+    // Reject non-positive hop range unconditionally so release builds don't divide by zero.
+    if (hop_range_bandwidth.value <= 0.0)
+        return {Mhz{0.0}, 0.0};
     // If single-channel J/S >= 0 dB, jam full hop range for maximum coverage
     if (single_channel_js.value >= 0.0) {
         const double duty = std::min(

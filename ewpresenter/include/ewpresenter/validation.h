@@ -7,6 +7,7 @@
 /// before passing them to libew. No exceptions are thrown; all errors are
 /// expressed as FieldError values.
 
+#include <cmath>
 #include <cstdint>
 #include <string_view>
 
@@ -18,7 +19,8 @@ enum class FieldError : uint8_t {
     below_minimum,  ///< Value is less than the physical minimum for this field
     above_maximum,  ///< Value exceeds the physical maximum for this field
     invalid_zero,   ///< Value is zero where it must be strictly positive
-    invalid_negative ///< Value is negative where it must be non-negative
+    invalid_negative, ///< Value is negative where it must be non-negative
+    not_finite      ///< Value is NaN or infinite
 };
 
 /// Returns a short human-readable label for a FieldError.
@@ -29,6 +31,7 @@ enum class FieldError : uint8_t {
         case FieldError::above_maximum:    return "above maximum";
     case FieldError::invalid_zero:     return "must be positive";
         case FieldError::invalid_negative: return "must not be negative";
+        case FieldError::not_finite:        return "not a finite number";
     }
     return "unknown";
 }
@@ -39,6 +42,7 @@ enum class FieldError : uint8_t {
 [[nodiscard]] constexpr FieldError validate_bounds(
     double value, double min_val, double max_val) noexcept
 {
+    if (!std::isfinite(value)) return FieldError::not_finite;
     if (value < min_val) return FieldError::below_minimum;
     if (value > max_val) return FieldError::above_maximum;
     return FieldError::none;
@@ -46,12 +50,14 @@ enum class FieldError : uint8_t {
 
 /// Validate that a value is strictly positive.
 [[nodiscard]] constexpr FieldError validate_positive(double value) noexcept {
+    if (!std::isfinite(value)) return FieldError::not_finite;
     if (value <= 0.0) return FieldError::invalid_zero;
     return FieldError::none;
 }
 
 /// Validate that a value is non-negative.
 [[nodiscard]] constexpr FieldError validate_non_negative(double value) noexcept {
+    if (!std::isfinite(value)) return FieldError::not_finite;
     if (value < 0.0) return FieldError::invalid_negative;
     return FieldError::none;
 }
@@ -60,6 +66,7 @@ enum class FieldError : uint8_t {
 [[nodiscard]] constexpr FieldError validate_positive_bounded(
     double value, double min_val, double max_val) noexcept
 {
+    if (!std::isfinite(value)) return FieldError::not_finite;
     if (value <= 0.0) return FieldError::invalid_zero;
     return validate_bounds(value, min_val, max_val);
 }

@@ -4,8 +4,6 @@
 
 namespace ewpresenter {
 
-static constexpr const char* DASH = "\xe2\x80\x94";
-
 AntennaPresenter::AntennaPresenter() noexcept { recompute(); }
 
 void AntennaPresenter::set_gain(double dbi) noexcept {
@@ -32,10 +30,10 @@ void AntennaPresenter::recompute() noexcept {
                      frequency_err_ == FieldError::none);
 
     if (!output_.valid) {
-        output_.erp_str                 = DASH;
-        output_.beamwidth_from_gain_str = DASH;
-        output_.gain_from_beamwidth_str = DASH;
-        output_.wavelength_str          = DASH;
+        output_.erp_str                 = kDash;
+        output_.beamwidth_from_gain_str = kDash;
+        output_.gain_from_beamwidth_str = kDash;
+        output_.wavelength_str          = kDash;
         return;
     }
 

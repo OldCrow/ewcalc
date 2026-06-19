@@ -4,8 +4,6 @@
 
 namespace ewpresenter {
 
-static constexpr const char* DASH = "\xe2\x80\x94";
-
 RadarPresenter::RadarPresenter() noexcept { recompute(); }
 
 void RadarPresenter::set_tx_power(double dbm) noexcept {
@@ -54,12 +52,12 @@ void RadarPresenter::recompute() noexcept {
                      num_pulses_err_   == FieldError::none);
 
     if (!output_.valid) {
-        output_.max_range_str                 = DASH;
-        output_.two_way_loss_str              = DASH;
-        output_.pulse_compression_gain_str    = DASH;
-        output_.coherent_integration_gain_str = DASH;
-        output_.lpi_advantage_str             = DASH;
-        output_.target_rcs_str                = DASH;
+        output_.max_range_str                 = kDash;
+        output_.two_way_loss_str              = kDash;
+        output_.pulse_compression_gain_str    = kDash;
+        output_.coherent_integration_gain_str = kDash;
+        output_.lpi_advantage_str             = kDash;
+        output_.target_rcs_str                = kDash;
         return;
     }
 

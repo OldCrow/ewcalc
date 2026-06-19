@@ -118,6 +118,22 @@ void test_effective_range_two_ray_regime() {
     ASSERT_TRUE(r.range.value > 0.0);
 }
 
+void test_effective_range_zero_frequency_returns_nan() {
+    // Zero frequency must return NaN, not +inf or crash.
+    const auto r = effective_range(
+        20.0_dBm, 0.0_dB, 0.0_dB,
+        10.0_m, 10.0_m, Mhz{0.0}, Dbm{-100.0});
+    ASSERT_TRUE(std::isnan(r.range.value));
+}
+
+void test_effective_range_zero_height_returns_nan() {
+    // Zero antenna height must return NaN, not trigger UB or +inf.
+    const auto r = effective_range(
+        20.0_dBm, 0.0_dB, 0.0_dB,
+        Meters{0.0}, 10.0_m, 100.0_MHz, Dbm{-100.0});
+    ASSERT_TRUE(std::isnan(r.range.value));
+}
+
 int main() {
     std::cout << "=== test_link ===\n";
     RUN_TEST(test_one_way_link_los_power);
@@ -128,5 +144,7 @@ int main() {
     RUN_TEST(test_effective_range_sanity);
     RUN_TEST(test_effective_range_los_inversion);
     RUN_TEST(test_effective_range_two_ray_regime);
+    RUN_TEST(test_effective_range_zero_frequency_returns_nan);
+    RUN_TEST(test_effective_range_zero_height_returns_nan);
     return test::summary();
 }

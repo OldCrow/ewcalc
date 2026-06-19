@@ -58,7 +58,10 @@ struct ReceiverView: View {
             }
             Section("Noise Chain Stages") {
                 ForEach(stages.indices, id: \.self) { i in
-                    StageRow(index: i, stage: stages[i]) { updated in
+                    // Pass a Binding into the parent stages array so StageRow
+                    // never holds local @State copies — removes stale-value bug
+                    // after stage removal (SW-1).
+                    StageRow(index: i, stage: $stages[i]) { updated in
                         stages[i] = updated
                         adapter.setStages(stages)
                     } onRemove: {
@@ -83,7 +86,7 @@ struct ReceiverView: View {
                 ResultRow("Sys. NF equiv.",    cStr(adapter.output.system_nf_str),
                           help: "System NF re-derived from system noise temperature — confirms the round-trip conversion")
                 ResultRow("SFDR (2nd order)", cStr(adapter.output.sfdr2_str),
-                          help: "2nd-order spurious-free dynamic range: ⅔ × (IIP2 − sensitivity)")
+                          help: "2nd-order spurious-free dynamic range: ½ × (IIP2 − sensitivity)")
                 ResultRow("SFDR (3rd order)", cStr(adapter.output.sfdr3_str),
                           help: "3rd-order spurious-free dynamic range: ⅔ × (IIP3 − sensitivity) — usually the binding constraint")
                 ResultRow("Digital DR",       cStr(adapter.output.digital_dr_str),
@@ -97,26 +100,14 @@ struct ReceiverView: View {
 
 // ── Stage row ─────────────────────────────────────────────────────────────────
 
+// SW-1 fix: StageRow receives a Binding into the parent stages array rather than
+// local @State copies, so it always reflects the parent's truth and cannot hold
+// stale values after a stage is removed.
 private struct StageRow: View {
     let index:    Int
-    let stage:    EwpStageInput
+    @Binding var stage: EwpStageInput
     let onChange: (EwpStageInput) -> Void
     let onRemove: () -> Void
-
-    @State private var nf:   Double
-    @State private var gain: Double
-
-    init(index: Int, stage: EwpStageInput,
-         onChange: @escaping (EwpStageInput) -> Void,
-         onRemove: @escaping () -> Void)
-    {
-        self.index    = index
-        self.stage    = stage
-        self.onChange = onChange
-        self.onRemove = onRemove
-        _nf   = State(initialValue: stage.noise_figure_db)
-        _gain = State(initialValue: stage.gain_db)
-    }
 
     var body: some View {
         HStack(spacing: 6) {
@@ -126,11 +117,11 @@ private struct StageRow: View {
                     .frame(width: 26, alignment: .leading)
                     .foregroundStyle(.secondary)
                 Text("NF").foregroundStyle(.secondary)
-                TextField("", value: $nf, format: .number.precision(.fractionLength(1)))
+                TextField("", value: $stage.noise_figure_db, format: .number.precision(.fractionLength(1)))
                     .multilineTextAlignment(.trailing)
                     .textFieldStyle(.roundedBorder)
                     .frame(width: 68)
-                Stepper("", value: $nf, in: -10...50, step: 0.5).labelsHidden()
+                Stepper("", value: $stage.noise_figure_db, in: -10...50, step: 0.5).labelsHidden()
                 Text("dB").foregroundStyle(.secondary).frame(width: 22)
             }
 
@@ -140,11 +131,11 @@ private struct StageRow: View {
             // cannot affect the width of the G TextField.
             HStack(spacing: 4) {
                 Text("G").foregroundStyle(.secondary)
-                TextField("", value: $gain, format: .number.precision(.fractionLength(1)))
+                TextField("", value: $stage.gain_db, format: .number.precision(.fractionLength(1)))
                     .multilineTextAlignment(.trailing)
                     .textFieldStyle(.roundedBorder)
                     .frame(width: 68)
-                Stepper("", value: $gain, in: -60...60, step: 0.5).labelsHidden()
+                Stepper("", value: $stage.gain_db, in: -60...60, step: 0.5).labelsHidden()
                 Text("dB").foregroundStyle(.secondary).frame(width: 22)
                 Button(action: onRemove) {
                     Image(systemName: "minus.circle")
@@ -153,7 +144,7 @@ private struct StageRow: View {
                 .foregroundStyle(.red)
             }
         }
-        .onChange(of: nf)   { onChange(EwpStageInput(noise_figure_db: $0, gain_db: gain)) }
-        .onChange(of: gain)  { onChange(EwpStageInput(noise_figure_db: nf, gain_db: $0)) }
+        .onChange(of: stage.noise_figure_db) { _ in onChange(stage) }
+        .onChange(of: stage.gain_db)          { _ in onChange(stage) }
     }
 }

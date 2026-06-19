@@ -13,6 +13,10 @@ final class LinkAdapter: ObservableObject {
     init() {
         ref    = ewp_link_create()
         output = ewp_link_output(ref)
+        // passUnretained: safe only because all adapters are `let` properties of
+        // EwCalcStore (@StateObject owned by ewcalcApp) and live until process exit.
+        // Do not move adapters to shorter-lived objects without switching to
+        // passRetained/takeRetainedValue + clearing the callback in deinit.
         ewp_link_set_callback(ref, Self._cb, Unmanaged.passUnretained(self).toOpaque())
     }
 

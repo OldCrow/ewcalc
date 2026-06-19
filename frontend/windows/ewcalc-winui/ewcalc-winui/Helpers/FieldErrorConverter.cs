@@ -36,6 +36,7 @@ public sealed class FieldErrorToTooltipConverter : IValueConverter
                 FieldValidationError.AboveMaximum    => "Value exceeds the maximum",
                 FieldValidationError.InvalidZero     => "Value must be positive",
                 FieldValidationError.InvalidNegative => "Value must not be negative",
+                FieldValidationError.NotFinite        => "Value must be a finite number",
                 _                                    => string.Empty,
             };
         }

@@ -4,8 +4,6 @@
 
 namespace ewpresenter {
 
-static constexpr const char* DASH = "\xe2\x80\x94";
-
 LinkPresenter::LinkPresenter() noexcept { recompute(); }
 
 void LinkPresenter::set_tx_power(double dbm) noexcept {
@@ -44,13 +42,13 @@ void LinkPresenter::recompute() noexcept {
                      rx_sensitivity_err_ == FieldError::none);
 
     if (!output_.valid) {
-        output_.received_power_str = DASH;
-        output_.path_loss_str      = DASH;
-        output_.fresnel_zone_str   = DASH;
-        output_.regime_str         = DASH;
-        output_.effective_range_str= DASH;
-        output_.range_regime_str   = DASH;
-        output_.link_margin_str    = DASH;
+        output_.received_power_str = kDash;
+        output_.path_loss_str      = kDash;
+        output_.fresnel_zone_str   = kDash;
+        output_.regime_str         = kDash;
+        output_.effective_range_str= kDash;
+        output_.range_regime_str   = kDash;
+        output_.link_margin_str    = kDash;
         return;
     }
 

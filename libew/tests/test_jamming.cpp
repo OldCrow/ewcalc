@@ -65,11 +65,89 @@ void test_js_ratio_self_screen() {
     ASSERT_NEAR(r.js_ratio.value, 0.0, 0.1);
 }
 
+// ---------------------------------------------------------------------------
+// burnthrough_range
+//
+// At the returned burnthrough range, a call to comms_jamming_js with
+// the same geometry must give J/S == js_threshold.
+// ---------------------------------------------------------------------------
+
+void test_burnthrough_range_los_regime() {
+    // Parameters chosen so the LOS burnthrough distance is below the Fresnel
+    // zone crossover for the signal path.
+    //
+    // Signal: ERP=30 dBm, h_tx=100 m, freq=100 MHz
+    // Jammer: ERP=50 dBm, dist=50 km, h_j=1000 m, h_rx=1.5 m
+    // FZ_signal = 100*1.5*100/24000 = 0.625 km
+    // LOS burnthrough ≈ 35.6 km  — wait, 35.6 > 0.625, so this lands in 2-ray.
+    // Use h_tx=100 m, h_rx=100 m, freq=100 MHz → FZ = 100*100*100/24000 = 41.7 km
+    // LOS burnthrough ≈ 35.6 km < 41.7 km ✓
+    const Km bt = burnthrough_range(
+        30.0_dBm,   // signal ERP
+        50.0_dBm,   // jammer ERP
+        50.0_km,    // jammer-to-rx dist
+        100.0_m,    // signal tx height
+        1000.0_m,   // jammer height
+        100.0_m,    // rx height
+        100.0_MHz,  // frequency
+        0.0_dB      // J/S threshold
+    );
+    // Verify: J/S at the returned burnthrough range must equal the threshold.
+    const JammingResult check = comms_jamming_js(
+        30.0_dBm, 50.0_dBm,
+        bt, 50.0_km,
+        100.0_m, 1000.0_m, 100.0_m,
+        100.0_MHz,
+        0.0_dB, 0.0_dB
+    );
+    ASSERT_NEAR(check.js_ratio.value, 0.0, 0.5);
+    ASSERT_TRUE(bt.value > 0.0);
+}
+
+void test_burnthrough_range_two_ray_regime() {
+    // Low signal antenna heights → very small Fresnel zone; LOS solution
+    // would far exceed it, so the 2-ray formula applies.
+    //
+    // Signal: ERP=50 dBm, h_tx=1.5 m, freq=100 MHz
+    // FZ_signal = 1.5*1.5*100/24000 ≈ 9 m ≈ 0.009 km
+    // LOS burnthrough ~ 35 km >> 0.009 km → 2-ray inversion used.
+    const Km bt = burnthrough_range(
+        50.0_dBm,   // signal ERP
+        70.0_dBm,   // jammer ERP
+        50.0_km,    // jammer-to-rx dist
+        1.5_m,      // signal tx height (low)
+        1000.0_m,   // jammer height
+        1.5_m,      // rx height (low)
+        100.0_MHz,  // frequency
+        0.0_dB      // J/S threshold
+    );
+    const JammingResult check = comms_jamming_js(
+        50.0_dBm, 70.0_dBm,
+        bt, 50.0_km,
+        1.5_m, 1000.0_m, 1.5_m,
+        100.0_MHz,
+        0.0_dB, 0.0_dB
+    );
+    ASSERT_NEAR(check.js_ratio.value, 0.0, 0.5);
+    ASSERT_TRUE(bt.value > 0.0);
+}
+
+void test_partial_band_zero_hop_range_returns_zero() {
+    // Zero hop_range is invalid; must return {0, 0} rather than divide-by-zero.
+    const PartialBandResult r = partial_band_jamming(
+        0.025_MHz, Mhz{0.0}, 10.0_dB);
+    ASSERT_NEAR(r.optimum_jamming_bandwidth.value, 0.0, 1e-12);
+    ASSERT_NEAR(r.duty_cycle, 0.0, 1e-12);
+}
+
 int main() {
     std::cout << "=== test_jamming ===\n";
     RUN_TEST(test_js_ratio_spreadsheet);
     RUN_TEST(test_partial_band_zero_js);
     RUN_TEST(test_partial_band_negative_js);
     RUN_TEST(test_js_ratio_self_screen);
+    RUN_TEST(test_burnthrough_range_los_regime);
+    RUN_TEST(test_burnthrough_range_two_ray_regime);
+    RUN_TEST(test_partial_band_zero_hop_range_returns_zero);
     return test::summary();
 }

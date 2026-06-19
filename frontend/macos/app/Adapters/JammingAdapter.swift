@@ -13,6 +13,10 @@ final class JammingAdapter: ObservableObject {
     init() {
         ref    = ewp_jamming_create()
         output = ewp_jamming_output(ref)
+        // passUnretained: safe only because all adapters are `let` properties of
+        // EwCalcStore (@StateObject owned by ewcalcApp) and live until process exit.
+        // Do not move adapters to shorter-lived objects without switching to
+        // passRetained/takeRetainedValue + clearing the callback in deinit.
         ewp_jamming_set_callback(ref, Self._cb, Unmanaged.passUnretained(self).toOpaque())
     }
 

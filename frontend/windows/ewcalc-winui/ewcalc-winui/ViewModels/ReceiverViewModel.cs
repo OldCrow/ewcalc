@@ -14,8 +14,12 @@ public sealed class StageItemViewModel : INotifyPropertyChanged
     private double _noiseFigureDb;
     private double _gainDb;
 
-    public int    Index      { get; }
+    private int _index;
+    public  int  Index      { get => _index; private set { if (_index != value) { _index = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Index))); PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IndexLabel))); } } }
     public string IndexLabel => $"S{Index + 1}";
+
+    /// Update the display index after a sibling stage is added or removed.
+    internal void UpdateIndex(int newIndex) => Index = newIndex;
 
     public double NoiseFigureDb
     {
@@ -33,7 +37,7 @@ public sealed class StageItemViewModel : INotifyPropertyChanged
 
     public StageItemViewModel(ReceiverViewModel owner, int index, double nf, double gain)
     {
-        _owner = owner; Index = index; _noiseFigureDb = nf; _gainDb = gain;
+        _owner = owner; _index = index; _noiseFigureDb = nf; _gainDb = gain;
         RemoveCommand = new RelayCommand(() => owner.RemoveStage(this));
     }
 
@@ -110,13 +114,21 @@ public sealed class ReceiverViewModel : INotifyPropertyChanged
     {
         if (Stages.Count <= 1) return;
         Stages.Remove(stage);
+        ReindexStages();
         PushStages();
     }
 
     private void AddStage()
     {
         Stages.Add(new StageItemViewModel(this, Stages.Count, 3.0, 0.0));
+        // No reindex needed on add — new item already has the correct index.
         PushStages();
+    }
+
+    private void ReindexStages()
+    {
+        for (int i = 0; i < Stages.Count; i++)
+            Stages[i].UpdateIndex(i);
     }
 
     private void ApplyOutput(ReceiverOutput o)

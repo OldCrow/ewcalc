@@ -111,6 +111,17 @@ void test_ordering() {
     ASSERT_TRUE(10.0_dBm == 10.0_dBm);
 }
 
+void test_dbsm_minus_dbsm_yields_db() {
+    // RCS ratio: 10 dBsm - 4 dBsm = 6 dB
+    const Db result = 10.0_dBsm - 4.0_dBsm;
+    ASSERT_NEAR(result.value, 6.0, 1e-9);
+}
+
+void test_dbsm_minus_dbsm_self_is_zero() {
+    const Db result = 5.0_dBsm - 5.0_dBsm;
+    ASSERT_NEAR(result.value, 0.0, 1e-9);
+}
+
 int main() {
     std::cout << "=== test_units ===\n";
     RUN_TEST(test_dbm_plus_db);
@@ -131,5 +142,7 @@ int main() {
     RUN_TEST(test_km_m_conversion);
     RUN_TEST(test_dbm_dbw_offset);
     RUN_TEST(test_ordering);
+    RUN_TEST(test_dbsm_minus_dbsm_yields_db);
+    RUN_TEST(test_dbsm_minus_dbsm_self_is_zero);
     return test::summary();
 }

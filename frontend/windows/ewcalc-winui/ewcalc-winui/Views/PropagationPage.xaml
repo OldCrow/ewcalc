@@ -25,6 +25,9 @@
             <TextBlock Text="INPUTS" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource InputCardStyle}">
                 <StackPanel Spacing="12">
+                    <!-- Minimum/Maximum are overridden at construction by PageHelper.Setup()
+                         which sets exact double values. XAML values are parsed as float32
+                         and are never visible to the user. -->
                     <NumberBox x:Name="DistanceBox"
                                Header="Distance (km)"
                                Value="{x:Bind ViewModel.DefaultDistance, Mode=OneTime}"
@@ -73,7 +76,14 @@
                                Value="{x:Bind ViewModel.DefaultObstructionHeight, Mode=OneTime}"
                                Minimum="0" Maximum="10000"
                                SpinButtonPlacementMode="Compact" SmallChange="1"
-                               ValueChanged="ObstructionHeightBox_ValueChanged" />
+                               BorderBrush="{x:Bind ViewModel.ObstructionHeightError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
+                               ValueChanged="ObstructionHeightBox_ValueChanged">
+                        <ToolTipService.ToolTip>
+                            <ToolTip Content="{x:Bind ViewModel.ObstructionHeightError, Mode=OneWay,
+                                         Converter={StaticResource FieldErrorToTooltip}}" />
+                        </ToolTipService.ToolTip>
+                    </NumberBox>
                 </StackPanel>
             </Border>
 

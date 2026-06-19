@@ -13,6 +13,7 @@ public enum class FieldValidationError : System::Byte {
     AboveMaximum    = 2,
     InvalidZero     = 3,
     InvalidNegative = 4,
+    NotFinite       = 5,
 };
 
 inline FieldValidationError ToManaged(ewpresenter::FieldError e) {
@@ -22,6 +23,7 @@ inline FieldValidationError ToManaged(ewpresenter::FieldError e) {
         case ewpresenter::FieldError::above_maximum:    return FieldValidationError::AboveMaximum;
         case ewpresenter::FieldError::invalid_zero:     return FieldValidationError::InvalidZero;
         case ewpresenter::FieldError::invalid_negative: return FieldValidationError::InvalidNegative;
+        case ewpresenter::FieldError::not_finite:        return FieldValidationError::NotFinite;
     }
     return FieldValidationError::None;
 }

@@ -48,7 +48,9 @@ struct Stage {
 // ---------------------------------------------------------------------------
 
 /// Analog receiver second-order spurious-free dynamic range.
-/// SFDR2 = (2/3) * (IP2 - sensitivity)
+/// SFDR2 = (1/2) * (IP2 - sensitivity)
+/// Derivation: IM2 products grow at 2:1; at SFDR floor IM2 = sensitivity,
+/// giving SFDR2 = (IIP2 - sensitivity) / 2.
 /// @param sensitivity       Receiver sensitivity (dBm)
 /// @param second_order_ip   Second-order input intercept point (dBm)
 /// @return Second-order SFDR (dB)

@@ -89,6 +89,8 @@ using Kelvin       = Quantity<KelvinTag>;
 // Dbsm ± Db → Dbsm  (e.g. fluctuation loss applied to RCS)
 [[nodiscard]] constexpr Dbsm operator+(Dbsm r, Db d) noexcept { return Dbsm{r.value + d.value}; }
 [[nodiscard]] constexpr Dbsm operator-(Dbsm r, Db d) noexcept { return Dbsm{r.value - d.value}; }
+// Dbsm - Dbsm → Db  (RCS ratio: target vs. reference scatterer)
+[[nodiscard]] constexpr Db   operator-(Dbsm a, Dbsm b) noexcept { return Db{a.value - b.value}; }
 
 // Gain arithmetic: Db ± Db → Db
 [[nodiscard]] constexpr Db operator+(Db a, Db b) noexcept { return Db{a.value + b.value}; }
@@ -162,6 +164,7 @@ namespace literals {
 // ---------------------------------------------------------------------------
 // Inline definitions requiring <cmath>
 // ---------------------------------------------------------------------------
+#include <cassert>
 #include <cmath>
 #include <numbers>
 
@@ -170,25 +173,33 @@ namespace libew::units {
 [[nodiscard]] inline Watts dbm_to_watts(Dbm p) noexcept {
     return Watts{std::pow(10.0, (p.value - 30.0) / 10.0)};
 }
+/// @pre w.value > 0; returns -inf for zero, NaN for negative.
 [[nodiscard]] inline Dbm watts_to_dbm(Watts w) noexcept {
+    assert(w.value > 0.0 && "watts_to_dbm: input must be positive");
     return Dbm{10.0 * std::log10(w.value) + 30.0};
 }
 [[nodiscard]] inline Watts dbw_to_watts(Dbw p) noexcept {
     return Watts{std::pow(10.0, p.value / 10.0)};
 }
+/// @pre w.value > 0; returns -inf for zero, NaN for negative.
 [[nodiscard]] inline Dbw watts_to_dbw(Watts w) noexcept {
+    assert(w.value > 0.0 && "watts_to_dbw: input must be positive");
     return Dbw{10.0 * std::log10(w.value)};
 }
 [[nodiscard]] inline double db_to_linear(Db g) noexcept {
     return std::pow(10.0, g.value / 10.0);
 }
+/// @pre ratio > 0; returns -inf for zero, NaN for negative.
 [[nodiscard]] inline Db linear_to_db(double ratio) noexcept {
+    assert(ratio > 0.0 && "linear_to_db: ratio must be positive");
     return Db{10.0 * std::log10(ratio)};
 }
 [[nodiscard]] inline SquareMeters dbsm_to_sqm(Dbsm r) noexcept {
     return SquareMeters{std::pow(10.0, r.value / 10.0)};
 }
+/// @pre r.value > 0; returns -inf for zero, NaN for negative.
 [[nodiscard]] inline Dbsm sqm_to_dbsm(SquareMeters r) noexcept {
+    assert(r.value > 0.0 && "sqm_to_dbsm: input must be positive");
     return Dbsm{10.0 * std::log10(r.value)};
 }
 [[nodiscard]] inline Radians deg_to_rad(Degrees a) noexcept {

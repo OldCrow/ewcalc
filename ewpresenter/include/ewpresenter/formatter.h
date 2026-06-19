@@ -14,6 +14,10 @@ namespace ewpresenter {
 
 using namespace libew::units;
 
+/// Em-dash sentinel displayed in result fields when inputs are invalid.
+/// UTF-8 encoding of U+2014 (EM DASH).
+inline constexpr const char* kDash = "\xe2\x80\x94";
+
 // ---------------------------------------------------------------------------
 // Power
 // ---------------------------------------------------------------------------

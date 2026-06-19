@@ -4,8 +4,6 @@
 
 namespace ewpresenter {
 
-static constexpr const char* DASH = "\xe2\x80\x94";
-
 JammingPresenter::JammingPresenter() noexcept { recompute(); }
 
 void JammingPresenter::set_signal_erp(double dbm) noexcept {
@@ -71,10 +69,10 @@ void JammingPresenter::recompute() noexcept {
     output_.valid = js_valid;
 
     if (!js_valid) {
-        output_.js_ratio_str          = DASH;
-        output_.signal_at_rx_str      = DASH;
-        output_.jammer_at_rx_str      = DASH;
-        output_.burnthrough_range_str = DASH;
+        output_.js_ratio_str          = kDash;
+        output_.signal_at_rx_str      = kDash;
+        output_.jammer_at_rx_str      = kDash;
+        output_.burnthrough_range_str = kDash;
         output_.optimum_bw_str        = "N/A";
         output_.duty_cycle_str        = "N/A";
         return;
@@ -98,7 +96,7 @@ void JammingPresenter::recompute() noexcept {
     output_.burnthrough_range = libew::jamming::burnthrough_range(
         Dbm{signal_erp_dbm_}, Dbm{jammer_erp_dbm_},
         Km{jammer_to_rx_dist_km_},
-        Meters{jammer_height_m_}, Meters{rx_height_m_},
+        Meters{signal_tx_height_m_}, Meters{jammer_height_m_}, Meters{rx_height_m_},
         Mhz{frequency_mhz_}, Db{js_threshold_db_});
 
     output_.js_ratio_str          = format_db(output_.js_ratio);

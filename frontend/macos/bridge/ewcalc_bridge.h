@@ -23,7 +23,8 @@ typedef enum {
     EWP_FIELD_BELOW_MINIMUM    = 1, ///< Value is below the minimum for this field.
     EWP_FIELD_ABOVE_MAXIMUM    = 2, ///< Value exceeds the maximum for this field.
     EWP_FIELD_INVALID_ZERO     = 3, ///< Value is zero where it must be strictly positive.
-    EWP_FIELD_INVALID_NEGATIVE = 4  ///< Value is negative where it must be non-negative.
+    EWP_FIELD_INVALID_NEGATIVE = 4, ///< Value is negative where it must be non-negative.
+    EWP_FIELD_NOT_FINITE       = 5  ///< Value is NaN or infinite.
 } EwpFieldError;
 
 // ============================================================================

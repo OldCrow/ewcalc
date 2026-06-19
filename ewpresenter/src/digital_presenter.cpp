@@ -4,8 +4,6 @@
 
 namespace ewpresenter {
 
-static constexpr const char* DASH = "\xe2\x80\x94";
-
 DigitalPresenter::DigitalPresenter() noexcept { recompute(); }
 
 void DigitalPresenter::set_snr(double db) noexcept {
@@ -45,11 +43,11 @@ void DigitalPresenter::recompute() noexcept {
     output_.valid = eb_no_valid;
 
     if (!eb_no_valid) {
-        output_.eb_no_str          = DASH;
-        output_.snr_from_eb_no_str = DASH;
-        output_.process_gain_str   = DASH;
-        output_.jamming_margin_str = DASH;
-        output_.required_js_str    = DASH;
+        output_.eb_no_str          = kDash;
+        output_.snr_from_eb_no_str = kDash;
+        output_.process_gain_str   = kDash;
+        output_.jamming_margin_str = kDash;
+        output_.required_js_str    = kDash;
         return;
     }
 

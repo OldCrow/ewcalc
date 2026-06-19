@@ -55,21 +55,27 @@ struct JammingResult {
 
 /// Compute burnthrough range — the range at which J/S drops to a specified threshold.
 ///
-/// At burnthrough, the signal propagation loss (as a function of range) equals the
-/// jammer advantage. Solved analytically for the LOS regime; iteratively for 2-ray.
+/// Solves analytically for the LOS regime; selects the 2-ray closed-form inversion
+/// when the LOS solution exceeds the Fresnel zone crossover distance.
 ///
-/// @param signal_erp       ERP of desired signal transmitter (dBm)
-/// @param jammer_erp       ERP of jammer (dBm)
+/// LOS  inversion: d = 10^((margin − 32.44 − 20·log₁₀(f)) / 20)
+/// 2-ray inversion: d = 10^((margin − 120 + 20·log₁₀(h_tx) + 20·log₁₀(h_rx)) / 40)
+/// Both expressions are from the propagation loss model in libew/propagation.
+///
+/// @param signal_erp        ERP of desired signal transmitter (dBm)
+/// @param jammer_erp        ERP of jammer (dBm)
 /// @param jammer_to_rx_dist Distance from jammer to receiver (km)
-/// @param jammer_height    Jammer antenna height (m)
-/// @param rx_height        Receiver antenna height (m)
-/// @param frequency        Carrier frequency (MHz)
-/// @param js_threshold     J/S level at which jamming is considered effective (dB)
+/// @param signal_tx_height  Signal transmitter antenna height (m)
+/// @param jammer_height     Jammer antenna height (m)
+/// @param rx_height         Receiver antenna height (m)
+/// @param frequency         Carrier frequency (MHz)
+/// @param js_threshold      J/S level at which jamming is considered effective (dB)
 /// @return Burnthrough range (km) — signal range at which J/S = js_threshold
 [[nodiscard]] Km burnthrough_range(
     Dbm    signal_erp,
     Dbm    jammer_erp,
     Km     jammer_to_rx_dist,
+    Meters signal_tx_height,
     Meters jammer_height,
     Meters rx_height,
     Mhz    frequency,

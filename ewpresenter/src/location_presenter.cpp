@@ -4,8 +4,6 @@
 
 namespace ewpresenter {
 
-static constexpr const char* DASH = "\xe2\x80\x94";
-
 LocationPresenter::LocationPresenter() noexcept { recompute(); }
 
 void LocationPresenter::set_rms_bearing_error(double degrees) noexcept {
@@ -53,7 +51,7 @@ void LocationPresenter::recompute() noexcept {
             Degrees{rms_bearing_error_deg_}, Km{aoa_range_km_});
         output_.cep_aoa_str = format_km(output_.cep_aoa);
     } else {
-        output_.cep_aoa_str = DASH;
+        output_.cep_aoa_str = kDash;
     }
 
     if (tdoa_valid) {
@@ -61,7 +59,7 @@ void LocationPresenter::recompute() noexcept {
             rms_time_error_ns_, Km{aoa_range_km_}, Km{baseline_km_});
         output_.cep_tdoa_str = format_km(output_.cep_tdoa);
     } else {
-        output_.cep_tdoa_str = DASH;
+        output_.cep_tdoa_str = kDash;
     }
 
     if (eep_valid) {
@@ -69,7 +67,7 @@ void LocationPresenter::recompute() noexcept {
             Km{semi_major_km_}, Km{semi_minor_km_});
         output_.cep_eep_str = format_km(output_.cep_eep);
     } else {
-        output_.cep_eep_str = DASH;
+        output_.cep_eep_str = kDash;
     }
 }
 

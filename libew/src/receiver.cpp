@@ -42,8 +42,12 @@ Db cascaded_noise_figure(std::span<const Stage> stages) noexcept {
 }
 
 Db analog_sfdr_second_order(Dbm sensitivity, Dbm second_order_ip) noexcept {
-    // SFDR2 = (2/3) * (IP2_dBm - S_dBm)  — standard result from intermod analysis
-    return Db{(2.0 / 3.0) * (second_order_ip - sensitivity).value};
+    // SFDR2 = (1/2) * (IP2_dBm - S_dBm)
+    // IM2 products grow at 2:1 slope; SFDR2 = (IIP2 - S) / (2 - 1) * (1/2) = (IIP2 - S) / 2
+    // Derivation: IM2 floor = 2*P_in - IIP2 = S  =>  P_in = (IIP2 + S)/2
+    //             SFDR2 = P_in - S = (IIP2 - S)/2
+    // Source: Razavi RF Microelectronics; Pozar Microwave Engineering.
+    return Db{0.5 * (second_order_ip - sensitivity).value};
 }
 
 Db analog_sfdr_third_order(Dbm sensitivity, Dbm third_order_ip) noexcept {
