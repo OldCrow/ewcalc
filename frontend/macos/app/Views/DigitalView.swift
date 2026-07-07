@@ -48,8 +48,8 @@ struct DigitalView: View {
             Section("Results") {
                 ResultRow("Eb/N₀",           cStr(adapter.output.eb_no_str),
                           help: "Energy-per-bit to noise density: SNR + 10·log₁₀(bandwidth / data rate)")
-                ResultRow("SNR (from Eb/No)", cStr(adapter.output.snr_from_eb_no_str),
-                          help: "Carrier SNR recovered from Eb/N₀ — inverse of the Eb/N₀ conversion")
+                ResultRow("Required SNR", cStr(adapter.output.required_snr_for_eb_no_str),
+                          help: "Carrier SNR needed to achieve the required Eb/N₀, given the same bandwidth and data rate")
                 ResultRow("Process gain",     cStr(adapter.output.process_gain_str),
                           help: "DSSS spreading gain: 10·log₁₀(chip rate / data rate)")
                 ResultRow("Jamming margin",   cStr(adapter.output.jamming_margin_str),

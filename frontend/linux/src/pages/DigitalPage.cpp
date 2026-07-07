@@ -31,9 +31,9 @@ DigitalPage::DigitalPage(QWidget* parent)
     QFormLayout* outForm = nullptr;
     auto* outGroup = makeGroup(QStringLiteral("Results"), outForm);
 
-    eb_no_           = addResultRow(outForm, QStringLiteral("Eb/N\u2080"));
-    snr_from_eb_no_  = addResultRow(outForm, QStringLiteral("SNR (from Eb/No)"));
-    process_gain_    = addResultRow(outForm, QStringLiteral("Process gain"));
+    eb_no_                    = addResultRow(outForm, QStringLiteral("Eb/N\u2080"));
+    required_snr_for_eb_no_   = addResultRow(outForm, QStringLiteral("Required SNR"));
+    process_gain_             = addResultRow(outForm, QStringLiteral("Process gain"));
     jamming_margin_  = addResultRow(outForm, QStringLiteral("Jamming margin"));
     required_js_     = addResultRow(outForm, QStringLiteral("Required J/S"));
 
@@ -78,7 +78,7 @@ DigitalPage::DigitalPage(QWidget* parent)
 void DigitalPage::applyOutput(const ewpresenter::DigitalPresenter::Output& o)
 {
     eb_no_->setText(QString::fromStdString(o.eb_no_str));
-    snr_from_eb_no_->setText(QString::fromStdString(o.snr_from_eb_no_str));
+    required_snr_for_eb_no_->setText(QString::fromStdString(o.required_snr_for_eb_no_str));
     process_gain_->setText(QString::fromStdString(o.process_gain_str));
     jamming_margin_->setText(QString::fromStdString(o.jamming_margin_str));
     required_js_->setText(QString::fromStdString(o.required_js_str));
