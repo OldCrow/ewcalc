@@ -154,6 +154,18 @@ void test_jamming_invalid_rx_gain() {
     ewp_jamming_destroy(ref);
 }
 
+void test_jamming_rx_gain_value_getters() {
+    EwpJammingRef ref = ewp_jamming_create();
+    // Defaults (see JammingPresenter): both start at 0.0 dB.
+    ASSERT_TRUE(ewp_jamming_rx_gain_signal(ref) == 0.0);
+    ASSERT_TRUE(ewp_jamming_rx_gain_jammer(ref) == 0.0);
+    ewp_jamming_set_rx_gain_signal(ref, 12.5);
+    ewp_jamming_set_rx_gain_jammer(ref, -20.0);
+    ASSERT_TRUE(ewp_jamming_rx_gain_signal(ref) == 12.5);
+    ASSERT_TRUE(ewp_jamming_rx_gain_jammer(ref) == -20.0);
+    ewp_jamming_destroy(ref);
+}
+
 // ============================================================================
 // LocationPresenter
 // ============================================================================
@@ -294,6 +306,7 @@ int main() {
 
     RUN_TEST(test_jamming_defaults_valid);
     RUN_TEST(test_jamming_invalid_rx_gain);
+    RUN_TEST(test_jamming_rx_gain_value_getters);
 
     RUN_TEST(test_location_defaults_valid);
     RUN_TEST(test_location_invalid_bearing_error);

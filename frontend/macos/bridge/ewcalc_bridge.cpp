@@ -368,6 +368,8 @@ double           ewp_jamming_signal_height(EwpJammingRef ref)    { return cast<J
 double           ewp_jamming_jammer_height(EwpJammingRef ref)    { return cast<JammingWrapper>(ref)->presenter.jammer_height_m(); }
 double           ewp_jamming_rx_height(EwpJammingRef ref)        { return cast<JammingWrapper>(ref)->presenter.rx_height_m(); }
 double           ewp_jamming_frequency(EwpJammingRef ref)        { return cast<JammingWrapper>(ref)->presenter.frequency_mhz(); }
+double           ewp_jamming_rx_gain_signal(EwpJammingRef ref)   { return cast<JammingWrapper>(ref)->presenter.rx_gain_signal_db(); }
+double           ewp_jamming_rx_gain_jammer(EwpJammingRef ref)   { return cast<JammingWrapper>(ref)->presenter.rx_gain_jammer_db(); }
 double           ewp_jamming_signal_bandwidth(EwpJammingRef ref) { return cast<JammingWrapper>(ref)->presenter.signal_bandwidth_mhz(); }
 double           ewp_jamming_hop_range(EwpJammingRef ref)        { return cast<JammingWrapper>(ref)->presenter.hop_range_mhz(); }
 double           ewp_jamming_js_threshold(EwpJammingRef ref)     { return cast<JammingWrapper>(ref)->presenter.js_threshold_db(); }

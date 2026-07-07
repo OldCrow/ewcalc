@@ -214,6 +214,8 @@ double        ewp_jamming_signal_height(EwpJammingRef ref);
 double        ewp_jamming_jammer_height(EwpJammingRef ref);
 double        ewp_jamming_rx_height(EwpJammingRef ref);
 double        ewp_jamming_frequency(EwpJammingRef ref);
+double        ewp_jamming_rx_gain_signal(EwpJammingRef ref);
+double        ewp_jamming_rx_gain_jammer(EwpJammingRef ref);
 double        ewp_jamming_signal_bandwidth(EwpJammingRef ref);
 double        ewp_jamming_hop_range(EwpJammingRef ref);
 double        ewp_jamming_js_threshold(EwpJammingRef ref);

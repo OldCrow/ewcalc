@@ -21,11 +21,11 @@ public:
     ~AntennaAdapter();
     !AntennaAdapter();
 
-    void SetGain        (double dbi) { presenter_->set_gain(RoundInput(dbi));          }
-    void SetAzBeamwidth (double deg) { presenter_->set_az_beamwidth(RoundInput(deg));  }
-    void SetElBeamwidth (double deg) { presenter_->set_el_beamwidth(RoundInput(deg));  }
-    void SetTxPower     (double dbm) { presenter_->set_tx_power(RoundInput(dbm));      }
-    void SetFrequency   (double mhz) { presenter_->set_frequency(RoundInput(mhz));     }
+    void SetGain        (double dbi) { presenter_->set_gain(dbi);          }
+    void SetAzBeamwidth (double deg) { presenter_->set_az_beamwidth(deg);  }
+    void SetElBeamwidth (double deg) { presenter_->set_el_beamwidth(deg);  }
+    void SetTxPower     (double dbm) { presenter_->set_tx_power(dbm);      }
+    void SetFrequency   (double mhz) { presenter_->set_frequency(mhz);     }
 
     property double DefaultGain        { double get() { return presenter_->gain_dbi();          } }
     property double DefaultAzBeamwidth { double get() { return presenter_->az_beamwidth_deg();  } }

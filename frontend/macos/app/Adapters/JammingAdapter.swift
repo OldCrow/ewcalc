@@ -44,6 +44,8 @@ final class JammingAdapter: ObservableObject {
     var defaultJammerHeight:    Double { ewp_jamming_jammer_height(ref) }
     var defaultRxHeight:        Double { ewp_jamming_rx_height(ref) }
     var defaultFrequency:       Double { ewp_jamming_frequency(ref) }
+    var defaultRxGainSignal:    Double { ewp_jamming_rx_gain_signal(ref) }
+    var defaultRxGainJammer:    Double { ewp_jamming_rx_gain_jammer(ref) }
     var defaultSignalBandwidth: Double { ewp_jamming_signal_bandwidth(ref) }
     var defaultHopRange:        Double { ewp_jamming_hop_range(ref) }
     var defaultJsThreshold:     Double { ewp_jamming_js_threshold(ref) }
