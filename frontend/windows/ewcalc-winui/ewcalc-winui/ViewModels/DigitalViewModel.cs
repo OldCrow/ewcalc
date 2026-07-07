@@ -11,14 +11,14 @@ public sealed class DigitalViewModel : INotifyPropertyChanged
     private readonly DigitalAdapter _adapter = new();
     private readonly DispatcherQueue _dispatcher;
 
-    private string _ebNo = string.Empty,        _snrFromEbNo = string.Empty,
+    private string _ebNo = string.Empty,        _requiredSnrForEbNo = string.Empty,
                    _processGain = string.Empty,  _jammingMargin = string.Empty,
                    _requiredJs = string.Empty;
     private bool _isValid = false;
 
-    public string EbNo          { get => _ebNo;          private set => Set(ref _ebNo,          value); }
-    public string SnrFromEbNo   { get => _snrFromEbNo;   private set => Set(ref _snrFromEbNo,   value); }
-    public string ProcessGain   { get => _processGain;   private set => Set(ref _processGain,   value); }
+    public string EbNo               { get => _ebNo;               private set => Set(ref _ebNo,               value); }
+    public string RequiredSnrForEbNo { get => _requiredSnrForEbNo; private set => Set(ref _requiredSnrForEbNo, value); }
+    public string ProcessGain        { get => _processGain;        private set => Set(ref _processGain,        value); }
     public string JammingMargin { get => _jammingMargin; private set => Set(ref _jammingMargin, value); }
     public string RequiredJs    { get => _requiredJs;    private set => Set(ref _requiredJs,    value); }
     public bool   IsValid       { get => _isValid;       private set => Set(ref _isValid,       value); }
@@ -46,7 +46,7 @@ public sealed class DigitalViewModel : INotifyPropertyChanged
 
     private void ApplyOutput(DigitalOutput o)
     {
-        EbNo = o.EbNoStr; SnrFromEbNo = o.SnrFromEbNoStr;
+        EbNo = o.EbNoStr; RequiredSnrForEbNo = o.RequiredSnrForEbNoStr;
         ProcessGain = o.ProcessGainStr; JammingMargin = o.JammingMarginStr;
         RequiredJs = o.RequiredJsStr; IsValid = o.Valid;
     }

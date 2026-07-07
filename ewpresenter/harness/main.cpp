@@ -175,7 +175,7 @@ int main() {
         const auto& out = p.output();
         row("Valid",           out.valid ? "yes" : "NO");
         row("Eb/N\xc2\xb0",   out.eb_no_str);          // Eb/N₀
-        row("SNR from Eb/N\xc2\xb0", out.snr_from_eb_no_str);
+        row("Required SNR", out.required_snr_for_eb_no_str);
         row("Process gain",    out.process_gain_str);
         row("Jamming margin",  out.jamming_margin_str);
         row("Required J/S",    out.required_js_str);

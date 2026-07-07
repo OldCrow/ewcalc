@@ -152,10 +152,33 @@ void test_digital_eb_no_value() {
     ASSERT_NEAR(p.output().eb_no.value, 20.0, 0.01);
 }
 
-void test_digital_snr_roundtrip() {
-    // snr_from_eb_no should recover the original SNR input (10 dB)
+void test_digital_required_snr_for_eb_no_value() {
+    // required_snr_for_eb_no = required_eb_no - 10*log10(BW/Rb)
+    //                        = 10 - 10*log10(1.0/0.1) = 10 - 10 = 0 dB
     ewpresenter::DigitalPresenter p;
-    ASSERT_NEAR(p.output().snr_from_eb_no.value, 10.0, 0.01);
+    ASSERT_NEAR(p.output().required_snr_for_eb_no.value, 0.0, 0.01);
+}
+
+void test_digital_required_snr_for_eb_no_tracks_required_eb_no() {
+    // Raising required_eb_no by 5 dB should raise required_snr_for_eb_no by 5 dB,
+    // independent of the received SNR input (no identity round-trip with snr_db_).
+    ewpresenter::DigitalPresenter p;
+    const double before = p.output().required_snr_for_eb_no.value;
+    p.set_required_eb_no(15.0);   // default is 10.0
+    ASSERT_NEAR(p.output().required_snr_for_eb_no.value, before + 5.0, 0.01);
+    p.set_required_eb_no(10.0);   // restore
+}
+
+void test_digital_required_snr_for_eb_no_invalid_when_required_eb_no_invalid() {
+    // An out-of-range required_eb_no must dash the required-SNR output while
+    // leaving the Eb/N₀ section (and overall validity) untouched.
+    ewpresenter::DigitalPresenter p;
+    p.set_required_eb_no(100.0);   // exceeds max (30 dB)
+    ASSERT_TRUE(p.output().valid);
+    ASSERT_TRUE(p.output().required_snr_for_eb_no_str == "N/A");
+    ASSERT_FALSE(p.output().eb_no_str == "N/A");
+    p.set_required_eb_no(10.0);    // restore
+    ASSERT_FALSE(p.output().required_snr_for_eb_no_str == "N/A");
 }
 
 void test_digital_dsss_values() {
@@ -275,7 +298,9 @@ int main() {
 
     RUN_TEST(test_digital_default_valid);
     RUN_TEST(test_digital_eb_no_value);
-    RUN_TEST(test_digital_snr_roundtrip);
+    RUN_TEST(test_digital_required_snr_for_eb_no_value);
+    RUN_TEST(test_digital_required_snr_for_eb_no_tracks_required_eb_no);
+    RUN_TEST(test_digital_required_snr_for_eb_no_invalid_when_required_eb_no_invalid);
     RUN_TEST(test_digital_dsss_values);
     RUN_TEST(test_digital_validity_split_dsss_invalid);
     RUN_TEST(test_digital_chip_rate_below_data_rate);
