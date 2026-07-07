@@ -84,19 +84,16 @@ PartialBandResult partial_band_jamming(
     // Reject non-positive hop range unconditionally so release builds don't divide by zero.
     if (hop_range_bandwidth.value <= 0.0)
         return {Mhz{0.0}, 0.0};
-    // If single-channel J/S >= 0 dB, jam full hop range for maximum coverage
-    if (single_channel_js.value >= 0.0) {
-        const double duty = std::min(
-            signal_bandwidth.value / hop_range_bandwidth.value, 1.0);
-        return {signal_bandwidth, duty};
-    }
 
-    // Optimum jamming bandwidth maximises effective J/S
-    // BW_opt = signal_bw * 10^(js_single / 10)
+    // Optimum jamming bandwidth maximises effective J/S.
+    // BW_opt = signal_bw * 10^(js_single / 10); at J/S = 0 dB this naturally
+    // reduces to BW_opt = signal_bw, and for J/S > 0 dB it widens beyond the
+    // signal bandwidth (spreading excess J/S across more of the hop range).
     const double bw_opt = signal_bandwidth.value * std::pow(10.0, single_channel_js.value / 10.0);
-    const double duty   = std::min(bw_opt / hop_range_bandwidth.value, 1.0);
+    const double bw_jam = std::min(bw_opt, hop_range_bandwidth.value);
+    const double duty   = std::min(bw_jam / hop_range_bandwidth.value, 1.0);
 
-    return {Mhz{bw_opt}, duty};
+    return {Mhz{bw_jam}, duty};
 }
 
 } // namespace libew::jamming

@@ -1,5 +1,6 @@
 #include "test_main.h"
 #include "libew/jamming/jamming.h"
+#include <cmath>
 
 using namespace libew::jamming;
 using namespace libew::units;
@@ -140,6 +141,23 @@ void test_partial_band_zero_hop_range_returns_zero() {
     ASSERT_NEAR(r.duty_cycle, 0.0, 1e-12);
 }
 
+void test_partial_band_positive_js() {
+    // J/S = +6 dB: excess J/S over the minimum needed lets the jammer
+    // spread its power across a wider bandwidth while still meeting
+    // threshold on each channel.
+    // BW_opt = signal_bw * 10^(6/10) = 0.025 * 10^0.6 = 0.025 * 3.9810717...
+    //        ≈ 0.09952679 MHz  (< hop_range, so bw_jam == bw_opt)
+    // duty   = bw_jam / hop_range ≈ 0.09952679 / 58.0 ≈ 0.0017160
+    const double expected_bw_opt = 0.025 * std::pow(10.0, 6.0 / 10.0);
+    const PartialBandResult r = partial_band_jamming(
+        0.025_MHz,   // signal bandwidth
+        58.0_MHz,    // hop range
+        6.0_dB       // single-channel J/S
+    );
+    ASSERT_NEAR(r.optimum_jamming_bandwidth.value, expected_bw_opt, 1e-6);
+    ASSERT_NEAR(r.duty_cycle, expected_bw_opt / 58.0, 1e-7);
+}
+
 int main() {
     std::cout << "=== test_jamming ===\n";
     RUN_TEST(test_js_ratio_spreadsheet);
@@ -149,5 +167,6 @@ int main() {
     RUN_TEST(test_burnthrough_range_los_regime);
     RUN_TEST(test_burnthrough_range_two_ray_regime);
     RUN_TEST(test_partial_band_zero_hop_range_returns_zero);
+    RUN_TEST(test_partial_band_positive_js);
     return test::summary();
 }
