@@ -27,11 +27,11 @@ public:
     ~PropagationAdapter();
     !PropagationAdapter();
 
-    void SetDistance          (double km)     { presenter_->set_distance          (RoundInput(km));     }
-    void SetFrequency         (double mhz)    { presenter_->set_frequency         (RoundInput(mhz));   }
-    void SetTxHeight          (double meters) { presenter_->set_tx_height         (RoundInput(meters)); }
-    void SetRxHeight          (double meters) { presenter_->set_rx_height         (RoundInput(meters)); }
-    void SetObstructionHeight (double meters) { presenter_->set_obstruction_height(RoundInput(meters)); }
+    void SetDistance          (double km)     { presenter_->set_distance          (km);     }
+    void SetFrequency         (double mhz)    { presenter_->set_frequency         (mhz);   }
+    void SetTxHeight          (double meters) { presenter_->set_tx_height         (meters); }
+    void SetRxHeight          (double meters) { presenter_->set_rx_height         (meters); }
+    void SetObstructionHeight (double meters) { presenter_->set_obstruction_height(meters); }
 
     property double DefaultDistance          { double get() { return presenter_->distance_km();          } }
     property double DefaultFrequency         { double get() { return presenter_->frequency_mhz();        } }

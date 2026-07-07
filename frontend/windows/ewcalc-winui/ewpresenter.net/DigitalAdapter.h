@@ -22,12 +22,12 @@ public:
     ~DigitalAdapter();
     !DigitalAdapter();
 
-    void SetSnr               (double db)   { presenter_->set_snr(RoundInput(db));                      }
-    void SetBandwidth         (double mhz)  { presenter_->set_bandwidth(RoundInput(mhz));               }
-    void SetDataRate          (double mbps) { presenter_->set_data_rate(RoundInput(mbps));              }
-    void SetChipRate          (double mcps) { presenter_->set_chip_rate(RoundInput(mcps));              }
-    void SetRequiredEbNo      (double db)   { presenter_->set_required_eb_no(RoundInput(db));           }
-    void SetImplementationLoss(double db)   { presenter_->set_implementation_loss(RoundInput(db));      }
+    void SetSnr               (double db)   { presenter_->set_snr(db);                      }
+    void SetBandwidth         (double mhz)  { presenter_->set_bandwidth(mhz);               }
+    void SetDataRate          (double mbps) { presenter_->set_data_rate(mbps);              }
+    void SetChipRate          (double mcps) { presenter_->set_chip_rate(mcps);              }
+    void SetRequiredEbNo      (double db)   { presenter_->set_required_eb_no(db);           }
+    void SetImplementationLoss(double db)   { presenter_->set_implementation_loss(db);      }
 
     property double DefaultSnr                { double get() { return presenter_->snr_db();                   } }
     property double DefaultBandwidth          { double get() { return presenter_->bandwidth_mhz();            } }
