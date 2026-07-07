@@ -113,7 +113,7 @@ void ReceiverPage::rebuildStageList()
         auto* idxLbl = new QLabel(QStringLiteral("S%1").arg(i + 1));
         idxLbl->setMinimumWidth(28);
 
-        auto* nfSb = makeSpinBox(-10.0, 50.0, stages[i].noise_figure_db, 0.5, 1);
+        auto* nfSb = makeSpinBox(0.0, 30.0, stages[i].noise_figure_db, 0.5, 1);
         auto* gSb  = makeSpinBox(-60.0, 60.0, stages[i].gain_db,         0.5, 1);
 
         auto* nfLbl = new QLabel(QStringLiteral("NF"));

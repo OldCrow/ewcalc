@@ -121,7 +121,7 @@ private struct StageRow: View {
                     .multilineTextAlignment(.trailing)
                     .textFieldStyle(.roundedBorder)
                     .frame(width: 68)
-                Stepper("", value: $stage.noise_figure_db, in: -10...50, step: 0.5).labelsHidden()
+                Stepper("", value: $stage.noise_figure_db, in: 0...30, step: 0.5).labelsHidden()
                 Text("dB").foregroundStyle(.secondary).frame(width: 22)
             }
 

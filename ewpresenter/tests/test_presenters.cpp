@@ -98,11 +98,33 @@ void test_receiver_default_valid() {
 }
 
 void test_receiver_sensitivity() {
-    // sensitivity = -174 + 10*log10(bw_hz) + NF + SNR
-    //             = -174 + 10*log10(0.1e6) + 6.5 + 15
-    //             = -174 + 50 + 6.5 + 15 = -102.5 dBm
+    // With the default (non-empty) stage chain, sensitivity uses the cascaded
+    // NF from the Friis formula rather than the manual NF input (issue #11).
+    // Cascaded NF for the default chain {(1,-1),(3,20),(10,-10),(11,0)} dB
+    // works out to ~6.111 dB via Friis, vs. the manual NF input of 6.5 dB.
+    // sensitivity = -174 + 10*log10(bw_hz) + cascaded_NF + SNR
+    //             = -174 + 10*log10(0.1e6) + 6.111 + 15
+    //             = -174 + 50 + 6.111 + 15 = -102.89 dBm
     ewpresenter::ReceiverPresenter p;
-    ASSERT_NEAR(p.output().sensitivity.value, -102.5, 0.1);
+    ASSERT_NEAR(p.output().sensitivity.value, -102.89, 0.05);
+}
+
+void test_receiver_sensitivity_manual_nf_fallback() {
+    // With an empty stage chain, sensitivity falls back to the manual NF input.
+    // sensitivity = -174 + 10*log10(0.1e6) + 6.5 + 15 = -102.5 dBm
+    ewpresenter::ReceiverPresenter p;
+    p.set_stages({});
+    ASSERT_NEAR(p.output().sensitivity.value, -102.5, 0.05);
+}
+
+void test_receiver_sensitivity_uses_cascaded_nf() {
+    // A single-stage chain collapses the Friis formula to that stage's own NF,
+    // giving an exact expected cascaded_nf independent of the manual NF input.
+    ewpresenter::ReceiverPresenter p;
+    p.set_stages({ ewpresenter::ReceiverPresenter::StageInput{20.0, 0.0} });
+    ASSERT_NEAR(p.output().cascaded_nf.value, 20.0, 0.01);
+    // sensitivity = -174 + 50 + 20 + 15 = -89.0 dBm, not the manual-NF value (-102.5).
+    ASSERT_NEAR(p.output().sensitivity.value, -89.0, 0.05);
 }
 
 void test_receiver_validation() {
@@ -111,6 +133,14 @@ void test_receiver_validation() {
     ASSERT_FALSE(p.output().valid);
     p.set_bandwidth(0.1);
     ASSERT_TRUE(p.output().valid);
+}
+
+void test_receiver_noise_figure_below_minimum() {
+    // Stage/system NF has a physical minimum of 0 dB (issue #9).
+    ewpresenter::ReceiverPresenter p;
+    p.set_noise_figure(-1.0);
+    ASSERT_TRUE(p.noise_figure_error() == ewpresenter::FieldError::below_minimum);
+    ASSERT_FALSE(p.output().valid);
 }
 
 // ============================================================================
@@ -267,7 +297,10 @@ int main() {
 
     RUN_TEST(test_receiver_default_valid);
     RUN_TEST(test_receiver_sensitivity);
+    RUN_TEST(test_receiver_sensitivity_manual_nf_fallback);
+    RUN_TEST(test_receiver_sensitivity_uses_cascaded_nf);
     RUN_TEST(test_receiver_validation);
+    RUN_TEST(test_receiver_noise_figure_below_minimum);
 
     RUN_TEST(test_jamming_default_valid);
     RUN_TEST(test_jamming_js_value);
