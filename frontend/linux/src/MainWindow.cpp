@@ -1,5 +1,6 @@
 // MainWindow.cpp
 #include "MainWindow.h"
+#include "Settings.h"
 #include "pages/PropagationPage.h"
 #include "pages/LinkPage.h"
 #include "pages/ReceiverPage.h"
@@ -10,6 +11,8 @@
 #include "pages/AntennaPage.h"
 #include "pages/ReferencePage.h"
 
+#include <QAction>
+#include <QApplication>
 #include <QBrush>
 #include <QColor>
 #include <QFont>
@@ -17,6 +20,10 @@
 #include <QIcon>
 #include <QListWidget>
 #include <QListWidgetItem>
+#include <QMenu>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QProcess>
 #include <QStackedWidget>
 #include <QWidget>
 
@@ -101,4 +108,21 @@ MainWindow::MainWindow(QWidget* parent)
     layout->addWidget(nav_);
     layout->addWidget(stack_, 1);
     setCentralWidget(central);
+
+    // ── File menu: reset persisted inputs (issue #20) ──────────────────────
+    auto* fileMenu = menuBar()->addMenu(tr("&File"));
+    auto* resetAction = fileMenu->addAction(tr("Reset to &Defaults\u2026"));
+    resetAction->setToolTip(tr("Clear all saved inputs and restart with default values"));
+    connect(resetAction, &QAction::triggered, this, [this] {
+        const auto choice = QMessageBox::question(
+            this, tr("Reset to Defaults"),
+            tr("This clears all saved inputs and restarts EW Calculator with "
+               "default values. Continue?"),
+            QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+        if (choice != QMessageBox::Yes)
+            return;
+        AppSettings::instance().resetAll();
+        QProcess::startDetached(QApplication::applicationFilePath(), QApplication::arguments().mid(1));
+        QApplication::quit();
+    });
 }

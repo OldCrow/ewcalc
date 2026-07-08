@@ -8,6 +8,10 @@
 #include <QScrollArea>
 #include <QVBoxLayout>
 
+namespace {
+const QString kGroup = QStringLiteral("Antenna");
+}
+
 AntennaPage::AntennaPage(QWidget* parent)
     : QWidget(parent)
 {
@@ -15,22 +19,39 @@ AntennaPage::AntennaPage(QWidget* parent)
     QFormLayout* inForm = nullptr;
     auto* inGroup = makeGroup(QStringLiteral("Antenna Parameters"), inForm);
 
-    auto* gainSb   = addSpinRow(inForm, QStringLiteral("Gain (dBi)"),         -10.0,  60.0,    presenter_.gain_dbi(),          1.0, 1);
-    auto* azBwSb   = addSpinRow(inForm, QStringLiteral("Az beamwidth (deg)"),   0.1, 360.0,    presenter_.az_beamwidth_deg(),  1.0, 1);
-    auto* elBwSb   = addSpinRow(inForm, QStringLiteral("El beamwidth (deg)"),   0.1, 360.0,    presenter_.el_beamwidth_deg(),  1.0, 1);
-    auto* txPwrSb  = addSpinRow(inForm, QStringLiteral("Tx power (dBm)"),     -30.0, 100.0,    presenter_.tx_power_dbm(),      1.0, 1);
-    auto* freqSb   = addSpinRow(inForm, QStringLiteral("Frequency (MHz)"),      0.1, 100000.0, presenter_.frequency_mhz(),     1.0, 1);
+    auto* gainSb = addSpinRow(inForm, QStringLiteral("Gain (dBi)"), -10.0, 60.0,
+        presenter_.gain_dbi(), 1.0, 1, kGroup, QStringLiteral("gain_dbi"),
+        QStringLiteral("Antenna gain relative to an isotropic radiator"));
+    auto* azBwSb = addSpinRow(inForm, QStringLiteral("Az beamwidth (deg)"), 0.1, 360.0,
+        presenter_.az_beamwidth_deg(), 1.0, 1, kGroup, QStringLiteral("az_beamwidth_deg"),
+        QStringLiteral("Azimuth 3 dB beamwidth \u2014 used with elevation beamwidth to estimate gain"));
+    auto* elBwSb = addSpinRow(inForm, QStringLiteral("El beamwidth (deg)"), 0.1, 360.0,
+        presenter_.el_beamwidth_deg(), 1.0, 1, kGroup, QStringLiteral("el_beamwidth_deg"),
+        QStringLiteral("Elevation 3 dB beamwidth"));
+    auto* txPwrSb = addSpinRow(inForm, QStringLiteral("Tx power (dBm)"), -30.0, 100.0,
+        presenter_.tx_power_dbm(), 1.0, 1, kGroup, QStringLiteral("tx_power_dbm"),
+        QStringLiteral("Transmitter output power \u2014 used to compute ERP"));
+    auto* freqSb = addSpinRow(inForm, QStringLiteral("Frequency (MHz)"), 0.1, 100000.0,
+        presenter_.frequency_mhz(), 1.0, 1, kGroup, QStringLiteral("frequency_mhz"),
+        QStringLiteral("Carrier frequency \u2014 used to compute free-space wavelength"));
 
     // ── Outputs ───────────────────────────────────────────────────────────────
     QFormLayout* outForm = nullptr;
     auto* outGroup = makeGroup(QStringLiteral("Results"), outForm);
 
-    erp_                 = addResultRow(outForm, QStringLiteral("ERP"));
-    beamwidth_from_gain_ = addResultRow(outForm, QStringLiteral("Beamwidth from gain"));
-    gain_from_beamwidth_ = addResultRow(outForm, QStringLiteral("Gain from beamwidth"));
-    wavelength_          = addResultRow(outForm, QStringLiteral("Wavelength"));
+    ResultRowRegistry results;
+    erp_ = addResultRow(outForm, QStringLiteral("ERP"),
+        QStringLiteral("Effective Radiated Power = Tx power + antenna gain"), &results);
+    beamwidth_from_gain_ = addResultRow(outForm, QStringLiteral("Beamwidth from gain"),
+        QStringLiteral("Approximate 3 dB beamwidth derived from gain (Tai & Pereira approximation)"), &results);
+    gain_from_beamwidth_ = addResultRow(outForm, QStringLiteral("Gain from beamwidth"),
+        QStringLiteral("Approximate gain from az \u00d7 el beamwidth: 10\u00b7log\u2081\u2080(30000 / (\u03b8_az \u00b7 \u03b8_el))"), &results);
+    wavelength_ = addResultRow(outForm, QStringLiteral("Wavelength"),
+        QStringLiteral("Free-space wavelength at the given frequency"), &results);
 
-    // ── Scroll container ──────────────────────────────────────────────────────
+    outForm->addRow(addCopyResultsButton(results));
+
+    // ── Scroll container ──────────────────────────────────────────────────────────
     auto* content = new QWidget;
     auto* vbox    = new QVBoxLayout(content);
     vbox->addWidget(inGroup);
@@ -57,6 +78,13 @@ AntennaPage::AntennaPage(QWidget* parent)
             [this](double v){ presenter_.set_tx_power(v); });
     connect(freqSb,  &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_frequency(v); });
+
+    // ── Restore persisted values (after presenter wiring, before first recompute) ──
+    restoreSpinValue(gainSb,  kGroup, QStringLiteral("gain_dbi"));
+    restoreSpinValue(azBwSb,  kGroup, QStringLiteral("az_beamwidth_deg"));
+    restoreSpinValue(elBwSb,  kGroup, QStringLiteral("el_beamwidth_deg"));
+    restoreSpinValue(txPwrSb, kGroup, QStringLiteral("tx_power_dbm"));
+    restoreSpinValue(freqSb,  kGroup, QStringLiteral("frequency_mhz"));
 
     presenter_.set_on_change([this](const ewpresenter::AntennaPresenter::Output& o){
         applyOutput(o);

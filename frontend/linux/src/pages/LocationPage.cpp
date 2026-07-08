@@ -8,39 +8,61 @@
 #include <QScrollArea>
 #include <QVBoxLayout>
 
+namespace {
+const QString kGroup = QStringLiteral("Location");
+}
+
 LocationPage::LocationPage(QWidget* parent)
     : QWidget(parent)
 {
-    // ── AOA inputs ────────────────────────────────────────────────────────────
+    // ── AOA inputs ────────────────────────────────────────────────────────────────
     QFormLayout* aoaForm = nullptr;
     auto* aoaGroup = makeGroup(QStringLiteral("AOA (Angle of Arrival)"), aoaForm);
 
-    auto* rmsBeSb = addSpinRow(aoaForm, QStringLiteral("RMS bearing error (\u00b0)"), 0.01, 45.0,    presenter_.rms_bearing_error_deg(), 0.1, 2);
-    auto* aoaRgSb = addSpinRow(aoaForm, QStringLiteral("Range (km)"),              0.1,  10000.0, presenter_.aoa_range_km(),          1.0, 1);
+    auto* rmsBeSb = addSpinRow(aoaForm, QStringLiteral("RMS bearing error (\u00b0)"), 0.01, 45.0,
+        presenter_.rms_bearing_error_deg(), 0.1, 2, kGroup, QStringLiteral("rms_bearing_error_deg"),
+        QStringLiteral("RMS angular error of the direction-finding receivers"));
+    auto* aoaRgSb = addSpinRow(aoaForm, QStringLiteral("Range (km)"), 0.1, 10000.0,
+        presenter_.aoa_range_km(), 1.0, 1, kGroup, QStringLiteral("aoa_range_km"),
+        QStringLiteral("Slant range from receivers to emitter \u2014 shared by AOA and TDOA calculations"));
 
-    // ── TDOA inputs ───────────────────────────────────────────────────────────────
+    // ── TDOA inputs ─────────────────────────────────────────────────────────
     QFormLayout* tdoaForm = nullptr;
     auto* tdoaGroup = makeGroup(QStringLiteral("TDOA (Time Difference of Arrival)"), tdoaForm);
 
-    auto* rmsTimeSb  = addSpinRow(tdoaForm, QStringLiteral("RMS timing error (ns)"), 0.001, 100000.0, presenter_.rms_time_error_ns(), 1.0, 3);
-    auto* baselineSb = addSpinRow(tdoaForm, QStringLiteral("Baseline (km)"),         0.1,   10000.0,  presenter_.baseline_km(),       1.0, 1);
+    auto* rmsTimeSb = addSpinRow(tdoaForm, QStringLiteral("RMS timing error (ns)"), 0.001, 100000.0,
+        presenter_.rms_time_error_ns(), 1.0, 3, kGroup, QStringLiteral("rms_time_error_ns"),
+        QStringLiteral("RMS TDOA measurement error \u2014 converts to a range-difference error via speed of light"));
+    auto* baselineSb = addSpinRow(tdoaForm, QStringLiteral("Baseline (km)"), 0.1, 10000.0,
+        presenter_.baseline_km(), 1.0, 1, kGroup, QStringLiteral("baseline_km"),
+        QStringLiteral("Receiver separation distance \u2014 wider baseline reduces CEP: CEP = c\u00b7\u03c3_t\u00b7R / (2\u00b7B)"));
 
-    // ── EEP inputs ───────────────────────────────────────────────────────────────
+    // ── EEP inputs ─────────────────────────────────────────────────────────
     QFormLayout* eepForm = nullptr;
     auto* eepGroup = makeGroup(QStringLiteral("EEP (Error Ellipse \u2192 CEP)"), eepForm);
 
-    auto* semiMajSb = addSpinRow(eepForm, QStringLiteral("Semi-major 1\u03c3 (km)"), 0.001, 1000.0, presenter_.semi_major_km(), 0.1, 3);
-    auto* semiMinSb = addSpinRow(eepForm, QStringLiteral("Semi-minor 1\u03c3 (km)"), 0.001, 1000.0, presenter_.semi_minor_km(), 0.1, 3);
+    auto* semiMajSb = addSpinRow(eepForm, QStringLiteral("Semi-major 1\u03c3 (km)"), 0.001, 1000.0,
+        presenter_.semi_major_km(), 0.1, 3, kGroup, QStringLiteral("semi_major_km"),
+        QStringLiteral("Semi-major axis of the 1\u03c3 error ellipse (must be \u2265 semi-minor)"));
+    auto* semiMinSb = addSpinRow(eepForm, QStringLiteral("Semi-minor 1\u03c3 (km)"), 0.001, 1000.0,
+        presenter_.semi_minor_km(), 0.1, 3, kGroup, QStringLiteral("semi_minor_km"),
+        QStringLiteral("Semi-minor axis of the 1\u03c3 error ellipse"));
 
     // ── Outputs ───────────────────────────────────────────────────────────────
     QFormLayout* outForm = nullptr;
     auto* outGroup = makeGroup(QStringLiteral("Results"), outForm);
 
-    cep_aoa_  = addResultRow(outForm, QStringLiteral("CEP (AOA)"));
-    cep_tdoa_ = addResultRow(outForm, QStringLiteral("CEP (TDOA)"));
-    cep_eep_  = addResultRow(outForm, QStringLiteral("CEP (EEP)"));
+    ResultRowRegistry results;
+    cep_aoa_ = addResultRow(outForm, QStringLiteral("CEP (AOA)"),
+        QStringLiteral("50% Circular Error Probable from angle-of-arrival: 1.2 \u00d7 range \u00d7 tan(RMS error)"), &results);
+    cep_tdoa_ = addResultRow(outForm, QStringLiteral("CEP (TDOA)"),
+        QStringLiteral("50% Circular Error Probable from TDOA: c\u00b7\u03c3_t\u00b7R / (2\u00b7B) \u2014 improves with wider baseline or shorter range"), &results);
+    cep_eep_ = addResultRow(outForm, QStringLiteral("CEP (EEP)"),
+        QStringLiteral("CEP from an Elliptical Error Probable: 0.59 \u00d7 (semi-major + semi-minor)"), &results);
 
-    // ── Scroll container ──────────────────────────────────────────────────────
+    outForm->addRow(addCopyResultsButton(results));
+
+    // ── Scroll container ──────────────────────────────────────────────────────────
     auto* content = new QWidget;
     auto* vbox    = new QVBoxLayout(content);
     vbox->addWidget(aoaGroup);
@@ -71,6 +93,14 @@ LocationPage::LocationPage(QWidget* parent)
             [this](double v){ presenter_.set_semi_major(v); });
     connect(semiMinSb, &QDoubleSpinBox::valueChanged, this,
             [this](double v){ presenter_.set_semi_minor(v); });
+
+    // ── Restore persisted values (after presenter wiring, before first recompute) ──
+    restoreSpinValue(rmsBeSb,    kGroup, QStringLiteral("rms_bearing_error_deg"));
+    restoreSpinValue(aoaRgSb,    kGroup, QStringLiteral("aoa_range_km"));
+    restoreSpinValue(rmsTimeSb,  kGroup, QStringLiteral("rms_time_error_ns"));
+    restoreSpinValue(baselineSb, kGroup, QStringLiteral("baseline_km"));
+    restoreSpinValue(semiMajSb,  kGroup, QStringLiteral("semi_major_km"));
+    restoreSpinValue(semiMinSb,  kGroup, QStringLiteral("semi_minor_km"));
 
     presenter_.set_on_change([this](const ewpresenter::LocationPresenter::Output& o){
         applyOutput(o);
