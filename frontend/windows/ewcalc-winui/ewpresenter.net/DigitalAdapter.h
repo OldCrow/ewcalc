@@ -7,7 +7,7 @@ namespace EwPresenterNet {
 
 public value struct DigitalOutput {
     System::String^ EbNoStr;
-    System::String^ SnrFromEbNoStr;
+    System::String^ RequiredSnrForEbNoStr;
     System::String^ ProcessGainStr;
     System::String^ JammingMarginStr;
     System::String^ RequiredJsStr;
@@ -22,12 +22,12 @@ public:
     ~DigitalAdapter();
     !DigitalAdapter();
 
-    void SetSnr               (double db)   { presenter_->set_snr(RoundInput(db));                      }
-    void SetBandwidth         (double mhz)  { presenter_->set_bandwidth(RoundInput(mhz));               }
-    void SetDataRate          (double mbps) { presenter_->set_data_rate(RoundInput(mbps));              }
-    void SetChipRate          (double mcps) { presenter_->set_chip_rate(RoundInput(mcps));              }
-    void SetRequiredEbNo      (double db)   { presenter_->set_required_eb_no(RoundInput(db));           }
-    void SetImplementationLoss(double db)   { presenter_->set_implementation_loss(RoundInput(db));      }
+    void SetSnr               (double db)   { presenter_->set_snr(db);                      }
+    void SetBandwidth         (double mhz)  { presenter_->set_bandwidth(mhz);               }
+    void SetDataRate          (double mbps) { presenter_->set_data_rate(mbps);              }
+    void SetChipRate          (double mcps) { presenter_->set_chip_rate(mcps);              }
+    void SetRequiredEbNo      (double db)   { presenter_->set_required_eb_no(db);           }
+    void SetImplementationLoss(double db)   { presenter_->set_implementation_loss(db);      }
 
     property double DefaultSnr                { double get() { return presenter_->snr_db();                   } }
     property double DefaultBandwidth          { double get() { return presenter_->bandwidth_mhz();            } }
@@ -56,9 +56,9 @@ private:
 
     static DigitalOutput Snapshot(const ewpresenter::DigitalPresenter::Output& o) {
         DigitalOutput s{};
-        s.EbNoStr          = ToManaged(o.eb_no_str);
-        s.SnrFromEbNoStr   = ToManaged(o.snr_from_eb_no_str);
-        s.ProcessGainStr   = ToManaged(o.process_gain_str);
+        s.EbNoStr               = ToManaged(o.eb_no_str);
+        s.RequiredSnrForEbNoStr = ToManaged(o.required_snr_for_eb_no_str);
+        s.ProcessGainStr        = ToManaged(o.process_gain_str);
         s.JammingMarginStr = ToManaged(o.jamming_margin_str);
         s.RequiredJsStr    = ToManaged(o.required_js_str);
         s.Valid            = o.valid;

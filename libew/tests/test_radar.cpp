@@ -21,6 +21,10 @@ void test_coherent_integration_gain() {
 
 void test_radar_range_computed() {
     // Correctness test with analytically-derived expected value.
+    // Note (issue #14 item 2): the expected value below is hand-derived from
+    // the documented radar range equation (see the derivation comment), not
+    // computed by calling radar_range() itself, so this is a genuine
+    // independent reference check rather than a self-referential round-trip.
     //
     // Inputs: Pt=60 dBm, G=30 dBi, σ=0 dBsm, f=3 GHz, L=3 dB, NF=5 dB, B=1 MHz, SNR=13 dB
     //
@@ -53,11 +57,20 @@ void test_wavelength() {
     ASSERT_NEAR(wavelength_m(300.0_MHz).value, 0.9993, 0.001);
 }
 
+void test_lpi_advantage() {
+    // lpi_advantage = 10*log10(TB) / 4
+    // TB = 100   → 10*log10(100)/4   = 10*2/4  = 5.0 dB
+    // TB = 10000 → 10*log10(10000)/4 = 10*4/4  = 10.0 dB
+    ASSERT_NEAR(lpi_advantage(100.0).value, 5.0, 0.01);
+    ASSERT_NEAR(lpi_advantage(10000.0).value, 10.0, 0.01);
+}
+
 int main() {
     std::cout << "=== test_radar ===\n";
     RUN_TEST(test_pulse_compression_gain);
     RUN_TEST(test_coherent_integration_gain);
     RUN_TEST(test_radar_range_computed);
     RUN_TEST(test_wavelength);
+    RUN_TEST(test_lpi_advantage);
     return test::summary();
 }

@@ -214,6 +214,8 @@ double        ewp_jamming_signal_height(EwpJammingRef ref);
 double        ewp_jamming_jammer_height(EwpJammingRef ref);
 double        ewp_jamming_rx_height(EwpJammingRef ref);
 double        ewp_jamming_frequency(EwpJammingRef ref);
+double        ewp_jamming_rx_gain_signal(EwpJammingRef ref);
+double        ewp_jamming_rx_gain_jammer(EwpJammingRef ref);
 double        ewp_jamming_signal_bandwidth(EwpJammingRef ref);
 double        ewp_jamming_hop_range(EwpJammingRef ref);
 double        ewp_jamming_js_threshold(EwpJammingRef ref);
@@ -335,7 +337,7 @@ EwpRadarOutput ewp_radar_output(EwpRadarRef ref);
 
 typedef struct EwpDigitalOutput {
     char eb_no_str[EWP_STR_MAX];
-    char snr_from_eb_no_str[EWP_STR_MAX];
+    char required_snr_for_eb_no_str[EWP_STR_MAX];
     char process_gain_str[EWP_STR_MAX];
     char jamming_margin_str[EWP_STR_MAX];
     char required_js_str[EWP_STR_MAX];

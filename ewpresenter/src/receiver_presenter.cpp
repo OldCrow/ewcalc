@@ -76,10 +76,6 @@ void ReceiverPresenter::recompute() noexcept {
     using namespace libew::units;
     using namespace libew::receiver;
 
-    // Sensitivity
-    output_.sensitivity = system_sensitivity(
-        Mhz{bandwidth_mhz_}, Db{noise_figure_db_}, Db{required_snr_db_});
-
     // Cascaded NF from stage chain
     if (!stages_.empty()) {
         std::vector<Stage> chain;
@@ -90,6 +86,13 @@ void ReceiverPresenter::recompute() noexcept {
     } else {
         output_.cascaded_nf = Db{noise_figure_db_};
     }
+
+    // Sensitivity: use the cascaded NF from the stage chain when one is defined,
+    // since it reflects the actual system noise contribution. Manual NF is only
+    // a fallback when no stages are present.
+    const double effective_nf = stages_.empty() ? noise_figure_db_ : output_.cascaded_nf.value;
+    output_.sensitivity = system_sensitivity(
+        Mhz{bandwidth_mhz_}, Db{effective_nf}, Db{required_snr_db_});
 
     // SFDR
     const Dbm sens = output_.sensitivity;

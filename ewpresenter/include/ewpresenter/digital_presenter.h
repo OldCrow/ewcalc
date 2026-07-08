@@ -21,8 +21,8 @@ public:
         // Eb/N₀ section
         Db  eb_no{};
         std::string eb_no_str;            ///< Eb/N₀ from received SNR
-        Db  snr_from_eb_no{};
-        std::string snr_from_eb_no_str;   ///< SNR recovered from Eb/N₀ (inverse check)
+        Db  required_snr_for_eb_no{};
+        std::string required_snr_for_eb_no_str; ///< SNR required to achieve required_eb_no_db_
 
         // DSSS section
         Db  process_gain{};

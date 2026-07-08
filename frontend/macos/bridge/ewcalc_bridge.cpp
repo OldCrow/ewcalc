@@ -167,9 +167,9 @@ struct DigitalWrapper {
 
 static EwpDigitalOutput to_c(const ewpresenter::DigitalPresenter::Output& o) noexcept {
     EwpDigitalOutput out{};
-    copy_str(out.eb_no_str,           o.eb_no_str);
-    copy_str(out.snr_from_eb_no_str,  o.snr_from_eb_no_str);
-    copy_str(out.process_gain_str,    o.process_gain_str);
+    copy_str(out.eb_no_str,                    o.eb_no_str);
+    copy_str(out.required_snr_for_eb_no_str,   o.required_snr_for_eb_no_str);
+    copy_str(out.process_gain_str,             o.process_gain_str);
     copy_str(out.jamming_margin_str,  o.jamming_margin_str);
     copy_str(out.required_js_str,     o.required_js_str);
     out.valid = o.valid;
@@ -368,6 +368,8 @@ double           ewp_jamming_signal_height(EwpJammingRef ref)    { return cast<J
 double           ewp_jamming_jammer_height(EwpJammingRef ref)    { return cast<JammingWrapper>(ref)->presenter.jammer_height_m(); }
 double           ewp_jamming_rx_height(EwpJammingRef ref)        { return cast<JammingWrapper>(ref)->presenter.rx_height_m(); }
 double           ewp_jamming_frequency(EwpJammingRef ref)        { return cast<JammingWrapper>(ref)->presenter.frequency_mhz(); }
+double           ewp_jamming_rx_gain_signal(EwpJammingRef ref)   { return cast<JammingWrapper>(ref)->presenter.rx_gain_signal_db(); }
+double           ewp_jamming_rx_gain_jammer(EwpJammingRef ref)   { return cast<JammingWrapper>(ref)->presenter.rx_gain_jammer_db(); }
 double           ewp_jamming_signal_bandwidth(EwpJammingRef ref) { return cast<JammingWrapper>(ref)->presenter.signal_bandwidth_mhz(); }
 double           ewp_jamming_hop_range(EwpJammingRef ref)        { return cast<JammingWrapper>(ref)->presenter.hop_range_mhz(); }
 double           ewp_jamming_js_threshold(EwpJammingRef ref)     { return cast<JammingWrapper>(ref)->presenter.js_threshold_db(); }

@@ -43,11 +43,11 @@ void DigitalPresenter::recompute() noexcept {
     output_.valid = eb_no_valid;
 
     if (!eb_no_valid) {
-        output_.eb_no_str          = kDash;
-        output_.snr_from_eb_no_str = kDash;
-        output_.process_gain_str   = kDash;
-        output_.jamming_margin_str = kDash;
-        output_.required_js_str    = kDash;
+        output_.eb_no_str                   = kDash;
+        output_.required_snr_for_eb_no_str  = kDash;
+        output_.process_gain_str            = kDash;
+        output_.jamming_margin_str          = kDash;
+        output_.required_js_str             = kDash;
         return;
     }
 
@@ -55,11 +55,18 @@ void DigitalPresenter::recompute() noexcept {
 
     output_.eb_no = libew::digital::eb_no_from_snr(
         Db{snr_db_}, Mhz{bandwidth_mhz_}, Mhz{data_rate_mhz_});
-    output_.snr_from_eb_no = libew::digital::snr_from_eb_no(
-        output_.eb_no, Mhz{bandwidth_mhz_}, Mhz{data_rate_mhz_});
+    output_.eb_no_str = format_db(output_.eb_no);
 
-    output_.eb_no_str          = format_db(output_.eb_no);
-    output_.snr_from_eb_no_str = format_db(output_.snr_from_eb_no);
+    // SNR required to hit the target Eb/N₀ threshold, given the same bandwidth
+    // and data rate. Depends on required_eb_no_db_, which is not part of
+    // eb_no_valid, so its own error must be checked separately.
+    if (required_eb_no_err_ == FieldError::none) {
+        output_.required_snr_for_eb_no = libew::digital::snr_from_eb_no(
+            Db{required_eb_no_db_}, Mhz{bandwidth_mhz_}, Mhz{data_rate_mhz_});
+        output_.required_snr_for_eb_no_str = format_db(output_.required_snr_for_eb_no);
+    } else {
+        output_.required_snr_for_eb_no_str = "N/A";
+    }
 
     if (!dsss_valid) {
         output_.process_gain_str   = "N/A";

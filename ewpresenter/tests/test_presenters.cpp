@@ -98,11 +98,33 @@ void test_receiver_default_valid() {
 }
 
 void test_receiver_sensitivity() {
-    // sensitivity = -174 + 10*log10(bw_hz) + NF + SNR
-    //             = -174 + 10*log10(0.1e6) + 6.5 + 15
-    //             = -174 + 50 + 6.5 + 15 = -102.5 dBm
+    // With the default (non-empty) stage chain, sensitivity uses the cascaded
+    // NF from the Friis formula rather than the manual NF input (issue #11).
+    // Cascaded NF for the default chain {(1,-1),(3,20),(10,-10),(11,0)} dB
+    // works out to ~6.111 dB via Friis, vs. the manual NF input of 6.5 dB.
+    // sensitivity = -174 + 10*log10(bw_hz) + cascaded_NF + SNR
+    //             = -174 + 10*log10(0.1e6) + 6.111 + 15
+    //             = -174 + 50 + 6.111 + 15 = -102.89 dBm
     ewpresenter::ReceiverPresenter p;
-    ASSERT_NEAR(p.output().sensitivity.value, -102.5, 0.1);
+    ASSERT_NEAR(p.output().sensitivity.value, -102.89, 0.05);
+}
+
+void test_receiver_sensitivity_manual_nf_fallback() {
+    // With an empty stage chain, sensitivity falls back to the manual NF input.
+    // sensitivity = -174 + 10*log10(0.1e6) + 6.5 + 15 = -102.5 dBm
+    ewpresenter::ReceiverPresenter p;
+    p.set_stages({});
+    ASSERT_NEAR(p.output().sensitivity.value, -102.5, 0.05);
+}
+
+void test_receiver_sensitivity_uses_cascaded_nf() {
+    // A single-stage chain collapses the Friis formula to that stage's own NF,
+    // giving an exact expected cascaded_nf independent of the manual NF input.
+    ewpresenter::ReceiverPresenter p;
+    p.set_stages({ ewpresenter::ReceiverPresenter::StageInput{20.0, 0.0} });
+    ASSERT_NEAR(p.output().cascaded_nf.value, 20.0, 0.01);
+    // sensitivity = -174 + 50 + 20 + 15 = -89.0 dBm, not the manual-NF value (-102.5).
+    ASSERT_NEAR(p.output().sensitivity.value, -89.0, 0.05);
 }
 
 void test_receiver_validation() {
@@ -111,6 +133,14 @@ void test_receiver_validation() {
     ASSERT_FALSE(p.output().valid);
     p.set_bandwidth(0.1);
     ASSERT_TRUE(p.output().valid);
+}
+
+void test_receiver_noise_figure_below_minimum() {
+    // Stage/system NF has a physical minimum of 0 dB (issue #9).
+    ewpresenter::ReceiverPresenter p;
+    p.set_noise_figure(-1.0);
+    ASSERT_TRUE(p.noise_figure_error() == ewpresenter::FieldError::below_minimum);
+    ASSERT_FALSE(p.output().valid);
 }
 
 // ============================================================================
@@ -152,10 +182,33 @@ void test_digital_eb_no_value() {
     ASSERT_NEAR(p.output().eb_no.value, 20.0, 0.01);
 }
 
-void test_digital_snr_roundtrip() {
-    // snr_from_eb_no should recover the original SNR input (10 dB)
+void test_digital_required_snr_for_eb_no_value() {
+    // required_snr_for_eb_no = required_eb_no - 10*log10(BW/Rb)
+    //                        = 10 - 10*log10(1.0/0.1) = 10 - 10 = 0 dB
     ewpresenter::DigitalPresenter p;
-    ASSERT_NEAR(p.output().snr_from_eb_no.value, 10.0, 0.01);
+    ASSERT_NEAR(p.output().required_snr_for_eb_no.value, 0.0, 0.01);
+}
+
+void test_digital_required_snr_for_eb_no_tracks_required_eb_no() {
+    // Raising required_eb_no by 5 dB should raise required_snr_for_eb_no by 5 dB,
+    // independent of the received SNR input (no identity round-trip with snr_db_).
+    ewpresenter::DigitalPresenter p;
+    const double before = p.output().required_snr_for_eb_no.value;
+    p.set_required_eb_no(15.0);   // default is 10.0
+    ASSERT_NEAR(p.output().required_snr_for_eb_no.value, before + 5.0, 0.01);
+    p.set_required_eb_no(10.0);   // restore
+}
+
+void test_digital_required_snr_for_eb_no_invalid_when_required_eb_no_invalid() {
+    // An out-of-range required_eb_no must dash the required-SNR output while
+    // leaving the Eb/N₀ section (and overall validity) untouched.
+    ewpresenter::DigitalPresenter p;
+    p.set_required_eb_no(100.0);   // exceeds max (30 dB)
+    ASSERT_TRUE(p.output().valid);
+    ASSERT_TRUE(p.output().required_snr_for_eb_no_str == "N/A");
+    ASSERT_FALSE(p.output().eb_no_str == "N/A");
+    p.set_required_eb_no(10.0);    // restore
+    ASSERT_FALSE(p.output().required_snr_for_eb_no_str == "N/A");
 }
 
 void test_digital_dsss_values() {
@@ -267,7 +320,10 @@ int main() {
 
     RUN_TEST(test_receiver_default_valid);
     RUN_TEST(test_receiver_sensitivity);
+    RUN_TEST(test_receiver_sensitivity_manual_nf_fallback);
+    RUN_TEST(test_receiver_sensitivity_uses_cascaded_nf);
     RUN_TEST(test_receiver_validation);
+    RUN_TEST(test_receiver_noise_figure_below_minimum);
 
     RUN_TEST(test_jamming_default_valid);
     RUN_TEST(test_jamming_js_value);
@@ -275,7 +331,9 @@ int main() {
 
     RUN_TEST(test_digital_default_valid);
     RUN_TEST(test_digital_eb_no_value);
-    RUN_TEST(test_digital_snr_roundtrip);
+    RUN_TEST(test_digital_required_snr_for_eb_no_value);
+    RUN_TEST(test_digital_required_snr_for_eb_no_tracks_required_eb_no);
+    RUN_TEST(test_digital_required_snr_for_eb_no_invalid_when_required_eb_no_invalid);
     RUN_TEST(test_digital_dsss_values);
     RUN_TEST(test_digital_validity_split_dsss_invalid);
     RUN_TEST(test_digital_chip_rate_below_data_rate);

@@ -64,6 +64,11 @@ void test_format_db() {
     ASSERT_SIZE(format_db(Db{-100.0}, 3));
 }
 
+// Regression test for issue #8: IEEE 754 negative zero must not render as "-0.0".
+void test_format_db_negative_zero() {
+    ASSERT_TRUE(format_db(Db{-0.0}) == "0.0 dB");
+}
+
 void test_format_dbsm() {
     ASSERT_SIZE(format_dbsm(Dbsm{-40.0}));
     ASSERT_SIZE(format_dbsm(Dbsm{ 60.0}));
@@ -142,6 +147,7 @@ int main() {
     RUN_TEST(test_format_dbw);
     RUN_TEST(test_format_watts);
     RUN_TEST(test_format_db);
+    RUN_TEST(test_format_db_negative_zero);
     RUN_TEST(test_format_dbsm);
     RUN_TEST(test_format_mhz);
     RUN_TEST(test_format_ghz);
