@@ -1,5 +1,6 @@
 // ReferencePage.cpp
 #include "ReferencePage.h"
+#include "PageUtils.h"
 
 #include <initializer_list>
 
@@ -90,14 +91,20 @@ static const RefSection kSections[] = {
 
 /// Adds one reference row to @p form.
 /// Rows with a copy value get a small "⧉" button; others get a spacer.
+/// When @p registry is non-null, appends {label, valLbl} so a page-level
+/// "Copy Results" button can include this row.
 static void addRefRow(QFormLayout* form,
                       const QString& label,
                       const QString& value,
-                      const QString& copyValue)
+                      const QString& copyValue,
+                      ResultRowRegistry* registry)
 {
     auto* valLbl = new QLabel(value);
     valLbl->setTextInteractionFlags(Qt::TextSelectableByMouse);
     valLbl->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    valLbl->setAccessibleName(label);
+    if (registry)
+        registry->append({label, valLbl});
 
     // All rows use the same HBox layout so value text aligns consistently:
     // [value label — stretch] [copy button or fixed spacer — 26px]
@@ -112,6 +119,7 @@ static void addRefRow(QFormLayout* form,
         btn->setFixedWidth(26);
         btn->setFlat(true);
         btn->setToolTip(QStringLiteral("Copy ") + copyValue);
+        btn->setAccessibleName(QStringLiteral("Copy ") + label);
         const QString cv = copyValue;
         QObject::connect(btn, &QPushButton::clicked, btn, [cv](){
             QGuiApplication::clipboard()->setText(cv);
@@ -137,6 +145,7 @@ ReferencePage::ReferencePage(QWidget* parent)
     auto* content = new QWidget;
     auto* vbox    = new QVBoxLayout(content);
 
+    ResultRowRegistry results;
     for (const auto& section : kSections) {
         QFormLayout* form = nullptr;
         auto* box  = new QGroupBox(QString::fromUtf8(section.title));
@@ -146,10 +155,12 @@ ReferencePage::ReferencePage(QWidget* parent)
             addRefRow(form,
                       QString::fromUtf8(e.label),
                       QString::fromUtf8(e.value),
-                      e.copyValue ? QString::fromUtf8(e.copyValue) : QString{});
+                      e.copyValue ? QString::fromUtf8(e.copyValue) : QString{},
+                      &results);
         }
         vbox->addWidget(box);
     }
+    vbox->addWidget(addCopyResultsButton(results));
     vbox->addStretch();
 
     auto* scroll = new QScrollArea(this);
