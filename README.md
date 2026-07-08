@@ -78,6 +78,8 @@ and `xcrun notarytool` credentials stored under the `ewcalc-notarytool` profile.
 
 ## Current status
 
+**v0.7.0** — Correctness milestone (8 issues): `partial_band_jamming()` no longer caps jamming bandwidth at the signal bandwidth for J/S ≥ 0 dB — it now widens correctly per Adamy EW101 ch. 10; `-0.0` values normalize to `0.0` in formatted output; stage NF input ranges on macOS/Linux now match the presenter's `[0, 30]` dB validation; `ReceiverPresenter` sensitivity uses the cascaded NF from the stage chain when one is defined; the Digital page's SNR-from-Eb/N₀ output is replaced with the SNR required to hit a target Eb/N₀; missing jamming RX-gain bridge getters added; Windows adapters no longer truncate input to 6 significant figures via `RoundInput`; new `lpi_advantage` and partial-band regression tests.
+
 **v0.6.6** — Architectural audit fixes: SFDR2 coefficient corrected to 1/2; presenter validators reject non-finite values; Receiver stage gain validation; public API invalid-input sentinels; full 2-ray burnthrough inversion; `Dbsm - Dbsm -> Db`; formatter dash sentinel consolidation; macOS receiver stage-state fix; Windows obstruction-height error binding and stage reindexing.
 
 **v0.6.5** — Complete `FieldValidationError` coverage across all 8 Windows C++/CLI adapters (Antenna, Digital, Jamming were 0/N; Location, Receiver, Propagation were partial); `partial_band_jamming` domain guard assert.

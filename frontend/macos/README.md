@@ -105,10 +105,15 @@ Each Swift adapter class wraps the C bridge for one presenter. It:
 adding a new Swift file, add it to the `SWIFT_SOURCES` list in
 `frontend/macos/CMakeLists.txt`.
 
-## Current state (v0.6.6)
+## Current state (v0.7.0)
 
 Nine calculator pages: Propagation, Antenna, Link Budget, Receiver,
 Jamming, Location, Radar, Digital/DSSS, and Reference.
+
+v0.7.0 adds `ewp_jamming_rx_gain_signal`/`ewp_jamming_rx_gain_jammer` bridge
+getters so `JammingView` reads live presenter values instead of hardcoded
+`0.0` (#12); tightens the Receiver stage NF range to 0–30 dB (#9); and
+updates `DigitalView` for the renamed required-SNR-for-Eb/N₀ output (#10).
 
 macOS v0.6.6 fixes Receiver stage row state after removal, corrects the SFDR2
 help text, and documents the adapter lifetime contract for `passUnretained`.

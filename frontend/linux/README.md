@@ -89,10 +89,14 @@ clears it when the input is valid. This keeps all validation logic in the
 presenter layer — the Qt layer only reacts to the `FieldError` value it
 receives from the output struct.
 
-## Current state (v0.6.6)
+## Current state (v0.7.0)
 
 Nine calculator pages: Propagation, Antenna, Link Budget, Receiver,
 Jamming, Location, Radar, Digital/DSSS, and Reference.
+
+v0.7.0 tightens the Receiver stage NF `QDoubleSpinBox` range to 0–30 dB to
+match presenter validation (#9), and updates `DigitalPage` for the renamed
+required-SNR-for-Eb/N₀ output (#10).
 
 v0.6.6 documents `makeSpinBox` ownership. No runtime Linux frontend changes in
 v0.6.5, v0.6.4, or v0.6.3 — those releases focused on the core library and

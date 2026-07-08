@@ -88,10 +88,18 @@ Each item's `NoiseFigureDb` and `GainDb` setters call `PushStages()` which
 rebuilds the full `StageInput[]` and calls `ReceiverAdapter.SetStages()`.
 Add/Remove buttons are bound to `ICommand` properties.
 
-## Current state (v0.6.6)
+## Current state (v0.7.0)
 
 This frontend covers all nine calculator pages (Propagation, Antenna, Link Budget,
 Receiver, Jamming, Location, Radar, Digital/DSSS, Reference) at v0.6 parity with macOS.
+
+## Completed in v0.7.0
+
+Removed the `RoundInput()` 6-sig-fig truncation wrapper from every adapter setter
+(`ReceiverAdapter.h`, `RadarAdapter.h`, `LinkAdapter.h`, and all others), eliminating
+cross-platform input divergence from macOS/Linux (#13). Renamed the Digital page's
+SNR-from-Eb/N₀ output to the SNR required for a target Eb/N₀ in `DigitalViewModel.cs`,
+`DigitalAdapter.h`, and `DigitalPage.xaml` (#10).
 
 ## Completed in v0.6.6
 
