@@ -105,10 +105,26 @@ Each Swift adapter class wraps the C bridge for one presenter. It:
 adding a new Swift file, add it to the `SWIFT_SOURCES` list in
 `frontend/macos/CMakeLists.txt`.
 
-## Current state (v0.7.0)
+## Current state (v0.8.0)
 
 Nine calculator pages: Propagation, Antenna, Link Budget, Receiver,
 Jamming, Location, Radar, Digital/DSSS, and Reference.
+
+v0.8.0 (UX parity & accessibility, #16/#17/#19/#20/#21):
+- Per-field validation errors from `EwpFieldError` are now published by every
+  adapter and shown as a red field outline plus a tooltip message (#16).
+- `InputRow` clamps out-of-range input to its declared bounds on every
+  commit; presenter-side errors remain surfaced for checks a fixed range
+  can't express, e.g. semi-minor > semi-major in `LocationView` (#17).
+- VoiceOver labels/values added across all input rows, result rows, and the
+  few hand-built controls (ADC bits, coherent pulses, receiver stage rows,
+  Reference copy buttons) (#19).
+- User inputs persist across launches via a versioned `SavedInputs` snapshot
+  in `UserDefaults`, restored before the first page renders; a toolbar
+  "Reset to Defaults" action restores the presenter's compiled-in defaults
+  and clears the saved data (#20).
+- Each calculator page has a "Copy Results" toolbar button that copies all
+  result fields to the pasteboard as `Label: Value` lines (#21).
 
 v0.7.0 adds `ewp_jamming_rx_gain_signal`/`ewp_jamming_rx_gain_jammer` bridge
 getters so `JammingView` reads live presenter values instead of hardcoded

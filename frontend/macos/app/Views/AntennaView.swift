@@ -19,23 +19,37 @@ struct AntennaView: View {
         _frequency     = State(initialValue: adapter.defaultFrequency)
     }
 
+    private var resultsForCopy: [(label: String, value: String)] {
+        [
+            ("ERP",                 cStr(adapter.output.erp_str)),
+            ("Beamwidth from gain", cStr(adapter.output.beamwidth_from_gain_str)),
+            ("Gain from beamwidth", cStr(adapter.output.gain_from_beamwidth_str)),
+            ("Wavelength",          cStr(adapter.output.wavelength_str)),
+        ]
+    }
+
     var body: some View {
         Form {
             Section("Antenna Parameters") {
                 InputRow("Gain", unit: "dBi", value: $gain,
                          in: -10...60,
+                         error: adapter.gainError,
                          help: "Antenna gain relative to an isotropic radiator") { adapter.setGain($0) }
                 InputRow("Az beamwidth", unit: "deg", value: $azBeamwidth,
                          in: 0.1...360,
+                         error: adapter.azBeamwidthError,
                          help: "Azimuth 3 dB beamwidth — used with elevation beamwidth to estimate gain") { adapter.setAzBeamwidth($0) }
                 InputRow("El beamwidth", unit: "deg", value: $elBeamwidth,
                          in: 0.1...360,
+                         error: adapter.elBeamwidthError,
                          help: "Elevation 3 dB beamwidth") { adapter.setElBeamwidth($0) }
                 InputRow("Tx power", unit: "dBm", value: $txPower,
                          in: -30...100,
+                         error: adapter.txPowerError,
                          help: "Transmitter output power — used to compute ERP") { adapter.setTxPower($0) }
                 InputRow("Frequency", unit: "MHz", value: $frequency,
                          in: 0.1...100000, step: 10, decimals: 1,
+                         error: adapter.frequencyError,
                          help: "Carrier frequency — used to compute free-space wavelength") { adapter.setFrequency($0) }
             }
             Section("Results") {
@@ -51,5 +65,10 @@ struct AntennaView: View {
         }
         .formStyle(.grouped)
         .navigationTitle("Antenna")
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                CopyResultsButton(rows: resultsForCopy)
+            }
+        }
     }
 }

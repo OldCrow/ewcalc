@@ -24,23 +24,40 @@ struct ReceiverView: View {
         _stages      = State(initialValue: adapter.defaultStages)
     }
 
+    private var resultsForCopy: [(label: String, value: String)] {
+        [
+            ("Sensitivity",      cStr(adapter.output.sensitivity_str)),
+            ("Cascaded NF",      cStr(adapter.output.cascaded_nf_str)),
+            ("Sys. noise temp",  cStr(adapter.output.system_noise_temp_str)),
+            ("Sys. NF equiv.",   cStr(adapter.output.system_nf_str)),
+            ("SFDR (2nd order)", cStr(adapter.output.sfdr2_str)),
+            ("SFDR (3rd order)", cStr(adapter.output.sfdr3_str)),
+            ("Digital DR",       cStr(adapter.output.digital_dr_str)),
+        ]
+    }
+
     var body: some View {
         Form {
             Section("System Inputs") {
                 InputRow("Bandwidth", unit: "MHz", value: $bandwidth,
                          in: 0.001...10000, step: 0.1, decimals: 3,
+                         error: adapter.bandwidthError,
                          help: "IF noise bandwidth — wider bandwidth raises the noise floor and degrades sensitivity") { adapter.setBandwidth($0) }
                 InputRow("Noise figure", unit: "dB", value: $noiseFigure,
                          in: 0...30, step: 0.5,
+                         error: adapter.noiseFigureError,
                          help: "System noise figure — NF = 0 dB is ideal (noiseless); each additional dB raises the sensitivity floor") { adapter.setNoiseFigure($0) }
                 InputRow("Required SNR", unit: "dB", value: $requiredSnr,
                          in: -20...50, step: 0.5,
+                         error: adapter.requiredSnrError,
                          help: "Minimum pre-detection SNR for acceptable output — depends on modulation and required BER") { adapter.setRequiredSnr($0) }
                 InputRow("IIP2", unit: "dBm", value: $iip2,
                          in: -50...100,
+                         error: adapter.secondOrderError,
                          help: "Second-order input intercept point — sets the 2nd-order intermodulation floor") { adapter.setSecondOrderIp($0) }
                 InputRow("IIP3", unit: "dBm", value: $iip3,
                          in: -50...100,
+                         error: adapter.thirdOrderError,
                          help: "Third-order input intercept point — sets the 3rd-order intermodulation floor; typically the tighter limit") { adapter.setThirdOrderIp($0) }
                 LabeledContent("ADC bits") {
                     HStack(spacing: 4) {
@@ -48,12 +65,20 @@ struct ReceiverView: View {
                             .frame(width: 100)
                             .textFieldStyle(.roundedBorder)
                             .multilineTextAlignment(.trailing)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 5)
+                                    .stroke(adapter.adcBitsError.isError ? Color.red : Color.clear, lineWidth: 1.5)
+                            )
+                            .accessibilityLabel("ADC bits")
+                            .accessibilityValue("\(adcBits)")
                         Stepper("", value: $adcBits, in: 1...64)
                             .labelsHidden()
+                            .accessibilityLabel("ADC bits stepper")
                         // Blank spacer matching the unit label width in InputRow
                         Spacer().frame(width: 38)
                     }
                 }
+                .help(adapter.adcBitsError.isError ? adapter.adcBitsError.message : "")
                 .onChange(of: adcBits) { adapter.setAdcBits($0) }
             }
             Section("Noise Chain Stages") {
@@ -61,7 +86,7 @@ struct ReceiverView: View {
                     // Pass a Binding into the parent stages array so StageRow
                     // never holds local @State copies — removes stale-value bug
                     // after stage removal (SW-1).
-                    StageRow(index: i, stage: $stages[i]) { updated in
+                    StageRow(index: i, stage: $stages[i], error: adapter.stageNfError) { updated in
                         stages[i] = updated
                         adapter.setStages(stages)
                     } onRemove: {
@@ -75,6 +100,7 @@ struct ReceiverView: View {
                     adapter.setStages(stages)
                 }
                 .buttonStyle(.borderless)
+                .accessibilityLabel("Add noise chain stage")
             }
             Section("Results") {
                 ResultRow("Sensitivity",      cStr(adapter.output.sensitivity_str),
@@ -95,6 +121,11 @@ struct ReceiverView: View {
         }
         .formStyle(.grouped)
         .navigationTitle("Receiver")
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                CopyResultsButton(rows: resultsForCopy)
+            }
+        }
     }
 }
 
@@ -106,6 +137,9 @@ struct ReceiverView: View {
 private struct StageRow: View {
     let index:    Int
     @Binding var stage: EwpStageInput
+    /// Aggregate stage-chain NF validation error from the bridge (one value
+    /// for the whole chain, not per-stage — see ReceiverAdapter.stageNfError).
+    let error:    EwpFieldError
     let onChange: (EwpStageInput) -> Void
     let onRemove: () -> Void
 
@@ -121,8 +155,15 @@ private struct StageRow: View {
                     .multilineTextAlignment(.trailing)
                     .textFieldStyle(.roundedBorder)
                     .frame(width: 68)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 5)
+                            .stroke(error.isError ? Color.red : Color.clear, lineWidth: 1.5)
+                    )
+                    .accessibilityLabel("Stage \(index + 1) noise figure")
+                    .accessibilityValue("\(stage.noise_figure_db) dB")
                 Stepper("", value: $stage.noise_figure_db, in: 0...30, step: 0.5).labelsHidden()
-                Text("dB").foregroundStyle(.secondary).frame(width: 22)
+                    .accessibilityLabel("Stage \(index + 1) noise figure stepper")
+                Text("dB").foregroundStyle(.secondary).frame(width: 22).accessibilityHidden(true)
             }
 
             Spacer()
@@ -135,15 +176,20 @@ private struct StageRow: View {
                     .multilineTextAlignment(.trailing)
                     .textFieldStyle(.roundedBorder)
                     .frame(width: 68)
+                    .accessibilityLabel("Stage \(index + 1) gain")
+                    .accessibilityValue("\(stage.gain_db) dB")
                 Stepper("", value: $stage.gain_db, in: -60...60, step: 0.5).labelsHidden()
-                Text("dB").foregroundStyle(.secondary).frame(width: 22)
+                    .accessibilityLabel("Stage \(index + 1) gain stepper")
+                Text("dB").foregroundStyle(.secondary).frame(width: 22).accessibilityHidden(true)
                 Button(action: onRemove) {
                     Image(systemName: "minus.circle")
                 }
                 .buttonStyle(.borderless)
                 .foregroundStyle(.red)
+                .accessibilityLabel("Remove stage \(index + 1)")
             }
         }
+        .help(error.isError ? error.message : "")
         .onChange(of: stage.noise_figure_db) { _ in onChange(stage) }
         .onChange(of: stage.gain_db)          { _ in onChange(stage) }
     }

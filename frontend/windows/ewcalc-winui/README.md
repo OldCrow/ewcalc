@@ -93,6 +93,17 @@ Add/Remove buttons are bound to `ICommand` properties.
 This frontend covers all nine calculator pages (Propagation, Antenna, Link Budget,
 Receiver, Jamming, Location, Radar, Digital/DSSS, Reference) at v0.6 parity with macOS.
 
+## Completed in v0.8.0
+
+All 8 calculator pages (Propagation, Antenna, Link, Receiver, Jamming, Location, Radar,
+Digital) now: surface per-field `FieldValidationError` state via `BorderBrush`/tooltip
+(previously Propagation-only); set `AutomationProperties.Name` on every input and output
+control, including per-row names for the Receiver's dynamic Friis stage list; persist
+inputs to `%LOCALAPPDATA%\ewcalc\settings.json` (`Helpers/SettingsService.cs`, debounced
+save-on-change plus a flush on window close), with a "Reset saved inputs" action in the
+nav pane footer; and add a "Copy results" clipboard button (`Helpers/ClipboardHelper.cs`)
+that copies all output fields as `Label: Value` lines.
+
 ## Completed in v0.7.0
 
 Removed the `RoundInput()` 6-sig-fig truncation wrapper from every adapter setter

@@ -49,6 +49,7 @@ set_target_properties(ewpresenter_native PROPERTIES
 set(SOURCES
     src/main.cpp
     src/MainWindow.cpp
+    src/Settings.cpp
     src/pages/PropagationPage.cpp
     src/pages/LinkPage.cpp
     src/pages/ReceiverPage.cpp

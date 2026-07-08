@@ -2,37 +2,70 @@
     x:Class="EwCalc.Views.JammingPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:helpers="using:EwCalc.Helpers"
     xmlns:local="using:EwCalc.Views">
+
+    <Page.Resources>
+        <helpers:FieldErrorToBrushConverter x:Key="FieldErrorToBrush" />
+        <helpers:FieldErrorToTooltipConverter x:Key="FieldErrorToTooltip" />
+    </Page.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="24,20,24,24" Spacing="8">
 
-            <StackPanel Margin="0,0,0,8">
-                <TextBlock Text="Jamming" Style="{ThemeResource TitleTextBlockStyle}" />
-                <TextBlock Text="J/S ratio · Burnthrough · Partial-band optimum bandwidth"
-                           Style="{ThemeResource CaptionTextBlockStyle}"
-                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-            </StackPanel>
+            <Grid Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Jamming" Style="{ThemeResource TitleTextBlockStyle}" />
+                    <TextBlock Text="J/S ratio · Burnthrough · Partial-band optimum bandwidth"
+                               Style="{ThemeResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <Button Grid.Column="1" VerticalAlignment="Top"
+                        Click="CopyResultsButton_Click"
+                        AutomationProperties.Name="Copy results to clipboard"
+                        ToolTipService.ToolTip="Copy all results to clipboard">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" FontSize="14" />
+                        <TextBlock Text="Copy results" />
+                    </StackPanel>
+                </Button>
+            </Grid>
 
             <StackPanel Spacing="8">
                 <TextBlock Text="SIGNAL" Style="{StaticResource SectionHeaderStyle}" />
                 <Border Style="{StaticResource InputCardStyle}">
                     <StackPanel Spacing="12">
                         <NumberBox x:Name="SignalErpBox"    Header="Signal ERP (dBm)"
+                                   AutomationProperties.Name="Signal ERP (dBm)"
                                    Value="{x:Bind ViewModel.DefaultSignalErp, Mode=OneTime}"
                                    Minimum="-100" Maximum="200" SmallChange="1"
+                                   BorderBrush="{x:Bind ViewModel.SignalErpError, Mode=OneWay,
+                                       Converter={StaticResource FieldErrorToBrush}}"
                                    ValueChanged="SignalErpBox_ValueChanged" />
                         <NumberBox x:Name="SignalDistBox"   Header="Signal→Rx distance (km)"
+                                   AutomationProperties.Name="Signal to Rx distance (km)"
                                    Value="{x:Bind ViewModel.DefaultSignalToRxDist, Mode=OneTime}"
                                    Minimum="0.01" Maximum="10000" SmallChange="1"
+                                   BorderBrush="{x:Bind ViewModel.SignalDistError, Mode=OneWay,
+                                       Converter={StaticResource FieldErrorToBrush}}"
                                    ValueChanged="SignalDistBox_ValueChanged" />
                         <NumberBox x:Name="SignalHeightBox" Header="Signal Tx height (m)"
+                                   AutomationProperties.Name="Signal Tx height (m)"
                                    Value="{x:Bind ViewModel.DefaultSignalTxHeight, Mode=OneTime}"
                                    Minimum="0.1" Maximum="100000" SmallChange="1"
+                                   BorderBrush="{x:Bind ViewModel.SignalHeightError, Mode=OneWay,
+                                       Converter={StaticResource FieldErrorToBrush}}"
                                    ValueChanged="SignalHeightBox_ValueChanged" />
                         <NumberBox x:Name="SignalBwBox"     Header="Signal bandwidth (MHz)"
+                                   AutomationProperties.Name="Signal bandwidth (MHz)"
                                    Value="{x:Bind ViewModel.DefaultSignalBandwidth, Mode=OneTime}"
                                    Minimum="0.001" Maximum="1000" SmallChange="0.01"
+                                   BorderBrush="{x:Bind ViewModel.SignalBandwidthError, Mode=OneWay,
+                                       Converter={StaticResource FieldErrorToBrush}}"
                                    ValueChanged="SignalBwBox_ValueChanged" />
                     </StackPanel>
                 </Border>
@@ -41,24 +74,39 @@
                 <Border Style="{StaticResource InputCardStyle}">
                     <StackPanel Spacing="12">
                         <NumberBox x:Name="JammerErpBox"    Header="Jammer ERP (dBm)"
+                                   AutomationProperties.Name="Jammer ERP (dBm)"
                                    Value="{x:Bind ViewModel.DefaultJammerErp, Mode=OneTime}"
                                    Minimum="-100" Maximum="200" SmallChange="1"
+                                   BorderBrush="{x:Bind ViewModel.JammerErpError, Mode=OneWay,
+                                       Converter={StaticResource FieldErrorToBrush}}"
                                    ValueChanged="JammerErpBox_ValueChanged" />
                         <NumberBox x:Name="JammerDistBox"   Header="Jammer→Rx distance (km)"
+                                   AutomationProperties.Name="Jammer to Rx distance (km)"
                                    Value="{x:Bind ViewModel.DefaultJammerToRxDist, Mode=OneTime}"
                                    Minimum="0.01" Maximum="10000" SmallChange="1"
+                                   BorderBrush="{x:Bind ViewModel.JammerDistError, Mode=OneWay,
+                                       Converter={StaticResource FieldErrorToBrush}}"
                                    ValueChanged="JammerDistBox_ValueChanged" />
                         <NumberBox x:Name="JammerHeightBox" Header="Jammer height (m)"
+                                   AutomationProperties.Name="Jammer height (m)"
                                    Value="{x:Bind ViewModel.DefaultJammerHeight, Mode=OneTime}"
                                    Minimum="0.1" Maximum="100000" SmallChange="1"
+                                   BorderBrush="{x:Bind ViewModel.JammerHeightError, Mode=OneWay,
+                                       Converter={StaticResource FieldErrorToBrush}}"
                                    ValueChanged="JammerHeightBox_ValueChanged" />
                         <NumberBox x:Name="HopRangeBox"     Header="Hop range (MHz)"
+                                   AutomationProperties.Name="Hop range (MHz)"
                                    Value="{x:Bind ViewModel.DefaultHopRange, Mode=OneTime}"
                                    Minimum="0" Maximum="10000" SmallChange="1"
+                                   BorderBrush="{x:Bind ViewModel.HopRangeError, Mode=OneWay,
+                                       Converter={StaticResource FieldErrorToBrush}}"
                                    ValueChanged="HopRangeBox_ValueChanged" />
                         <NumberBox x:Name="JsThresholdBox" Header="J/S threshold (dB)"
+                                   AutomationProperties.Name="J/S threshold (dB)"
                                    Value="{x:Bind ViewModel.DefaultJsThreshold, Mode=OneTime}"
                                    Minimum="-30" Maximum="30" SmallChange="0.5"
+                                   BorderBrush="{x:Bind ViewModel.JsThresholdError, Mode=OneWay,
+                                       Converter={StaticResource FieldErrorToBrush}}"
                                    ValueChanged="JsThresholdBox_ValueChanged" />
                     </StackPanel>
                 </Border>
@@ -67,20 +115,32 @@
                 <Border Style="{StaticResource InputCardStyle}">
                     <StackPanel Spacing="12">
                         <NumberBox x:Name="FrequencyBox"    Header="Frequency (MHz)"
+                                   AutomationProperties.Name="Frequency (MHz)"
                                    Value="{x:Bind ViewModel.DefaultFrequency, Mode=OneTime}"
                                    Minimum="0.1" Maximum="100000" SmallChange="10"
+                                   BorderBrush="{x:Bind ViewModel.FrequencyError, Mode=OneWay,
+                                       Converter={StaticResource FieldErrorToBrush}}"
                                    ValueChanged="FrequencyBox_ValueChanged" />
                         <NumberBox x:Name="RxHeightBox"     Header="Rx height (m)"
+                                   AutomationProperties.Name="Rx height (m)"
                                    Value="{x:Bind ViewModel.DefaultRxHeight, Mode=OneTime}"
                                    Minimum="0.1" Maximum="100000" SmallChange="1"
+                                   BorderBrush="{x:Bind ViewModel.RxHeightError, Mode=OneWay,
+                                       Converter={StaticResource FieldErrorToBrush}}"
                                    ValueChanged="RxHeightBox_ValueChanged" />
                         <NumberBox x:Name="RxGainSignalBox" Header="Rx gain → signal (dB)"
+                                   AutomationProperties.Name="Rx gain to signal (dB)"
                                    Value="{x:Bind ViewModel.DefaultRxGainSignal, Mode=OneTime}"
                                    Minimum="-30" Maximum="60" SmallChange="0.5"
+                                   BorderBrush="{x:Bind ViewModel.RxGainSignalError, Mode=OneWay,
+                                       Converter={StaticResource FieldErrorToBrush}}"
                                    ValueChanged="RxGainSignalBox_ValueChanged" />
                         <NumberBox x:Name="RxGainJammerBox" Header="Rx gain → jammer (dB)"
+                                   AutomationProperties.Name="Rx gain to jammer (dB)"
                                    Value="{x:Bind ViewModel.DefaultRxGainJammer, Mode=OneTime}"
                                    Minimum="-30" Maximum="60" SmallChange="0.5"
+                                   BorderBrush="{x:Bind ViewModel.RxGainJammerError, Mode=OneWay,
+                                       Converter={StaticResource FieldErrorToBrush}}"
                                    ValueChanged="RxGainJammerBox_ValueChanged" />
                     </StackPanel>
                 </Border>

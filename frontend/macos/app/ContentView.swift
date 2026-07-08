@@ -37,6 +37,7 @@ enum AppSection: String, CaseIterable, Identifiable {
 struct ContentView: View {
     @EnvironmentObject var store: EwCalcStore
     @State private var selection: AppSection? = .propagation
+    @State private var showResetConfirmation = false
 
     var body: some View {
         NavigationSplitView {
@@ -55,7 +56,28 @@ struct ContentView: View {
             .listStyle(.sidebar)
             .navigationSplitViewColumnWidth(min: 155, ideal: 170)
         } detail: {
+            // .id() forces every page to be torn down and rebuilt after a
+            // reset (#20), so each view's @State input fields — read once,
+            // in init, from the adapter — pick up the restored defaults.
             detailView
+                .id(store.resetGeneration)
+                .toolbar {
+                    ToolbarItem(placement: .automatic) {
+                        Button("Reset to Defaults") { showResetConfirmation = true }
+                            .help("Restore every calculator's inputs to their built-in defaults")
+                            .accessibilityLabel("Reset all calculators to default values")
+                    }
+                }
+                .confirmationDialog(
+                    "Reset all calculators to their default values?",
+                    isPresented: $showResetConfirmation,
+                    titleVisibility: .visible
+                ) {
+                    Button("Reset to Defaults", role: .destructive) { store.resetToDefaults() }
+                    Button("Cancel", role: .cancel) {}
+                } message: {
+                    Text("This clears any saved inputs and cannot be undone.")
+                }
         }
     }
 

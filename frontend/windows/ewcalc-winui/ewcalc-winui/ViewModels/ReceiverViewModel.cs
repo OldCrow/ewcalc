@@ -1,8 +1,11 @@
 // ViewModels/ReceiverViewModel.cs
+using EwCalc.Helpers;
 using EwPresenterNet;
 using Microsoft.UI.Dispatching;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
@@ -15,8 +18,24 @@ public sealed class StageItemViewModel : INotifyPropertyChanged
     private double _gainDb;
 
     private int _index;
-    public  int  Index      { get => _index; private set { if (_index != value) { _index = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Index))); PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IndexLabel))); } } }
+    public  int  Index      { get => _index; private set { if (_index != value) { _index = value; RaiseIndexDependentChanges(); } } }
     public string IndexLabel => $"S{Index + 1}";
+
+    // Per-stage automation names for the dynamically templated NumberBoxes/Button in
+    // ReceiverPage.xaml (#19) — these can't be static XAML AutomationProperties.Name
+    // values since each row's index isn't known until the ItemsRepeater materializes it.
+    public string NfAutomationName     => $"{IndexLabel} noise figure (dB)";
+    public string GainAutomationName   => $"{IndexLabel} gain (dB)";
+    public string RemoveAutomationName => $"Remove stage {IndexLabel}";
+
+    private void RaiseIndexDependentChanges()
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Index)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IndexLabel)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NfAutomationName)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GainAutomationName)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RemoveAutomationName)));
+    }
 
     /// Update the display index after a sibling stage is added or removed.
     internal void UpdateIndex(int newIndex) => Index = newIndex;
@@ -79,12 +98,41 @@ public sealed class ReceiverViewModel : INotifyPropertyChanged
     public double DefaultThirdOrderIp  => _adapter.DefaultThirdOrderIp;
     public int    DefaultAdcBits       => _adapter.DefaultAdcBits;
 
+    private FieldValidationError _bandwidthError     = FieldValidationError.None;
+    private FieldValidationError _noiseFigureError   = FieldValidationError.None;
+    private FieldValidationError _requiredSnrError   = FieldValidationError.None;
+    private FieldValidationError _secondOrderIpError = FieldValidationError.None;
+    private FieldValidationError _thirdOrderIpError  = FieldValidationError.None;
+    private FieldValidationError _adcBitsError       = FieldValidationError.None;
+    private FieldValidationError _stageNfError       = FieldValidationError.None;
+
+    public FieldValidationError BandwidthError     { get => _bandwidthError;     private set => Set(ref _bandwidthError,     value); }
+    public FieldValidationError NoiseFigureError   { get => _noiseFigureError;   private set => Set(ref _noiseFigureError,   value); }
+    public FieldValidationError RequiredSnrError   { get => _requiredSnrError;   private set => Set(ref _requiredSnrError,   value); }
+    public FieldValidationError SecondOrderIpError { get => _secondOrderIpError; private set => Set(ref _secondOrderIpError, value); }
+    public FieldValidationError ThirdOrderIpError  { get => _thirdOrderIpError;  private set => Set(ref _thirdOrderIpError,  value); }
+    public FieldValidationError AdcBitsError       { get => _adcBitsError;       private set => Set(ref _adcBitsError,       value); }
+    /// <summary>Aggregate error for the Friis stage chain; surfaced on the "NOISE CHAIN"
+    /// section border since individual stage rows aren't independently validated.</summary>
+    public FieldValidationError StageNfError       { get => _stageNfError;       private set => Set(ref _stageNfError,       value); }
+
     public ObservableCollection<StageItemViewModel> Stages { get; } = [];
     public ICommand AddStageCommand { get; }
 
     public ReceiverViewModel()
     {
         _dispatcher = DispatcherQueue.GetForCurrentThread();
+
+        var saved = SettingsService.Current.Receiver;
+        if (saved.Bandwidth     is double bw) _adapter.SetBandwidth(bw);
+        if (saved.NoiseFigure   is double nf) _adapter.SetNoiseFigure(nf);
+        if (saved.RequiredSnr   is double sn) _adapter.SetRequiredSnr(sn);
+        if (saved.SecondOrderIp is double ip2) _adapter.SetSecondOrderIp(ip2);
+        if (saved.ThirdOrderIp  is double ip3) _adapter.SetThirdOrderIp(ip3);
+        if (saved.AdcBits       is int bits)   _adapter.SetAdcBits(bits);
+        if (saved.Stages is { Count: > 0 } savedStages)
+            _adapter.SetStages(savedStages.Select(s => new StageInput { NoiseFigureDb = s.NoiseFigureDb, GainDb = s.GainDb }).ToArray());
+
         _adapter.Changed += o => _dispatcher.TryEnqueue(() => ApplyOutput(o));
 
         var defaultStages = _adapter.GetStages();
@@ -95,12 +143,18 @@ public sealed class ReceiverViewModel : INotifyPropertyChanged
         ApplyOutput(_adapter.CurrentOutput);
     }
 
-    public void SetBandwidth    (double v) => _adapter.SetBandwidth(v);
-    public void SetNoiseFigure  (double v) => _adapter.SetNoiseFigure(v);
-    public void SetRequiredSnr  (double v) => _adapter.SetRequiredSnr(v);
-    public void SetSecondOrderIp(double v) => _adapter.SetSecondOrderIp(v);
-    public void SetThirdOrderIp (double v) => _adapter.SetThirdOrderIp(v);
-    public void SetAdcBits      (int v)    => _adapter.SetAdcBits(v);
+    public void SetBandwidth(double v)
+    { _adapter.SetBandwidth(v); SettingsService.Current.Receiver.Bandwidth = v; SettingsService.Save(); }
+    public void SetNoiseFigure(double v)
+    { _adapter.SetNoiseFigure(v); SettingsService.Current.Receiver.NoiseFigure = v; SettingsService.Save(); }
+    public void SetRequiredSnr(double v)
+    { _adapter.SetRequiredSnr(v); SettingsService.Current.Receiver.RequiredSnr = v; SettingsService.Save(); }
+    public void SetSecondOrderIp(double v)
+    { _adapter.SetSecondOrderIp(v); SettingsService.Current.Receiver.SecondOrderIp = v; SettingsService.Save(); }
+    public void SetThirdOrderIp(double v)
+    { _adapter.SetThirdOrderIp(v); SettingsService.Current.Receiver.ThirdOrderIp = v; SettingsService.Save(); }
+    public void SetAdcBits(int v)
+    { _adapter.SetAdcBits(v); SettingsService.Current.Receiver.AdcBits = v; SettingsService.Save(); }
 
     internal void PushStages()
     {
@@ -108,6 +162,9 @@ public sealed class ReceiverViewModel : INotifyPropertyChanged
         for (int i = 0; i < Stages.Count; i++)
             arr[i] = new StageInput { NoiseFigureDb = Stages[i].NoiseFigureDb, GainDb = Stages[i].GainDb };
         _adapter.SetStages(arr);
+        SettingsService.Current.Receiver.Stages =
+            Stages.Select(s => new StageSetting { NoiseFigureDb = s.NoiseFigureDb, GainDb = s.GainDb }).ToList();
+        SettingsService.Save();
     }
 
     internal void RemoveStage(StageItemViewModel stage)
@@ -131,11 +188,26 @@ public sealed class ReceiverViewModel : INotifyPropertyChanged
             Stages[i].UpdateIndex(i);
     }
 
+    public string BuildResultsText() => string.Join("\n", new[]
+    {
+        $"Sensitivity: {Sensitivity}",
+        $"Cascaded NF: {CascadedNf}",
+        $"Sys. noise temp: {SystemNoiseTemp}",
+        $"Sys. NF equiv.: {SystemNf}",
+        $"SFDR (2nd): {Sfdr2}",
+        $"SFDR (3rd): {Sfdr3}",
+        $"Digital DR: {DigitalDr}",
+    });
+
     private void ApplyOutput(ReceiverOutput o)
     {
         Sensitivity = o.SensitivityStr; CascadedNf = o.CascadedNfStr;
         Sfdr2 = o.Sfdr2Str; Sfdr3 = o.Sfdr3Str; DigitalDr = o.DigitalDrStr;
         SystemNoiseTemp = o.SystemNoiseTempStr; SystemNf = o.SystemNfStr; IsValid = o.Valid;
+        BandwidthError = _adapter.BandwidthError; NoiseFigureError = _adapter.NoiseFigureError;
+        RequiredSnrError = _adapter.RequiredSnrError; SecondOrderIpError = _adapter.SecondOrderIpError;
+        ThirdOrderIpError = _adapter.ThirdOrderIpError; AdcBitsError = _adapter.AdcBitsError;
+        StageNfError = _adapter.StageNfError;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

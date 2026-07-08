@@ -32,4 +32,7 @@ public sealed partial class PropagationPage : Page
 
     private void ObstructionHeightBox_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs e)
     { if (!double.IsNaN(e.NewValue)) ViewModel.SetObstructionHeight(e.NewValue); }
+
+    private void CopyResultsButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        => ClipboardHelper.CopyText(ViewModel.BuildResultsText());
 }

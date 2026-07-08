@@ -8,32 +8,57 @@
 
     <Page.Resources>
         <helpers:FieldErrorToBrushConverter x:Key="FieldErrorToBrush" />
+        <helpers:FieldErrorToTooltipConverter x:Key="FieldErrorToTooltip" />
     </Page.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="24,20,24,24" Spacing="8">
 
-            <StackPanel Margin="0,0,0,8">
-                <TextBlock Text="Receiver" Style="{ThemeResource TitleTextBlockStyle}" />
-                <TextBlock Text="Sensitivity · Cascaded noise figure (Friis) · SFDR · Digital dynamic range"
-                           Style="{ThemeResource CaptionTextBlockStyle}"
-                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-            </StackPanel>
+            <Grid Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Receiver" Style="{ThemeResource TitleTextBlockStyle}" />
+                    <TextBlock Text="Sensitivity · Cascaded noise figure (Friis) · SFDR · Digital dynamic range"
+                               Style="{ThemeResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <Button Grid.Column="1" VerticalAlignment="Top"
+                        Click="CopyResultsButton_Click"
+                        AutomationProperties.Name="Copy results to clipboard"
+                        ToolTipService.ToolTip="Copy all results to clipboard">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" FontSize="14" />
+                        <TextBlock Text="Copy results" />
+                    </StackPanel>
+                </Button>
+            </Grid>
 
             <TextBlock Text="SENSITIVITY" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource InputCardStyle}">
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="BandwidthBox" Header="Bandwidth (MHz)"
+                               AutomationProperties.Name="Bandwidth (MHz)"
                                Value="{x:Bind ViewModel.DefaultBandwidth, Mode=OneTime}"
                                Minimum="0.001" Maximum="10000"
+                               BorderBrush="{x:Bind ViewModel.BandwidthError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="BandwidthBox_ValueChanged" />
                     <NumberBox x:Name="NoiseFigureBox" Header="Noise figure (dB)"
+                               AutomationProperties.Name="Noise figure (dB)"
                                Value="{x:Bind ViewModel.DefaultNoiseFigure, Mode=OneTime}"
                                Minimum="0" Maximum="30" SmallChange="0.5"
+                               BorderBrush="{x:Bind ViewModel.NoiseFigureError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="NoiseFigureBox_ValueChanged" />
                     <NumberBox x:Name="SnrBox" Header="Required SNR (dB)"
+                               AutomationProperties.Name="Required SNR (dB)"
                                Value="{x:Bind ViewModel.DefaultRequiredSnr, Mode=OneTime}"
                                Minimum="-20" Maximum="50" SmallChange="0.5"
+                               BorderBrush="{x:Bind ViewModel.RequiredSnrError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="SnrBox_ValueChanged" />
                 </StackPanel>
             </Border>
@@ -42,22 +67,33 @@
             <Border Style="{StaticResource InputCardStyle}">
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="Ip2Box" Header="IP2 (dBm)"
+                               AutomationProperties.Name="IP2 (dBm)"
                                Value="{x:Bind ViewModel.DefaultSecondOrderIp, Mode=OneTime}"
                                Minimum="-50" Maximum="100"
+                               BorderBrush="{x:Bind ViewModel.SecondOrderIpError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="Ip2Box_ValueChanged" />
                     <NumberBox x:Name="Ip3Box" Header="IP3 (dBm)"
+                               AutomationProperties.Name="IP3 (dBm)"
                                Value="{x:Bind ViewModel.DefaultThirdOrderIp, Mode=OneTime}"
                                Minimum="-50" Maximum="100"
+                               BorderBrush="{x:Bind ViewModel.ThirdOrderIpError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="Ip3Box_ValueChanged" />
                     <NumberBox x:Name="AdcBitsBox" Header="ADC bits"
+                               AutomationProperties.Name="ADC bits"
                                Value="{x:Bind ViewModel.DefaultAdcBits, Mode=OneTime}"
                                Minimum="1" Maximum="64" SmallChange="1"
+                               BorderBrush="{x:Bind ViewModel.AdcBitsError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="AdcBitsBox_ValueChanged" />
                 </StackPanel>
             </Border>
 
             <TextBlock Text="NOISE CHAIN (FRIIS CASCADE)" Style="{StaticResource SectionHeaderStyle}" />
-            <Border Style="{StaticResource InputCardStyle}">
+            <Border Style="{StaticResource InputCardStyle}"
+                    BorderBrush="{x:Bind ViewModel.StageNfError, Mode=OneWay,
+                        Converter={StaticResource FieldErrorToBrush}}">
                 <StackPanel Spacing="8">
                     <Grid ColumnSpacing="8">
                         <Grid.ColumnDefinitions>
@@ -92,12 +128,15 @@
                                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                                VerticalAlignment="Center" HorizontalAlignment="Center" />
                                     <NumberBox Grid.Column="1"
+                                               AutomationProperties.Name="{x:Bind NfAutomationName, Mode=OneWay}"
                                                Value="{x:Bind NoiseFigureDb, Mode=TwoWay}"
                                                Minimum="0" Maximum="30" SmallChange="0.5" />
                                     <NumberBox Grid.Column="2"
+                                               AutomationProperties.Name="{x:Bind GainAutomationName, Mode=OneWay}"
                                                Value="{x:Bind GainDb, Mode=TwoWay}"
                                                Minimum="-60" Maximum="60" SmallChange="1" />
                                     <Button Grid.Column="3" Content="✕"
+                                            AutomationProperties.Name="{x:Bind RemoveAutomationName, Mode=OneWay}"
                                             VerticalAlignment="Center" Padding="4"
                                             Command="{x:Bind RemoveCommand}" />
                                 </Grid>
@@ -105,6 +144,7 @@
                         </ItemsRepeater.ItemTemplate>
                     </ItemsRepeater>
                     <Button Content="+ Add stage"
+                            AutomationProperties.Name="Add stage"
                             Command="{x:Bind ViewModel.AddStageCommand}"
                             HorizontalAlignment="Left" />
                 </StackPanel>
