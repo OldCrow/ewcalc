@@ -7,32 +7,57 @@
 
     <Page.Resources>
         <helpers:FieldErrorToBrushConverter x:Key="FieldErrorToBrush" />
+        <helpers:FieldErrorToTooltipConverter x:Key="FieldErrorToTooltip" />
     </Page.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="24,20,24,24" Spacing="8">
 
-            <StackPanel Margin="0,0,0,8">
-                <TextBlock Text="Link budget" Style="{ThemeResource TitleTextBlockStyle}" />
-                <TextBlock Text="One-way link · Received power · Link margin · Effective range"
-                           Style="{ThemeResource CaptionTextBlockStyle}"
-                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-            </StackPanel>
+            <Grid Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Link budget" Style="{ThemeResource TitleTextBlockStyle}" />
+                    <TextBlock Text="One-way link · Received power · Link margin · Effective range"
+                               Style="{ThemeResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <Button Grid.Column="1" VerticalAlignment="Top"
+                        Click="CopyResultsButton_Click"
+                        AutomationProperties.Name="Copy results to clipboard"
+                        ToolTipService.ToolTip="Copy all results to clipboard">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" FontSize="14" />
+                        <TextBlock Text="Copy results" />
+                    </StackPanel>
+                </Button>
+            </Grid>
 
             <TextBlock Text="TRANSMITTER" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource InputCardStyle}">
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="TxPowerBox"   Header="Tx power (dBm)"
+                               AutomationProperties.Name="Tx power (dBm)"
                                Value="{x:Bind ViewModel.DefaultTxPower,   Mode=OneTime}"
                                Minimum="-50" Maximum="200" SmallChange="1"
+                               BorderBrush="{x:Bind ViewModel.TxPowerError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="TxPowerBox_ValueChanged" />
                     <NumberBox x:Name="TxGainBox"    Header="Tx gain (dB)"
+                               AutomationProperties.Name="Tx gain (dB)"
                                Value="{x:Bind ViewModel.DefaultTxGain,    Mode=OneTime}"
                                Minimum="-30" Maximum="60" SmallChange="0.5"
+                               BorderBrush="{x:Bind ViewModel.TxGainError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="TxGainBox_ValueChanged" />
                     <NumberBox x:Name="FrequencyBox" Header="Frequency (MHz)"
+                               AutomationProperties.Name="Frequency (MHz)"
                                Value="{x:Bind ViewModel.DefaultFrequency, Mode=OneTime}"
                                Minimum="0.1" Maximum="100000" SmallChange="10"
+                               BorderBrush="{x:Bind ViewModel.FrequencyError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="FrequencyBox_ValueChanged" />
                 </StackPanel>
             </Border>
@@ -41,8 +66,11 @@
             <Border Style="{StaticResource InputCardStyle}">
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="DistanceBox" Header="Distance (km)"
+                               AutomationProperties.Name="Distance (km)"
                                Value="{x:Bind ViewModel.DefaultDistance, Mode=OneTime}"
                                Minimum="0.01" Maximum="10000" SmallChange="1"
+                               BorderBrush="{x:Bind ViewModel.DistanceError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="DistanceBox_ValueChanged" />
                     <Grid ColumnSpacing="8">
                         <Grid.ColumnDefinitions>
@@ -50,12 +78,18 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <NumberBox Grid.Column="0" x:Name="TxHeightBox" Header="Tx height (m)"
+                                   AutomationProperties.Name="Tx height (m)"
                                    Value="{x:Bind ViewModel.DefaultTxHeight, Mode=OneTime}"
                                    Minimum="0.1" Maximum="100000" SmallChange="1"
+                                   BorderBrush="{x:Bind ViewModel.TxHeightError, Mode=OneWay,
+                                       Converter={StaticResource FieldErrorToBrush}}"
                                    ValueChanged="TxHeightBox_ValueChanged" />
                         <NumberBox Grid.Column="1" x:Name="RxHeightBox" Header="Rx height (m)"
+                                   AutomationProperties.Name="Rx height (m)"
                                    Value="{x:Bind ViewModel.DefaultRxHeight, Mode=OneTime}"
                                    Minimum="0.1" Maximum="100000" SmallChange="1"
+                                   BorderBrush="{x:Bind ViewModel.RxHeightError, Mode=OneWay,
+                                       Converter={StaticResource FieldErrorToBrush}}"
                                    ValueChanged="RxHeightBox_ValueChanged" />
                     </Grid>
                 </StackPanel>
@@ -65,12 +99,18 @@
             <Border Style="{StaticResource InputCardStyle}">
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="RxGainBox" Header="Rx gain (dB)"
+                               AutomationProperties.Name="Rx gain (dB)"
                                Value="{x:Bind ViewModel.DefaultRxGain, Mode=OneTime}"
                                Minimum="-30" Maximum="60" SmallChange="0.5"
+                               BorderBrush="{x:Bind ViewModel.RxGainError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="RxGainBox_ValueChanged" />
                     <NumberBox x:Name="RxSensitivityBox" Header="Rx sensitivity (dBm)"
+                               AutomationProperties.Name="Rx sensitivity (dBm)"
                                Value="{x:Bind ViewModel.DefaultRxSensitivity, Mode=OneTime}"
                                Minimum="-200" Maximum="0" SmallChange="1"
+                               BorderBrush="{x:Bind ViewModel.RxSensitivityError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="RxSensitivityBox_ValueChanged" />
                 </StackPanel>
             </Border>

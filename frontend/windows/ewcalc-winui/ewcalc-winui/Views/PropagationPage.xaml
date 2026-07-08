@@ -14,13 +14,28 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="24,20,24,24" Spacing="8">
 
-            <StackPanel Margin="0,0,0,8">
-                <TextBlock Text="Propagation"
-                           Style="{ThemeResource TitleTextBlockStyle}" />
-                <TextBlock Text="Free-space path loss · 2-ray ground reflection · Fresnel zone"
-                           Style="{ThemeResource CaptionTextBlockStyle}"
-                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-            </StackPanel>
+            <Grid Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Propagation"
+                               Style="{ThemeResource TitleTextBlockStyle}" />
+                    <TextBlock Text="Free-space path loss · 2-ray ground reflection · Fresnel zone"
+                               Style="{ThemeResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <Button Grid.Column="1" VerticalAlignment="Top"
+                        Click="CopyResultsButton_Click"
+                        AutomationProperties.Name="Copy results to clipboard"
+                        ToolTipService.ToolTip="Copy all results to clipboard">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" FontSize="14" />
+                        <TextBlock Text="Copy results" />
+                    </StackPanel>
+                </Button>
+            </Grid>
 
             <TextBlock Text="INPUTS" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource InputCardStyle}">
@@ -30,6 +45,7 @@
                          and are never visible to the user. -->
                     <NumberBox x:Name="DistanceBox"
                                Header="Distance (km)"
+                               AutomationProperties.Name="Distance (km)"
                                Value="{x:Bind ViewModel.DefaultDistance, Mode=OneTime}"
                                Minimum="0.01" Maximum="10000"
                                SpinButtonPlacementMode="Compact" SmallChange="1"
@@ -43,6 +59,7 @@
                     </NumberBox>
                     <NumberBox x:Name="FrequencyBox"
                                Header="Frequency (MHz)"
+                               AutomationProperties.Name="Frequency (MHz)"
                                Value="{x:Bind ViewModel.DefaultFrequency, Mode=OneTime}"
                                Minimum="0.1" Maximum="100000"
                                SpinButtonPlacementMode="Compact" SmallChange="10"
@@ -56,6 +73,7 @@
                         </Grid.ColumnDefinitions>
                         <NumberBox Grid.Column="0" x:Name="TxHeightBox"
                                    Header="Tx height (m)"
+                                   AutomationProperties.Name="Tx height (m)"
                                    Value="{x:Bind ViewModel.DefaultTxHeight, Mode=OneTime}"
                                    Minimum="0.1" Maximum="100000"
                                    SpinButtonPlacementMode="Compact" SmallChange="1"
@@ -64,6 +82,7 @@
                                    ValueChanged="TxHeightBox_ValueChanged" />
                         <NumberBox Grid.Column="1" x:Name="RxHeightBox"
                                    Header="Rx height (m)"
+                                   AutomationProperties.Name="Rx height (m)"
                                    Value="{x:Bind ViewModel.DefaultRxHeight, Mode=OneTime}"
                                    Minimum="0.1" Maximum="100000"
                                    SpinButtonPlacementMode="Compact" SmallChange="1"
@@ -73,6 +92,7 @@
                     </Grid>
                     <NumberBox x:Name="ObstructionHeightBox"
                                Header="Obstruction height (m)"
+                               AutomationProperties.Name="Obstruction height (m)"
                                Value="{x:Bind ViewModel.DefaultObstructionHeight, Mode=OneTime}"
                                Minimum="0" Maximum="10000"
                                SpinButtonPlacementMode="Compact" SmallChange="1"
@@ -92,6 +112,7 @@
                 <StackPanel Spacing="0">
                     <InfoBar IsOpen="True" IsClosable="False" Severity="Informational"
                              Message="{x:Bind ViewModel.Regime, Mode=OneWay}"
+                             AutomationProperties.Name="Propagation regime"
                              Margin="0,0,0,12" />
                     <local:ResultRow Label="Path loss"        Value="{x:Bind ViewModel.PathLoss,     Mode=OneWay}" />
                     <local:ResultRow Label="FSPL"             Value="{x:Bind ViewModel.Fspl,         Mode=OneWay}" />
