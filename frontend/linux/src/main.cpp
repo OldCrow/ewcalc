@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
     QApplication app(argc, argv);
     app.setApplicationName(QStringLiteral("ewcalc"));
     app.setApplicationDisplayName(QStringLiteral("EW Calculator"));
-    app.setApplicationVersion(QStringLiteral("0.7.0"));
+    app.setApplicationVersion(QStringLiteral("0.8.0"));
 
     // Ensure any pending debounced settings writes are flushed before exit.
     QObject::connect(&app, &QApplication::aboutToQuit,

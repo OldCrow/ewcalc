@@ -89,10 +89,21 @@ clears it when the input is valid. This keeps all validation logic in the
 presenter layer — the Qt layer only reacts to the `FieldError` value it
 receives from the output struct.
 
-## Current state (v0.7.0)
+## Current state (v0.8.0)
 
 Nine calculator pages: Propagation, Antenna, Link Budget, Receiver,
 Jamming, Location, Radar, Digital/DSSS, and Reference.
+
+v0.8.0 (UX parity & accessibility, #18/#19/#20/#21): `setToolTip()` help text
+ported from macOS on every input/output across all nine pages (#18);
+`setAccessibleName()` added to all `QWidget` inputs, outputs, and buttons
+(#19); user inputs persist across sessions via a versioned JSON config at
+`$XDG_CONFIG_HOME/ewcalc` (falls back to `~/.config/ewcalc`), with debounced
+save-on-change, flush-on-quit, and a "Reset to Defaults" menu action (#20);
+each page gains a "Copy Results" button that copies all output fields to the
+clipboard via `QClipboard` as `Label: Value` lines (#21). Persistence and
+tooltip/accessible-name wiring is centralized in `PageUtils.h` so each page
+only supplies a settings group/key and help string per field.
 
 v0.7.0 tightens the Receiver stage NF `QDoubleSpinBox` range to 0–30 dB to
 match presenter validation (#9), and updates `DigitalPage` for the renamed
