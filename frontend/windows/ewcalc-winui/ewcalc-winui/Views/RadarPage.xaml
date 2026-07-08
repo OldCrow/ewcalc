@@ -2,45 +2,81 @@
     x:Class="EwCalc.Views.RadarPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:helpers="using:EwCalc.Helpers"
     xmlns:local="using:EwCalc.Views">
+
+    <Page.Resources>
+        <helpers:FieldErrorToBrushConverter x:Key="FieldErrorToBrush" />
+        <helpers:FieldErrorToTooltipConverter x:Key="FieldErrorToTooltip" />
+    </Page.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="24,20,24,24" Spacing="8">
 
-            <StackPanel Margin="0,0,0,8">
-                <TextBlock Text="Radar" Style="{ThemeResource TitleTextBlockStyle}" />
-                <TextBlock Text="Range equation · Pulse compression · Coherent integration gain"
-                           Style="{ThemeResource CaptionTextBlockStyle}"
-                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-            </StackPanel>
+            <Grid Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Radar" Style="{ThemeResource TitleTextBlockStyle}" />
+                    <TextBlock Text="Range equation · Pulse compression · Coherent integration gain"
+                               Style="{ThemeResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <Button Grid.Column="1" VerticalAlignment="Top"
+                        Click="CopyResultsButton_Click"
+                        AutomationProperties.Name="Copy results to clipboard"
+                        ToolTipService.ToolTip="Copy all results to clipboard">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" FontSize="14" />
+                        <TextBlock Text="Copy results" />
+                    </StackPanel>
+                </Button>
+            </Grid>
 
             <TextBlock Text="RADAR PARAMETERS" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource InputCardStyle}">
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="TxPowerBox"   Header="Tx power (dBm)"
+                               AutomationProperties.Name="Tx power (dBm)"
                                Value="{x:Bind ViewModel.DefaultTxPower, Mode=OneTime}"
                                Minimum="-50" Maximum="200"
                                SpinButtonPlacementMode="Compact" SmallChange="1"
+                               BorderBrush="{x:Bind ViewModel.TxPowerError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="TxPowerBox_ValueChanged" />
                     <NumberBox x:Name="GainBox"      Header="Antenna gain (dBi)"
+                               AutomationProperties.Name="Antenna gain (dBi)"
                                Value="{x:Bind ViewModel.DefaultAntennaGain, Mode=OneTime}"
                                Minimum="-30" Maximum="60"
                                SpinButtonPlacementMode="Compact" SmallChange="0.5"
+                               BorderBrush="{x:Bind ViewModel.AntennaGainError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="GainBox_ValueChanged" />
                     <NumberBox x:Name="FrequencyBox" Header="Frequency (MHz)"
+                               AutomationProperties.Name="Frequency (MHz)"
                                Value="{x:Bind ViewModel.DefaultFrequency, Mode=OneTime}"
                                Minimum="1" Maximum="100000"
                                SpinButtonPlacementMode="Compact" SmallChange="100"
+                               BorderBrush="{x:Bind ViewModel.FrequencyError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="FrequencyBox_ValueChanged" />
                     <NumberBox x:Name="RcsBox"       Header="Target RCS (dBsm)"
+                               AutomationProperties.Name="Target RCS (dBsm)"
                                Value="{x:Bind ViewModel.DefaultTargetRcs, Mode=OneTime}"
                                Minimum="-40" Maximum="60"
                                SpinButtonPlacementMode="Compact" SmallChange="1"
+                               BorderBrush="{x:Bind ViewModel.TargetRcsError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="RcsBox_ValueChanged" />
                     <NumberBox x:Name="LossBox"      Header="System losses (dB)"
+                               AutomationProperties.Name="System losses (dB)"
                                Value="{x:Bind ViewModel.DefaultSystemLosses, Mode=OneTime}"
                                Minimum="0" Maximum="30"
                                SpinButtonPlacementMode="Compact" SmallChange="0.5"
+                               BorderBrush="{x:Bind ViewModel.SystemLossesError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="LossBox_ValueChanged" />
                 </StackPanel>
             </Border>
@@ -49,19 +85,28 @@
             <Border Style="{StaticResource InputCardStyle}">
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="NfBox"  Header="Noise figure (dB)"
+                               AutomationProperties.Name="Noise figure (dB)"
                                Value="{x:Bind ViewModel.DefaultNoiseFigure, Mode=OneTime}"
                                Minimum="0" Maximum="30"
                                SpinButtonPlacementMode="Compact" SmallChange="0.5"
+                               BorderBrush="{x:Bind ViewModel.NoiseFigureError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="NfBox_ValueChanged" />
                     <NumberBox x:Name="BwBox"  Header="Bandwidth (MHz)"
+                               AutomationProperties.Name="Bandwidth (MHz)"
                                Value="{x:Bind ViewModel.DefaultBandwidth, Mode=OneTime}"
                                Minimum="0.001" Maximum="10000"
                                SpinButtonPlacementMode="Compact" SmallChange="0.1"
+                               BorderBrush="{x:Bind ViewModel.BandwidthError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="BwBox_ValueChanged" />
                     <NumberBox x:Name="SnrBox" Header="Required SNR (dB)"
+                               AutomationProperties.Name="Required SNR (dB)"
                                Value="{x:Bind ViewModel.DefaultRequiredSnr, Mode=OneTime}"
                                Minimum="-10" Maximum="50"
                                SpinButtonPlacementMode="Compact" SmallChange="0.5"
+                               BorderBrush="{x:Bind ViewModel.RequiredSnrError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="SnrBox_ValueChanged" />
                 </StackPanel>
             </Border>
@@ -70,14 +115,20 @@
             <Border Style="{StaticResource InputCardStyle}">
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="TbProductBox" Header="Time-BW product"
+                               AutomationProperties.Name="Time-bandwidth product"
                                Value="{x:Bind ViewModel.DefaultTimeBandwidthProd, Mode=OneTime}"
                                Minimum="1" Maximum="1000000"
                                SpinButtonPlacementMode="Compact" SmallChange="10"
+                               BorderBrush="{x:Bind ViewModel.TimeBandwidthProdError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="TbProductBox_ValueChanged" />
                     <NumberBox x:Name="NumPulsesBox" Header="Coherent pulses"
+                               AutomationProperties.Name="Coherent pulses"
                                Value="{x:Bind ViewModel.DefaultNumPulses, Mode=OneTime}"
                                Minimum="1" Maximum="100000"
                                SpinButtonPlacementMode="Compact" SmallChange="1"
+                               BorderBrush="{x:Bind ViewModel.NumPulsesError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="NumPulsesBox_ValueChanged" />
                 </StackPanel>
             </Border>

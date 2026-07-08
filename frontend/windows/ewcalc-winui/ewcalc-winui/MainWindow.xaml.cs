@@ -30,6 +30,17 @@ public sealed partial class MainWindow : Window
         AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "Assets", "icon.ico"));
         NavView.SelectedItem = NavPropagation;
         ContentFrame.Navigate(typeof(PropagationPage));
+        Closed += (_, _) => Helpers.SettingsService.Flush();
+    }
+
+    private void ResetInputsButton_Click(object sender, RoutedEventArgs e)
+    {
+        Helpers.SettingsService.ResetToDefaults();
+        // Re-navigating to the current page type creates a fresh Page/ViewModel/adapter
+        // (NavigationCacheMode is Disabled by default), so the active page immediately
+        // reflects the reset. Other pages pick it up next time they're navigated to.
+        var current = ContentFrame.CurrentSourcePageType;
+        if (current is not null) ContentFrame.Navigate(current);
     }
 
     private void NavView_SelectionChanged(

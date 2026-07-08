@@ -1,5 +1,6 @@
 // Views/ResultRow.xaml.cs
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 
@@ -9,8 +10,18 @@ public sealed partial class ResultRow : UserControl
 {
     public static readonly DependencyProperty LabelProperty =
         DependencyProperty.Register(nameof(Label), typeof(string), typeof(ResultRow),
-            new PropertyMetadata(string.Empty,
-                (d, e) => ((ResultRow)d).LabelBlock.Text = (string)e.NewValue));
+            new PropertyMetadata(string.Empty, OnLabelChanged));
+
+    // Every ResultRow across every page shares this control, so setting the value
+    // TextBlock's automation name here (rather than per-page XAML) gives all output
+    // controls an accessible name for free (#19).
+    private static void OnLabelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        var row = (ResultRow)d;
+        var label = (string)e.NewValue;
+        row.LabelBlock.Text = label;
+        AutomationProperties.SetName(row.ValueBlock, label);
+    }
 
     public string Label
     {

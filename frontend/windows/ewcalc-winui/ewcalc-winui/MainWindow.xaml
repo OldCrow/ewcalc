@@ -112,6 +112,15 @@
 
             <!-- No FooterMenuItems — IsSettingsVisible=False removes the built-in one -->
 
+            <NavigationView.PaneFooter>
+                <Button x:Name="ResetInputsButton"
+                        Content="Reset saved inputs"
+                        Click="ResetInputsButton_Click"
+                        AutomationProperties.Name="Reset saved inputs to defaults"
+                        Margin="12,8"
+                        HorizontalAlignment="Stretch" />
+            </NavigationView.PaneFooter>
+
             <Frame x:Name="ContentFrame" />
 
         </NavigationView>

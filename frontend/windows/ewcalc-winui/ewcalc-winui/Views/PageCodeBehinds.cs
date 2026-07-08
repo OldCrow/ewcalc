@@ -30,6 +30,9 @@ public sealed partial class LinkPage : Page
     private void RxHeightBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)      { if (!double.IsNaN(e.NewValue)) ViewModel.SetRxHeight(e.NewValue);      }
     private void FrequencyBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)     { if (!double.IsNaN(e.NewValue)) ViewModel.SetFrequency(e.NewValue);     }
     private void RxSensitivityBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e) { if (!double.IsNaN(e.NewValue)) ViewModel.SetRxSensitivity(e.NewValue); }
+
+    private void CopyResultsButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        => ClipboardHelper.CopyText(ViewModel.BuildResultsText());
 }
 
 public sealed partial class JammingPage : Page
@@ -65,6 +68,9 @@ public sealed partial class JammingPage : Page
     private void RxGainSignalBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)  { if (!double.IsNaN(e.NewValue)) ViewModel.SetRxGainSignal(e.NewValue);   }
     private void RxGainJammerBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)  { if (!double.IsNaN(e.NewValue)) ViewModel.SetRxGainJammer(e.NewValue);   }
     private void JsThresholdBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)   { if (!double.IsNaN(e.NewValue)) ViewModel.SetJsThreshold(e.NewValue);    }
+
+    private void CopyResultsButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        => ClipboardHelper.CopyText(ViewModel.BuildResultsText());
 }
 
 public sealed partial class LocationPage : Page
@@ -86,6 +92,9 @@ public sealed partial class LocationPage : Page
     private void BaselineBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)      { if (!double.IsNaN(e.NewValue)) ViewModel.SetBaseline(e.NewValue);        }
     private void SemiMajorBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)     { if (!double.IsNaN(e.NewValue)) ViewModel.SetSemiMajor(e.NewValue);       }
     private void SemiMinorBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)     { if (!double.IsNaN(e.NewValue)) ViewModel.SetSemiMinor(e.NewValue);       }
+
+    private void CopyResultsButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        => ClipboardHelper.CopyText(ViewModel.BuildResultsText());
 }
 
 public sealed partial class RadarPage : Page
@@ -115,6 +124,9 @@ public sealed partial class RadarPage : Page
     private void SnrBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)        { if (!double.IsNaN(e.NewValue)) ViewModel.SetRequiredSnr(e.NewValue);       }
     private void TbProductBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)  { if (!double.IsNaN(e.NewValue)) ViewModel.SetTimeBandwidthProd(e.NewValue); }
     private void NumPulsesBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)  { if (!double.IsNaN(e.NewValue)) ViewModel.SetNumPulses((int)e.NewValue);    }
+
+    private void CopyResultsButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        => ClipboardHelper.CopyText(ViewModel.BuildResultsText());
 }
 
 public sealed partial class ReceiverPage : Page
@@ -136,6 +148,9 @@ public sealed partial class ReceiverPage : Page
     private void Ip2Box_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)         { if (!double.IsNaN(e.NewValue)) ViewModel.SetSecondOrderIp(e.NewValue); }
     private void Ip3Box_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)         { if (!double.IsNaN(e.NewValue)) ViewModel.SetThirdOrderIp(e.NewValue);  }
     private void AdcBitsBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)     { if (!double.IsNaN(e.NewValue)) ViewModel.SetAdcBits((int)e.NewValue);  }
+
+    private void CopyResultsButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        => ClipboardHelper.CopyText(ViewModel.BuildResultsText());
 }
 
 public sealed partial class HomePage : Page
@@ -162,6 +177,9 @@ public sealed partial class DigitalPage : Page
     private void ChipRateBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)     { if (!double.IsNaN(e.NewValue)) ViewModel.SetChipRate(e.NewValue);           }
     private void RequiredEbNoBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e) { if (!double.IsNaN(e.NewValue)) ViewModel.SetRequiredEbNo(e.NewValue);       }
     private void ImplLossBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)     { if (!double.IsNaN(e.NewValue)) ViewModel.SetImplementationLoss(e.NewValue); }
+
+    private void CopyResultsButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        => ClipboardHelper.CopyText(ViewModel.BuildResultsText());
 }
 
 public sealed partial class AntennaPage : Page
@@ -181,6 +199,9 @@ public sealed partial class AntennaPage : Page
     private void ElBeamwidthBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e) { if (!double.IsNaN(e.NewValue)) ViewModel.SetElBeamwidth(e.NewValue); }
     private void TxPowerBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)     { if (!double.IsNaN(e.NewValue)) ViewModel.SetTxPower(e.NewValue);     }
     private void FrequencyBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)   { if (!double.IsNaN(e.NewValue)) ViewModel.SetFrequency(e.NewValue);   }
+
+    private void CopyResultsButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        => ClipboardHelper.CopyText(ViewModel.BuildResultsText());
 }
 
 public sealed partial class ReferencePage : Page

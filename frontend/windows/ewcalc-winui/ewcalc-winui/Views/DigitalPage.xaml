@@ -2,33 +2,63 @@
     x:Class="EwCalc.Views.DigitalPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:helpers="using:EwCalc.Helpers"
     xmlns:local="using:EwCalc.Views">
+
+    <Page.Resources>
+        <helpers:FieldErrorToBrushConverter x:Key="FieldErrorToBrush" />
+        <helpers:FieldErrorToTooltipConverter x:Key="FieldErrorToTooltip" />
+    </Page.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="24,20,24,24" Spacing="8">
 
-            <StackPanel Margin="0,0,0,8">
-                <TextBlock Text="Digital / DSSS"
-                           Style="{ThemeResource TitleTextBlockStyle}" />
-                <TextBlock Text="Eb/N₀ conversion · DSSS process gain · Jamming margin"
-                           Style="{ThemeResource CaptionTextBlockStyle}"
-                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-            </StackPanel>
+            <Grid Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Digital / DSSS"
+                               Style="{ThemeResource TitleTextBlockStyle}" />
+                    <TextBlock Text="Eb/N₀ conversion · DSSS process gain · Jamming margin"
+                               Style="{ThemeResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <Button Grid.Column="1" VerticalAlignment="Top"
+                        Click="CopyResultsButton_Click"
+                        AutomationProperties.Name="Copy results to clipboard"
+                        ToolTipService.ToolTip="Copy all results to clipboard">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" FontSize="14" />
+                        <TextBlock Text="Copy results" />
+                    </StackPanel>
+                </Button>
+            </Grid>
 
             <TextBlock Text="DIGITAL LINK" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource InputCardStyle}">
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="DataRateBox" Header="Data rate (Mbps)"
+                               AutomationProperties.Name="Data rate (Mbps)"
                                Value="{x:Bind ViewModel.DefaultDataRate, Mode=OneTime}"
                                Minimum="0.0001" Maximum="10000" SmallChange="0.1"
+                               BorderBrush="{x:Bind ViewModel.DataRateError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="DataRateBox_ValueChanged" />
                     <NumberBox x:Name="BandwidthBox" Header="Bandwidth (MHz)"
+                               AutomationProperties.Name="Bandwidth (MHz)"
                                Value="{x:Bind ViewModel.DefaultBandwidth, Mode=OneTime}"
                                Minimum="0.001" Maximum="10000" SmallChange="1"
+                               BorderBrush="{x:Bind ViewModel.BandwidthError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="BandwidthBox_ValueChanged" />
                     <NumberBox x:Name="SnrBox" Header="SNR (dB)"
+                               AutomationProperties.Name="SNR (dB)"
                                Value="{x:Bind ViewModel.DefaultSnr, Mode=OneTime}"
                                Minimum="-30" Maximum="60" SmallChange="0.5"
+                               BorderBrush="{x:Bind ViewModel.SnrError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="SnrBox_ValueChanged" />
                 </StackPanel>
             </Border>
@@ -37,16 +67,25 @@
             <Border Style="{StaticResource InputCardStyle}">
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="ChipRateBox" Header="Chip rate (Mcps)"
+                               AutomationProperties.Name="Chip rate (Mcps)"
                                Value="{x:Bind ViewModel.DefaultChipRate, Mode=OneTime}"
                                Minimum="0.0001" Maximum="10000" SmallChange="1"
+                               BorderBrush="{x:Bind ViewModel.ChipRateError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="ChipRateBox_ValueChanged" />
                     <NumberBox x:Name="RequiredEbNoBox" Header="Required Eb/N₀ (dB)"
+                               AutomationProperties.Name="Required Eb over N0 (dB)"
                                Value="{x:Bind ViewModel.DefaultRequiredEbNo, Mode=OneTime}"
                                Minimum="-10" Maximum="30" SmallChange="0.5"
+                               BorderBrush="{x:Bind ViewModel.RequiredEbNoError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="RequiredEbNoBox_ValueChanged" />
                     <NumberBox x:Name="ImplLossBox" Header="Implementation loss (dB)"
+                               AutomationProperties.Name="Implementation loss (dB)"
                                Value="{x:Bind ViewModel.DefaultImplementationLoss, Mode=OneTime}"
                                Minimum="0" Maximum="10" SmallChange="0.1"
+                               BorderBrush="{x:Bind ViewModel.ImplementationLossError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
                                ValueChanged="ImplLossBox_ValueChanged" />
                 </StackPanel>
             </Border>

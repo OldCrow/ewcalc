@@ -1,4 +1,5 @@
 // ViewModels/PropagationViewModel.cs
+using EwCalc.Helpers;
 using EwPresenterNet;
 using Microsoft.UI.Dispatching;
 using System.ComponentModel;
@@ -49,15 +50,40 @@ public sealed class PropagationViewModel : INotifyPropertyChanged
     public PropagationViewModel()
     {
         _dispatcher = DispatcherQueue.GetForCurrentThread();
+
+        var saved = SettingsService.Current.Propagation;
+        if (saved.Distance          is double d)  _adapter.SetDistance(d);
+        if (saved.Frequency         is double f)  _adapter.SetFrequency(f);
+        if (saved.TxHeight          is double th) _adapter.SetTxHeight(th);
+        if (saved.RxHeight          is double rh) _adapter.SetRxHeight(rh);
+        if (saved.ObstructionHeight is double oh) _adapter.SetObstructionHeight(oh);
+
         _adapter.Changed += output => _dispatcher.TryEnqueue(() => ApplyOutput(output));
         ApplyOutput(_adapter.CurrentOutput);
     }
 
-    public void SetDistance         (double km)     => _adapter.SetDistance(km);
-    public void SetFrequency        (double mhz)    => _adapter.SetFrequency(mhz);
-    public void SetTxHeight         (double meters) => _adapter.SetTxHeight(meters);
-    public void SetRxHeight         (double meters) => _adapter.SetRxHeight(meters);
-    public void SetObstructionHeight(double meters) => _adapter.SetObstructionHeight(meters);
+    public void SetDistance(double km)
+    { _adapter.SetDistance(km); SettingsService.Current.Propagation.Distance = km; SettingsService.Save(); }
+    public void SetFrequency(double mhz)
+    { _adapter.SetFrequency(mhz); SettingsService.Current.Propagation.Frequency = mhz; SettingsService.Save(); }
+    public void SetTxHeight(double meters)
+    { _adapter.SetTxHeight(meters); SettingsService.Current.Propagation.TxHeight = meters; SettingsService.Save(); }
+    public void SetRxHeight(double meters)
+    { _adapter.SetRxHeight(meters); SettingsService.Current.Propagation.RxHeight = meters; SettingsService.Save(); }
+    public void SetObstructionHeight(double meters)
+    { _adapter.SetObstructionHeight(meters); SettingsService.Current.Propagation.ObstructionHeight = meters; SettingsService.Save(); }
+
+    /// <summary>Builds the "Copy results" clipboard payload: one "Label: Value" line per output field.</summary>
+    public string BuildResultsText() => string.Join("\n", new[]
+    {
+        $"Path loss: {PathLoss}",
+        $"FSPL: {Fspl}",
+        $"2-ray loss: {TwoRayLoss}",
+        $"Fresnel zone dist.: {Fresnel}",
+        $"Earth bulge (mid): {EarthBulge}",
+        $"Radar horizon: {HorizonRange}",
+        $"Diffraction loss: {DiffractionLoss}",
+    });
 
     private void ApplyOutput(PropagationOutput o)
     {
