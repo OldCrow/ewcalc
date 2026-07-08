@@ -106,6 +106,7 @@ private struct RefRow: View {
                     .buttonStyle(.borderless)
                     .frame(width: 22)
                     .help("Copy \(cv)")
+                    .accessibilityLabel(copied ? "Copied \(cv)" : "Copy \(cv) for \(entry.label)")
                 } else {
                     // Fixed-width placeholder — matches the copy button width so
                     // value text stays right-aligned in all rows

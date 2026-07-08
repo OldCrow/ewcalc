@@ -25,33 +25,53 @@ struct LinkView: View {
         _rxSensitivity = State(initialValue: adapter.defaultRxSensitivity)
     }
 
+    private var resultsForCopy: [(label: String, value: String)] {
+        [
+            ("Received power",   cStr(adapter.output.received_power_str)),
+            ("Path loss",        cStr(adapter.output.path_loss_str)),
+            ("Link margin",      cStr(adapter.output.link_margin_str)),
+            ("Fresnel crossover",cStr(adapter.output.fresnel_zone_str)),
+            ("Regime",           cStr(adapter.output.regime_str)),
+            ("Effective range",  cStr(adapter.output.effective_range_str)),
+            ("Range regime",     cStr(adapter.output.range_regime_str)),
+        ]
+    }
+
     var body: some View {
         Form {
             Section("Transmitter") {
                 InputRow("Tx power", unit: "dBm", value: $txPower,
                          in: -50...200,
+                         error: adapter.txPowerError,
                          help: "Transmitter output power at the antenna port") { adapter.setTxPower($0) }
                 InputRow("Tx gain", unit: "dB", value: $txGain,
                          in: -30...60,
+                         error: adapter.txGainError,
                          help: "Transmit antenna gain toward the receiver (dBi)") { adapter.setTxGain($0) }
                 InputRow("Frequency", unit: "MHz", value: $frequency,
                          in: 0.1...100000, step: 1,
+                         error: adapter.frequencyError,
                          help: "Carrier frequency — used to select the propagation regime") { adapter.setFrequency($0) }
             }
             Section("Geometry") {
                 InputRow("Distance", unit: "km", value: $distance,
-                         in: 0.01...10000, step: 0.1, decimals: 3) { adapter.setDistance($0) }
+                         in: 0.01...10000, step: 0.1, decimals: 3,
+                         error: adapter.distanceError) { adapter.setDistance($0) }
                 InputRow("Tx height", unit: "m", value: $txHeight,
-                         in: 0.1...100000, step: 0.5, decimals: 1) { adapter.setTxHeight($0) }
+                         in: 0.1...100000, step: 0.5, decimals: 1,
+                         error: adapter.txHeightError) { adapter.setTxHeight($0) }
                 InputRow("Rx height", unit: "m", value: $rxHeight,
-                         in: 0.1...100000, step: 0.5, decimals: 1) { adapter.setRxHeight($0) }
+                         in: 0.1...100000, step: 0.5, decimals: 1,
+                         error: adapter.rxHeightError) { adapter.setRxHeight($0) }
             }
             Section("Receiver") {
                 InputRow("Rx gain", unit: "dB", value: $rxGain,
                          in: -30...60,
+                         error: adapter.rxGainError,
                          help: "Receive antenna gain toward the transmitter (dBi)") { adapter.setRxGain($0) }
                 InputRow("Rx sensitivity", unit: "dBm", value: $rxSensitivity,
                          in: -200...0,
+                         error: adapter.rxSensitivityError,
                          help: "Minimum signal level the receiver can detect; the link closes when received power ≥ sensitivity") { adapter.setRxSensitivity($0) }
             }
             Section("Results") {
@@ -71,5 +91,10 @@ struct LinkView: View {
         }
         .formStyle(.grouped)
         .navigationTitle("Link Budget")
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                CopyResultsButton(rows: resultsForCopy)
+            }
+        }
     }
 }

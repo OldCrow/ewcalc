@@ -19,23 +19,41 @@ struct PropagationView: View {
         _obstructionHeight = State(initialValue: adapter.defaultObstructionHeight)
     }
 
+    private var resultsForCopy: [(label: String, value: String)] {
+        [
+            ("FSPL",              cStr(adapter.output.fspl_str)),
+            ("2-ray loss",        cStr(adapter.output.two_ray_loss_str)),
+            ("Fresnel crossover", cStr(adapter.output.fresnel_zone_str)),
+            ("Path loss",         cStr(adapter.output.path_loss_str)),
+            ("Regime",            cStr(adapter.output.regime_str)),
+            ("Earth bulge (mid)", cStr(adapter.output.earth_bulge_str)),
+            ("Radar horizon",     cStr(adapter.output.horizon_range_str)),
+            ("Diffraction loss",  cStr(adapter.output.diffraction_loss_str)),
+        ]
+    }
+
     var body: some View {
         Form {
             Section("Inputs") {
                 InputRow("Distance", unit: "km", value: $distance,
                          in: 0.01...10000, step: 0.1, decimals: 3,
+                         error: adapter.distanceError,
                          help: "Total path length between transmitter and receiver") { adapter.setDistance($0) }
                 InputRow("Frequency", unit: "MHz", value: $frequency,
                          in: 0.1...100000, step: 1, decimals: 1,
+                         error: adapter.frequencyError,
                          help: "Carrier frequency — path loss scales as f² in free space") { adapter.setFrequency($0) }
                 InputRow("Tx height", unit: "m", value: $txHeight,
                          in: 0.1...100000, step: 0.5, decimals: 1,
+                         error: adapter.txHeightError,
                          help: "Transmit antenna height above ground — determines the Fresnel zone crossover distance") { adapter.setTxHeight($0) }
                 InputRow("Rx height", unit: "m", value: $rxHeight,
                          in: 0.1...100000, step: 0.5, decimals: 1,
+                         error: adapter.rxHeightError,
                          help: "Receive antenna height above ground — determines the Fresnel zone crossover distance") { adapter.setRxHeight($0) }
                 InputRow("Obstruction height", unit: "m", value: $obstructionHeight,
                          in: 0...10000, step: 1, decimals: 1,
+                         error: adapter.obstructionHeightError,
                          help: "Knife-edge obstacle height above flat-earth baseline at path midpoint — 0 = no obstruction") { adapter.setObstructionHeight($0) }
             }
             Section("Results") {
@@ -59,5 +77,10 @@ struct PropagationView: View {
         }
         .formStyle(.grouped)
         .navigationTitle("Propagation")
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                CopyResultsButton(rows: resultsForCopy)
+            }
+        }
     }
 }

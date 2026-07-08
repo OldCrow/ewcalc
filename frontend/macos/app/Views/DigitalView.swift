@@ -21,28 +21,44 @@ struct DigitalView: View {
         _implementationLoss = State(initialValue: adapter.defaultImplementationLoss)
     }
 
+    private var resultsForCopy: [(label: String, value: String)] {
+        [
+            ("Eb/N₀",         cStr(adapter.output.eb_no_str)),
+            ("Required SNR",   cStr(adapter.output.required_snr_for_eb_no_str)),
+            ("Process gain",   cStr(adapter.output.process_gain_str)),
+            ("Jamming margin", cStr(adapter.output.jamming_margin_str)),
+            ("Required J/S",   cStr(adapter.output.required_js_str)),
+        ]
+    }
+
     var body: some View {
         Form {
             Section("Digital Link") {
                 InputRow("Data rate", unit: "Mbps", value: $dataRate,
                          in: 0.0001...10000, step: 0.01, decimals: 4,
+                         error: adapter.dataRateError,
                          help: "Information bit rate — shared between the Eb/N₀ conversion and DSSS process gain") { adapter.setDataRate($0) }
                 InputRow("Bandwidth", unit: "MHz", value: $bandwidth,
                          in: 0.001...10000, step: 0.1, decimals: 3,
+                         error: adapter.bandwidthError,
                          help: "Receiver noise bandwidth — wider than the data rate gives Eb/N₀ > SNR") { adapter.setBandwidth($0) }
                 InputRow("Received SNR", unit: "dB", value: $snr,
                          in: -30...60,
+                         error: adapter.snrError,
                          help: "Carrier-to-noise ratio measured in the noise bandwidth") { adapter.setSnr($0) }
             }
             Section("DSSS") {
                 InputRow("Chip rate", unit: "Mcps", value: $chipRate,
                          in: 0.0001...10000, step: 1, decimals: 3,
+                         error: adapter.chipRateError,
                          help: "Spread-spectrum chipping rate — determines the spreading bandwidth and process gain") { adapter.setChipRate($0) }
                 InputRow("Required Eb/N₀", unit: "dB", value: $requiredEbNo,
                          in: -10...30, step: 0.5,
+                         error: adapter.requiredEbNoError,
                          help: "Minimum energy-per-bit to noise density for acceptable BER — typically 10–13 dB for BPSK/QPSK") { adapter.setRequiredEbNo($0) }
                 InputRow("Impl. loss", unit: "dB", value: $implementationLoss,
                          in: 0...10, step: 0.5,
+                         error: adapter.implementationLossError,
                          help: "Practical losses from non-ideal code synchronisation, filter roll-off, etc. — typically 1–3 dB") { adapter.setImplementationLoss($0) }
             }
             Section("Results") {
@@ -60,5 +76,10 @@ struct DigitalView: View {
         }
         .formStyle(.grouped)
         .navigationTitle("Digital / DSSS")
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                CopyResultsButton(rows: resultsForCopy)
+            }
+        }
     }
 }

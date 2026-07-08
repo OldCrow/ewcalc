@@ -74,6 +74,7 @@ set(SWIFT_SOURCES
     app/ewcalcApp.swift
     app/ContentView.swift
     app/Adapters/EwCalcStore.swift
+    app/Adapters/SavedInputs.swift
     app/Adapters/PropagationAdapter.swift
     app/Adapters/LinkAdapter.swift
     app/Adapters/ReceiverAdapter.swift
