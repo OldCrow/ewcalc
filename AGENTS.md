@@ -2,9 +2,23 @@
 
 This file provides project-scoped guidance to AI agents and contributors working in this repository.
 
-## Commands
+## Project Overview
 
-**Requires CMake ≥ 3.20.** The default CMake build produces `libew`, `ewpresenter`, and the test suite. To include a platform GUI target, set `EWCALC_BUILD_FRONTEND=ON` or use the platform build scripts instead (see "Platform frontend builds" below).
+`ewcalc` is a cross-platform Electronic Warfare engineering calculator. Three strict layers, each depending only on the layer below: a pure C++20 calculation core (`libew`), a platform-agnostic presenter/viewmodel layer (`ewpresenter`), and native-UI frontends per platform (SwiftUI / Qt6 / WinUI 3). See Architecture below for details.
+
+## Session Start
+
+**Requires CMake ≥ 3.20.** Before building, confirm the toolchain for this platform (see Platform-Specific Notes) is installed. On macOS, always unset Homebrew LLVM environment overrides first — Homebrew sets `CC`/`CXX`/`LDFLAGS` to Homebrew LLVM's libc++, which is ABI-incompatible with the macOS 13.0 deployment target used by the macOS frontend:
+
+```bash
+unset LDFLAGS CPPFLAGS CC CXX
+```
+
+The `scripts/build-macos.sh` script does this automatically; only needed if invoking CMake directly.
+
+## Build Commands
+
+The default CMake build produces `libew`, `ewpresenter`, and the test suite. To include a platform GUI target, set `EWCALC_BUILD_FRONTEND=ON` or use the platform build scripts instead (see Platform-Specific Notes).
 
 ### Build (core libs + presenter harness)
 ```bash
@@ -37,27 +51,49 @@ build/bin/ewpresenter_harness
 ```
 
 ### Platform frontend builds
-```
+```bash
 bash scripts/build-macos.sh [--config Debug|Release] [--package]
 bash scripts/build-linux.sh [--config Debug|Release] [--package deb|rpm|appimage]  # Note: Qt6 frontend not yet implemented; core libs and tests build fully
 scripts\build-windows.ps1 [-Config Release]
 ```
 
-On macOS, always unset Homebrew LLVM environment overrides before building (the script does this automatically). If running CMake directly, unset them manually first:
+### CMake options
+- `EWCALC_BUILD_TESTS` (default `ON`) — enables the test suite. The platform build scripts pass `-DEWCALC_BUILD_TESTS=OFF` for speed; re-enable for test runs.
+- `EWCALC_BUILD_FRONTEND` (default `OFF`) — builds the native GUI target via CMake; normally driven by the platform scripts instead.
 
-```bash
-unset LDFLAGS CPPFLAGS CC CXX
-```
-
-Homebrew sets `CC`/`CXX`/`LDFLAGS` to point to Homebrew LLVM's libc++, which is ABI-incompatible with the macOS 13.0 deployment target used by the macOS frontend.
-
-## Platform build prerequisites
+## Platform-Specific Notes
 
 - **macOS:** Xcode (with Swift and SwiftUI support) from the Mac App Store. Minimum deployment target: macOS 13.0. For the core libs and tests only (no GUI), Xcode Command Line Tools (`xcode-select --install`) are sufficient.
-- **Linux:** Qt6 base development libraries (`apt install qt6-base-dev` on Debian/Ubuntu, or equivalent). A C++20 compiler (GCC ≥ 12 or Clang ≥ 14) and CMake ≥ 3.20 are also required. **Note:** The Qt6 frontend is not yet complete; the core libs and tests build fully on Linux.
+- **Linux:** Qt6 base development libraries (`apt install qt6-base-dev` on Debian/Ubuntu, or equivalent). A C++20 compiler (GCC ≥ 12 or Clang ≥ 14) and CMake ≥ 3.20 are also required. The Qt6 frontend is not yet complete; the core libs and tests build fully on Linux.
 - **Windows:** Visual Studio 2022 with the C++ and Windows App SDK workloads (for WinUI 3 support). Install from https://aka.ms/vs/17/release/vs_buildtools.exe, `winget install Microsoft.VisualStudio.2022.Community`, or `choco install visualstudio2022`. CMake ≥ 3.20: `winget install Kitware.CMake` or `choco install cmake`.
 
-> **Windows tool paths vary** by installation method (direct installer, `winget`, `chocolatey`, Microsoft Store, etc.). VS Build Tools and full VS editions use different default directories. See libhmm or libstats `AGENTS.md` for the `vcvars64.bat` path alternatives and auto-detection via `vswhere.exe`.
+### Windows toolchain setup
+
+> **Windows tool paths vary** by installation method (direct installer, `winget`, `chocolatey`, Microsoft Store, etc.). The paths below are common defaults — adjust for your installation. VS Build Tools and full VS editions use different default directories.
+
+Activate the MSVC toolchain once per PowerShell session before building:
+
+```powershell
+# Default path for VS 2022 Build Tools. For full VS (Community/Professional/Enterprise),
+# replace "BuildTools" with your edition under "C:\Program Files\Microsoft Visual Studio\2022\".
+$vcvars = "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
+# Auto-detect any edition instead:
+# $vsPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -property installationPath
+# $vcvars = "$vsPath\VC\Auxiliary\Build\vcvars64.bat"
+$envVars = cmd /c "`"$vcvars`" > nul && set"
+foreach ($line in $envVars) {
+    if ($line -match "^([^=]+)=(.*)$") {
+        [System.Environment]::SetEnvironmentVariable($Matches[1], $Matches[2], 'Process')
+    }
+}
+```
+
+**One-time setup:**
+- Visual Studio 2022 Build Tools (not full IDE) is sufficient. Install from https://aka.ms/vs/17/release/vs_buildtools.exe, `winget install Microsoft.VisualStudio.2022.BuildTools`, or `choco install visualstudio2022buildtools`.
+  - Build Tools default path: `C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\`
+  - Full VS default path: `C:\Program Files\Microsoft Visual Studio\2022\{edition}\`
+- **Smart App Control must be Off** (Windows Security → App & Browser Control → SAC settings). SAC blocks locally compiled executables and cannot be re-enabled without a Windows reset.
+- CMake ≥ 3.20: https://cmake.org/download/, `winget install Kitware.CMake`, or `choco install cmake`.
 
 ## Architecture
 
@@ -100,11 +136,8 @@ No platform types cross the ewpresenter boundary. Frontends bind to `set_on_chan
 
 Tests use a zero-dependency framework in `libew/tests/test_main.h`. Each test file is an independent executable. Key macros: `TEST_MAIN()`, `RUN_TEST(fn)`, `ASSERT_NEAR(actual, expected, tol)`, `ASSERT_TRUE(expr)`.
 
-### CMake options
-- `EWCALC_BUILD_TESTS` (default `ON`) — enables the test suite. The platform build scripts pass `-DEWCALC_BUILD_TESTS=OFF` for speed; re-enable for test runs.
-- `EWCALC_BUILD_FRONTEND` (default `OFF`) — builds the native GUI target via CMake; normally driven by the platform scripts instead.
+## Coding Conventions
 
-### C++ conventions
 - C++20, `-Wall -Wextra -Wpedantic -Werror` (GCC/Clang) or `/W4 /WX /permissive-` (MSVC).
 - `#pragma once` throughout.
 - No external dependencies in `libew` or `ewpresenter`.
