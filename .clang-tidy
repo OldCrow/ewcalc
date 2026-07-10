@@ -9,7 +9,7 @@
 # This is intentional and low-risk for three reasons:
 #   1. Every formatted string is < 20 characters and qualifies for SSO in
 #      libc++ and MSVC STL, so no heap allocation occurs in practice.
-#      The assert in ewcalc_bridge.cpp copy_str() enforces the size bound
+#      The assert in bridge/ewcalc_bridge.cpp copy_str() enforces the size bound
 #      in debug builds; if that assert ever fires this assumption must be
 #      revisited.
 #   2. The noexcept annotation communicates "won't throw under normal

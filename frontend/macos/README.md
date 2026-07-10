@@ -1,17 +1,13 @@
 # ewcalc — macOS Frontend (Phase 4)
 
 SwiftUI frontend for ewcalc. Consumes `libew` and `ewpresenter` through a
-plain-C bridge (`ewcalc_bridge`) that Swift imports via a bridging header.
+plain-C bridge (`ewcalc_bridge`, top-level `bridge/`) that Swift imports via
+a bridging header.
 
 ## Project structure
 
 ```
 frontend/macos/
-├── bridge/
-│   ├── ewcalc_bridge.h      Plain-C API: opaque handles, value-type output structs, callbacks
-│   ├── ewcalc_bridge.cpp    Implements the C API on top of ewpresenter C++20 classes
-│   └── CMakeLists.txt       Built as a static lib by the native CMake step
-│
 ├── app/
 │   ├── BridgingHeader.h     Imports ewcalc_bridge.h into Swift
 │   ├── ewcalcApp.swift      App entry point; injects EwCalcStore as environment object
@@ -42,6 +38,17 @@ frontend/macos/
 │       └── ReferenceView.swift
 │
 └── CMakeLists.txt    Configures the Swift app bundle; lists SWIFT_SOURCES explicitly
+```
+
+The bridge itself lives at the repo-top-level `bridge/` (sibling to `libew`,
+`ewpresenter`, and `frontend`), since it is platform-agnostic and consumed by
+tests as well as this frontend:
+
+```
+bridge/
+├── ewcalc_bridge.h      Plain-C API: opaque handles, value-type output structs, callbacks
+├── ewcalc_bridge.cpp    Implements the C API on top of ewpresenter C++20 classes
+└── CMakeLists.txt       Built as a static lib by the root CMake build
 ```
 
 ## Build
