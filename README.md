@@ -78,6 +78,12 @@ to produce a distributable artifact.
 macOS packaging requires a Developer ID Application certificate in the keychain
 and `xcrun notarytool` credentials stored under the `ewcalc-notarytool` profile.
 
+## Contributing
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the branch/PR workflow, build and
+test instructions, and code style. See [`CHANGELOG.md`](CHANGELOG.md) for
+release history.
+
 ## Current status
 
 **v0.9.0** — Infrastructure & Hardening milestone (4 issues, #22–#25): the C bridge (`ewcalc_bridge`) moved from `frontend/macos/bridge/` to a top-level, platform-agnostic `bridge/` component and now builds unconditionally on all platforms; CI gained `sanitizers` (ASan/UBSan) and `static-analysis` (clang-tidy + cppcheck) jobs — the prior `.clang-tidy` config was a silent no-op and now genuinely lints `libew`/`ewpresenter`; CI gained a `coverage` job (Clang/llvm-cov, gated by a new `EWCALC_BUILD_COVERAGE` CMake option) with a 75% line-coverage threshold; the Windows frontend gained MSIX packaging (`Package.appxmanifest`, `-Package` wired into CI, signing documented in `frontend/windows/ewcalc-winui/README.md`).
