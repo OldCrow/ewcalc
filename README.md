@@ -78,6 +78,19 @@ to produce a distributable artifact.
 macOS packaging requires a Developer ID Application certificate in the keychain
 and `xcrun notarytool` credentials stored under the `ewcalc-notarytool` profile.
 
+### API documentation
+
+`libew` and `ewpresenter` headers use Doxygen-style `///` comments. Build the
+HTML API reference locally with:
+
+```
+doxygen Doxyfile
+```
+
+Output lands in `docs/html/index.html`. CI runs the same command on every push
+and pull request and publishes `docs/html/` as a workflow artifact; it does not
+publish to GitHub Pages yet (a reasonable future enhancement).
+
 ## Contributing
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the branch/PR workflow, build and
