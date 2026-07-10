@@ -1,7 +1,7 @@
 /// @file test_formatter.cpp
 /// @brief Size-bound tests for every formatter function.
 ///
-/// Two invariants must hold for the macOS C bridge to remain safe:
+/// Two invariants must hold for the C bridge to remain safe:
 ///   1. Every formatter output fits in the 64-byte internal snprintf buffer
 ///      used inside formatter.cpp (the `fmt()` helper).
 ///   2. Every formatter output fits in the 80-byte EWP_STR_MAX bridge buffers

@@ -66,7 +66,7 @@ endforeach()
 add_library(ewcalc_bridge STATIC IMPORTED)
 set_target_properties(ewcalc_bridge PROPERTIES
     IMPORTED_LOCATION "${EWCALC_NATIVE_BUILD_DIR}/lib/libewcalc_bridge.a"
-    INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/bridge"
+    INTERFACE_INCLUDE_DIRECTORIES "${EWCALC_SRC_ROOT}/bridge"
 )
 
 # ── Swift app bundle ──────────────────────────────────────────────────────────
@@ -109,8 +109,9 @@ add_executable(ewcalc MACOSX_BUNDLE ${SWIFT_SOURCES} ${ICON_FILE})
 # libraries that ewcalc_bridge depends on explicitly.
 target_link_libraries(ewcalc PRIVATE ewcalc_bridge ewpresenter_native libew_native c++)
 
-# Include bridge/ so the bridging header can resolve #include "ewcalc_bridge.h"
-target_include_directories(ewcalc PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/bridge")
+# Include the top-level bridge/ so the bridging header can resolve
+# #include "ewcalc_bridge.h"
+target_include_directories(ewcalc PRIVATE "${EWCALC_SRC_ROOT}/bridge")
 
 set_target_properties(ewcalc PROPERTIES
     MACOSX_BUNDLE_INFO_PLIST         "${CMAKE_CURRENT_SOURCE_DIR}/app/Info.plist"
