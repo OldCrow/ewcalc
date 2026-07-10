@@ -109,7 +109,17 @@ if ($Package) {
 
     $MsixOutput = Join-Path $MsixDir "ewcalc-$Platform-$Config.msix"
 
-    & $MakeAppx pack /d $FrontendBin /p $MsixOutput /nv /o
+    # Single-project MSIX (EnableMsixTooling) stages the resolved AppxManifest.xml
+    # and payload under an "AppX" subfolder of the build output on Build (not just
+    # Publish); pack from there when present, falling back to the bin root for
+    # older/alternate layouts.
+    $PackSource = Join-Path $FrontendBin "AppX"
+    if (-not (Test-Path (Join-Path $PackSource "AppxManifest.xml"))) {
+        $PackSource = $FrontendBin
+    }
+    Write-Host "    Packaging from: $PackSource" -ForegroundColor Gray
+
+    & $MakeAppx pack /d $PackSource /p $MsixOutput /nv /o
     if ($LASTEXITCODE -ne 0) { throw "makeappx failed (exit $LASTEXITCODE)" }
 
     Write-Host "    MSIX: $MsixOutput" -ForegroundColor Green
