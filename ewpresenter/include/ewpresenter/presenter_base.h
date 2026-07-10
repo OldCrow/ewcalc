@@ -38,6 +38,12 @@ namespace ewpresenter {
 ///                  - void fire() noexcept
 template<typename Derived>
 class PresenterBase {
+private:
+    /// Restricted to Derived: prevents constructing or slicing to
+    /// PresenterBase<Derived> directly from outside the CRTP hierarchy.
+    PresenterBase() = default;
+    friend Derived;
+
 protected:
     /// Assign @p value and @p validated to the referenced members, then
     /// trigger recompute and the on_change callback.
