@@ -55,26 +55,16 @@ void test_dbi_dbd_roundtrip() {
 
 // ---------------------------------------------------------------------------
 // Beamwidth from gain
-// θ_3dB ≈ 10^((11.1 - G_dBi) / 20)  degrees
-// Source: Adamy EW101 [OPEN: page/eq TBD]. Dave Adamy's "EW 101 -- ES vs.
-// SIGINT -- Part 2" (JED, Feb 2011, p. 52, Figure 3) plots gain vs. 3 dB
-// beamwidth for a 55%-efficient parabolic dish, confirming the qualitative
-// gain-beamwidth trade-off, but is a graph (not a closed-form equation), so
-// it cannot confirm this specific "11.1" constant.
-// NOTE (audit finding, not fixed here — see discrepancy report): the classic
-// Tai & Pereira (1976) directivity approximation is a two-plane formula using
-// separate azimuth/elevation half-power beamwidths (D0 ~ K/(theta_az*theta_el),
-// the same family as gain_from_beamwidth() below), not a single-beamwidth
-// relation. The "11.1" constant here does not reproduce that formula, or any
-// other standard single-beamwidth gain relation, when theta is in degrees as
-// documented; it is numerically close to the equivalent constant only if
-// theta were expressed in radians. Attribution to "Tai & Pereira" for this
-// specific single-variable form is therefore unverified.
+// θ_3dB ≈ sqrt(30000 / 10^(G_dBi/10)) degrees
+// Source: Adamy EW101 [OPEN: page/eq TBD]. This is the symmetric inverse of
+// gain_from_beamwidth() below (θ_az == θ_el), using the same 30000 beam-shape
+// constant. Dave Adamy's "EW 101 -- ES vs. SIGINT -- Part 2" (JED, Feb 2011,
+// p. 52, Figure 3) provides graphical context for gain vs. 3 dB beamwidth.
 // ---------------------------------------------------------------------------
 
 void test_beamwidth_from_gain_0dbi() {
-    // At 0 dBi: θ = 10^(11.1/20) = 10^0.555 = 3.589 degrees
-    const double expected = std::pow(10.0, 11.1 / 20.0);
+    // At 0 dBi: θ = sqrt(30000) = 173.205 degrees
+    const double expected = std::sqrt(30000.0);
     ASSERT_NEAR(beamwidth_from_gain(0.0_dB).value, expected, 0.001);
 }
 
@@ -110,17 +100,15 @@ void test_gain_from_beamwidth_1x1() {
 }
 
 void test_beamwidth_gain_consistency() {
-    // beamwidth_from_gain (Tai & Pereira, 1D) and gain_from_beamwidth (pencil-beam, 2D)
-    // are independent approximations from different models and do not round-trip.
-    // What IS consistent: a higher-gain antenna has a narrower beamwidth, and
-    // applying gain_from_beamwidth to that narrower beamwidth gives a higher gain
-    // than applying it to the wider beamwidth of a lower-gain antenna.
+    // beamwidth_from_gain is the circular/symmetric inverse of
+    // gain_from_beamwidth where θ_az == θ_el.
     const Degrees bw_low  = beamwidth_from_gain(10.0_dB);
     const Degrees bw_high = beamwidth_from_gain(30.0_dB);
     ASSERT_TRUE(bw_high.value < bw_low.value);  // higher gain → narrower beam
     const Db g_from_low  = gain_from_beamwidth(bw_low,  bw_low);
     const Db g_from_high = gain_from_beamwidth(bw_high, bw_high);
-    ASSERT_TRUE(g_from_high.value > g_from_low.value);  // consistent ordering
+    ASSERT_NEAR(g_from_low.value, 10.0, 1e-9);
+    ASSERT_NEAR(g_from_high.value, 30.0, 1e-9);
 }
 
 // ---------------------------------------------------------------------------

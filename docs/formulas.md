@@ -57,10 +57,9 @@ Piecewise Lee (1982) approximation to the Fresnel diffraction integral `J(v)`.
 - Source: IEEE Std 145 antenna terminology; Adamy EW101 [OPEN: page/eq TBD]. The 2.15 dB offset is `10*log10(1.64)`, the half-wave dipole directivity over isotropic.
 
 ### Beamwidth from gain
-`theta_3dB ≈ 10^((11.1 - G_dBi)/20)` degrees
+`theta_3dB ≈ sqrt(30000 / 10^(G_dBi / 10))` degrees
 
-- Source: Adamy EW101 [OPEN: page/eq TBD].
-- Audit note: this constant was not independently verified against a standard single-beamwidth gain relation; see follow-up issue for suspected units/attribution problem.
+- Source: Adamy EW101 [OPEN: page/eq TBD]. This is the circular/symmetric inverse of `gain_from_beamwidth()` where `theta_az == theta_el`, using the same 30000 beam-shape constant.
 - Units: gain in dBi, result in degrees.
 
 ### Gain from beamwidth

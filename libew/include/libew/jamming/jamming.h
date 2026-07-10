@@ -96,8 +96,10 @@ struct PartialBandResult {
 /// instantaneous J/S at the expense of hit probability. The optimum bandwidth
 /// maximises the effective J/S averaged over the hopping band.
 ///
-/// Optimum BW = signal_bandwidth (when single-channel J/S >= 0 dB, all hops covered)
-/// Otherwise:  BW_opt = signal_bw * 10^(single_channel_js / 10)
+/// BW_opt = signal_bw * 10^(single_channel_js / 10)
+/// The result is capped only by hop_range_bandwidth; for single-channel J/S
+/// >= 0 dB, surplus jammer power widens the jammed bandwidth beyond the
+/// signal bandwidth to cover more hops.
 ///
 /// @param signal_bandwidth     Target signal occupied bandwidth (kHz → stored as MHz)
 /// @param hop_range_bandwidth  Total frequency hopping range (MHz)

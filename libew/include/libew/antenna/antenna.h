@@ -25,8 +25,9 @@ using namespace libew::units;
 /// dBi = dBd + 2.15
 [[nodiscard]] constexpr Db dbd_to_dbi(Db dbd) noexcept { return Db{dbd.value + 2.15}; }
 
-/// Approximate 3 dB beamwidth from antenna gain (Tai & Pereira approximation).
-/// θ_3dB ≈ 10^((11.1 - G_dBi) / 20)  degrees (spherical cap approximation)
+/// Approximate circular 3 dB beamwidth from antenna gain.
+/// Inverts the symmetric case of gain_from_beamwidth():
+/// θ_3dB ≈ sqrt(30000 / 10^(G_dBi / 10)) degrees.
 /// Note: valid for directional antennas with moderate to high gain.
 [[nodiscard]] Degrees beamwidth_from_gain(Db gain_dbi) noexcept;
 
