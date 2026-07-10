@@ -130,7 +130,7 @@ notarization (see `frontend/macos/CMakeLists.txt` and the `build-macos` job in
 `.github/workflows/ci.yml`). There is no Store-specific step here — Microsoft
 Store submission re-signs the package with its own certificate at ingestion.
 
-## Current state (v0.8.0)
+## Current state (v0.9.0)
 
 This frontend covers all nine calculator pages (Propagation, Antenna, Link Budget,
 Receiver, Jamming, Location, Radar, Digital/DSSS, Reference) at v0.6 parity with macOS,

@@ -71,7 +71,7 @@ to produce a distributable artifact.
 
 | Platform | Script | Package output |
 |----------|--------|----------------|
-| Windows | `scripts/build-windows.ps1` | (MSIX, future) |
+| Windows | `scripts/build-windows.ps1` | unsigned `.msix` (`-Sign` for signed) |
 | macOS | `scripts/build-macos.sh` | signed + notarized `.dmg` |
 | Linux | `scripts/build-linux.sh` | `.AppImage` |
 
@@ -79,6 +79,8 @@ macOS packaging requires a Developer ID Application certificate in the keychain
 and `xcrun notarytool` credentials stored under the `ewcalc-notarytool` profile.
 
 ## Current status
+
+**v0.9.0** — Infrastructure & Hardening milestone (4 issues, #22–#25): the C bridge (`ewcalc_bridge`) moved from `frontend/macos/bridge/` to a top-level, platform-agnostic `bridge/` component and now builds unconditionally on all platforms; CI gained `sanitizers` (ASan/UBSan) and `static-analysis` (clang-tidy + cppcheck) jobs — the prior `.clang-tidy` config was a silent no-op and now genuinely lints `libew`/`ewpresenter`; CI gained a `coverage` job (Clang/llvm-cov, gated by a new `EWCALC_BUILD_COVERAGE` CMake option) with a 75% line-coverage threshold; the Windows frontend gained MSIX packaging (`Package.appxmanifest`, `-Package` wired into CI, signing documented in `frontend/windows/ewcalc-winui/README.md`).
 
 **v0.8.0** — UX Parity & Accessibility milestone (7 issues, #15–#21): per-field validation errors are now surfaced on all 8 Windows pages and on macOS (previously Propagation-only on Windows, absent on macOS); macOS text fields clamp out-of-range typed input to their declared bounds; VoiceOver labels (macOS), `AutomationProperties.Name` (Windows), and `setAccessibleName` (Linux) added across every input and output control on all three platforms; macOS help-text tooltips ported to Windows (`ToolTipService`) and Linux (`setToolTip`); user inputs now persist across sessions on all three platforms (versioned, per-platform storage, with a "Reset to Defaults" action); each calculator page gains a "Copy results" clipboard button on all three platforms.
 

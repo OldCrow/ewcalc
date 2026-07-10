@@ -112,10 +112,13 @@ Each Swift adapter class wraps the C bridge for one presenter. It:
 adding a new Swift file, add it to the `SWIFT_SOURCES` list in
 `frontend/macos/CMakeLists.txt`.
 
-## Current state (v0.8.0)
+## Current state (v0.9.0)
 
 Nine calculator pages: Propagation, Antenna, Link Budget, Receiver,
 Jamming, Location, Radar, Digital/DSSS, and Reference.
+
+v0.9.0 relocates the C bridge from `frontend/macos/bridge/` to the top-level,
+platform-agnostic `bridge/` (#22) — no Swift-visible API change.
 
 v0.8.0 (UX parity & accessibility, #16/#17/#19/#20/#21):
 - Per-field validation errors from `EwpFieldError` are now published by every

@@ -14,7 +14,7 @@
   <Identity
     Name="OldCrow.EWCalculator"
     Publisher="CN=Gary Wolfman"
-    Version="0.8.0.0" />
+    Version="0.9.0.0" />
 
   <Properties>
     <DisplayName>EW Calculator</DisplayName>

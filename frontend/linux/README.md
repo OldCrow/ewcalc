@@ -89,10 +89,14 @@ clears it when the input is valid. This keeps all validation logic in the
 presenter layer — the Qt layer only reacts to the `FieldError` value it
 receives from the output struct.
 
-## Current state (v0.8.0)
+## Current state (v0.9.0)
 
 Nine calculator pages: Propagation, Antenna, Link Budget, Receiver,
 Jamming, Location, Radar, Digital/DSSS, and Reference.
+
+No runtime Linux frontend changes in v0.9.0 — that release focused on C bridge
+relocation (#22, macOS-only), CI hardening (#23, #25), and Windows MSIX
+packaging (#24); see root README.
 
 v0.8.0 (UX parity & accessibility, #18/#19/#20/#21): `setToolTip()` help text
 ported from macOS on every input/output across all nine pages (#18);
