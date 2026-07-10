@@ -1,0 +1,23 @@
+# Doxygen configuration for ewcalc's public API (libew + ewpresenter).
+# Generate docs locally with: doxygen Doxyfile
+# Output lands in docs/html/ (gitignored); CI publishes it as a build artifact.
+#
+# This file only lists settings that differ from Doxygen's defaults. Run
+# `doxygen -g` to see the full set of available options.
+
+PROJECT_NAME           = "ewcalc"
+# Bump this to match CMakeLists.txt's `project(ewcalc VERSION ...)` at each release.
+PROJECT_NUMBER         = 0.9.0
+PROJECT_BRIEF          = "Electronic Warfare engineering calculator"
+
+INPUT                  = libew/include ewpresenter/include
+RECURSIVE              = YES
+FILE_PATTERNS          = *.h
+
+OUTPUT_DIRECTORY       = docs
+EXTRACT_ALL            = NO
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+
+QUIET                  = YES
+WARN_IF_UNDOCUMENTED   = NO

@@ -78,6 +78,19 @@ to produce a distributable artifact.
 macOS packaging requires a Developer ID Application certificate in the keychain
 and `xcrun notarytool` credentials stored under the `ewcalc-notarytool` profile.
 
+### API documentation
+
+`libew` and `ewpresenter` headers use Doxygen-style `///` comments. Build the
+HTML API reference locally with:
+
+```
+doxygen Doxyfile
+```
+
+Output lands in `docs/html/index.html`. CI runs the same command on every push
+and pull request and publishes `docs/html/` as a workflow artifact; it does not
+publish to GitHub Pages yet (a reasonable future enhancement).
+
 ## Current status
 
 **v0.9.0** — Infrastructure & Hardening milestone (4 issues, #22–#25): the C bridge (`ewcalc_bridge`) moved from `frontend/macos/bridge/` to a top-level, platform-agnostic `bridge/` component and now builds unconditionally on all platforms; CI gained `sanitizers` (ASan/UBSan) and `static-analysis` (clang-tidy + cppcheck) jobs — the prior `.clang-tidy` config was a silent no-op and now genuinely lints `libew`/`ewpresenter`; CI gained a `coverage` job (Clang/llvm-cov, gated by a new `EWCALC_BUILD_COVERAGE` CMake option) with a 75% line-coverage threshold; the Windows frontend gained MSIX packaging (`Package.appxmanifest`, `-Package` wired into CI, signing documented in `frontend/windows/ewcalc-winui/README.md`).
