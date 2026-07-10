@@ -8,7 +8,7 @@ using namespace libew::units::literals;
 
 // ---------------------------------------------------------------------------
 // ERP — Effective Radiated Power
-// Source: Adamy EW101. ERP = Ptx + Gtx (in log domain).
+// Source: Adamy EW101 [OPEN: page/eq TBD]. ERP = Ptx + Gtx (log domain).
 // ---------------------------------------------------------------------------
 
 void test_erp_dbm() {
@@ -31,7 +31,8 @@ void test_erp_dbw() {
 // ---------------------------------------------------------------------------
 // Gain reference conversions: dBi ↔ dBd
 // 2.15 dB offset: isotropic antenna is 2.15 dB above half-wave dipole.
-// Source: IEEE standard; Adamy EW101.
+// Source: IEEE Std 145 antenna terms; Adamy EW101 [OPEN: page/eq TBD].
+// (2.15 dB = 10*log10(1.64), the half-wave dipole's directivity over isotropic.)
 // ---------------------------------------------------------------------------
 
 void test_dbi_to_dbd_known_value() {
@@ -55,7 +56,20 @@ void test_dbi_dbd_roundtrip() {
 // ---------------------------------------------------------------------------
 // Beamwidth from gain
 // θ_3dB ≈ 10^((11.1 - G_dBi) / 20)  degrees
-// Source: Tai & Pereira approximation (spherical cap); Adamy EW101.
+// Source: Adamy EW101 [OPEN: page/eq TBD]. Dave Adamy's "EW 101 -- ES vs.
+// SIGINT -- Part 2" (JED, Feb 2011, p. 52, Figure 3) plots gain vs. 3 dB
+// beamwidth for a 55%-efficient parabolic dish, confirming the qualitative
+// gain-beamwidth trade-off, but is a graph (not a closed-form equation), so
+// it cannot confirm this specific "11.1" constant.
+// NOTE (audit finding, not fixed here — see discrepancy report): the classic
+// Tai & Pereira (1976) directivity approximation is a two-plane formula using
+// separate azimuth/elevation half-power beamwidths (D0 ~ K/(theta_az*theta_el),
+// the same family as gain_from_beamwidth() below), not a single-beamwidth
+// relation. The "11.1" constant here does not reproduce that formula, or any
+// other standard single-beamwidth gain relation, when theta is in degrees as
+// documented; it is numerically close to the equivalent constant only if
+// theta were expressed in radians. Attribution to "Tai & Pereira" for this
+// specific single-variable form is therefore unverified.
 // ---------------------------------------------------------------------------
 
 void test_beamwidth_from_gain_0dbi() {
@@ -73,7 +87,14 @@ void test_beamwidth_from_gain_increases_with_lower_gain() {
 // ---------------------------------------------------------------------------
 // Gain from beamwidth
 // G ≈ 10*log10(30000 / (θ_az * θ_el))
-// Source: Adamy EW101 approximation for pencil-beam antennas.
+// Source: Adamy EW101 [OPEN: page/eq TBD]; qualitatively consistent with
+// Dave Adamy's "EW 101 -- ES vs. SIGINT -- Part 2" (JED, Feb 2011, p. 52,
+// Figure 3: gain vs. 3 dB beamwidth for a 55%-efficient parabolic dish),
+// though that source is a graph rather than a closed-form equation. Same
+// family as the Kraus and Tai & Pereira two-plane beamwidth-directivity
+// approximations (D0 ~ K/(theta_az*theta_el)); the constant (commonly
+// 26000-41253 across sources) depends on assumed beam shape/aperture
+// efficiency.
 // ---------------------------------------------------------------------------
 
 void test_gain_from_beamwidth_10x10() {
@@ -105,7 +126,8 @@ void test_beamwidth_gain_consistency() {
 // ---------------------------------------------------------------------------
 // Wavelength
 // λ = c / f   where c = 2.998e8 m/s
-// Source: physics.
+// Source: physics; c = 299792458 m/s exactly (SI definition). No book
+// citation applicable.
 // ---------------------------------------------------------------------------
 
 void test_wavelength_300mhz() {
