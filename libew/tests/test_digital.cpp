@@ -10,7 +10,9 @@ using namespace libew::units::literals;
 // Eb/N₀ ↔ SNR conversions
 //
 // Eb/N₀ = SNR + 10·log10(BW / Rb)
-// Source: Adamy EW102; Proakis Digital Communications.
+// Source: Adamy EW102 (2004) Sec 5.6.6 "Signal-to-Noise Ratio", p.128;
+// Sec 5.6.7 "Bit-Error Rate Versus RF SNR", p.128. [OPEN: exact eq # TBD]
+// General relation also standard in digital comms texts (e.g. Proakis).
 // ---------------------------------------------------------------------------
 
 void test_eb_no_equals_snr_when_bw_equals_rate() {
@@ -43,7 +45,9 @@ void test_snr_from_eb_no_is_inverse() {
 // DSSS process gain
 //
 // PG = 10·log10(chip_rate / data_rate)
-// Source: Adamy EW103; Dixon Spread Spectrum Systems.
+// Source: Adamy EW102 (2004) Sec 5.7.3 "Direct Sequence Spread Spectrum
+// Signals", p.136. [OPEN: exact eq # TBD]
+// General relation also standard in spread-spectrum texts (e.g. Dixon).
 // ---------------------------------------------------------------------------
 
 void test_dsss_process_gain_1000x() {
@@ -68,7 +72,10 @@ void test_dsss_process_gain_doubles_with_10x_chip_rate() {
 //
 // JM = PG - Eb/N₀_req - L_impl
 // J/S_req = -JM
-// Source: Adamy EW103; Torrieri Principles of Spread-Spectrum Communication.
+// Source: Adamy EW102 (2004) Sec 5.9.3 "Jamming DSSS Signals", p.147-149;
+// Adamy EW103 "Communications Electronic Warfare" (2008) covers comms
+// jamming margin at book level [OPEN: page/eq TBD].
+// General relation also standard in spread-spectrum texts (e.g. Torrieri).
 // ---------------------------------------------------------------------------
 
 void test_dsss_jamming_margin_zero_loss() {
