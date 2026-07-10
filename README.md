@@ -78,6 +78,11 @@ to produce a distributable artifact.
 macOS packaging requires a Developer ID Application certificate in the keychain
 and `xcrun notarytool` credentials stored under the `ewcalc-notarytool` profile.
 
+
+### Formula reference
+
+See [`docs/formulas.md`](docs/formulas.md) for the equations, units, assumptions, and references behind each calculator output.
+
 ### API documentation
 
 `libew` and `ewpresenter` headers use Doxygen-style `///` comments. Build the
