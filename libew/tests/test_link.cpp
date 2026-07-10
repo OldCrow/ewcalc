@@ -12,7 +12,10 @@ using namespace libew::units::literals;
 //
 // LOS regime formula: Prx = Ptx + Gtx + Grx - FSPL
 // For a link at short range (below Fresnel crossover), path loss == FSPL.
-// Reference: Adamy EW101 one-way link budget equation.
+// Source: Dave Adamy, "EW 101 -- ES vs. SIGINT -- Part 2: Antenna and Range
+// Considerations," Journal of Electronic Defense, Feb 2011, p. 51. Adamy's
+// LOS/2-ray intercept-range formulas are this same one-way link-budget
+// algebra (Prx = ERP + GR - path_loss) solved for range instead of power.
 // ---------------------------------------------------------------------------
 
 void test_one_way_link_los_power() {
@@ -71,7 +74,11 @@ void test_one_way_link_fresnel_zone_reported() {
 // effective_range
 //
 // Solves for the range at which received power equals receiver sensitivity.
-// Source: Adamy EW101 effective range derivation.
+// Source: Dave Adamy, "EW 101 -- ES vs. SIGINT -- Part 2: Antenna and Range
+// Considerations," Journal of Electronic Defense, Feb 2011, p. 51. This is
+// Adamy's intercept-range formula directly: RI = Anti-log{[ERPT - 32 -
+// 20log(F) + GR - S]/20} in the LOS regime, RI = Anti-log{[ERPT - 120 +
+// 20log(hT) + 20log(hR) + GR - S]/40} in the 2-ray regime.
 // ---------------------------------------------------------------------------
 
 void test_effective_range_sanity() {
