@@ -102,10 +102,16 @@ Three strict layers — each layer only depends on layers below it:
 ```
 frontend/{macos,linux,windows}   ← platform-native UI (SwiftUI / Qt6 / WinUI 3)
          ↓
+bridge                           ← plain-C API over ewpresenter (platform-agnostic)
+         ↓
 ewpresenter                      ← presenter/viewmodel (platform-agnostic C++20)
          ↓
 libew                            ← pure calculation library (no UI, no external deps)
 ```
+
+`bridge` is optional: only the macOS Swift frontend consumes it today (Swift
+cannot import C++ directly). Linux and Windows frontends link `ewpresenter`
+directly.
 
 Both `libew` and `ewpresenter` compile to static libs (`build/lib/`). Platform frontends link against them.
 
@@ -131,6 +137,14 @@ One presenter class per domain, each following the same pattern:
 No platform types cross the ewpresenter boundary. Frontends bind to `set_on_change` and read from `Output`.
 
 `formatter.h` / `formatter.cpp` provide shared formatting helpers used by all presenters.
+
+### bridge
+
+A plain-C API (`bridge/ewcalc_bridge.h/.cpp`) over `ewpresenter`: opaque
+handles, value-type output structs with fixed-size string fields, and C
+function-pointer callbacks. Lives at the top level (sibling to `libew`,
+`ewpresenter`, `frontend`) since it's platform-agnostic and consumed by both
+`ewpresenter/tests/test_bridge.cpp` and the macOS Swift frontend.
 
 ### Test framework
 

@@ -88,11 +88,61 @@ Each item's `NoiseFigureDb` and `GainDb` setters call `PushStages()` which
 rebuilds the full `StageInput[]` and calls `ReceiverAdapter.SetStages()`.
 Add/Remove buttons are bound to `ICommand` properties.
 
+## MSIX packaging and signing
+
+`Package.appxmanifest` declares the app's package identity (`Identity`,
+`Properties`, `Applications`, `Capabilities`) for MSIX packaging. Logo and
+splash assets already exist under `Assets/` at the sizes the manifest
+references (`Square44x44Logo`, `Square150x150Logo`, `Wide310x150Logo`,
+`Square71x71Logo`, `Square310x310Logo`, `StoreLogo`, `SplashScreen`).
+
+`scripts/build-windows.ps1` builds, packages, and optionally signs in one
+pass:
+
+```powershell
+.\scripts\build-windows.ps1 -Package                              # build + unsigned .msix
+.\scripts\build-windows.ps1 -Package -Sign -CertThumbprint <thumb> # + sign
+```
+
+The unsigned `.msix` is written to `build\msix\`. CI (`.github/workflows/ci.yml`,
+`build-windows` job) runs the same `-Package` flow on tagged commits and manual
+(`workflow_dispatch`) runs, and uploads the `.msix` as a workflow artifact; the
+`release` job attaches it to the GitHub Release. CI packaging is unsigned —
+signing is a local/distribution step.
+
+**`Identity/Publisher` must exactly match the Subject of the certificate used
+to sign the package**, or installation fails. To generate a matching
+self-signed certificate for local/test packaging:
+
+```powershell
+New-SelfSignedCertificate -Type Custom -Subject "CN=Gary Wolfman" `
+    -KeyUsage DigitalSignature -FriendlyName "ewcalc test signing" `
+    -CertStoreLocation "Cert:\CurrentUser\My" `
+    -TextExtension @("2.5.29.19={text}CA=false", "2.5.29.37={text}1.3.6.1.5.5.7.3.3")
+```
+
+A self-signed certificate is sufficient for local sideloading and internal
+testing (the target machine must trust the cert, e.g. via `Add-AppDevPackage.ps1`
+or importing it into the Trusted People store). **Public distribution requires
+a trusted certificate** from a CA (standard code-signing or EV), matching how
+the macOS build requires a Developer ID Application certificate for
+notarization (see `frontend/macos/CMakeLists.txt` and the `build-macos` job in
+`.github/workflows/ci.yml`). There is no Store-specific step here — Microsoft
+Store submission re-signs the package with its own certificate at ingestion.
+
 ## Current state (v0.8.0)
 
 This frontend covers all nine calculator pages (Propagation, Antenna, Link Budget,
 Receiver, Jamming, Location, Radar, Digital/DSSS, Reference) at v0.6 parity with macOS,
 with the v0.7.0 and v0.8.0 changes below layered on top.
+
+## Completed in v0.9.0
+
+Added `Package.appxmanifest` (Identity/Properties/Applications/Capabilities)
+for MSIX packaging, wired `-Package` into the `build-windows` CI job on tagged
+and manual runs with `.msix` artifact upload, and documented signing (#24).
+The v0.5 changelog entry below has been corrected: the manifest did not exist
+until this release.
 
 ## Completed in v0.8.0
 

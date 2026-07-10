@@ -29,17 +29,20 @@ else()
 endif()
 add_test(NAME test_formatter COMMAND test_formatter)
 
-# C bridge integration tests (macOS only — bridge is not built on other platforms)
-if(APPLE)
-    add_executable(test_bridge test_bridge.cpp)
-    target_link_libraries(test_bridge PRIVATE ewcalc_bridge ewpresenter)
-    target_include_directories(test_bridge PRIVATE
-        ${PROJECT_SOURCE_DIR}/libew/tests
-        ${PROJECT_SOURCE_DIR}/frontend/macos/bridge
-    )
-    set_target_properties(test_bridge PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/tests
-    )
+# C bridge integration tests. The bridge is plain C++20 with no platform-
+# specific code, so it's built and tested on every platform.
+add_executable(test_bridge test_bridge.cpp)
+target_link_libraries(test_bridge PRIVATE ewcalc_bridge ewpresenter)
+target_include_directories(test_bridge PRIVATE
+    ${PROJECT_SOURCE_DIR}/libew/tests
+    ${PROJECT_SOURCE_DIR}/bridge
+)
+set_target_properties(test_bridge PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/tests
+)
+if(MSVC)
+    target_compile_options(test_bridge PRIVATE /W4 /permissive-)
+else()
     target_compile_options(test_bridge PRIVATE -Wall -Wextra -Wpedantic)
-    add_test(NAME test_bridge COMMAND test_bridge)
 endif()
+add_test(NAME test_bridge COMMAND test_bridge)

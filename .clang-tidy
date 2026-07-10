@@ -1,7 +1,15 @@
 # .clang-tidy — root configuration for clang-tidy static analysis.
 #
-# bugprone-exception-escape is suppressed globally.
+# Checks enabled: clang-diagnostic-*, clang-analyzer-*, bugprone-*,
+# performance-*, portability-*. This favors bug-finding checks over
+# style/naming checks (readability-*, modernize-*, cppcoreguidelines-*
+# are not enabled here since they mostly flag stylistic preferences —
+# e.g. magic numbers in physics formulas, trailing return types — that
+# are subjective rather than correctness issues for this codebase).
 #
+# Three checks are suppressed:
+#
+# 1. bugprone-exception-escape
 # All eight presenter recompute() / fire() methods, PresenterBase::update_field(),
 # and format_regime() in formatter.cpp are marked noexcept. They call functions
 # that return std::string, which can theoretically throw std::bad_alloc.
@@ -9,7 +17,7 @@
 # This is intentional and low-risk for three reasons:
 #   1. Every formatted string is < 20 characters and qualifies for SSO in
 #      libc++ and MSVC STL, so no heap allocation occurs in practice.
-#      The assert in ewcalc_bridge.cpp copy_str() enforces the size bound
+#      The assert in bridge/ewcalc_bridge.cpp copy_str() enforces the size bound
 #      in debug builds; if that assert ever fires this assumption must be
 #      revisited.
 #   2. The noexcept annotation communicates "won't throw under normal
@@ -19,4 +27,27 @@
 #   3. Removing noexcept from recompute() / fire() would expose them as
 #      potentially-throwing in the PresenterBase CRTP contract, requiring
 #      cascading changes to update_field() and all eight presenter headers.
-Checks: '-bugprone-exception-escape'
+# Still warranted: confirmed during v0.9.0 CI hardening (2026-07).
+#
+# 2. bugprone-easily-swappable-parameters
+# libew's physics functions (e.g. jamming.cpp, radar.cpp) legitimately take
+# several same-typed double parameters (e.g. signal_erp vs jammer_erp) because
+# that mirrors the underlying RF equations. Redesigning these into distinct
+# strong-typed parameter structs to satisfy this check is a larger API change
+# than warranted for CI hardening; revisit if a real parameter-swap bug
+# surfaces.
+#
+# 3. portability-avoid-pragma-once
+# Conflicts with the project convention (AGENTS.md) of using #pragma once
+# throughout for all headers.
+Checks: >
+  clang-diagnostic-*,
+  clang-analyzer-*,
+  bugprone-*,
+  performance-*,
+  portability-*,
+  -bugprone-exception-escape,
+  -bugprone-easily-swappable-parameters,
+  -portability-avoid-pragma-once
+WarningsAsErrors: '*'
+HeaderFilterRegex: '(libew|ewpresenter)/(include|src)/.*'

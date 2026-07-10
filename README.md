@@ -6,10 +6,12 @@ radar, and spread-spectrum communications — based on the EW101 series by David
 
 ## Architecture
 
-Three layers with clean separation:
+Layered, with clean separation:
 
 - **`libew`** — pure C++20 calculation library, no UI, no external dependencies
 - **`ewpresenter`** — platform-agnostic presenter/viewmodel layer
+- **`bridge/`** — plain-C API over `ewpresenter`, used by the macOS Swift frontend
+  (Swift cannot import C++ directly); Linux and Windows link `ewpresenter` directly
 - **`frontend/`** — platform-native UIs: WinUI 3 (Windows), SwiftUI (macOS), Qt6 (Linux)
 
 ## libew modules
