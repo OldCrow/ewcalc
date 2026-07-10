@@ -18,14 +18,31 @@ else()
     message(STATUS "ewcalc: Platform = Linux")
 endif()
 
-# ── Options ───────────────────────────────────────────────────────────────────
+# ── Options ──────────────────────────────────────────────────────────────
 option(EWCALC_BUILD_TESTS    "Build libew test suite"           ON)
 option(EWCALC_BUILD_FRONTEND "Build platform GUI frontend"      OFF)
 option(EWCALC_FRONTEND_CONFIG "MSBuild configuration (Windows)" "Release")
+option(EWCALC_BUILD_COVERAGE "Instrument libew/ewpresenter/tests for code coverage (GCC+gcov or Clang+llvm-cov)" OFF)
 
-# ── Test support ──────────────────────────────────────────────────────────────
+# ── Test support ───────────────────────────────────────────────────────────
 if(EWCALC_BUILD_TESTS)
     enable_testing()
+endif()
+
+# ── Coverage instrumentation ──────────────────────────────────────────────
+# Applied directory-wide (before add_subdirectory(libew/ewpresenter)) so every
+# target built afterwards — libraries, harness, and tests — is instrumented.
+# Flags are gated here rather than hardcoded in CI workflow YAML.
+if(EWCALC_BUILD_COVERAGE)
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+        add_compile_options(-fprofile-instr-generate -fcoverage-mapping)
+        add_link_options(-fprofile-instr-generate -fcoverage-mapping)
+    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        add_compile_options(--coverage)
+        add_link_options(--coverage)
+    else()
+        message(WARNING "ewcalc: EWCALC_BUILD_COVERAGE is only supported with GCC or Clang — ignoring on ${CMAKE_CXX_COMPILER_ID}.")
+    endif()
 endif()
 
 # ── Core libraries (always built) ────────────────────────────────────────────

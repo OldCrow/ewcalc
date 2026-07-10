@@ -8,6 +8,8 @@ namespace {
     // Format a double with a given number of decimal places and a unit label.
     std::string fmt(double value, int decimals, const char* unit) {
         // Normalize IEEE 754 negative zero so it never renders as "-0.0".
+        // cppcheck-suppress duplicateConditionalAssign
+        // -0.0 == 0.0 is true, but assigning 0.0 flips the sign bit; not a no-op.
         if (value == 0.0) value = 0.0;
         char buf[64];
         std::snprintf(buf, sizeof(buf), "%.*f %s",
