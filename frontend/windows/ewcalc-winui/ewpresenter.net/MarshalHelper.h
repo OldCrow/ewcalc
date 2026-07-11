@@ -3,7 +3,6 @@
 
 #include "ewpresenter/validation.h"
 #include <string>
-#include <cmath>
 
 namespace EwPresenterNet {
 
@@ -40,12 +39,5 @@ inline System::String^ ToManaged(const std::string& s) {
     return System::Text::Encoding::UTF8->GetString(bytes);
 }
 
-/// Round a value to 6 significant figures to eliminate NumberBox float
-/// precision artefacts (e.g. minimum=0.01 stored as 0.009999999776...).
-inline double RoundInput(double v) noexcept {
-    if (v == 0.0) return 0.0;
-    const double mag = std::pow(10.0, 6.0 - std::floor(std::log10(std::abs(v))) - 1.0);
-    return std::round(v * mag) / mag;
-}
 
 } // namespace EwPresenterNet

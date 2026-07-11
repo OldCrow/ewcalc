@@ -36,11 +36,10 @@ public sealed partial class MainWindow : Window
     private void ResetInputsButton_Click(object sender, RoutedEventArgs e)
     {
         Helpers.SettingsService.ResetToDefaults();
-        // Re-navigating to the current page type creates a fresh Page/ViewModel/adapter
-        // (NavigationCacheMode is Disabled by default), so the active page immediately
-        // reflects the reset. Other pages pick it up next time they're navigated to.
+        // Force a same-page reload by changing the navigation parameter; plain
+        // Navigate(current) can short-circuit when the page type is unchanged.
         var current = ContentFrame.CurrentSourcePageType;
-        if (current is not null) ContentFrame.Navigate(current);
+        if (current is not null) ContentFrame.Navigate(current, Guid.NewGuid());
     }
 
     private void NavView_SelectionChanged(

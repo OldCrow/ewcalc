@@ -11,7 +11,7 @@ frontend/linux/
 └── src/
     ├── main.cpp
     ├── MainWindow.h/.cpp      QMainWindow shell: sidebar QListWidget + QStackedWidget
-    ├── PageUtils.h            Shared helpers: makeSpinBox, makeResultRow, field-error styling
+    ├── PageUtils.h            Shared helpers: makeSpinBox, makeResultRow, settings, copy results
     └── pages/
         ├── PropagationPage.h/.cpp
         ├── AntennaPage.h/.cpp
@@ -81,13 +81,17 @@ the page area. Non-selectable header rows (greyed, smaller font) separate
 the Calculators and Reference groups. A `navToStack_` index array maps
 sidebar row indices to stack indices, skipping header/spacer rows cleanly.
 
-### Field error styling
+### Validation state
 
-`PageUtils.h` provides `applyFieldError()` which sets the border colour of
-a `QDoubleSpinBox` red when the presenter reports a validation error, and
-clears it when the input is valid. This keeps all validation logic in the
-presenter layer — the Qt layer only reacts to the `FieldError` value it
-receives from the output struct.
+Validation stays in the presenter layer. The Linux frontend clamps spinbox
+values to their declared ranges and renders invalid result sections as dashes
+through formatted presenter output. Each input also surfaces its presenter
+`FieldError` as a red spinbox outline and a tooltip describing the failure
+(`applyFieldError()` in `PageUtils.h`), matching the macOS and Windows
+per-field validation UI (#41). Cross-field checks that clamping can't express
+— e.g. Location's semi-minor > semi-major constraint, and the Receiver noise
+chain's aggregate stage-NF error — are surfaced the same way on the affected
+field(s).
 
 ## Current state (v0.9.0)
 

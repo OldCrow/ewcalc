@@ -91,7 +91,9 @@ PartialBandResult partial_band_jamming(
     // signal bandwidth (spreading excess J/S across more of the hop range).
     const double bw_opt = signal_bandwidth.value * std::pow(10.0, single_channel_js.value / 10.0);
     const double bw_jam = std::min(bw_opt, hop_range_bandwidth.value);
-    const double duty   = std::min(bw_jam / hop_range_bandwidth.value, 1.0);
+    // bw_jam is already clamped to hop_range_bandwidth above (and hop_range_bandwidth
+    // is > 0 here per the guard clause), so this ratio can never exceed 1.0.
+    const double duty   = bw_jam / hop_range_bandwidth.value;
 
     return {Mhz{bw_jam}, duty};
 }

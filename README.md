@@ -1,8 +1,24 @@
 # ewcalc — EW Engineering Calculator
 
+[![CI](https://github.com/OldCrow/ewcalc/actions/workflows/ci.yml/badge.svg)](https://github.com/OldCrow/ewcalc/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 A multi-platform electronic warfare engineering calculator covering antenna analysis,
 RF propagation, link budgets, receiver performance, jamming analysis, emitter location,
 radar, and spread-spectrum communications — based on the EW101 series by David Adamy.
+
+## Getting ewcalc
+
+Pre-built artifacts for all three platforms are attached to each
+[GitHub Release](../../releases):
+
+| Platform | Artifact | Notes |
+|----------|----------|-------|
+| Windows | `.msix` | Unsigned by default; see [`frontend/windows/ewcalc-winui/README.md`](frontend/windows/ewcalc-winui/README.md#msix-packaging-and-signing) for sideloading a self-signed cert |
+| macOS | `.dmg` | Signed and notarized — opens directly, no Gatekeeper prompt |
+| Linux | `.AppImage` | `chmod +x`, then run directly; no installation required |
+
+To build from source instead, see Building below.
 
 ## Architecture
 
@@ -49,6 +65,9 @@ A console harness (`ewpresenter_harness`) exercises all presenters against defau
 
 ## Building
 
+Requires CMake ≥ 3.20 and a C++20 compiler. See [`AGENTS.md`](AGENTS.md#platform-specific-notes)
+for per-platform toolchain prerequisites (Xcode, Qt6, Visual Studio, etc.).
+
 ### Core libraries and tests
 
 ```
@@ -78,31 +97,36 @@ to produce a distributable artifact.
 macOS packaging requires a Developer ID Application certificate in the keychain
 and `xcrun notarytool` credentials stored under the `ewcalc-notarytool` profile.
 
+### Formula reference
+
+See [`docs/formulas.md`](docs/formulas.md) for the equations, units, assumptions, and references behind each calculator output.
+
+### API documentation
+
+`libew` and `ewpresenter` headers use Doxygen-style `///` comments. Build the
+HTML API reference locally with:
+
+```
+doxygen Doxyfile
+```
+
+Output lands in `docs/html/index.html`. CI runs the same command on every push
+and pull request and publishes `docs/html/` as a workflow artifact; it does not
+publish to GitHub Pages yet (a reasonable future enhancement).
+
+## Contributing
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the branch/PR workflow, build and
+test instructions, and code style. See [`CHANGELOG.md`](CHANGELOG.md) for
+release history. Found a security issue? See [`SECURITY.md`](SECURITY.md)
+for how to report it privately.
+
 ## Current status
 
-**v0.9.0** — Infrastructure & Hardening milestone (4 issues, #22–#25): the C bridge (`ewcalc_bridge`) moved from `frontend/macos/bridge/` to a top-level, platform-agnostic `bridge/` component and now builds unconditionally on all platforms; CI gained `sanitizers` (ASan/UBSan) and `static-analysis` (clang-tidy + cppcheck) jobs — the prior `.clang-tidy` config was a silent no-op and now genuinely lints `libew`/`ewpresenter`; CI gained a `coverage` job (Clang/llvm-cov, gated by a new `EWCALC_BUILD_COVERAGE` CMake option) with a 75% line-coverage threshold; the Windows frontend gained MSIX packaging (`Package.appxmanifest`, `-Package` wired into CI, signing documented in `frontend/windows/ewcalc-winui/README.md`).
+All three platform frontends — Windows (WinUI 3), macOS (SwiftUI), and Linux
+(Qt6 Widgets) — are feature-complete across all eight calculators plus a
+Reference page. See [`CHANGELOG.md`](CHANGELOG.md) for release history.
 
-**v0.8.0** — UX Parity & Accessibility milestone (7 issues, #15–#21): per-field validation errors are now surfaced on all 8 Windows pages and on macOS (previously Propagation-only on Windows, absent on macOS); macOS text fields clamp out-of-range typed input to their declared bounds; VoiceOver labels (macOS), `AutomationProperties.Name` (Windows), and `setAccessibleName` (Linux) added across every input and output control on all three platforms; macOS help-text tooltips ported to Windows (`ToolTipService`) and Linux (`setToolTip`); user inputs now persist across sessions on all three platforms (versioned, per-platform storage, with a "Reset to Defaults" action); each calculator page gains a "Copy results" clipboard button on all three platforms.
+## License
 
-**v0.7.0** — Correctness milestone (8 issues): `partial_band_jamming()` no longer caps jamming bandwidth at the signal bandwidth for J/S ≥ 0 dB — it now widens correctly per Adamy EW101 ch. 10; `-0.0` values normalize to `0.0` in formatted output; stage NF input ranges on macOS/Linux now match the presenter's `[0, 30]` dB validation; `ReceiverPresenter` sensitivity uses the cascaded NF from the stage chain when one is defined; the Digital page's SNR-from-Eb/N₀ output is replaced with the SNR required to hit a target Eb/N₀; missing jamming RX-gain bridge getters added; Windows adapters no longer truncate input to 6 significant figures via `RoundInput`; new `lpi_advantage` and partial-band regression tests.
-
-**v0.6.6** — Architectural audit fixes: SFDR2 coefficient corrected to 1/2; presenter validators reject non-finite values; Receiver stage gain validation; public API invalid-input sentinels; full 2-ray burnthrough inversion; `Dbsm - Dbsm -> Db`; formatter dash sentinel consolidation; macOS receiver stage-state fix; Windows obstruction-height error binding and stage reindexing.
-
-**v0.6.5** — Complete `FieldValidationError` coverage across all 8 Windows C++/CLI adapters (Antenna, Digital, Jamming were 0/N; Location, Receiver, Propagation were partial); `partial_band_jamming` domain guard assert.
-
-**v0.6.4** — Bug fixes from follow-on review: finalizer use-after-free in all 8 C++/CLI adapters; `ewp_receiver_stage()`/`ewp_receiver_set_stages()` UB and null-pointer guards; `copy_str` production truncation sentinel; `lpi_advantage_str` missing DASH; `chip_rate < data_rate` DSSS guard; `LocationPresenter` EEP axis error field + independent sub-section validity; `ReceiverPresenter` `system_nf` now derives from cascaded NF; NaN stage NF fix; `RadarAdapter` FieldError properties; `LinkOutput` two-ray-regime booleans; `CallbackBridge.h` dead code removed.
-
-**v0.6.3** — Architecture review remediation: C++/CLI adapter lifetime safety (double-free, use-after-free, stale GCHandle access, constructor exception safety); presenter validation gaps closed (Jamming gains, Receiver stage NF, `num_pulses`/`adc_bits` error fields); C bridge per-field error accessors (`EwpFieldError`); bridge and formatter integration tests; `PresenterBase<Derived>` CRTP base eliminates setter boilerplate across all 8 presenters; cppcheck clean.
-
-**v0.6.2** — Bug fix: `DigitalPresenter` validity split (invalid DSSS inputs no longer suppress Eb/N₀); ewpresenter assertion test suite; harness registered in CI.
-
-**v0.6.0** — Antenna calculator added across all platforms; knife-edge diffraction and SNR↔Eb/N₀ wired up.
-
-- Phase 1 ✓ — `libew`: nine calculation modules, full test harness
-- Phase 2 ✓ — `ewpresenter`: eight presenters; all libew functions surfaced
-- Phase 3 ✓ — Windows frontend (WinUI 3 / C#) — Antenna page, diffraction input, extended outputs
-- Phase 4 ✓ — macOS frontend (SwiftUI) — Antenna page, diffraction input, extended outputs
-- Phase 5 ✓ — Linux frontend (Qt6 Widgets) — Antenna page, diffraction input, extended outputs
-
-Release artifacts (`.dmg`, `.AppImage`) are attached to each
-[GitHub Release](../../releases).
+MIT — see [`LICENSE`](LICENSE).

@@ -57,10 +57,10 @@ JammingPage::JammingPage(QWidget* parent)
     auto* rxHtSb = addSpinRow(cmForm, QStringLiteral("Rx height (m)"), 0.1, 100000.0,
         presenter_.rx_height_m(), 0.5, 1, kGroup, QStringLiteral("rx_height_m"));
     auto* rxGainSigSb = addSpinRow(cmForm, QStringLiteral("Rx gain \u2192 signal (dB)"), -30.0, 60.0,
-        0.0, 1.0, 1, kGroup, QStringLiteral("rx_gain_signal_db"),
+        presenter_.rx_gain_signal_db(), 1.0, 1, kGroup, QStringLiteral("rx_gain_signal_db"),
         QStringLiteral("Receive antenna gain toward the signal transmitter \u2014 use the main lobe gain if the receiver antenna is pointed at the signal"));
     auto* rxGainJamSb = addSpinRow(cmForm, QStringLiteral("Rx gain \u2192 jammer (dB)"), -30.0, 60.0,
-        0.0, 1.0, 1, kGroup, QStringLiteral("rx_gain_jammer_db"),
+        presenter_.rx_gain_jammer_db(), 1.0, 1, kGroup, QStringLiteral("rx_gain_jammer_db"),
         QStringLiteral("Receive antenna gain toward the jammer \u2014 a directional antenna with low sidelobes can reject an off-axis jammer by 20\u201330 dB; sidelobes are typically \u221213 to \u221220 dBc"));
 
     // ── J/S Analysis results ────────────────────────────────────────────────
@@ -107,31 +107,31 @@ JammingPage::JammingPage(QWidget* parent)
 
     // ── Signal wiring ─────────────────────────────────────────────────────────
     connect(sigErpSb,    &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_signal_erp(v); });
+            [this, sigErpSb](double v){ presenter_.set_signal_erp(v); applyFieldError(sigErpSb, presenter_.signal_erp_error()); });
     connect(sigHtSb,     &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_signal_tx_height(v); });
+            [this, sigHtSb](double v){ presenter_.set_signal_tx_height(v); applyFieldError(sigHtSb, presenter_.signal_tx_height_error()); });
     connect(sigDistSb,   &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_signal_to_rx_dist(v); });
+            [this, sigDistSb](double v){ presenter_.set_signal_to_rx_dist(v); applyFieldError(sigDistSb, presenter_.signal_to_rx_dist_error()); });
     connect(freqSb,      &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_frequency(v); });
+            [this, freqSb](double v){ presenter_.set_frequency(v); applyFieldError(freqSb, presenter_.frequency_error()); });
     connect(rxHtSb,      &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_rx_height(v); });
+            [this, rxHtSb](double v){ presenter_.set_rx_height(v); applyFieldError(rxHtSb, presenter_.rx_height_error()); });
     connect(rxGainSigSb, &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_rx_gain_signal(v); });
+            [this, rxGainSigSb](double v){ presenter_.set_rx_gain_signal(v); applyFieldError(rxGainSigSb, presenter_.rx_gain_signal_error()); });
     connect(rxGainJamSb, &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_rx_gain_jammer(v); });
+            [this, rxGainJamSb](double v){ presenter_.set_rx_gain_jammer(v); applyFieldError(rxGainJamSb, presenter_.rx_gain_jammer_error()); });
     connect(jamErpSb,    &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_jammer_erp(v); });
+            [this, jamErpSb](double v){ presenter_.set_jammer_erp(v); applyFieldError(jamErpSb, presenter_.jammer_erp_error()); });
     connect(jamHtSb,     &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_jammer_height(v); });
+            [this, jamHtSb](double v){ presenter_.set_jammer_height(v); applyFieldError(jamHtSb, presenter_.jammer_height_error()); });
     connect(jamDistSb,   &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_jammer_to_rx_dist(v); });
+            [this, jamDistSb](double v){ presenter_.set_jammer_to_rx_dist(v); applyFieldError(jamDistSb, presenter_.jammer_to_rx_dist_error()); });
     connect(hopRgSb,     &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_hop_range(v); });
+            [this, hopRgSb](double v){ presenter_.set_hop_range(v); applyFieldError(hopRgSb, presenter_.hop_range_error()); });
     connect(jsThreshSb,  &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_js_threshold(v); });
+            [this, jsThreshSb](double v){ presenter_.set_js_threshold(v); applyFieldError(jsThreshSb, presenter_.js_threshold_error()); });
     connect(sigBwSb,     &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_signal_bandwidth(v); });
+            [this, sigBwSb](double v){ presenter_.set_signal_bandwidth(v); applyFieldError(sigBwSb, presenter_.signal_bandwidth_error()); });
 
     // ── Restore persisted values (after presenter wiring, before first recompute) ──
     restoreSpinValue(sigErpSb,    kGroup, QStringLiteral("signal_erp_dbm"));
@@ -151,6 +151,21 @@ JammingPage::JammingPage(QWidget* parent)
     presenter_.set_on_change([this](const ewpresenter::JammingPresenter::Output& o){
         applyOutput(o);
     });
+
+    // Seed per-field validation-error styling from initial/restored values (#41).
+    applyFieldError(sigErpSb,    presenter_.signal_erp_error());
+    applyFieldError(sigHtSb,     presenter_.signal_tx_height_error());
+    applyFieldError(sigDistSb,   presenter_.signal_to_rx_dist_error());
+    applyFieldError(sigBwSb,     presenter_.signal_bandwidth_error());
+    applyFieldError(jamErpSb,    presenter_.jammer_erp_error());
+    applyFieldError(jamHtSb,     presenter_.jammer_height_error());
+    applyFieldError(jamDistSb,   presenter_.jammer_to_rx_dist_error());
+    applyFieldError(hopRgSb,     presenter_.hop_range_error());
+    applyFieldError(jsThreshSb,  presenter_.js_threshold_error());
+    applyFieldError(freqSb,      presenter_.frequency_error());
+    applyFieldError(rxHtSb,      presenter_.rx_height_error());
+    applyFieldError(rxGainSigSb, presenter_.rx_gain_signal_error());
+    applyFieldError(rxGainJamSb, presenter_.rx_gain_jammer_error());
 
     applyOutput(presenter_.output());
 }

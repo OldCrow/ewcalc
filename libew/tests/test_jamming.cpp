@@ -12,6 +12,26 @@ using namespace libew::units::literals;
 //        f=100 MHz, Grx_signal=0 dB, Grx_jammer=0 dB → J/S = 36.478 dB
 //   Partial band: signal_bw=0.025 MHz, hop_range=58 MHz, J/S_single=0 dB
 //        → BW_opt=0.025 MHz, duty=0.000431
+//
+// J/S ratio: J/S = J_rx - S_rx (dB), each term from libew::propagation::path_loss.
+// Source: Adamy EW101 (2001) Ch.9 "Jamming", "Jamming-to-Signal Ratio";
+//         Adamy EW102 (2004) Sec 5.8.1 "Jamming-to-Signal Ratio", p.138.
+// [OPEN: exact eq # TBD]
+//
+// Burnthrough range: analytic inversion of the same LOS/2-ray path-loss model
+// used by libew::propagation, solved for J/S == threshold (the range at which
+// jamming just achieves the minimum effective J/S).
+// Source: Adamy EW101 Ch.9 "Burn-Through"; Adamy EW102 Sec 5.8, p.137-140.
+// [OPEN: exact eq # TBD]
+//
+// Partial-band jamming: BW_opt = signal_bw * 10^(J/S_single/10), capped only
+// by hop_range_bandwidth. Per v0.7.0 fix, this widens the jamming bandwidth
+// for J/S_single >= 0 dB rather than capping it at signal_bandwidth (see
+// libew/src/jamming.cpp). Concept and treatment consistent with Adamy EW102
+// Sec 5.9.1 "Jamming Frequency Hop Signals", p.141-146.
+// [OPEN: exact eq # TBD]
+// The doc comment in libew/include/libew/jamming/jamming.h (partial-band
+// section) now matches this implementation and these tests (issue #38).
 
 void test_js_ratio_spreadsheet() {
     const JammingResult r = comms_jamming_js(

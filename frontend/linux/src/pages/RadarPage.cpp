@@ -90,25 +90,25 @@ RadarPage::RadarPage(QWidget* parent)
 
     // ── Signal wiring ─────────────────────────────────────────────────────────
     connect(txPwrSb,  &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_tx_power(v); });
+            [this, txPwrSb](double v){ presenter_.set_tx_power(v); applyFieldError(txPwrSb, presenter_.tx_power_error()); });
     connect(antGainSb,&QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_antenna_gain(v); });
+            [this, antGainSb](double v){ presenter_.set_antenna_gain(v); applyFieldError(antGainSb, presenter_.antenna_gain_error()); });
     connect(rcsSb,    &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_target_rcs(v); });
+            [this, rcsSb](double v){ presenter_.set_target_rcs(v); applyFieldError(rcsSb, presenter_.target_rcs_error()); });
     connect(freqSb,   &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_frequency(v); });
+            [this, freqSb](double v){ presenter_.set_frequency(v); applyFieldError(freqSb, presenter_.frequency_error()); });
     connect(losseSb,  &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_system_losses(v); });
+            [this, losseSb](double v){ presenter_.set_system_losses(v); applyFieldError(losseSb, presenter_.system_losses_error()); });
     connect(nfSb,     &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_noise_figure(v); });
+            [this, nfSb](double v){ presenter_.set_noise_figure(v); applyFieldError(nfSb, presenter_.noise_figure_error()); });
     connect(bwSb,     &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_bandwidth(v); });
+            [this, bwSb](double v){ presenter_.set_bandwidth(v); applyFieldError(bwSb, presenter_.bandwidth_error()); });
     connect(snrSb,    &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_required_snr(v); });
+            [this, snrSb](double v){ presenter_.set_required_snr(v); applyFieldError(snrSb, presenter_.required_snr_error()); });
     connect(tbSb,     &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_time_bandwidth_product(v); });
+            [this, tbSb](double v){ presenter_.set_time_bandwidth_product(v); applyFieldError(tbSb, presenter_.time_bandwidth_product_error()); });
     connect(npSb, &QSpinBox::valueChanged, this,
-            [this](int v){ presenter_.set_num_pulses(v); });
+            [this, npSb](int v){ presenter_.set_num_pulses(v); applyFieldError(npSb, presenter_.num_pulses_error()); });
 
     // ── Restore persisted values (after presenter wiring, before first recompute) ──
     restoreSpinValue(txPwrSb,   kGroup, QStringLiteral("tx_power_dbm"));
@@ -125,6 +125,18 @@ RadarPage::RadarPage(QWidget* parent)
     presenter_.set_on_change([this](const ewpresenter::RadarPresenter::Output& o){
         applyOutput(o);
     });
+
+    // Seed per-field validation-error styling from initial/restored values (#41).
+    applyFieldError(txPwrSb,   presenter_.tx_power_error());
+    applyFieldError(antGainSb, presenter_.antenna_gain_error());
+    applyFieldError(rcsSb,     presenter_.target_rcs_error());
+    applyFieldError(freqSb,    presenter_.frequency_error());
+    applyFieldError(losseSb,   presenter_.system_losses_error());
+    applyFieldError(nfSb,      presenter_.noise_figure_error());
+    applyFieldError(bwSb,      presenter_.bandwidth_error());
+    applyFieldError(snrSb,     presenter_.required_snr_error());
+    applyFieldError(tbSb,      presenter_.time_bandwidth_product_error());
+    applyFieldError(npSb,      presenter_.num_pulses_error());
 
     applyOutput(presenter_.output());
 }

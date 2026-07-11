@@ -8,7 +8,7 @@ using namespace libew::units::literals;
 
 // ---------------------------------------------------------------------------
 // ERP — Effective Radiated Power
-// Source: Adamy EW101. ERP = Ptx + Gtx (in log domain).
+// Source: Adamy EW101 [OPEN: page/eq TBD]. ERP = Ptx + Gtx (log domain).
 // ---------------------------------------------------------------------------
 
 void test_erp_dbm() {
@@ -31,7 +31,8 @@ void test_erp_dbw() {
 // ---------------------------------------------------------------------------
 // Gain reference conversions: dBi ↔ dBd
 // 2.15 dB offset: isotropic antenna is 2.15 dB above half-wave dipole.
-// Source: IEEE standard; Adamy EW101.
+// Source: IEEE Std 145 antenna terms; Adamy EW101 [OPEN: page/eq TBD].
+// (2.15 dB = 10*log10(1.64), the half-wave dipole's directivity over isotropic.)
 // ---------------------------------------------------------------------------
 
 void test_dbi_to_dbd_known_value() {
@@ -54,13 +55,16 @@ void test_dbi_dbd_roundtrip() {
 
 // ---------------------------------------------------------------------------
 // Beamwidth from gain
-// θ_3dB ≈ 10^((11.1 - G_dBi) / 20)  degrees
-// Source: Tai & Pereira approximation (spherical cap); Adamy EW101.
+// θ_3dB ≈ sqrt(30000 / 10^(G_dBi/10)) degrees
+// Source: Adamy EW101 [OPEN: page/eq TBD]. This is the symmetric inverse of
+// gain_from_beamwidth() below (θ_az == θ_el), using the same 30000 beam-shape
+// constant. Dave Adamy's "EW 101 -- ES vs. SIGINT -- Part 2" (JED, Feb 2011,
+// p. 52, Figure 3) provides graphical context for gain vs. 3 dB beamwidth.
 // ---------------------------------------------------------------------------
 
 void test_beamwidth_from_gain_0dbi() {
-    // At 0 dBi: θ = 10^(11.1/20) = 10^0.555 = 3.589 degrees
-    const double expected = std::pow(10.0, 11.1 / 20.0);
+    // At 0 dBi: θ = sqrt(30000) = 173.205 degrees
+    const double expected = std::sqrt(30000.0);
     ASSERT_NEAR(beamwidth_from_gain(0.0_dB).value, expected, 0.001);
 }
 
@@ -73,7 +77,14 @@ void test_beamwidth_from_gain_increases_with_lower_gain() {
 // ---------------------------------------------------------------------------
 // Gain from beamwidth
 // G ≈ 10*log10(30000 / (θ_az * θ_el))
-// Source: Adamy EW101 approximation for pencil-beam antennas.
+// Source: Adamy EW101 [OPEN: page/eq TBD]; qualitatively consistent with
+// Dave Adamy's "EW 101 -- ES vs. SIGINT -- Part 2" (JED, Feb 2011, p. 52,
+// Figure 3: gain vs. 3 dB beamwidth for a 55%-efficient parabolic dish),
+// though that source is a graph rather than a closed-form equation. Same
+// family as the Kraus and Tai & Pereira two-plane beamwidth-directivity
+// approximations (D0 ~ K/(theta_az*theta_el)); the constant (commonly
+// 26000-41253 across sources) depends on assumed beam shape/aperture
+// efficiency.
 // ---------------------------------------------------------------------------
 
 void test_gain_from_beamwidth_10x10() {
@@ -89,23 +100,22 @@ void test_gain_from_beamwidth_1x1() {
 }
 
 void test_beamwidth_gain_consistency() {
-    // beamwidth_from_gain (Tai & Pereira, 1D) and gain_from_beamwidth (pencil-beam, 2D)
-    // are independent approximations from different models and do not round-trip.
-    // What IS consistent: a higher-gain antenna has a narrower beamwidth, and
-    // applying gain_from_beamwidth to that narrower beamwidth gives a higher gain
-    // than applying it to the wider beamwidth of a lower-gain antenna.
+    // beamwidth_from_gain is the circular/symmetric inverse of
+    // gain_from_beamwidth where θ_az == θ_el.
     const Degrees bw_low  = beamwidth_from_gain(10.0_dB);
     const Degrees bw_high = beamwidth_from_gain(30.0_dB);
     ASSERT_TRUE(bw_high.value < bw_low.value);  // higher gain → narrower beam
     const Db g_from_low  = gain_from_beamwidth(bw_low,  bw_low);
     const Db g_from_high = gain_from_beamwidth(bw_high, bw_high);
-    ASSERT_TRUE(g_from_high.value > g_from_low.value);  // consistent ordering
+    ASSERT_NEAR(g_from_low.value, 10.0, 1e-9);
+    ASSERT_NEAR(g_from_high.value, 30.0, 1e-9);
 }
 
 // ---------------------------------------------------------------------------
 // Wavelength
 // λ = c / f   where c = 2.998e8 m/s
-// Source: physics.
+// Source: physics; c = 299792458 m/s exactly (SI definition). No book
+// citation applicable.
 // ---------------------------------------------------------------------------
 
 void test_wavelength_300mhz() {

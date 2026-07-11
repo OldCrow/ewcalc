@@ -88,6 +88,22 @@ void test_antenna_validation() {
     ASSERT_TRUE(p.output().valid);
 }
 
+void test_antenna_gain_validation_rejects_out_of_domain_beamwidth() {
+    ewpresenter::AntennaPresenter p;
+
+    // The circular beamwidth-from-gain approximation exceeds 360° below
+    // about -6.3548 dBi, so the presenter rejects that low-gain range instead
+    // of displaying a physically meaningless >360° beamwidth as valid.
+    p.set_gain(-10.0);
+    ASSERT_FALSE(p.output().valid);
+    ASSERT_TRUE(p.gain_error() == ewpresenter::FieldError::below_minimum);
+
+    p.set_gain(-6.35);
+    ASSERT_TRUE(p.output().valid);
+    ASSERT_TRUE(p.gain_error() == ewpresenter::FieldError::none);
+    ASSERT_TRUE(p.output().beamwidth_from_gain.value <= 360.0);
+}
+
 // ============================================================================
 // ReceiverPresenter
 // ============================================================================
@@ -299,6 +315,120 @@ void test_location_default_valid() {
     ASSERT_TRUE(p.output().valid);
 }
 
+void test_location_or_validity_single_section() {
+    // valid is an OR across AOA/TDOA/EEP (the sole exception among all 8
+    // presenters, documented in AGENTS.md): invalidating every section except
+    // one must still leave output().valid true, with only the invalid
+    // sections' strings dashed.
+    static constexpr const char* DASH = "\xe2\x80\x94";
+    ewpresenter::LocationPresenter p;
+
+    // Break AOA (shares aoa_range with TDOA) and TDOA-specific inputs,
+    // leaving EEP as the only valid section.
+    p.set_rms_bearing_error(-1.0);   // invalid: AOA broken
+    p.set_rms_time_error(-1.0);      // invalid: TDOA broken
+    ASSERT_TRUE(p.output().valid);   // EEP alone keeps output valid
+    ASSERT_TRUE(p.output().cep_aoa_str  == DASH);
+    ASSERT_TRUE(p.output().cep_tdoa_str == DASH);
+    ASSERT_FALSE(p.output().cep_eep_str == DASH);
+
+    p.set_rms_bearing_error(1.0);    // restore
+    p.set_rms_time_error(10.0);      // restore
+    ASSERT_TRUE(p.output().valid);
+    ASSERT_FALSE(p.output().cep_aoa_str == DASH);
+}
+
+void test_location_or_validity_all_sections_invalid() {
+    // Only when every section is broken does output().valid go false.
+    ewpresenter::LocationPresenter p;
+    p.set_rms_bearing_error(-1.0);   // breaks AOA
+    p.set_rms_time_error(-1.0);      // breaks TDOA
+    p.set_semi_major(-1.0);          // breaks EEP
+    ASSERT_FALSE(p.output().valid);
+
+    p.set_rms_bearing_error(1.0);    // restore
+    p.set_rms_time_error(10.0);
+    p.set_semi_major(2.0);
+    ASSERT_TRUE(p.output().valid);
+}
+
+void test_location_eep_axis_cross_field_error() {
+    // Cross-field check: semi_minor must not exceed semi_major. Both fields
+    // individually pass their own bounds validation, so semi_major_error()/
+    // semi_minor_error() stay none; only eep_axis_error() flags the violation.
+    static constexpr const char* DASH = "\xe2\x80\x94";
+    ewpresenter::LocationPresenter p;
+
+    p.set_semi_major(1.0);
+    p.set_semi_minor(2.0);   // minor > major: physically invalid ellipse
+    ASSERT_TRUE(p.semi_major_error() == ewpresenter::FieldError::none);
+    ASSERT_TRUE(p.semi_minor_error() == ewpresenter::FieldError::none);
+    ASSERT_TRUE(p.eep_axis_error()   == ewpresenter::FieldError::above_maximum);
+    ASSERT_TRUE(p.output().cep_eep_str == DASH);
+    // AOA/TDOA are untouched and still valid, so overall validity holds (OR semantics).
+    ASSERT_TRUE(p.output().valid);
+
+    p.set_semi_major(2.0);  // restore: major >= minor again
+    ASSERT_TRUE(p.eep_axis_error() == ewpresenter::FieldError::none);
+    ASSERT_FALSE(p.output().cep_eep_str == DASH);
+}
+
+// ============================================================================
+// LinkPresenter
+// ============================================================================
+
+void test_link_default_valid() {
+    ewpresenter::LinkPresenter p;
+    ASSERT_TRUE(p.output().valid);
+}
+
+void test_link_received_power_value() {
+    // Defaults: tx_power=20 dBm, tx_gain=0, rx_gain=0, distance=32.6 km,
+    // tx_height=rx_height=10 m, freq=100 MHz, rx_sensitivity=-120.5 dBm.
+    // Same geometry as PropagationPresenter's defaults (two-ray regime;
+    // see test_propagation_two_ray_regime), so received power sits close
+    // to sensitivity by construction (link margin ≈ 0 dB).
+    ewpresenter::LinkPresenter p;
+    ASSERT_TRUE(p.output().two_ray_regime);
+    ASSERT_NEAR(p.output().received_power.value, -120.5, 0.5);
+}
+
+void test_link_validation() {
+    ewpresenter::LinkPresenter p;
+    p.set_distance(-1.0);
+    ASSERT_FALSE(p.output().valid);
+    ASSERT_TRUE(p.distance_error() != ewpresenter::FieldError::none);
+    p.set_distance(32.6);
+    ASSERT_TRUE(p.output().valid);
+    ASSERT_TRUE(p.distance_error() == ewpresenter::FieldError::none);
+}
+
+void test_link_margin_tracks_sensitivity() {
+    // link_margin = received_power - rx_sensitivity; received power itself
+    // depends only on tx_power/gains/geometry, not on rx_sensitivity_dbm_, so
+    // raising the sensitivity requirement must change the formatted margin
+    // string while leaving received_power untouched.
+    ewpresenter::LinkPresenter p;
+    const double received_before = p.output().received_power.value;
+    const std::string margin_before = p.output().link_margin_str;
+
+    p.set_rx_sensitivity(-100.5);   // 20 dB above default -120.5
+    ASSERT_NEAR(p.output().received_power.value, received_before, 0.001);
+    ASSERT_TRUE(p.output().link_margin_str != margin_before);
+    ASSERT_TRUE(p.output().valid);
+
+    p.set_rx_sensitivity(-120.5);   // restore
+}
+
+void test_link_callback() {
+    ewpresenter::LinkPresenter p;
+    int fire_count = 0;
+    p.set_on_change([&](const ewpresenter::LinkPresenter::Output&) { ++fire_count; });
+    p.set_tx_power(25.0);
+    p.set_distance(20.0);
+    ASSERT_TRUE(fire_count == 2);
+}
+
 // ============================================================================
 // main
 // ============================================================================
@@ -317,6 +447,7 @@ int main() {
     RUN_TEST(test_antenna_erp);
     RUN_TEST(test_antenna_wavelength);
     RUN_TEST(test_antenna_validation);
+    RUN_TEST(test_antenna_gain_validation_rejects_out_of_domain_beamwidth);
 
     RUN_TEST(test_receiver_default_valid);
     RUN_TEST(test_receiver_sensitivity);
@@ -344,6 +475,15 @@ int main() {
     RUN_TEST(test_radar_validation);
 
     RUN_TEST(test_location_default_valid);
+    RUN_TEST(test_location_or_validity_single_section);
+    RUN_TEST(test_location_or_validity_all_sections_invalid);
+    RUN_TEST(test_location_eep_axis_cross_field_error);
+
+    RUN_TEST(test_link_default_valid);
+    RUN_TEST(test_link_received_power_value);
+    RUN_TEST(test_link_validation);
+    RUN_TEST(test_link_margin_tracks_sensitivity);
+    RUN_TEST(test_link_callback);
 
     return test::summary();
 }

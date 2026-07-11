@@ -53,7 +53,7 @@ build/bin/ewpresenter_harness
 ### Platform frontend builds
 ```bash
 bash scripts/build-macos.sh [--config Debug|Release] [--package]
-bash scripts/build-linux.sh [--config Debug|Release] [--package deb|rpm|appimage]  # Note: Qt6 frontend not yet implemented; core libs and tests build fully
+bash scripts/build-linux.sh [--config Debug|Release] [--package deb|rpm|appimage]
 scripts\build-windows.ps1 [-Config Release]
 ```
 
@@ -64,7 +64,7 @@ scripts\build-windows.ps1 [-Config Release]
 ## Platform-Specific Notes
 
 - **macOS:** Xcode (with Swift and SwiftUI support) from the Mac App Store. Minimum deployment target: macOS 13.0. For the core libs and tests only (no GUI), Xcode Command Line Tools (`xcode-select --install`) are sufficient.
-- **Linux:** Qt6 base development libraries (`apt install qt6-base-dev` on Debian/Ubuntu, or equivalent). A C++20 compiler (GCC ≥ 12 or Clang ≥ 14) and CMake ≥ 3.20 are also required. The Qt6 frontend is not yet complete; the core libs and tests build fully on Linux.
+- **Linux:** Qt6 base development libraries (`apt install qt6-base-dev` on Debian/Ubuntu, or equivalent). A C++20 compiler (GCC ≥ 12 or Clang ≥ 14) and CMake ≥ 3.20 are also required. The Qt6 frontend is feature-complete for the current calculator set.
 - **Windows:** Visual Studio 2022 with the C++ and Windows App SDK workloads (for WinUI 3 support). Install from https://aka.ms/vs/17/release/vs_buildtools.exe, `winget install Microsoft.VisualStudio.2022.Community`, or `choco install visualstudio2022`. CMake ≥ 3.20: `winget install Kitware.CMake` or `choco install cmake`.
 
 ### Windows toolchain setup
@@ -132,7 +132,7 @@ One presenter class per domain, each following the same pattern:
 2. Each setter validates via `validation.h` helpers (`validate_bounds`, `validate_positive`, etc.) and records a `FieldError` per field.
 3. Calls `recompute()`, which runs libew and populates an `Output` struct containing both raw typed values and pre-formatted `std::string` fields (e.g. `fspl_str`).
 4. Fires an `std::function<void(const Output&)>` callback (`set_on_change`).
-5. `output().valid` is `false` whenever any input has a non-`none` FieldError.
+5. `output().valid` is `false` whenever any input has a non-`none` FieldError. Exception: `LocationPresenter` has independent AOA, TDOA, and EEP sub-sections, so `valid` remains `true` when at least one sub-section can still produce output; invalid sub-sections dash only their own formatted strings.
 
 No platform types cross the ewpresenter boundary. Frontends bind to `set_on_change` and read from `Output`.
 

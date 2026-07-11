@@ -71,7 +71,7 @@ struct RadarRangeResult {
 /// intercept receiver suffers compared to a matched-filter PC radar with the
 /// same average power.
 ///
-/// Comparison scenario (Adamy EW103, LPI radar chapter):
+/// Comparison scenario (Adamy EW102, Low Probability of Intercept Radars):
 ///   - Radar uses pulse compression with time-bandwidth product TB.
 ///   - Intercept receiver: energy-detecting (non-coherent), cannot perform
 ///     matched filtering; integrates the uncompressed pulse at full bandwidth.

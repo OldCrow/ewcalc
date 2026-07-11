@@ -232,6 +232,30 @@ jobs:
             -I libew/include -I ewpresenter/include \
             libew/src ewpresenter/src
 
+  # ── API documentation (Doxygen) ─────────────────────────────────────────
+  docs:
+    name: API docs (Doxygen)
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Doxygen
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen
+
+      - name: Generate docs
+        run: doxygen Doxyfile
+
+      - name: Upload docs artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ewcalc-api-docs
+          path: docs/html/
+          retention-days: 30
+
   # ── Code coverage ────────────────────────────────────────────────────────
   coverage:
     name: Code coverage

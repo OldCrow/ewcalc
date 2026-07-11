@@ -5,8 +5,9 @@
 namespace libew::antenna {
 
 Degrees beamwidth_from_gain(Db gain_dbi) noexcept {
-    // Spherical cap approximation: θ = 10^((11.1 - G_dBi) / 20)
-    return Degrees{std::pow(10.0, (11.1 - gain_dbi.value) / 20.0)};
+    // Symmetric inverse of G ≈ 10*log10(30000 / (θ_az * θ_el)),
+    // with θ_az == θ_el.
+    return Degrees{std::sqrt(30000.0 / std::pow(10.0, gain_dbi.value / 10.0))};
 }
 
 Db gain_from_beamwidth(Degrees az_beamwidth, Degrees el_beamwidth) noexcept {

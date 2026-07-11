@@ -105,7 +105,7 @@ if [[ -f "$LINUX_FRONTEND" ]]; then
     fi
 else
     echo ""
-    echo "    [SKIP] Linux frontend not yet implemented (Phase 5)."
+    echo "    [SKIP] Linux frontend CMake project not found."
     echo "           Expected CMakeLists.txt at: $LINUX_FRONTEND"
 fi
 
