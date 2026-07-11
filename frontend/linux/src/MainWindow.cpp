@@ -24,7 +24,9 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QProcess>
+#include <QPushButton>
 #include <QStackedWidget>
+#include <QVBoxLayout>
 #include <QWidget>
 
 MainWindow::MainWindow(QWidget* parent)
@@ -80,7 +82,9 @@ MainWindow::MainWindow(QWidget* parent)
     addPage(QStringLiteral("Link Budget"),   QStringLiteral("network-transmit-receive"), new LinkPage);
     addPage(QStringLiteral("Receiver"),      QStringLiteral("audio-card"),              new ReceiverPage);
     addPage(QStringLiteral("Jamming"),       QStringLiteral("emblem-important"),        new JammingPage);
-    addPage(QStringLiteral("Location"),      QStringLiteral("find-location"),           new LocationPage);
+    // "find-location" isn't a standard XDG icon name and resolves to nothing
+    // on most icon themes; "mark-location" is the widely-shipped equivalent.
+    addPage(QStringLiteral("Location"),      QStringLiteral("mark-location"),           new LocationPage);
     addPage(QStringLiteral("Radar"),         QStringLiteral("system-search"),           new RadarPage);
     addPage(QStringLiteral("Digital / DSSS"),QStringLiteral("media-playback-start"),    new DigitalPage);
 
@@ -100,20 +104,33 @@ MainWindow::MainWindow(QWidget* parent)
                 if (stackIdx >= 0) stack_->setCurrentIndex(stackIdx);
             });
 
+    // ── Sidebar: nav list + a visible "Reset to Defaults" button ───────────
+    // Matches the always-visible placement Windows (nav-pane footer button)
+    // and macOS (toolbar button) use; previously Linux only exposed this via
+    // the File menu, which was easy to miss.
+    auto* sidebar    = new QWidget;
+    auto* sidebarBox = new QVBoxLayout(sidebar);
+    sidebarBox->setContentsMargins(0, 0, 0, 0);
+    sidebarBox->setSpacing(4);
+    sidebarBox->addWidget(nav_, 1);
+
+    auto* resetButton = new QPushButton(tr("Reset to Defaults\u2026"));
+    resetButton->setToolTip(tr("Clear all saved inputs and restart with default values"));
+    resetButton->setAccessibleName(tr("Reset all calculators to default values"));
+    sidebarBox->addWidget(resetButton);
+
     // ── Layout ────────────────────────────────────────────────────────────────
     auto* central = new QWidget;
     auto* layout  = new QHBoxLayout(central);
     layout->setContentsMargins(4, 4, 4, 4);
     layout->setSpacing(4);
-    layout->addWidget(nav_);
+    layout->addWidget(sidebar);
     layout->addWidget(stack_, 1);
     setCentralWidget(central);
 
-    // ── File menu: reset persisted inputs (issue #20) ──────────────────────
-    auto* fileMenu = menuBar()->addMenu(tr("&File"));
-    auto* resetAction = fileMenu->addAction(tr("Reset to &Defaults\u2026"));
-    resetAction->setToolTip(tr("Clear all saved inputs and restart with default values"));
-    connect(resetAction, &QAction::triggered, this, [this] {
+    // ── Reset persisted inputs (issue #20): wired to both the File menu
+    // item and the sidebar button below so it's reachable either way.
+    auto promptResetToDefaults = [this] {
         const auto choice = QMessageBox::question(
             this, tr("Reset to Defaults"),
             tr("This clears all saved inputs and restarts EW Calculator with "
@@ -124,5 +141,11 @@ MainWindow::MainWindow(QWidget* parent)
         AppSettings::instance().resetAll();
         QProcess::startDetached(QApplication::applicationFilePath(), QApplication::arguments().mid(1));
         QApplication::quit();
-    });
+    };
+
+    auto* fileMenu = menuBar()->addMenu(tr("&File"));
+    auto* resetAction = fileMenu->addAction(tr("Reset to &Defaults\u2026"));
+    resetAction->setToolTip(tr("Clear all saved inputs and restart with default values"));
+    connect(resetAction, &QAction::triggered, this, promptResetToDefaults);
+    connect(resetButton, &QPushButton::clicked, this, promptResetToDefaults);
 }

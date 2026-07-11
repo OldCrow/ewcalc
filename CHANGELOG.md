@@ -23,6 +23,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   workaround) as defense in depth. `ci.yml`'s Linux AppImage packaging steps
   also now run on `workflow_dispatch` (previously tag-push only), matching
   Windows/macOS, so a fix can be rebuilt without cutting a new tag.
+- Linux Location tab had no sidebar icon: `"find-location"` isn't a standard
+  XDG icon name and resolved to nothing on most icon themes; switched to
+  `"mark-location"`, which is widely shipped.
+- Linux "Reset to Defaults" was only reachable via the File menu, unlike
+  macOS (toolbar button) and Windows (nav-pane footer button). Added a
+  matching always-visible button below the sidebar.
 
 ## [v1.0.0] — 2026-07-11
 
