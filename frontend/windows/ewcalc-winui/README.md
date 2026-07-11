@@ -115,11 +115,17 @@ to sign the package**, or installation fails. To generate a matching
 self-signed certificate for local/test packaging:
 
 ```powershell
-New-SelfSignedCertificate -Type Custom -Subject "CN=Gary Wolfman" `
+New-SelfSignedCertificate -Type Custom -Subject "CN=Your Name or Organization" `
     -KeyUsage DigitalSignature -FriendlyName "ewcalc test signing" `
     -CertStoreLocation "Cert:\CurrentUser\My" `
-    -TextExtension @("2.5.29.19={text}CA=false", "2.5.29.37={text}1.3.6.1.5.5.7.3.3")
+    -TextExtension @("*********={text}CA=false", "*********={text}****************3")
 ```
+
+Replace `CN=Your Name or Organization` with your own identity, and update
+`Identity/Publisher` in `Package.appxmanifest` to the same value — the two
+must match exactly. If you fork this repo to build and sign your own copy,
+use your own identity in both places rather than the upstream default;
+otherwise your locally signed package won't match the checked-in manifest.
 
 A self-signed certificate is sufficient for local sideloading and internal
 testing (the target machine must trust the cert, e.g. via `Add-AppDevPackage.ps1`
