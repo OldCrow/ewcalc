@@ -93,10 +93,22 @@ per-field validation UI (#41). Cross-field checks that clamping can't express
 chain's aggregate stage-NF error — are surfaced the same way on the affected
 field(s).
 
-## Current state (v0.9.0)
+## Current state (v1.0.0)
 
 Nine calculator pages: Propagation, Antenna, Link Budget, Receiver,
 Jamming, Location, Radar, Digital/DSSS, and Reference.
+
+v1.0.0 (release readiness, #37/#41): every calculator page now surfaces
+presenter `FieldError` state as a red spinbox outline and tooltip via the new
+`applyFieldError()` helper (see Validation state below), closing the one UX
+gap the Windows/macOS per-field validation UI didn't yet cover on Linux.
+`AntennaPage`'s gain spinbox lower bound tightened from -10 to -6.35 dBi to
+match `AntennaPresenter::set_gain()`'s validation floor. `JammingPage`'s
+Rx-gain spin boxes now seed from `presenter_.rx_gain_signal_db()`/
+`rx_gain_jammer_db()` instead of hardcoding `0.0`. `AppSettings::instance()`
+is now an intentionally-leaked heap singleton rather than a function-local
+static, removing a fragile dependency on `atexit()` destruction order
+relative to `QApplication`.
 
 No runtime Linux frontend changes in v0.9.0 — that release focused on C bridge
 relocation (#22, macOS-only), CI hardening (#23, #25), and Windows MSIX

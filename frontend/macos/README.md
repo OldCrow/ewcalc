@@ -112,10 +112,16 @@ Each Swift adapter class wraps the C bridge for one presenter. It:
 adding a new Swift file, add it to the `SWIFT_SOURCES` list in
 `frontend/macos/CMakeLists.txt`.
 
-## Current state (v0.9.0)
+## Current state (v1.0.0)
 
 Nine calculator pages: Propagation, Antenna, Link Budget, Receiver,
 Jamming, Location, Radar, Digital/DSSS, and Reference.
+
+v1.0.0 (release readiness, #37): `AntennaView`'s gain `InputRow` lower bound
+tightened from -10 to -6.35 dBi to match `AntennaPresenter::set_gain()`'s
+validation floor — below -6.35 dBi, `beamwidth_from_gain()` falls outside its
+valid domain and the presenter now rejects the input rather than displaying a
+beamwidth over 360°.
 
 v0.9.0 relocates the C bridge from `frontend/macos/bridge/` to the top-level,
 platform-agnostic `bridge/` (#22) — no Swift-visible API change.

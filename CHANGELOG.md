@@ -6,15 +6,22 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [v1.0.0] — 2026-07-11
+
+Release Readiness milestone: final pre-tag audit fixes across all three
+frontends, closing out issues #26–#29 and #37–#41.
+
 ### Added
 
 - `CHANGELOG.md` (this file) and `CONTRIBUTING.md`.
 - Linux per-field validation-error UI: spinboxes show a red outline and a
   tooltip describing the failure, matching the existing macOS/Windows
-  treatment (`applyFieldError()` in `frontend/linux/src/PageUtils.h`).
+  treatment (`applyFieldError()` in `frontend/linux/src/PageUtils.h`) (#41).
 - Presenter-level tests for `LocationPresenter`'s OR-validity semantics and
   its semi-major/semi-minor cross-field check, and a new `LinkPresenter`
   test section (previously untested outside bridge tests).
+- `Doxyfile` and published API docs; `docs/formulas.md` formula/citation
+  reference (#27, #28).
 
 ### Fixed
 
@@ -25,7 +32,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   Windows' `GainBox.Setup()` call in `PageCodeBehinds.cs`, which sets the
   runtime bound in code and was silently overriding the XAML `Minimum`
   attribute back to -10 (WinUI parses XAML `NumberBox.Minimum` through
-  float32, so real bounds must be set in code; see `PageHelper.cs`).
+  float32, so real bounds must be set in code; see `PageHelper.cs`) (#37).
 - Windows "Reset Inputs" no longer no-ops on the active page.
 - `LocationPresenter`'s OR-validity exception (vs. AND on every other
   presenter) is now documented in `AGENTS.md`.
@@ -37,6 +44,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Linux `AppSettings::instance()` no longer relies on function-local-static
   destruction order relative to `QApplication`; the singleton is now
   intentionally leaked instead of torn down via `atexit()`.
+- Corrected the LPI advantage citation in `radar.h` to Adamy EW102 (#39) and
+  the stale pre-v0.7.0 partial-band jamming description in `jamming.h` (#38).
 
 ## [v0.9.0] — 2026-07-09
 
@@ -174,7 +183,8 @@ Architecture review remediation.
 - Antenna calculator across all platforms.
 - Knife-edge diffraction and SNR↔Eb/N₀ wired up.
 
-[Unreleased]: ../../compare/v0.9.0...HEAD
+[Unreleased]: ../../compare/v1.0.0...HEAD
+[v1.0.0]: ../../releases/tag/v1.0.0
 [v0.9.0]: ../../releases/tag/v0.9.0
 [v0.8.0]: ../../releases/tag/v0.8.0
 [v0.7.0]: ../../releases/tag/v0.7.0

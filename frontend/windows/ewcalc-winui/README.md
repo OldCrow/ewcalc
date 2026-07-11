@@ -130,11 +130,24 @@ notarization (see `frontend/macos/CMakeLists.txt` and the `build-macos` job in
 `.github/workflows/ci.yml`). There is no Store-specific step here — Microsoft
 Store submission re-signs the package with its own certificate at ingestion.
 
-## Current state (v0.9.0)
+## Current state (v1.0.0)
 
 This frontend covers all nine calculator pages (Propagation, Antenna, Link Budget,
 Receiver, Jamming, Location, Radar, Digital/DSSS, Reference) at v0.6 parity with macOS,
-with the v0.7.0 and v0.8.0 changes below layered on top.
+with the v0.7.0 through v1.0.0 changes below layered on top.
+
+## Completed in v1.0.0
+
+Release-readiness fixes (#37): `AntennaPage.xaml`'s `GainBox` `Minimum` was tightened
+to -6.35 dBi to match `AntennaPresenter::set_gain()`'s validation floor, but
+`AntennaPage()`'s constructor in `PageCodeBehinds.cs` called `GainBox.Setup(-10.0, 60.0)`
+after `InitializeComponent()`, silently reverting the runtime bound back to -10 — WinUI
+parses XAML `NumberBox.Minimum`/`Maximum` through `float32`, so the real bound has
+always had to be set in code via `PageHelper.Setup()` (the XAML value alone is
+cosmetic). Fixed to `GainBox.Setup(-6.35, 60.0)`; audited every other page's
+`Setup()` call against its XAML bounds and found no other mismatches. Also fixed
+`ResetInputsButton_Click` (`MainWindow.xaml.cs`) no-op'ing on the active page, and
+removed a stale comment and dead `RoundInput()` helper.
 
 ## Completed in v0.9.0
 
