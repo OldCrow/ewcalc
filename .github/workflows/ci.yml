@@ -125,9 +125,19 @@ jobs:
           retention-days: 90
 
   # ── Linux ───────────────────────────────────────────────────────────────────
+  # Pinned to an older LTS than the other jobs (which use ubuntu-24.04) so the
+  # AppImage's bundled libraries (libstdc++, libgcc_s, and whatever Qt/X11
+  # transitively pulls in, e.g. libgcrypt) are linked against an older
+  # glibc/GLIBCXX baseline. AppImages only ever need to run on systems with a
+  # glibc *at least as new* as the build system's, so building on the oldest
+  # practical base maximizes compatibility with users' (possibly older)
+  # distros. ubuntu-24.04's glibc 2.39/GCC 13 was too new: reported failures
+  # for both GLIBCXX_3.4.31 (from libstdc++) and GLIBC_2.38 (from a bundled
+  # libgcrypt.so.20) on older user systems. 22.04 is the oldest Ubuntu LTS
+  # with qt6-base-dev available via apt.
   build-linux:
     name: Linux (Qt6) — Phase 5
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout

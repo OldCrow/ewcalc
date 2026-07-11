@@ -8,13 +8,20 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
-- Linux AppImage failed to launch on distros older than the CI build image
-  with `version 'GLIBCXX_3.4.31' not found`: `linuxdeploy`'s default
-  excludelist treats `libstdc++`/`libgcc_s` as always present on the target
-  system, which only holds if the AppImage is built on an old, portable base.
-  `scripts/build-linux.sh` now force-bundles both, matching the existing
-  `libOpenGL.so.0` workaround. `ci.yml`'s Linux AppImage packaging steps also
-  now run on `workflow_dispatch` (previously tag-push only), matching
+- Linux AppImage failed to launch on distros older than the CI build image,
+  first with `version 'GLIBCXX_3.4.31' not found` (from `libstdc++`), then
+  with `version 'GLIBC_2.38' not found` (from a transitively-bundled
+  `libgcrypt.so.20`) once the first symptom was patched. Root cause: the
+  AppImage was built on `ubuntu-24.04` (glibc 2.39 / GCC 13), and every
+  library `linuxdeploy` bundles is linked against that build system's glibc/
+  GLIBCXX — patching one bundled library at a time doesn't fix the next one
+  that trips the same failure mode. `ci.yml`'s `build-linux` job now runs on
+  `ubuntu-22.04` (the oldest Ubuntu LTS with `qt6-base-dev` via apt) so the
+  whole AppImage is built against an older, more portable baseline.
+  `scripts/build-linux.sh` still force-bundles `libstdc++`/`libgcc_s` via
+  `linuxdeploy`'s `--library` flag (matching the existing `libOpenGL.so.0`
+  workaround) as defense in depth. `ci.yml`'s Linux AppImage packaging steps
+  also now run on `workflow_dispatch` (previously tag-push only), matching
   Windows/macOS, so a fix can be rebuilt without cutting a new tag.
 
 ## [v1.0.0] — 2026-07-11
