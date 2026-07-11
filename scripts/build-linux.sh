@@ -88,10 +88,23 @@ if [[ -f "$LINUX_FRONTEND" ]]; then
                 # libOpenGL.so.0 (libglvnd) is not picked up automatically by
                 # linuxdeploy-plugin-qt; pass it explicitly so it is bundled.
                 LIBOPENGL=$(ldconfig -p | awk '/libOpenGL\.so\.0/{print $NF}' | head -1)
+                # linuxdeploy's default excludelist treats libstdc++/libgcc_s as
+                # "always present on the target system" and skips bundling them —
+                # an assumption that only holds if this AppImage is built on an
+                # old, portable base. CI builds on a recent Ubuntu (newer GCC/glibc
+                # than many users' systems), so the resulting binary requires a
+                # libstdc++ symbol version (e.g. GLIBCXX_3.4.31) that older distros
+                # don't have, failing with "version `GLIBCXX_...' not found" at
+                # launch. Force-bundle both so the AppImage is self-contained and
+                # doesn't depend on the host's toolchain version at all.
+                LIBSTDCXX=$(ldconfig -p | awk '/libstdc\+\+\.so\.6/{print $NF}' | head -1)
+                LIBGCC_S=$(ldconfig -p | awk '/libgcc_s\.so\.1/{print $NF}' | head -1)
                 linuxdeploy --appdir "$APPDIR" \
                     --icon-file "$ICON" \
                     --desktop-file "$DESKTOP" \
                     ${LIBOPENGL:+--library "$LIBOPENGL"} \
+                    ${LIBSTDCXX:+--library "$LIBSTDCXX"} \
+                    ${LIBGCC_S:+--library "$LIBGCC_S"} \
                     --plugin qt --output appimage
                 mv ewcalc-x86_64.AppImage "$BUILD_DIR/pkg/"
                 ;;
