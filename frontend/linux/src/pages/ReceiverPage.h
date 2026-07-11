@@ -38,5 +38,9 @@ private:
     void pushStages();
     void addStage();
     void removeStage(int index);
+    /// Applies the aggregate stage-chain NF validation error (#41) to every
+    /// stage row's NF spinbox — the presenter exposes one FieldError for the
+    /// whole chain, not one per stage (see ReceiverPresenter::stage_nf_error()).
+    void applyStageErrors();
     void applyOutput(const ewpresenter::ReceiverPresenter::Output& o);
 };

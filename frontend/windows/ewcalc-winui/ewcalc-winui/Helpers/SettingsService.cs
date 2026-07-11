@@ -1,8 +1,7 @@
 // Helpers/SettingsService.cs
 // Persists user inputs across sessions as a versioned JSON file under
-// %LOCALAPPDATA%\ewcalc\settings.json. Not packaged (no Package.appxmanifest in this
-// project), so Windows.Storage.ApplicationData.Current is unavailable — a plain file is
-// used instead, per the issue's documented fallback.
+// %LOCALAPPDATA%\ewcalc\settings.json. A plain file keeps persistence behavior
+// identical for unpackaged dev builds and MSIX-packaged release builds.
 using System;
 using System.Collections.Generic;
 using System.IO;

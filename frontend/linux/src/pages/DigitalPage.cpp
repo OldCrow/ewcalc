@@ -80,17 +80,17 @@ DigitalPage::DigitalPage(QWidget* parent)
 
     // ── Signal wiring ─────────────────────────────────────────────────────────
     connect(dataRateSb, &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_data_rate(v); });
+            [this, dataRateSb](double v){ presenter_.set_data_rate(v); applyFieldError(dataRateSb, presenter_.data_rate_error()); });
     connect(bwSb,       &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_bandwidth(v); });
+            [this, bwSb](double v){ presenter_.set_bandwidth(v); applyFieldError(bwSb, presenter_.bandwidth_error()); });
     connect(snrSb,      &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_snr(v); });
+            [this, snrSb](double v){ presenter_.set_snr(v); applyFieldError(snrSb, presenter_.snr_error()); });
     connect(chipRateSb, &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_chip_rate(v); });
+            [this, chipRateSb](double v){ presenter_.set_chip_rate(v); applyFieldError(chipRateSb, presenter_.chip_rate_error()); });
     connect(reqEbNoSb,  &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_required_eb_no(v); });
+            [this, reqEbNoSb](double v){ presenter_.set_required_eb_no(v); applyFieldError(reqEbNoSb, presenter_.required_eb_no_error()); });
     connect(implLossSb, &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_implementation_loss(v); });
+            [this, implLossSb](double v){ presenter_.set_implementation_loss(v); applyFieldError(implLossSb, presenter_.implementation_loss_error()); });
 
     // ── Restore persisted values (after presenter wiring, before first recompute) ──
     restoreSpinValue(dataRateSb, kGroup, QStringLiteral("data_rate_mhz"));
@@ -103,6 +103,14 @@ DigitalPage::DigitalPage(QWidget* parent)
     presenter_.set_on_change([this](const ewpresenter::DigitalPresenter::Output& o){
         applyOutput(o);
     });
+
+    // Seed per-field validation-error styling from initial/restored values (#41).
+    applyFieldError(dataRateSb, presenter_.data_rate_error());
+    applyFieldError(bwSb,       presenter_.bandwidth_error());
+    applyFieldError(snrSb,      presenter_.snr_error());
+    applyFieldError(chipRateSb, presenter_.chip_rate_error());
+    applyFieldError(reqEbNoSb,  presenter_.required_eb_no_error());
+    applyFieldError(implLossSb, presenter_.implementation_loss_error());
 
     applyOutput(presenter_.output());
 }

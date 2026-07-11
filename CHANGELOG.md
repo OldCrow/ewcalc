@@ -9,6 +9,20 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - `CHANGELOG.md` (this file) and `CONTRIBUTING.md`.
+- Linux per-field validation-error UI: spinboxes show a red outline and a
+  tooltip describing the failure, matching the existing macOS/Windows
+  treatment (`applyFieldError()` in `frontend/linux/src/PageUtils.h`).
+
+### Fixed
+
+- `AntennaPresenter::set_gain()` now rejects gain below -6.35 dBi, the true
+  domain floor of `beamwidth_from_gain()`; previously a legal in-range gain
+  (e.g. -10 dBi) produced a beamwidth over 360° with no error shown. All
+  three frontends' gain input bounds now match (-6.35 to 60 dBi).
+- Windows "Reset Inputs" no longer no-ops on the active page.
+- `LocationPresenter`'s OR-validity exception (vs. AND on every other
+  presenter) is now documented in `AGENTS.md`.
+- Linux README no longer describes a nonexistent `applyFieldError()` helper.
 
 ## [v0.9.0] — 2026-07-09
 

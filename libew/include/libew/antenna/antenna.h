@@ -28,7 +28,8 @@ using namespace libew::units;
 /// Approximate circular 3 dB beamwidth from antenna gain.
 /// Inverts the symmetric case of gain_from_beamwidth():
 /// θ_3dB ≈ sqrt(30000 / 10^(G_dBi / 10)) degrees.
-/// Note: valid for directional antennas with moderate to high gain.
+/// Note: valid for directional antennas where the derived beamwidth is <= 360°
+/// (gain >= about -6.35 dBi with this approximation).
 [[nodiscard]] Degrees beamwidth_from_gain(Db gain_dbi) noexcept;
 
 /// Approximate antenna gain from 3 dB beamwidth (azimuth × elevation).

@@ -91,21 +91,21 @@ LinkPage::LinkPage(QWidget* parent)
 
     // ── Signal wiring ──────────────────────────────────────────────────────
     connect(txPwrSb,  &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_tx_power(v); });
+            [this, txPwrSb](double v){ presenter_.set_tx_power(v); applyFieldError(txPwrSb, presenter_.tx_power_error()); });
     connect(txGainSb, &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_tx_gain(v); });
+            [this, txGainSb](double v){ presenter_.set_tx_gain(v); applyFieldError(txGainSb, presenter_.tx_gain_error()); });
     connect(freqSb,   &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_frequency(v); });
+            [this, freqSb](double v){ presenter_.set_frequency(v); applyFieldError(freqSb, presenter_.frequency_error()); });
     connect(distSb,   &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_distance(v); });
+            [this, distSb](double v){ presenter_.set_distance(v); applyFieldError(distSb, presenter_.distance_error()); });
     connect(txHtSb,   &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_tx_height(v); });
+            [this, txHtSb](double v){ presenter_.set_tx_height(v); applyFieldError(txHtSb, presenter_.tx_height_error()); });
     connect(rxHtSb,   &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_rx_height(v); });
+            [this, rxHtSb](double v){ presenter_.set_rx_height(v); applyFieldError(rxHtSb, presenter_.rx_height_error()); });
     connect(rxGainSb, &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_rx_gain(v); });
+            [this, rxGainSb](double v){ presenter_.set_rx_gain(v); applyFieldError(rxGainSb, presenter_.rx_gain_error()); });
     connect(rxSensSb, &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_rx_sensitivity(v); });
+            [this, rxSensSb](double v){ presenter_.set_rx_sensitivity(v); applyFieldError(rxSensSb, presenter_.rx_sensitivity_error()); });
 
     // ── Restore persisted values (after presenter wiring, before first recompute) ──
     restoreSpinValue(txPwrSb,  kGroup, QStringLiteral("tx_power_dbm"));
@@ -120,6 +120,16 @@ LinkPage::LinkPage(QWidget* parent)
     presenter_.set_on_change([this](const ewpresenter::LinkPresenter::Output& o){
         applyOutput(o);
     });
+
+    // Seed per-field validation-error styling from initial/restored values (#41).
+    applyFieldError(txPwrSb,  presenter_.tx_power_error());
+    applyFieldError(txGainSb, presenter_.tx_gain_error());
+    applyFieldError(freqSb,   presenter_.frequency_error());
+    applyFieldError(distSb,   presenter_.distance_error());
+    applyFieldError(txHtSb,   presenter_.tx_height_error());
+    applyFieldError(rxHtSb,   presenter_.rx_height_error());
+    applyFieldError(rxGainSb, presenter_.rx_gain_error());
+    applyFieldError(rxSensSb, presenter_.rx_sensitivity_error());
 
     applyOutput(presenter_.output());
 }

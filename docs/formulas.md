@@ -60,6 +60,7 @@ Piecewise Lee (1982) approximation to the Fresnel diffraction integral `J(v)`.
 `theta_3dB ≈ sqrt(30000 / 10^(G_dBi / 10))` degrees
 
 - Source: Adamy EW101 [OPEN: page/eq TBD]. This is the circular/symmetric inverse of `gain_from_beamwidth()` where `theta_az == theta_el`, using the same 30000 beam-shape constant.
+- Assumptions: the presenter rejects gains below -6.35 dBi so the derived beamwidth does not exceed 360°.
 - Units: gain in dBi, result in degrees.
 
 ### Gain from beamwidth

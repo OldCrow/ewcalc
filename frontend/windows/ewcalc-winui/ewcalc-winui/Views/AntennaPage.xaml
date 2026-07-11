@@ -38,10 +38,13 @@
             <TextBlock Text="ANTENNA PARAMETERS" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource InputCardStyle}">
                 <StackPanel Spacing="12">
+                    <!-- Minimum matches AntennaPresenter::set_gain's -6.35 dBi validation
+                         floor (below that, beamwidth_from_gain() exceeds its valid domain
+                         and returns beamwidth > 360° — see audit #1 / libew antenna.h). -->
                     <NumberBox x:Name="GainBox"        Header="Gain (dBi)"
                                AutomationProperties.Name="Gain (dBi)"
                                Value="{x:Bind ViewModel.DefaultGain, Mode=OneTime}"
-                               Minimum="-10" Maximum="60"
+                               Minimum="-6.35" Maximum="60"
                                SpinButtonPlacementMode="Compact" SmallChange="0.5"
                                BorderBrush="{x:Bind ViewModel.GainError, Mode=OneWay,
                                    Converter={StaticResource FieldErrorToBrush}}"

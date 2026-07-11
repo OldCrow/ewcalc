@@ -88,6 +88,22 @@ void test_antenna_validation() {
     ASSERT_TRUE(p.output().valid);
 }
 
+void test_antenna_gain_validation_rejects_out_of_domain_beamwidth() {
+    ewpresenter::AntennaPresenter p;
+
+    // The circular beamwidth-from-gain approximation exceeds 360° below
+    // about -6.3548 dBi, so the presenter rejects that low-gain range instead
+    // of displaying a physically meaningless >360° beamwidth as valid.
+    p.set_gain(-10.0);
+    ASSERT_FALSE(p.output().valid);
+    ASSERT_TRUE(p.gain_error() == ewpresenter::FieldError::below_minimum);
+
+    p.set_gain(-6.35);
+    ASSERT_TRUE(p.output().valid);
+    ASSERT_TRUE(p.gain_error() == ewpresenter::FieldError::none);
+    ASSERT_TRUE(p.output().beamwidth_from_gain.value <= 360.0);
+}
+
 // ============================================================================
 // ReceiverPresenter
 // ============================================================================
@@ -317,6 +333,7 @@ int main() {
     RUN_TEST(test_antenna_erp);
     RUN_TEST(test_antenna_wavelength);
     RUN_TEST(test_antenna_validation);
+    RUN_TEST(test_antenna_gain_validation_rejects_out_of_domain_beamwidth);
 
     RUN_TEST(test_receiver_default_valid);
     RUN_TEST(test_receiver_sensitivity);

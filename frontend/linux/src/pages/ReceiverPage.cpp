@@ -121,17 +121,17 @@ ReceiverPage::ReceiverPage(QWidget* parent)
 
     // ── Signal wiring: system inputs ─────────────────────────────────────────
     connect(bwSb,   &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_bandwidth(v); });
+            [this, bwSb](double v){ presenter_.set_bandwidth(v); applyFieldError(bwSb, presenter_.bandwidth_error()); });
     connect(nfSb,   &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_noise_figure(v); });
+            [this, nfSb](double v){ presenter_.set_noise_figure(v); applyFieldError(nfSb, presenter_.noise_figure_error()); });
     connect(snrSb,  &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_required_snr(v); });
+            [this, snrSb](double v){ presenter_.set_required_snr(v); applyFieldError(snrSb, presenter_.required_snr_error()); });
     connect(iip2Sb, &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_second_order_ip(v); });
+            [this, iip2Sb](double v){ presenter_.set_second_order_ip(v); applyFieldError(iip2Sb, presenter_.second_order_ip_error()); });
     connect(iip3Sb, &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_third_order_ip(v); });
+            [this, iip3Sb](double v){ presenter_.set_third_order_ip(v); applyFieldError(iip3Sb, presenter_.third_order_ip_error()); });
     connect(adcSb, &QSpinBox::valueChanged, this,
-            [this](int v){ presenter_.set_adc_bits(v); });
+            [this, adcSb](int v){ presenter_.set_adc_bits(v); applyFieldError(adcSb, presenter_.adc_bits_error()); });
 
     // ── Signal wiring: stage management ────────────────────────────────────────
     connect(addBtn, &QPushButton::clicked, this, [this]{ addStage(); });
@@ -152,6 +152,14 @@ ReceiverPage::ReceiverPage(QWidget* parent)
     presenter_.set_on_change([this](const ewpresenter::ReceiverPresenter::Output& o){
         applyOutput(o);
     });
+
+    // Seed per-field validation-error styling from initial/restored values (#41).
+    applyFieldError(bwSb,   presenter_.bandwidth_error());
+    applyFieldError(nfSb,   presenter_.noise_figure_error());
+    applyFieldError(snrSb,  presenter_.required_snr_error());
+    applyFieldError(iip2Sb, presenter_.second_order_ip_error());
+    applyFieldError(iip3Sb, presenter_.third_order_ip_error());
+    applyFieldError(adcSb,  presenter_.adc_bits_error());
 
     // Populate stage list from presenter defaults (or restored stages) and seed outputs.
     rebuildStageList();
@@ -182,6 +190,9 @@ void ReceiverPage::rebuildStageList()
             QStringLiteral("Stage %1 gain (dB)").arg(i + 1));
         nfSb->setToolTip(QStringLiteral("Stage %1 noise figure").arg(i + 1));
         gSb->setToolTip(QStringLiteral("Stage %1 gain").arg(i + 1));
+        // Stashed so applyFieldError() can restore this tooltip once the
+        // aggregate stage-chain NF error clears (issue #41).
+        nfSb->setProperty("ewcBaseHelp", nfSb->toolTip());
 
         auto* nfLbl = new QLabel(QStringLiteral("NF"));
         auto* gLbl  = new QLabel(QStringLiteral("G"));
@@ -215,6 +226,15 @@ void ReceiverPage::rebuildStageList()
         connect(rmBtn, &QPushButton::clicked, this,
                 [this, i]{ removeStage(i); });
     }
+
+    applyStageErrors();
+}
+
+void ReceiverPage::applyStageErrors()
+{
+    const auto err = presenter_.stage_nf_error();
+    for (const auto& row : stage_rows_)
+        applyFieldError(row.nf, err);
 }
 
 void ReceiverPage::pushStages()
@@ -225,6 +245,7 @@ void ReceiverPage::pushStages()
         stages.push_back({r.nf->value(), r.gain->value()});
     presenter_.set_stages(stages);
     AppSettings::instance().setValue(kGroup, kStagesKey, stagesToVariant(stages));
+    applyStageErrors();
 }
 
 void ReceiverPage::addStage()

@@ -31,8 +31,11 @@ struct AntennaView: View {
     var body: some View {
         Form {
             Section("Antenna Parameters") {
+                // Lower bound matches AntennaPresenter::set_gain's -6.35 dBi validation
+                // floor (below that, beamwidth_from_gain() exceeds its valid domain and
+                // returns beamwidth > 360° — see audit #1 / libew antenna.h).
                 InputRow("Gain", unit: "dBi", value: $gain,
-                         in: -10...60,
+                         in: -6.35...60,
                          error: adapter.gainError,
                          help: "Antenna gain relative to an isotropic radiator") { adapter.setGain($0) }
                 InputRow("Az beamwidth", unit: "deg", value: $azBeamwidth,

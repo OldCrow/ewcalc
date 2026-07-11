@@ -19,7 +19,10 @@ AntennaPage::AntennaPage(QWidget* parent)
     QFormLayout* inForm = nullptr;
     auto* inGroup = makeGroup(QStringLiteral("Antenna Parameters"), inForm);
 
-    auto* gainSb = addSpinRow(inForm, QStringLiteral("Gain (dBi)"), -10.0, 60.0,
+    // Lower bound matches AntennaPresenter::set_gain's -6.35 dBi validation
+    // floor (below that, beamwidth_from_gain() is out of its valid domain
+    // and exceeds 360° — see audit #1 / libew antenna.h).
+    auto* gainSb = addSpinRow(inForm, QStringLiteral("Gain (dBi)"), -6.35, 60.0,
         presenter_.gain_dbi(), 1.0, 1, kGroup, QStringLiteral("gain_dbi"),
         QStringLiteral("Antenna gain relative to an isotropic radiator"));
     auto* azBwSb = addSpinRow(inForm, QStringLiteral("Az beamwidth (deg)"), 0.1, 360.0,
@@ -69,15 +72,15 @@ AntennaPage::AntennaPage(QWidget* parent)
 
     // ── Signal wiring ─────────────────────────────────────────────────────────
     connect(gainSb,  &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_gain(v); });
+            [this, gainSb](double v){ presenter_.set_gain(v); applyFieldError(gainSb, presenter_.gain_error()); });
     connect(azBwSb,  &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_az_beamwidth(v); });
+            [this, azBwSb](double v){ presenter_.set_az_beamwidth(v); applyFieldError(azBwSb, presenter_.az_beamwidth_error()); });
     connect(elBwSb,  &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_el_beamwidth(v); });
+            [this, elBwSb](double v){ presenter_.set_el_beamwidth(v); applyFieldError(elBwSb, presenter_.el_beamwidth_error()); });
     connect(txPwrSb, &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_tx_power(v); });
+            [this, txPwrSb](double v){ presenter_.set_tx_power(v); applyFieldError(txPwrSb, presenter_.tx_power_error()); });
     connect(freqSb,  &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_frequency(v); });
+            [this, freqSb](double v){ presenter_.set_frequency(v); applyFieldError(freqSb, presenter_.frequency_error()); });
 
     // ── Restore persisted values (after presenter wiring, before first recompute) ──
     restoreSpinValue(gainSb,  kGroup, QStringLiteral("gain_dbi"));
@@ -89,6 +92,13 @@ AntennaPage::AntennaPage(QWidget* parent)
     presenter_.set_on_change([this](const ewpresenter::AntennaPresenter::Output& o){
         applyOutput(o);
     });
+
+    // Seed per-field validation-error styling from initial/restored values (#41).
+    applyFieldError(gainSb,  presenter_.gain_error());
+    applyFieldError(azBwSb,  presenter_.az_beamwidth_error());
+    applyFieldError(elBwSb,  presenter_.el_beamwidth_error());
+    applyFieldError(txPwrSb, presenter_.tx_power_error());
+    applyFieldError(freqSb,  presenter_.frequency_error());
 
     applyOutput(presenter_.output());
 }

@@ -15,6 +15,9 @@
 
 #include "Settings.h"
 
+#include <ewpresenter/validation.h>
+
+#include <QAbstractSpinBox>
 #include <QClipboard>
 #include <QDoubleSpinBox>
 #include <QFormLayout>
@@ -86,6 +89,9 @@ inline QDoubleSpinBox* addSpinRow(
     sb->setAccessibleName(label);
     if (!help.isEmpty())
         sb->setToolTip(help);
+    // Stashed so applyFieldError() can restore the base tooltip once a
+    // validation error clears (issue #41).
+    sb->setProperty("ewcBaseHelp", help);
 
     QObject::connect(sb, &QDoubleSpinBox::valueChanged, sb,
         [settingsGroup, settingsKey](double v) {
@@ -118,6 +124,7 @@ inline QSpinBox* addIntSpinRow(
     sb->setAccessibleName(label);
     if (!help.isEmpty())
         sb->setToolTip(help);
+    sb->setProperty("ewcBaseHelp", help);
 
     QObject::connect(sb, &QSpinBox::valueChanged, sb,
         [settingsGroup, settingsKey](int v) {
@@ -151,6 +158,44 @@ inline void restoreSpinValue(QSpinBox* sb, const QString& group, const QString& 
 {
     const int restored = AppSettings::instance().value(group, key, sb->value()).toInt();
     sb->setValue(qBound(sb->minimum(), restored, sb->maximum()));
+}
+
+// ── Per-field validation-error UI (#41) ────────────────────────────────────
+
+/// Human-readable validation message for a FieldError, matching the wording
+/// used by the macOS (Shared.swift) and Windows (FieldErrorToTooltipConverter)
+/// per-field validation UI so the message is consistent across frontends.
+inline QString describeFieldError(ewpresenter::FieldError err)
+{
+    switch (err) {
+        case ewpresenter::FieldError::none:             return QString();
+        case ewpresenter::FieldError::below_minimum:    return QStringLiteral("Value is below the minimum");
+        case ewpresenter::FieldError::above_maximum:    return QStringLiteral("Value exceeds the maximum");
+        case ewpresenter::FieldError::invalid_zero:     return QStringLiteral("Value must be positive");
+        case ewpresenter::FieldError::invalid_negative: return QStringLiteral("Value must not be negative");
+        case ewpresenter::FieldError::not_finite:       return QStringLiteral("Value must be a finite number");
+    }
+    return QStringLiteral("Invalid value");
+}
+
+/// Applies (or clears) per-field validation-error styling on a spin box: a red
+/// border via stylesheet, plus a tooltip describing the failure appended to
+/// the field's base help text (stashed as the "ewcBaseHelp" property by
+/// addSpinRow()/addIntSpinRow()). Mirrors the red-outline + tooltip treatment
+/// already used on macOS and Windows for the same FieldError values (#41).
+inline void applyFieldError(QAbstractSpinBox* sb, ewpresenter::FieldError err)
+{
+    const QString baseHelp = sb->property("ewcBaseHelp").toString();
+    if (err != ewpresenter::FieldError::none) {
+        sb->setStyleSheet(QStringLiteral("QAbstractSpinBox { border: 1.5px solid #d32f2f; }"));
+        const QString msg = describeFieldError(err);
+        sb->setToolTip(baseHelp.isEmpty() ? msg : baseHelp + QStringLiteral("\n\u26a0 ") + msg);
+        sb->setAccessibleDescription(msg);
+    } else {
+        sb->setStyleSheet(QString());
+        sb->setToolTip(baseHelp);
+        sb->setAccessibleDescription(QString());
+    }
 }
 
 /// Adds a read-only result row to a QFormLayout and returns the QLabel.

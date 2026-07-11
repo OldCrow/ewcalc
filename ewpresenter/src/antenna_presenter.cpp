@@ -3,11 +3,15 @@
 #include "libew/antenna/antenna.h"
 
 namespace ewpresenter {
+namespace {
+constexpr double kMinGainDbiForBeamwidth = -6.35; // keeps circular beamwidth <= 360°
+constexpr double kMaxGainDbi = 60.0;
+} // namespace
 
 AntennaPresenter::AntennaPresenter() noexcept { recompute(); }
 
 void AntennaPresenter::set_gain(double dbi) noexcept {
-    update_field(dbi, gain_dbi_, gain_err_, validate_bounds(dbi, -10.0, 60.0));
+    update_field(dbi, gain_dbi_, gain_err_, validate_bounds(dbi, kMinGainDbiForBeamwidth, kMaxGainDbi));
 }
 void AntennaPresenter::set_az_beamwidth(double deg) noexcept {
     update_field(deg, az_beamwidth_deg_, az_bw_err_, validate_positive_bounded(deg, 0.1, 360.0));

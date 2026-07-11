@@ -77,15 +77,15 @@ PropagationPage::PropagationPage(QWidget* parent)
 
     // ── Signal wiring ─────────────────────────────────────────────────────────
     connect(distSb,  &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_distance(v); });
+            [this, distSb](double v){ presenter_.set_distance(v); applyFieldError(distSb, presenter_.distance_error()); });
     connect(freqSb,  &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_frequency(v); });
+            [this, freqSb](double v){ presenter_.set_frequency(v); applyFieldError(freqSb, presenter_.frequency_error()); });
     connect(txHtSb,  &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_tx_height(v); });
+            [this, txHtSb](double v){ presenter_.set_tx_height(v); applyFieldError(txHtSb, presenter_.tx_height_error()); });
     connect(rxHtSb,  &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_rx_height(v); });
+            [this, rxHtSb](double v){ presenter_.set_rx_height(v); applyFieldError(rxHtSb, presenter_.rx_height_error()); });
     connect(obsSb,   &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_obstruction_height(v); });
+            [this, obsSb](double v){ presenter_.set_obstruction_height(v); applyFieldError(obsSb, presenter_.obstruction_height_error()); });
 
     // ── Restore persisted values (after presenter wiring, before first recompute) ──
     restoreSpinValue(distSb, kGroup, QStringLiteral("distance_km"));
@@ -98,6 +98,13 @@ PropagationPage::PropagationPage(QWidget* parent)
     presenter_.set_on_change([this](const ewpresenter::PropagationPresenter::Output& o){
         applyOutput(o);
     });
+
+    // Seed per-field validation-error styling from initial/restored values (#41).
+    applyFieldError(distSb, presenter_.distance_error());
+    applyFieldError(freqSb, presenter_.frequency_error());
+    applyFieldError(txHtSb, presenter_.tx_height_error());
+    applyFieldError(rxHtSb, presenter_.rx_height_error());
+    applyFieldError(obsSb,  presenter_.obstruction_height_error());
 
     // Seed outputs with current defaults.
     applyOutput(presenter_.output());

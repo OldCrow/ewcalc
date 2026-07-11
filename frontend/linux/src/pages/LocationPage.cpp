@@ -81,18 +81,32 @@ LocationPage::LocationPage(QWidget* parent)
     outer->addWidget(scroll);
 
     // ── Signal wiring ─────────────────────────────────────────────────────────
+    // Semi-minor's displayed error combines its own bounds error with
+    // eep_axis_error(), a cross-field check (semi-minor must not exceed
+    // semi-major) that range clamping alone can't express — mirrors the
+    // macOS LocationView / Windows LocationPage treatment.
+    auto updateSemiMinorError = [this, semiMinSb] {
+        auto err = presenter_.semi_minor_error();
+        if (err == ewpresenter::FieldError::none) err = presenter_.eep_axis_error();
+        applyFieldError(semiMinSb, err);
+    };
+
     connect(rmsBeSb,   &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_rms_bearing_error(v); });
+            [this, rmsBeSb](double v){ presenter_.set_rms_bearing_error(v); applyFieldError(rmsBeSb, presenter_.rms_bearing_error()); });
     connect(aoaRgSb,   &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_aoa_range(v); });
+            [this, aoaRgSb](double v){ presenter_.set_aoa_range(v); applyFieldError(aoaRgSb, presenter_.aoa_range_error()); });
     connect(rmsTimeSb, &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_rms_time_error(v); });
+            [this, rmsTimeSb](double v){ presenter_.set_rms_time_error(v); applyFieldError(rmsTimeSb, presenter_.rms_time_error()); });
     connect(baselineSb,&QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_baseline(v); });
+            [this, baselineSb](double v){ presenter_.set_baseline(v); applyFieldError(baselineSb, presenter_.baseline_error()); });
     connect(semiMajSb, &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_semi_major(v); });
+            [this, semiMajSb, updateSemiMinorError](double v){
+                presenter_.set_semi_major(v);
+                applyFieldError(semiMajSb, presenter_.semi_major_error());
+                updateSemiMinorError();
+            });
     connect(semiMinSb, &QDoubleSpinBox::valueChanged, this,
-            [this](double v){ presenter_.set_semi_minor(v); });
+            [this, updateSemiMinorError](double v){ presenter_.set_semi_minor(v); updateSemiMinorError(); });
 
     // ── Restore persisted values (after presenter wiring, before first recompute) ──
     restoreSpinValue(rmsBeSb,    kGroup, QStringLiteral("rms_bearing_error_deg"));
@@ -105,6 +119,14 @@ LocationPage::LocationPage(QWidget* parent)
     presenter_.set_on_change([this](const ewpresenter::LocationPresenter::Output& o){
         applyOutput(o);
     });
+
+    // Seed per-field validation-error styling from initial/restored values (#41).
+    applyFieldError(rmsBeSb,    presenter_.rms_bearing_error());
+    applyFieldError(aoaRgSb,    presenter_.aoa_range_error());
+    applyFieldError(rmsTimeSb,  presenter_.rms_time_error());
+    applyFieldError(baselineSb, presenter_.baseline_error());
+    applyFieldError(semiMajSb,  presenter_.semi_major_error());
+    updateSemiMinorError();
 
     applyOutput(presenter_.output());
 }
