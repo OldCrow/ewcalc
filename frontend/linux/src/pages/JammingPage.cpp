@@ -57,10 +57,10 @@ JammingPage::JammingPage(QWidget* parent)
     auto* rxHtSb = addSpinRow(cmForm, QStringLiteral("Rx height (m)"), 0.1, 100000.0,
         presenter_.rx_height_m(), 0.5, 1, kGroup, QStringLiteral("rx_height_m"));
     auto* rxGainSigSb = addSpinRow(cmForm, QStringLiteral("Rx gain \u2192 signal (dB)"), -30.0, 60.0,
-        0.0, 1.0, 1, kGroup, QStringLiteral("rx_gain_signal_db"),
+        presenter_.rx_gain_signal_db(), 1.0, 1, kGroup, QStringLiteral("rx_gain_signal_db"),
         QStringLiteral("Receive antenna gain toward the signal transmitter \u2014 use the main lobe gain if the receiver antenna is pointed at the signal"));
     auto* rxGainJamSb = addSpinRow(cmForm, QStringLiteral("Rx gain \u2192 jammer (dB)"), -30.0, 60.0,
-        0.0, 1.0, 1, kGroup, QStringLiteral("rx_gain_jammer_db"),
+        presenter_.rx_gain_jammer_db(), 1.0, 1, kGroup, QStringLiteral("rx_gain_jammer_db"),
         QStringLiteral("Receive antenna gain toward the jammer \u2014 a directional antenna with low sidelobes can reject an off-axis jammer by 20\u201330 dB; sidelobes are typically \u221213 to \u221220 dBc"));
 
     // ── J/S Analysis results ────────────────────────────────────────────────

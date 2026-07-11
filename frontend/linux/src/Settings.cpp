@@ -14,8 +14,17 @@ constexpr int kSaveDebounceMs = 400;
 
 AppSettings& AppSettings::instance()
 {
-    static AppSettings inst;
-    return inst;
+    // Deliberately leaked. A function-local static QObject would instead be
+    // torn down via atexit() *after* QApplication is destroyed (main()'s
+    // automatic-storage locals, including QApplication, are destroyed when
+    // main() returns, which happens before atexit-registered static-duration
+    // destructors run). Qt tolerates that ordering today, but it's a fragile
+    // QObject lifetime pattern to rely on. Since this singleton is meant to
+    // live for the whole process anyway, skip destruction entirely — the OS
+    // reclaims the memory at exit — rather than depend on destructor-order
+    // guarantees Qt doesn't make.
+    static AppSettings* inst = new AppSettings();
+    return *inst;
 }
 
 AppSettings::AppSettings()

@@ -12,6 +12,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Linux per-field validation-error UI: spinboxes show a red outline and a
   tooltip describing the failure, matching the existing macOS/Windows
   treatment (`applyFieldError()` in `frontend/linux/src/PageUtils.h`).
+- Presenter-level tests for `LocationPresenter`'s OR-validity semantics and
+  its semi-major/semi-minor cross-field check, and a new `LinkPresenter`
+  test section (previously untested outside bridge tests).
 
 ### Fixed
 
@@ -23,6 +26,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `LocationPresenter`'s OR-validity exception (vs. AND on every other
   presenter) is now documented in `AGENTS.md`.
 - Linux README no longer describes a nonexistent `applyFieldError()` helper.
+- Linux `JammingPage` RX-gain spin boxes now seed from `rx_gain_signal_db()`/
+  `rx_gain_jammer_db()` instead of hardcoding `0.0`.
+- Removed a redundant dead-code clamp in `partial_band_jamming()`'s duty-cycle
+  calculation.
+- Linux `AppSettings::instance()` no longer relies on function-local-static
+  destruction order relative to `QApplication`; the singleton is now
+  intentionally leaked instead of torn down via `atexit()`.
 
 ## [v0.9.0] — 2026-07-09
 
