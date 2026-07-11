@@ -30,11 +30,8 @@ using namespace libew::units::literals;
 // libew/src/jamming.cpp). Concept and treatment consistent with Adamy EW102
 // Sec 5.9.1 "Jamming Frequency Hop Signals", p.141-146.
 // [OPEN: exact eq # TBD]
-// NOTE: the doc comment in libew/include/libew/jamming/jamming.h (partial
-// band section) describes the opposite, pre-v0.7.0 behavior (BW capped at
-// signal_bandwidth for J/S >= 0). That header comment is stale/incorrect
-// relative to the current implementation and these tests; flagged as a
-// discrepancy rather than corrected here (header edits out of scope).
+// The doc comment in libew/include/libew/jamming/jamming.h (partial-band
+// section) now matches this implementation and these tests (issue #38).
 
 void test_js_ratio_spreadsheet() {
     const JammingResult r = comms_jamming_js(

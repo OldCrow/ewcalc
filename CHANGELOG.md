@@ -21,7 +21,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `AntennaPresenter::set_gain()` now rejects gain below -6.35 dBi, the true
   domain floor of `beamwidth_from_gain()`; previously a legal in-range gain
   (e.g. -10 dBi) produced a beamwidth over 360° with no error shown. All
-  three frontends' gain input bounds now match (-6.35 to 60 dBi).
+  three frontends' gain input bounds now match (-6.35 to 60 dBi) — including
+  Windows' `GainBox.Setup()` call in `PageCodeBehinds.cs`, which sets the
+  runtime bound in code and was silently overriding the XAML `Minimum`
+  attribute back to -10 (WinUI parses XAML `NumberBox.Minimum` through
+  float32, so real bounds must be set in code; see `PageHelper.cs`).
 - Windows "Reset Inputs" no longer no-ops on the active page.
 - `LocationPresenter`'s OR-validity exception (vs. AND on every other
   presenter) is now documented in `AGENTS.md`.

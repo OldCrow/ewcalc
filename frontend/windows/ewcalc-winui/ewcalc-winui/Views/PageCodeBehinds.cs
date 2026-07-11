@@ -187,7 +187,14 @@ public sealed partial class AntennaPage : Page
     public AntennaViewModel ViewModel { get; } = new();
     public AntennaPage() {
         InitializeComponent();
-        GainBox       .Setup(-10.0,   60.0);
+        // Lower bound matches AntennaPresenter::set_gain's -6.35 dBi validation
+        // floor (below that, beamwidth_from_gain() exceeds its valid domain and
+        // returns beamwidth > 360° — see audit #1 / libew antenna.h). NumberBox's
+        // XAML Minimum is set here in code, not XAML, because WinUI parses
+        // NumberBox.Minimum as float32 (see PageHelper.cs), which would round
+        // -6.35 imprecisely; Setup() applies the exact double-precision bound
+        // and overrides whatever the XAML declares.
+        GainBox       .Setup(-6.35,   60.0);
         AzBeamwidthBox.Setup(0.1,    360.0);
         ElBeamwidthBox.Setup(0.1,    360.0);
         TxPowerBox    .Setup(-30.0,  100.0);
