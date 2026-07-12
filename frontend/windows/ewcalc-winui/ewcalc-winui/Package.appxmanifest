@@ -15,12 +15,12 @@
   -->
   <Identity
     Name="OldCrow.EWCalculator"
-    Publisher="CN=Your Name or Organization"
-    Version="*******" />
+    Publisher="CN=Gary Wolfman"
+    Version="1.0.0.0" />
 
   <Properties>
     <DisplayName>EW Calculator</DisplayName>
-    <PublisherDisplayName>Your Name or Organization</PublisherDisplayName>
+    <PublisherDisplayName>Gary Wolfman</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 

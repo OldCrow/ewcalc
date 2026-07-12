@@ -51,4 +51,18 @@
     <Manifest Include="app.manifest" />
   </ItemGroup>
 
+  <!--
+    Single-project MSIX tooling (EnableMsixTooling) does not copy Assets\** to
+    the plain Build output on its own; only the AppX staging step (Publish)
+    does. scripts/build-windows.ps1 packages from the Build output when no AppX
+    staging folder is present, so Assets must be copied explicitly or the
+    resulting .msix references images that were never included as payload
+    (manifest logo/icon references resolve to nothing at install/run time).
+  -->
+  <ItemGroup>
+    <Content Include="Assets\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

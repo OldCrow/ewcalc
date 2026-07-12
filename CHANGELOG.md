@@ -6,8 +6,33 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Linux `.deb`/`.rpm` packaging: `frontend/linux/CMakeLists.txt` now installs
+  `assets/linux/ewcalc.desktop` and the `hicolor` icon set to their standard
+  system locations and configures CPack (Debian and RPM metadata).
+  `scripts/build-linux.sh --package deb|rpm` invokes `cpack -G DEB`/`-G RPM`
+  directly rather than the previously nonfunctional `package` build target
+  (no CPack config existed at all beforehand, so `--package deb`/`--package rpm`
+  always failed).
+
 ### Fixed
 
+- Linux showed a generic "gears" icon in the taskbar/window switcher instead
+  of the EW Calculator icon: neither `main.cpp` nor `MainWindow.cpp` ever
+  called `setWindowIcon()`, so the icon depended entirely on the window
+  manager matching `WM_CLASS` to the installed `.desktop` entry — unreliable
+  outside a fully XDG-integrated session (e.g. an un-integrated AppImage).
+  The icon is now embedded via a Qt resource file
+  (`frontend/linux/resources/icons.qrc`) at multiple sizes and set explicitly
+  via `QApplication::setWindowIcon()`.
+- Windows MSIX packages had no Start Menu/taskbar icon: `ewcalc-winui.csproj`
+  had no item copying `Assets\**` to the build output, so
+  `scripts/build-windows.ps1`'s fallback packaging path (used whenever the
+  single-project MSIX `AppX` staging folder isn't present) produced a
+  package whose manifest referenced logo/icon files that were never
+  included as payload. Added an explicit `Content` item with
+  `CopyToOutputDirectory=PreserveNewest` for `Assets\**`.
 - Linux AppImage failed to launch on distros older than the CI build image,
   first with `version 'GLIBCXX_3.4.31' not found` (from `libstdc++`), then
   with `version 'GLIBC_2.38' not found` (from a transitively-bundled
