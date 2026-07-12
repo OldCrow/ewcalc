@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="ewcalc-16.png">../../../assets/linux/hicolor/16x16/apps/ewcalc.png</file>
+        <file alias="ewcalc-32.png">../../../assets/linux/hicolor/32x32/apps/ewcalc.png</file>
+        <file alias="ewcalc-48.png">../../../assets/linux/hicolor/48x48/apps/ewcalc.png</file>
+        <file alias="ewcalc-64.png">../../../assets/linux/hicolor/64x64/apps/ewcalc.png</file>
+        <file alias="ewcalc-128.png">../../../assets/linux/hicolor/128x128/apps/ewcalc.png</file>
+        <file alias="ewcalc-256.png">../../../assets/linux/hicolor/256x256/apps/ewcalc.png</file>
+        <file alias="ewcalc-512.png">../../../assets/linux/hicolor/512x512/apps/ewcalc.png</file>
+    </qresource>
+</RCC>

@@ -177,6 +177,29 @@ jobs:
           path: build/pkg/*.AppImage
           retention-days: 90
 
+      # dpkg-deb is preinstalled on ubuntu runners. The content check is a
+      # regression guard for the desktop entry / hicolor icon install rules
+      # in frontend/linux/CMakeLists.txt (see CHANGELOG "Linux showed a
+      # generic gears icon…").
+      - name: Package .deb (sanity check)
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+        run: |
+          bash scripts/build-linux.sh --config Release --package deb
+          DEB="$(ls build/pkg/*.deb)"
+          echo "Built: $DEB"
+          dpkg-deb --contents "$DEB"
+          dpkg-deb --contents "$DEB" | grep -q 'usr/share/applications/ewcalc\.desktop'
+          dpkg-deb --contents "$DEB" | grep -q 'usr/share/icons/hicolor/256x256/apps/ewcalc\.png'
+          dpkg-deb --contents "$DEB" | grep -q 'usr/bin/ewcalc'
+
+      - name: Upload .deb
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ewcalc-linux-deb
+          path: build/pkg/*.deb
+          retention-days: 90
+
   # ── Sanitizers (ASan/UBSan) ────────────────────────────────────────────────
   sanitizers:
     name: Sanitizers (ASan/UBSan)
@@ -377,3 +400,4 @@ jobs:
             artifacts/**/*.msix
             artifacts/**/*.dmg
             artifacts/**/*.AppImage
+            artifacts/**/*.deb

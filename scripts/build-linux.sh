@@ -65,8 +65,13 @@ if [[ -f "$LINUX_FRONTEND" ]]; then
 
         case "$PACKAGE_FORMAT" in
             deb|rpm)
-                # CPack handles .deb and .rpm when configured in the frontend CMakeLists
-                cmake --build "$BUILD_DIR/linux-frontend" --target package
+                # CPack is configured in frontend/linux/CMakeLists.txt. Invoke
+                # cpack directly with an explicit -G so either format can be
+                # produced on demand from the same configured build, rather
+                # than relying on a single default CPACK_GENERATOR.
+                GENERATOR="$(echo "$PACKAGE_FORMAT" | tr '[:lower:]' '[:upper:]')"
+                (cd "$BUILD_DIR/linux-frontend" && cpack -G "$GENERATOR")
+                mv "$BUILD_DIR/linux-frontend"/*."$PACKAGE_FORMAT" "$BUILD_DIR/pkg/"
                 ;;
             appimage)
                 # AppImage requires linuxdeploy + Qt plugin
