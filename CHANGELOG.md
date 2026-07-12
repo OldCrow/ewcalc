@@ -6,6 +6,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [v1.0.1] — 2026-07-12
+
+Icon/packaging patch release: Windows MSIX and Linux app icons were both
+missing due to build/packaging gaps, and Linux gains `.deb` packaging.
+
 ### Added
 
 - Linux `.deb`/`.rpm` packaging: `frontend/linux/CMakeLists.txt` now installs

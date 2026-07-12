@@ -7,7 +7,7 @@
 
 PROJECT_NAME           = "ewcalc"
 # Bump this to match CMakeLists.txt's `project(ewcalc VERSION ...)` at each release.
-PROJECT_NUMBER         = 1.0.0
+PROJECT_NUMBER         = 1.0.1
 PROJECT_BRIEF          = "Electronic Warfare engineering calculator"
 
 INPUT                  = libew/include ewpresenter/include
