@@ -39,49 +39,49 @@ Open milestones are fully itemized here since they reflect actionable state.
 - v0.7.0 — Correctness (closed, #1): 0 open / 8 closed.
 - v0.8.0 — UX Parity & Accessibility (closed, #2): 0 open / 7 closed.
 - v0.9.0 — Infrastructure & Hardening (closed, #3): 0 open / 4 closed.
-- v1.0.0 — Release Readiness (open, #4): 0 open / 4 closed.
+- v1.0.0 — Release Readiness (closed, #4): 0 open / 4 closed.
   - #26 CLOSED — Add CHANGELOG.md (backfilled from README) and CONTRIBUTING.md.
   - #27 CLOSED — Add Doxyfile and publish API docs (comments are already Doxygen-style).
   - #28 CLOSED — Create user-facing "Formulas & references" document (output ↔ EW101 equation map).
   - #29 CLOSED — Final domain audit: re-verify every formula against EW101/102/103 with citations recorded in tests.
-  - All 4 issues closed; milestone itself still open on GitHub — consider
-    closing it there once no further v1.0.0 work is planned.
+  - Milestone closed on GitHub 2026-07-14; no further v1.0.0 work planned.
 
 ## GitHub Issues Without Milestone [DERIVED]
 Same leaner convention as milestones above: closed items are a count only
 (fetch via `gh issue list --state closed --json number,title,milestone -q
 '.[] | select(.milestone == null)'` if ever needed); open items are fully
 itemized since they're actionable.
-- Open issues without milestone: none as of 2026-07-14.
+- Open issues without milestone: 3 (#43, #44, #45) as of 2026-07-14.
 - Closed issues without milestone: 6 (#5, #6, #37, #38, #39, #41) as of 2026-07-14.
 
 ## In Progress [OPEN]
-- SwiftLint setup for the macOS frontend (noted 2026-07-14): not installed
-  on this machine, no `.swiftlint.yml`. Deferred — needs a decision on
-  whether it runs via a script or an Xcode Run Script build phase, then
-  installation (`brew install swiftlint`) and a baseline config.
-- Windows Roslyn analyzers / `dotnet format` (noted 2026-07-14): no
+- SwiftLint setup for the macOS frontend (#43, noted 2026-07-14): not
+  installed on this machine, no `.swiftlint.yml`. Deferred — needs a
+  decision on whether it runs via a script or an Xcode Run Script build
+  phase, then installation (`brew install swiftlint`) and a baseline config.
+- Windows Roslyn analyzers / `dotnet format` (#44, noted 2026-07-14): no
   `.editorconfig`, no analyzers enabled in `ewcalc-winui.csproj`. Deferred
   — this needs to be set up and verified on an actual Windows/MSBuild
   toolchain; changes made blind from macOS (no dotnet/MSBuild available
   here) can't be compile-verified and risk breaking the Windows build.
 - `scripts/lint-linux.sh` is report-only (no `--error-exitcode`) pending
-  cleanup of pre-existing style findings (see below). Add the flag once
-  those are cleared so it gates the same way `scripts/lint-cpp.sh` does.
+  cleanup of pre-existing style findings (#45, see below). Add the flag
+  once those are cleared so it gates the same way `scripts/lint-cpp.sh` does.
 
 ## Known Gaps [OPEN]
-- `frontend/linux` cppcheck baseline (2026-07-14): a shadowed parameter
-  name in `Settings.cpp` (`setValue`'s `value` shadows the `value()`
-  getter), two `useStlAlgorithm` style suggestions (`PageUtils.h`,
-  `ReceiverPage.cpp`), and one `uninitMemberVarNoCtor` note
-  (`ReferencePage.cpp`'s `RefSection::title`). All are stylistic, not
-  correctness bugs; not fixed as part of this cleanup pass since it was
-  scoped to tooling setup, not frontend code changes.
+- `frontend/linux` cppcheck baseline (#45, 2026-07-14): a shadowed
+  parameter name in `Settings.cpp` (`setValue`'s `value` shadows the
+  `value()` getter), two `useStlAlgorithm` style suggestions
+  (`PageUtils.h`, `ReceiverPage.cpp`), and one `uninitMemberVarNoCtor`
+  note (`ReferencePage.cpp`'s `RefSection::title`). All are stylistic,
+  not correctness bugs; not fixed as part of this cleanup pass since it
+  was scoped to tooling setup, not frontend code changes.
 - WinUI3 colour-coding feature deferred due to x:Bind type-checking crash —
   not reattempted, root cause not fully resolved.
 
 ## Next Steps
-- Decide on SwiftLint and Windows analyzer setup (see In Progress above)
-  and schedule the actual Windows-side verification.
-- Clear the `frontend/linux` cppcheck baseline findings, then add
+- #43 — Set up SwiftLint for the macOS frontend.
+- #44 — Set up Roslyn analyzers / `dotnet format` for the Windows frontend;
+  schedule the actual Windows-side verification.
+- #45 — Clear the `frontend/linux` cppcheck baseline findings, then add
   `--error-exitcode=1` to `scripts/lint-linux.sh`.
