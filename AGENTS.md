@@ -152,7 +152,30 @@ Tests use a zero-dependency framework in `libew/tests/test_main.h`. Each test fi
 
 ## Coding Conventions
 
+The conventions below are scoped per target — the frontends are Swift, C#, and Qt6/C++ respectively, and only the Core rules apply repo-wide.
+
+### Core (libew / ewpresenter / bridge)
 - C++20, `-Wall -Wextra -Wpedantic -Werror` (GCC/Clang) or `/W4 /WX /permissive-` (MSVC).
 - `#pragma once` throughout.
 - No external dependencies in `libew` or `ewpresenter`.
 - All quantity types from `libew::units` — never use bare `double` for RF quantities in these layers.
+- Static analysis: `scripts/lint-cpp.sh` runs clang-tidy (rules in `.clang-tidy`, repo root) and cppcheck against `libew/`, `ewpresenter/`, and `bridge/`. Mirrors the `static-analysis` CI job — run it locally before pushing.
+
+### macOS Frontend (Swift / SwiftUI)
+- One adapter class per presenter domain under `frontend/macos/app/Adapters/` (`PropagationAdapter`, `LinkAdapter`, `ReceiverAdapter`, `JammingAdapter`, `LocationAdapter`, `RadarAdapter`, `DigitalAdapter`, `AntennaAdapter`), each an `ObservableObject` wrapping the C bridge (`bridge/ewcalc_bridge.h`) — Swift cannot import C++ directly. Adapters are `let` properties of `EwCalcStore` (a `@StateObject` owned by the app), so `Unmanaged.passUnretained` in the C callback is safe only as long as adapters keep that lifetime; switch to `passRetained` and clear the callback in `deinit` before giving any adapter a shorter lifetime.
+- Views live under `frontend/macos/app/Views/`.
+- Static analysis: SwiftLint is not yet installed or configured for this project (no `.swiftlint.yml`, tool not present on this machine) — open item, see PLAN.md.
+
+### Windows Frontend (C# / WinUI 3)
+- Interop with the native core goes through a C++/CLI adapter DLL, `ewpresenter.net` (`frontend/windows/ewcalc-winui/ewpresenter.net/`), with one adapter class per presenter domain (8 total: Antenna, Digital, Jamming, Link, Location, Propagation, Radar, Receiver).
+- Pattern: `NativeCallbacks.h` is a purely-native header (zero managed types) defining one `Make*CB` factory per presenter domain; each factory returns a `std::function` wrapping a plain C function pointer + `void*` cookie. These lambdas capture only native types and are compiled under `#pragma managed(push, off)` / `(pop)`, since the callback wiring must stay outside managed code. Each adapter (e.g. `AntennaAdapter`) allocates a `GCHandle` to itself as the cookie, registers a static native dispatch function (e.g. `AntennaDispatch`) via `presenter_->set_on_change(...)`, and that dispatch function resolves the `GCHandle` back to the managed instance to fire a .NET event. `MarshalHelper.h` centralizes `FieldError` → `FieldValidationError` enum mapping and UTF-8 string marshaling (explicit byte-decode, since `marshal_as` uses the ANSI code page and garbles multi-byte UTF-8).
+- Read first: `NativeCallbacks.h` (the callback pattern itself), then `AntennaAdapter.h`/`.cpp` as the simplest concrete adapter, before touching any other adapter.
+- Known limitation: dependency-property-based colour-coding caused startup crashes attributed to WinUI3's x:Bind type-checking; this feature is deferred, not implemented. Do not attempt it without addressing that first.
+- Static analysis: Roslyn analyzers / `dotnet format` are not yet configured (no `.editorconfig`, no analyzers enabled in the `.csproj`) — open item, see PLAN.md. This needs verification on an actual Windows/MSBuild toolchain before being enabled.
+
+### Linux Frontend (Qt6 / C++)
+- One page class per presenter domain under `frontend/linux/src/pages/`, hosted by `MainWindow` (sidebar `QListWidget` navigation + `QStackedWidget` page area).
+- Static analysis: `scripts/lint-linux.sh` runs cppcheck against `frontend/linux/`. Qt's macro-heavy style (`Q_OBJECT`, signal/slot syntax) does not require suppressions or a Qt-aware ruleset — verified clean. The script is currently report-only (no `--error-exitcode`) pending cleanup of a few pre-existing style findings — see PLAN.md.
+
+## Open Items
+See PLAN.md for current status, in-progress work, and open questions.
