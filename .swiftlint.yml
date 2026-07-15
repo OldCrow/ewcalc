@@ -1,0 +1,53 @@
+included:
+  - frontend/macos/app
+
+# `colon`/`comma` are disabled because the codebase intentionally vertically
+# aligns declarations, tuples, and result rows with extra padding spaces
+# (see AntennaAdapter.swift, AntennaView.swift, etc.) — a deliberate,
+# consistent readability choice, not sloppy formatting. Enforcing SwiftLint's
+# single-space defaults would force reformatting every adapter/view file.
+disabled_rules:
+  - colon
+  - comma
+  # `///<` is this codebase's established Doxygen post-member comment marker
+  # (matches the C++ core's Doxygen-style comments per AGENTS.md) — SwiftLint
+  # doesn't recognize the no-space-before-`<` convention and flags it as a
+  # missing space after `//`.
+  - comment_spacing
+
+# Section-divider comments (`// ── ... ──`) and descriptive UI help strings
+# (ported from domain reference material) legitimately run long; wrapping
+# them mid-sentence would hurt readability more than it helps. Limits are set
+# just above the current codebase max rather than left at the SwiftLint
+# default, so genuinely runaway lines still get caught.
+line_length:
+  warning: 245
+  error: 300
+  ignores_comments: true
+  ignores_urls: true
+
+# Short names below are a deliberate, consistent codebase convention, not
+# unclear naming: physical-unit abbreviations (km/m/db/ns/tb) mirror the
+# `libew::units` philosophy of quantity-typed values; `_cb`/`a`/`cv` are
+# established local idioms repeated identically across every adapter file
+# (native-callback storage, SavedInputs capture/apply pairs, copy-value
+# alias); `id` is the mandatory `Identifiable` protocol property name.
+identifier_name:
+  excluded:
+    - i    # ForEach(stages.indices) loop index
+    - ok   # EwpFieldError.ok — mirrors the C enum's EWP_FIELD_OK
+    - id   # Identifiable protocol requirement
+    - a    # SavedInputs.*.init(from:)/apply(to:) adapter parameter
+    - n    # RadarAdapter.setNumPulses(n:)
+    - m    # meters
+    - km   # kilometers
+    - ns   # nanoseconds
+    - db   # decibels
+    - tb   # time-bandwidth product
+    - cv   # ReferenceView.entry(_:_:copy:) copy-value alias
+    - _cb  # static native-callback constant, one per Adapter class
+
+type_name:
+  excluded:
+    - ewcalcApp  # @main App entry point; matches Xcode's per-product naming
+                 # convention for the "ewcalc" product target

@@ -36,7 +36,7 @@ struct RadarView: View {
             ("PC gain",                   cStr(adapter.output.pulse_compression_gain_str)),
             ("Coherent integration gain", cStr(adapter.output.coherent_integration_gain_str)),
             ("LPI advantage",             cStr(adapter.output.lpi_advantage_str)),
-            ("Target RCS",                cStr(adapter.output.target_rcs_str)),
+            ("Target RCS",                cStr(adapter.output.target_rcs_str))
         ]
     }
 

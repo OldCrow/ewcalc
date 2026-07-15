@@ -30,7 +30,7 @@ private let referenceData: [RefSection] = [
         entry("2-element Yagi",                      "≈ 7 dBi",              copy: "7"),
         entry("3-element Yagi",                      "≈ 8.5 dBi",            copy: "8.5"),
         entry("5-element Yagi",                      "≈ 10.5 dBi",           copy: "10.5"),
-        entry("10-element Yagi",                     "≈ 14 dBi",             copy: "14"),
+        entry("10-element Yagi",                     "≈ 14 dBi",             copy: "14")
     ]),
 
     // Sidelobe levels are dBc offsets relative to main lobe;
@@ -39,7 +39,7 @@ private let referenceData: [RefSection] = [
         entry("Uniform aperture — 1st SLL",          "−13 dBc",             copy: "-13"),
         entry("Taylor weighted — 1st SLL",           "−25 dBc",             copy: "-25"),
         entry("Low-sidelobe array — 1st SLL",        "−35 dBc",             copy: "-35"),
-        entry("Typical back lobe",                   "−25 to −35 dBc"),
+        entry("Typical back lobe",                   "−25 to −35 dBc")
     ]),
 
     // Thermal noise: copy the numeric dBm value
@@ -49,7 +49,7 @@ private let referenceData: [RefSection] = [
         entry("1 MHz bandwidth",                     "−114.0 dBm",           copy: "-114.0"),
         entry("10 MHz bandwidth",                    "−104.0 dBm",           copy: "-104.0"),
         entry("100 MHz bandwidth",                   "−94.0 dBm",            copy: "-94.0"),
-        entry("1 GHz bandwidth",                     "−84.0 dBm",            copy: "-84.0"),
+        entry("1 GHz bandwidth",                     "−84.0 dBm",            copy: "-84.0")
     ]),
 
     // RCS: wide ranges get no copy button; specific targets get a representative value
@@ -61,7 +61,7 @@ private let referenceData: [RefSection] = [
         entry("Cruise missile",                      "−7 dBsm  (rep.)",     copy: "-7"),
         entry("Bird",                                "−15 dBsm  (rep.)",    copy: "-15"),
         entry("Ship (small, ∼1 000 t)",             "+25 dBsm  (rep.)",    copy: "25"),
-        entry("Ship (large, >10 000 t)",             "+45 dBsm  (rep.)",    copy: "45"),
+        entry("Ship (large, >10 000 t)",             "+45 dBsm  (rep.)",    copy: "45")
     ]),
 
     // Eb/N₀: all single values, copy just the number
@@ -70,8 +70,8 @@ private let referenceData: [RefSection] = [
         entry("BPSK / QPSK,  BER 10⁻⁵",            "9.6 dB",               copy: "9.6"),
         entry("BPSK / QPSK,  BER 10⁻⁶",            "10.5 dB",              copy: "10.5"),
         entry("Non-coh. FSK, BER 10⁻³",            "≈ 13.5 dB",            copy: "13.5"),
-        entry("Non-coh. FSK, BER 10⁻⁵",            "≈ 17.0 dB",            copy: "17.0"),
-    ]),
+        entry("Non-coh. FSK, BER 10⁻⁵",            "≈ 17.0 dB",            copy: "17.0")
+    ])
 ]
 
 // ── RefRow ────────────────────────────────────────────────────────────────────

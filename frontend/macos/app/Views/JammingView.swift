@@ -42,7 +42,7 @@ struct JammingView: View {
             ("Jammer at Rx",        cStr(adapter.output.jammer_at_rx_str)),
             ("Burnthrough",         cStr(adapter.output.burnthrough_range_str)),
             ("Optimum jammer BW",   cStr(adapter.output.optimum_bw_str)),
-            ("Duty cycle",          cStr(adapter.output.duty_cycle_str)),
+            ("Duty cycle",          cStr(adapter.output.duty_cycle_str))
         ]
     }
 
@@ -87,7 +87,7 @@ struct JammingView: View {
             Section("Shared") {
                 InputRow("Frequency", unit: "MHz", value: $frequency,
                          in: 0.1...100000, step: 1,
-                         error: adapter.frequencyError)  { adapter.setFrequency($0) }
+                         error: adapter.frequencyError) { adapter.setFrequency($0) }
                 InputRow("Rx height", unit: "m", value: $rxHeight,
                          in: 0.1...100000, step: 0.5, decimals: 1,
                          error: adapter.rxHeightError) { adapter.setRxHeight($0) }

@@ -164,7 +164,7 @@ The conventions below are scoped per target — the frontends are Swift, C#, and
 ### macOS Frontend (Swift / SwiftUI)
 - One adapter class per presenter domain under `frontend/macos/app/Adapters/` (`PropagationAdapter`, `LinkAdapter`, `ReceiverAdapter`, `JammingAdapter`, `LocationAdapter`, `RadarAdapter`, `DigitalAdapter`, `AntennaAdapter`), each an `ObservableObject` wrapping the C bridge (`bridge/ewcalc_bridge.h`) — Swift cannot import C++ directly. Adapters are `let` properties of `EwCalcStore` (a `@StateObject` owned by the app), so `Unmanaged.passUnretained` in the C callback is safe only as long as adapters keep that lifetime; switch to `passRetained` and clear the callback in `deinit` before giving any adapter a shorter lifetime.
 - Views live under `frontend/macos/app/Views/`.
-- Static analysis: SwiftLint is not yet installed or configured for this project (no `.swiftlint.yml`, tool not present on this machine) — open item, see PLAN.md.
+- Static analysis: `scripts/lint-macos.sh` runs SwiftLint (`--strict`, rules in `.swiftlint.yml`, repo root) against `frontend/macos/app/`. `colon`/`comma`/`comment_spacing` are disabled and `identifier_name`/`type_name` carry an `excluded` list — see comments in `.swiftlint.yml` for why (the codebase's deliberate vertical-alignment style, Doxygen-style `///<` comments, and short unit-abbreviation parameter names like `km`/`db` are intentional, not lint debt). If SwiftLint isn't on `PATH`, Homebrew has no bottle for this formula on macOS 13/Ventura — it would build the full Swift toolchain from source, which is impractically slow and can fail (see `fix-homebrew-source-build` skill). Prefer downloading the portable prebuilt binary from the official SwiftLint GitHub release (`portable_swiftlint.zip`) and placing it on `PATH` instead.
 
 ### Windows Frontend (C# / WinUI 3)
 - Interop with the native core goes through a C++/CLI adapter DLL, `ewpresenter.net` (`frontend/windows/ewcalc-winui/ewpresenter.net/`), with one adapter class per presenter domain (8 total: Antenna, Digital, Jamming, Link, Location, Propagation, Radar, Receiver).
@@ -175,7 +175,7 @@ The conventions below are scoped per target — the frontends are Swift, C#, and
 
 ### Linux Frontend (Qt6 / C++)
 - One page class per presenter domain under `frontend/linux/src/pages/`, hosted by `MainWindow` (sidebar `QListWidget` navigation + `QStackedWidget` page area).
-- Static analysis: `scripts/lint-linux.sh` runs cppcheck against `frontend/linux/`. Qt's macro-heavy style (`Q_OBJECT`, signal/slot syntax) does not require suppressions or a Qt-aware ruleset — verified clean. The script is currently report-only (no `--error-exitcode`) pending cleanup of a few pre-existing style findings — see PLAN.md.
+- Static analysis: `scripts/lint-linux.sh` runs cppcheck (`--error-exitcode=1`) against `frontend/linux/`. Qt's macro-heavy style (`Q_OBJECT`, signal/slot syntax) does not require suppressions or a Qt-aware ruleset — verified clean.
 
 ## Open Items
 See PLAN.md for current status, in-progress work, and open questions.

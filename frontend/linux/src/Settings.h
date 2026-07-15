@@ -26,7 +26,7 @@ public:
     QVariant value(const QString& group, const QString& key, const QVariant& defaultValue) const;
 
     /// Stores value for group/key and schedules a debounced write to disk.
-    void setValue(const QString& group, const QString& key, const QVariant& value);
+    void setValue(const QString& group, const QString& key, const QVariant& newValue);
 
     /// Writes any pending changes to disk immediately. Call before quitting.
     void flush();

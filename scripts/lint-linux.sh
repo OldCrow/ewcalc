@@ -9,11 +9,7 @@
 # would need a full Qt-aware compile_commands.json, which the frontend build
 # does not currently export; cppcheck alone catches genuine issues without it.
 #
-# Report-only for now (no --error-exitcode): a handful of pre-existing style
-# findings (shadowed parameter, raw loops cppcheck suggests as STL algorithms,
-# one uninitialized-member note) are tracked as a cleanup item in PLAN.md
-# rather than fixed here. Once cleared, add --error-exitcode=1 to gate CI/local
-# runs the same way scripts/lint-cpp.sh does.
+# Gated with --error-exitcode=1, matching scripts/lint-cpp.sh.
 #
 # Usage:
 #   ./scripts/lint-linux.sh
@@ -29,7 +25,7 @@ echo ""
 echo "==> Running cppcheck (frontend/linux)..."
 
 cppcheck --enable=warning,style,performance,portability \
-    --std=c++20 --language=c++ --inline-suppr \
+    --std=c++20 --language=c++ --inline-suppr --error-exitcode=1 \
     -I "$REPO_ROOT/libew/include" -I "$REPO_ROOT/ewpresenter/include" \
     -I "$REPO_ROOT/frontend/linux/src" \
     "$REPO_ROOT/frontend/linux/src"

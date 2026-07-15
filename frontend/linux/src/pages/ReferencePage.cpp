@@ -26,7 +26,7 @@ struct RefEntry {
 };
 
 struct RefSection {
-    const char* title;
+    const char* title = nullptr;
     std::initializer_list<RefEntry> entries;
 };
 

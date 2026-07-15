@@ -28,7 +28,7 @@ struct PropagationView: View {
             ("Regime",            cStr(adapter.output.regime_str)),
             ("Earth bulge (mid)", cStr(adapter.output.earth_bulge_str)),
             ("Radar horizon",     cStr(adapter.output.horizon_range_str)),
-            ("Diffraction loss",  cStr(adapter.output.diffraction_loss_str)),
+            ("Diffraction loss",  cStr(adapter.output.diffraction_loss_str))
         ]
     }
 

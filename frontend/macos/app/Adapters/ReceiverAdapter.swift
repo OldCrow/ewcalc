@@ -77,7 +77,7 @@ final class ReceiverAdapter: ObservableObject {
     var defaultRequiredSnr:  Double { ewp_receiver_required_snr(ref) }
     var defaultSecondOrder:  Double { ewp_receiver_second_order_ip(ref) }
     var defaultThirdOrder:   Double { ewp_receiver_third_order_ip(ref) }
-    var defaultAdcBits:      Int    { Int(ewp_receiver_adc_bits(ref)) }
+    var defaultAdcBits:      Int { Int(ewp_receiver_adc_bits(ref)) }
 
     var defaultStages: [EwpStageInput] {
         (0..<Int(ewp_receiver_stage_count(ref))).map { ewp_receiver_stage(ref, Int32($0)) }

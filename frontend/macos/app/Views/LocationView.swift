@@ -25,7 +25,7 @@ struct LocationView: View {
         [
             ("CEP (AOA)",  cStr(adapter.output.cep_aoa_str)),
             ("CEP (TDOA)", cStr(adapter.output.cep_tdoa_str)),
-            ("CEP (EEP)",  cStr(adapter.output.cep_eep_str)),
+            ("CEP (EEP)",  cStr(adapter.output.cep_eep_str))
         ]
     }
 

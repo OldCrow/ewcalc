@@ -27,7 +27,7 @@ struct DigitalView: View {
             ("Required SNR",   cStr(adapter.output.required_snr_for_eb_no_str)),
             ("Process gain",   cStr(adapter.output.process_gain_str)),
             ("Jamming margin", cStr(adapter.output.jamming_margin_str)),
-            ("Required J/S",   cStr(adapter.output.required_js_str)),
+            ("Required J/S",   cStr(adapter.output.required_js_str))
         ]
     }
 

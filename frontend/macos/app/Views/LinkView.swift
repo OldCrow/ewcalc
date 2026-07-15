@@ -33,7 +33,7 @@ struct LinkView: View {
             ("Fresnel crossover",cStr(adapter.output.fresnel_zone_str)),
             ("Regime",           cStr(adapter.output.regime_str)),
             ("Effective range",  cStr(adapter.output.effective_range_str)),
-            ("Range regime",     cStr(adapter.output.range_regime_str)),
+            ("Range regime",     cStr(adapter.output.range_regime_str))
         ]
     }
 

@@ -94,5 +94,5 @@ final class RadarAdapter: ObservableObject {
     var defaultBandwidth:    Double { ewp_radar_bandwidth(ref) }
     var defaultRequiredSnr:  Double { ewp_radar_required_snr(ref) }
     var defaultTimeBandwidth:Double { ewp_radar_time_bandwidth(ref) }
-    var defaultNumPulses:    Int    { Int(ewp_radar_num_pulses(ref)) }
+    var defaultNumPulses:    Int { Int(ewp_radar_num_pulses(ref)) }
 }

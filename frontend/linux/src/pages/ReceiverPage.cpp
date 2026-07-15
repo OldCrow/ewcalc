@@ -2,6 +2,9 @@
 #include "ReceiverPage.h"
 #include "PageUtils.h"
 
+#include <algorithm>
+#include <iterator>
+
 #include <QDoubleSpinBox>
 #include <QFormLayout>
 #include <QGroupBox>
@@ -241,8 +244,10 @@ void ReceiverPage::pushStages()
 {
     std::vector<ewpresenter::ReceiverPresenter::StageInput> stages;
     stages.reserve(stage_rows_.size());
-    for (const auto& r : stage_rows_)
-        stages.push_back({r.nf->value(), r.gain->value()});
+    std::transform(stage_rows_.begin(), stage_rows_.end(), std::back_inserter(stages),
+                    [](const auto& r) {
+                        return ewpresenter::ReceiverPresenter::StageInput{r.nf->value(), r.gain->value()};
+                    });
     presenter_.set_stages(stages);
     AppSettings::instance().setValue(kGroup, kStagesKey, stagesToVariant(stages));
     applyStageErrors();

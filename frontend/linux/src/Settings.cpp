@@ -75,11 +75,11 @@ QVariant AppSettings::value(const QString& group, const QString& key, const QVar
     return groupObj.value(key).toVariant();
 }
 
-void AppSettings::setValue(const QString& group, const QString& key, const QVariant& value)
+void AppSettings::setValue(const QString& group, const QString& key, const QVariant& newValue)
 {
     QJsonObject pages = root_.value(QStringLiteral("pages")).toObject();
     QJsonObject groupObj = pages.value(group).toObject();
-    groupObj.insert(key, QJsonValue::fromVariant(value));
+    groupObj.insert(key, QJsonValue::fromVariant(newValue));
     pages.insert(group, groupObj);
     root_.insert(QStringLiteral("pages"), pages);
     root_.insert(QStringLiteral("version"), kConfigVersion);

@@ -24,7 +24,7 @@ struct AntennaView: View {
             ("ERP",                 cStr(adapter.output.erp_str)),
             ("Beamwidth from gain", cStr(adapter.output.beamwidth_from_gain_str)),
             ("Gain from beamwidth", cStr(adapter.output.gain_from_beamwidth_str)),
-            ("Wavelength",          cStr(adapter.output.wavelength_str)),
+            ("Wavelength",          cStr(adapter.output.wavelength_str))
         ]
     }
 

@@ -32,7 +32,7 @@ struct ReceiverView: View {
             ("Sys. NF equiv.",   cStr(adapter.output.system_nf_str)),
             ("SFDR (2nd order)", cStr(adapter.output.sfdr2_str)),
             ("SFDR (3rd order)", cStr(adapter.output.sfdr3_str)),
-            ("Digital DR",       cStr(adapter.output.digital_dr_str)),
+            ("Digital DR",       cStr(adapter.output.digital_dr_str))
         ]
     }
 
@@ -191,6 +191,6 @@ private struct StageRow: View {
         }
         .help(error.isError ? error.message : "")
         .onChange(of: stage.noise_figure_db) { _ in onChange(stage) }
-        .onChange(of: stage.gain_db)          { _ in onChange(stage) }
+        .onChange(of: stage.gain_db) { _ in onChange(stage) }
     }
 }

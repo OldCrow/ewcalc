@@ -32,6 +32,8 @@
 #include <QVector>
 #include <QWidget>
 
+#include <numeric>
+
 /// One entry in a page's result-row registry: the visible label and the
 /// QLabel displaying its current formatted value.
 using ResultRowRegistry = QVector<QPair<QString, QLabel*>>;
@@ -240,9 +242,14 @@ inline QPushButton* addCopyResultsButton(const ResultRowRegistry& results)
     btn->setToolTip(QStringLiteral("Copy all result values on this page to the clipboard"));
     btn->setAccessibleName(QStringLiteral("Copy Results"));
     QObject::connect(btn, &QPushButton::clicked, btn, [results] {
-        QString text;
-        for (const auto& row : results)
-            text += row.first + QStringLiteral(": ") + row.second->text() + QStringLiteral("\n");
+        const QString text = std::accumulate(
+            results.begin(), results.end(), QString(),
+            [](QString acc, const auto& row) {
+                // std::move(acc) routes into QString's rvalue operator+ overload
+                // (in-place += + move-return) instead of the deep-copying lvalue
+                // overload, keeping this O(n) like the raw loop it replaced.
+                return std::move(acc) + row.first + QStringLiteral(": ") + row.second->text() + QStringLiteral("\n");
+            });
         QGuiApplication::clipboard()->setText(text);
     });
     return btn;

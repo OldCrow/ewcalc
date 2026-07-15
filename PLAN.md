@@ -13,9 +13,16 @@
   call the script).
 - cppcheck applies cleanly to the Linux Qt6 frontend with no suppressions
   or Qt-aware ruleset needed — verified against `frontend/linux/src`.
+- SwiftLint on this machine (macOS 13/Ventura) must come from the official
+  GitHub release's portable binary (`portable_swiftlint.zip`), not
+  `brew install swiftlint` — Homebrew has no bottle for this OS/formula
+  combination and falls back to building the entire Swift toolchain from
+  source, which is impractically slow and already failed once (exit 132).
+  See `fix-homebrew-source-build` skill and `.swiftlint.yml`/
+  `scripts/lint-macos.sh` (added 2026-07-15, closing #43).
 
 ## GitHub Synchronization [DERIVED]
-Last reconciled against live GitHub state: 2026-07-14.
+Last reconciled against live GitHub state: 2026-07-15.
 - GitHub is the collaborator-facing source for issues and milestones; this
   PLAN.md is the agent-facing durable project state. Keep both in sync.
 - When creating, closing, reopening, retitling, or moving a GitHub issue or
@@ -51,37 +58,32 @@ Same leaner convention as milestones above: closed items are a count only
 (fetch via `gh issue list --state closed --json number,title,milestone -q
 '.[] | select(.milestone == null)'` if ever needed); open items are fully
 itemized since they're actionable.
-- Open issues without milestone: 3 (#43, #44, #45) as of 2026-07-14.
-- Closed issues without milestone: 6 (#5, #6, #37, #38, #39, #41) as of 2026-07-14.
+- Open issues without milestone: 1 (#44) as of 2026-07-15.
+- Closed issues without milestone: 8 (#5, #6, #37, #38, #39, #41, #43, #45)
+  as of 2026-07-15.
+  - #43 CLOSED 2026-07-15 — SwiftLint set up as a standalone script
+    (`scripts/lint-macos.sh`, matching the `lint-cpp.sh`/`lint-linux.sh`
+    pattern) with a baseline `.swiftlint.yml`; codebase runs `--strict`
+    clean.
+  - #45 CLOSED 2026-07-15 — All four cppcheck baseline findings fixed;
+    `scripts/lint-linux.sh` gated with `--error-exitcode=1`.
 
 ## In Progress [OPEN]
-- SwiftLint setup for the macOS frontend (#43, noted 2026-07-14): not
-  installed on this machine, no `.swiftlint.yml`. Deferred — needs a
-  decision on whether it runs via a script or an Xcode Run Script build
-  phase, then installation (`brew install swiftlint`) and a baseline config.
 - Windows Roslyn analyzers / `dotnet format` (#44, noted 2026-07-14): no
   `.editorconfig`, no analyzers enabled in `ewcalc-winui.csproj`. Deferred
   — this needs to be set up and verified on an actual Windows/MSBuild
   toolchain; changes made blind from macOS (no dotnet/MSBuild available
   here) can't be compile-verified and risk breaking the Windows build.
-- `scripts/lint-linux.sh` is report-only (no `--error-exitcode`) pending
-  cleanup of pre-existing style findings (#45, see below). Add the flag
-  once those are cleared so it gates the same way `scripts/lint-cpp.sh` does.
+  Reassessed 2026-07-15 (Claude Code session, no Windows toolchain
+  available): explicitly skipped rather than attempted blind, per this
+  same constraint — see Next Steps.
 
 ## Known Gaps [OPEN]
-- `frontend/linux` cppcheck baseline (#45, 2026-07-14): a shadowed
-  parameter name in `Settings.cpp` (`setValue`'s `value` shadows the
-  `value()` getter), two `useStlAlgorithm` style suggestions
-  (`PageUtils.h`, `ReceiverPage.cpp`), and one `uninitMemberVarNoCtor`
-  note (`ReferencePage.cpp`'s `RefSection::title`). All are stylistic,
-  not correctness bugs; not fixed as part of this cleanup pass since it
-  was scoped to tooling setup, not frontend code changes.
 - WinUI3 colour-coding feature deferred due to x:Bind type-checking crash —
   not reattempted, root cause not fully resolved.
 
 ## Next Steps
-- #43 — Set up SwiftLint for the macOS frontend.
 - #44 — Set up Roslyn analyzers / `dotnet format` for the Windows frontend;
-  schedule the actual Windows-side verification.
-- #45 — Clear the `frontend/linux` cppcheck baseline findings, then add
-  `--error-exitcode=1` to `scripts/lint-linux.sh`.
+  requires an actual Windows/MSBuild toolchain to verify safely (blind
+  edits from macOS risk breaking the Windows build) — needs a session on
+  Windows, or at minimum CI verification before merging.
