@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace EwCalc.ViewModels;
 
-public sealed class JammingViewModel : INotifyPropertyChanged
+public sealed class JammingViewModel : INotifyPropertyChanged, IDisposable
 {
     private readonly JammingAdapter _adapter = new();
     private readonly DispatcherQueue _dispatcher;
@@ -15,7 +15,7 @@ public sealed class JammingViewModel : INotifyPropertyChanged
     private string _jsRatio = string.Empty,    _signalAtRx = string.Empty,
                    _jammerAtRx = string.Empty, _optimumBw = string.Empty,
                    _dutyCycle = string.Empty,  _burnthrough = string.Empty;
-    private bool _isValid = false;
+    private bool _isValid;
 
     public string JsRatio     { get => _jsRatio;     private set => Set(ref _jsRatio,     value); }
     public string SignalAtRx  { get => _signalAtRx;  private set => Set(ref _signalAtRx,  value); }
@@ -151,15 +151,17 @@ public sealed class JammingViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
     private void Set<T>(ref T f, T v, [CallerMemberName] string? n = null)
     { if (Equals(f, v)) return; f = v; PropertyChanged?.Invoke(this, new(n)); }
+
+    public void Dispose() => _adapter.Dispose();
 }
 
-public sealed class LocationViewModel : INotifyPropertyChanged
+public sealed class LocationViewModel : INotifyPropertyChanged, IDisposable
 {
     private readonly LocationAdapter _adapter = new();
     private readonly DispatcherQueue _dispatcher;
 
     private string _cepAoa = string.Empty, _cepEep = string.Empty, _cepTdoa = string.Empty;
-    private bool   _isValid = false;
+    private bool   _isValid;
 
     public string CepAoa  { get => _cepAoa;  private set => Set(ref _cepAoa,  value); }
     public string CepEep  { get => _cepEep;  private set => Set(ref _cepEep,  value); }
@@ -239,9 +241,11 @@ public sealed class LocationViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
     private void Set<T>(ref T f, T v, [CallerMemberName] string? n = null)
     { if (Equals(f, v)) return; f = v; PropertyChanged?.Invoke(this, new(n)); }
+
+    public void Dispose() => _adapter.Dispose();
 }
 
-public sealed class RadarViewModel : INotifyPropertyChanged
+public sealed class RadarViewModel : INotifyPropertyChanged, IDisposable
 {
     private readonly RadarAdapter _adapter = new();
     private readonly DispatcherQueue _dispatcher;
@@ -249,7 +253,7 @@ public sealed class RadarViewModel : INotifyPropertyChanged
     private string _maxRange = string.Empty, _twoWayLoss = string.Empty,
                    _pcGain = string.Empty,   _cohGain = string.Empty,
                    _lpiAdvantage = string.Empty, _targetRcs = string.Empty;
-    private bool _isValid = false;
+    private bool _isValid;
 
     public string MaxRange      { get => _maxRange;      private set => Set(ref _maxRange,      value); }
     public string TwoWayLoss    { get => _twoWayLoss;    private set => Set(ref _twoWayLoss,    value); }
@@ -358,4 +362,6 @@ public sealed class RadarViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
     private void Set<T>(ref T f, T v, [CallerMemberName] string? n = null)
     { if (Equals(f, v)) return; f = v; PropertyChanged?.Invoke(this, new(n)); }
+
+    public void Dispose() => _adapter.Dispose();
 }

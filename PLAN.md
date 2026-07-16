@@ -6,11 +6,10 @@
 - Core coding conventions: C++20, strict warnings-as-errors, no external
   deps in libew/ewpresenter, `libew::units` for all RF quantities.
 - Core static analysis is clang-tidy (`.clang-tidy`, repo root) + cppcheck,
-  matching the existing CI `static-analysis` job — not cppcheck+lizard.
-  Lizard is not used anywhere in this repo; `scripts/lint-cpp.sh` mirrors
-  CI exactly and is a standalone local convenience wrapper (CI's inline
-  commands in `ci.yml` are intentionally left as-is, not refactored to
-  call the script).
+  matching the existing CI `static-analysis` job — not lizard/CCN, which
+  isn't used anywhere in this repo. `scripts/lint-cpp.sh` mirrors CI exactly
+  and is a standalone local convenience wrapper (CI's inline commands in
+  `ci.yml` are intentionally left as-is, not refactored to call the script).
 - cppcheck applies cleanly to the Linux Qt6 frontend with no suppressions
   or Qt-aware ruleset needed — verified against `frontend/linux/src`.
 - SwiftLint on this machine (macOS 13/Ventura) must come from the official
@@ -20,9 +19,27 @@
   source, which is impractically slow and already failed once (exit 132).
   See `fix-homebrew-source-build` skill and `.swiftlint.yml`/
   `scripts/lint-macos.sh` (added 2026-07-15, closing #43).
+- Windows toolchain detection (`scripts/build-windows.ps1`,
+  `CMakeLists.txt`'s `EWCALC_BUILD_FRONTEND`) shares one `scripts/
+  find-msbuild.ps1` helper: vswhere first, falling back to a
+  version-sorted scan of the standard VS install roots. Needed because
+  vswhere's cached instance-state reader can lag the actual installer
+  version after an in-place VS upgrade (hit on this machine going from
+  VS2022 to VS 18 2026) and silently report no installations even though
+  VS is fully usable; the fallback is generic across VS version/edition,
+  not specific to this machine. See AGENTS.md's Windows toolchain setup.
+- Windows C# static analysis (`.editorconfig`, `EnableNETAnalyzers` in
+  `ewcalc-winui.csproj`, added 2026-07-16 closing #44) runs only
+  `dotnet format style <sln> --no-restore --verify-no-changes` in CI/
+  locally — never bare `dotnet format`/`dotnet format whitespace`
+  (collapses this codebase's deliberate vertical-alignment style) or
+  `dotnet format analyzers` (can't reliably resolve `ewpresenter.net`'s
+  C++/CLI types outside a full solution build). Roslyn analyzer
+  diagnostics are gated by the normal build instead. See AGENTS.md's
+  Windows Frontend conventions.
 
 ## GitHub Synchronization [DERIVED]
-Last reconciled against live GitHub state: 2026-07-15.
+Last reconciled against live GitHub state: 2026-07-16.
 - GitHub is the collaborator-facing source for issues and milestones; this
   PLAN.md is the agent-facing durable project state. Keep both in sync.
 - When creating, closing, reopening, retitling, or moving a GitHub issue or
@@ -58,32 +75,20 @@ Same leaner convention as milestones above: closed items are a count only
 (fetch via `gh issue list --state closed --json number,title,milestone -q
 '.[] | select(.milestone == null)'` if ever needed); open items are fully
 itemized since they're actionable.
-- Open issues without milestone: 1 (#44) as of 2026-07-15.
-- Closed issues without milestone: 8 (#5, #6, #37, #38, #39, #41, #43, #45)
-  as of 2026-07-15.
+- Open issues without milestone: 0 as of 2026-07-16.
+- Closed issues without milestone: 9 (#5, #6, #37, #38, #39, #41, #43, #44,
+  #45) as of 2026-07-16.
   - #43 CLOSED 2026-07-15 — SwiftLint set up as a standalone script
     (`scripts/lint-macos.sh`, matching the `lint-cpp.sh`/`lint-linux.sh`
     pattern) with a baseline `.swiftlint.yml`; codebase runs `--strict`
     clean.
+  - #44 CLOSED 2026-07-16 — Roslyn analyzers / `dotnet format` set up for
+    the Windows frontend, verified on an actual Windows/MSBuild toolchain
+    (VS 18 2026); baseline CA1805/CA1001 findings fixed; CI step added.
+    See Decided above for the exact `dotnet format` scoping.
   - #45 CLOSED 2026-07-15 — All four cppcheck baseline findings fixed;
     `scripts/lint-linux.sh` gated with `--error-exitcode=1`.
-
-## In Progress [OPEN]
-- Windows Roslyn analyzers / `dotnet format` (#44, noted 2026-07-14): no
-  `.editorconfig`, no analyzers enabled in `ewcalc-winui.csproj`. Deferred
-  — this needs to be set up and verified on an actual Windows/MSBuild
-  toolchain; changes made blind from macOS (no dotnet/MSBuild available
-  here) can't be compile-verified and risk breaking the Windows build.
-  Reassessed 2026-07-15 (Claude Code session, no Windows toolchain
-  available): explicitly skipped rather than attempted blind, per this
-  same constraint — see Next Steps.
 
 ## Known Gaps [OPEN]
 - WinUI3 colour-coding feature deferred due to x:Bind type-checking crash —
   not reattempted, root cause not fully resolved.
-
-## Next Steps
-- #44 — Set up Roslyn analyzers / `dotnet format` for the Windows frontend;
-  requires an actual Windows/MSBuild toolchain to verify safely (blind
-  edits from macOS risk breaking the Windows build) — needs a session on
-  Windows, or at minimum CI verification before merging.

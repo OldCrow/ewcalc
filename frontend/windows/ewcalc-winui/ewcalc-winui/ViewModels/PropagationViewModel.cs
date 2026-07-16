@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace EwCalc.ViewModels;
 
-public sealed class PropagationViewModel : INotifyPropertyChanged
+public sealed class PropagationViewModel : INotifyPropertyChanged, IDisposable
 {
     private readonly PropagationAdapter _adapter = new();
     private readonly DispatcherQueue _dispatcher;
@@ -17,7 +17,7 @@ public sealed class PropagationViewModel : INotifyPropertyChanged
                    _regime = string.Empty,
                    _earthBulge = string.Empty, _horizonRange = string.Empty,
                    _diffractionLoss = string.Empty;
-    private bool _isValid = false;
+    private bool _isValid;
 
     public string PathLoss        { get => _pathLoss;        private set => Set(ref _pathLoss,        value); }
     public string Fspl            { get => _fspl;            private set => Set(ref _fspl,            value); }
@@ -104,4 +104,6 @@ public sealed class PropagationViewModel : INotifyPropertyChanged
         field = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
+
+    public void Dispose() => _adapter.Dispose();
 }

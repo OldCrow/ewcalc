@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace EwCalc.ViewModels;
 
-public sealed class DigitalViewModel : INotifyPropertyChanged
+public sealed class DigitalViewModel : INotifyPropertyChanged, IDisposable
 {
     private readonly DigitalAdapter _adapter = new();
     private readonly DispatcherQueue _dispatcher;
@@ -15,7 +15,7 @@ public sealed class DigitalViewModel : INotifyPropertyChanged
     private string _ebNo = string.Empty,        _requiredSnrForEbNo = string.Empty,
                    _processGain = string.Empty,  _jammingMargin = string.Empty,
                    _requiredJs = string.Empty;
-    private bool _isValid = false;
+    private bool _isValid;
 
     public string EbNo               { get => _ebNo;               private set => Set(ref _ebNo,               value); }
     public string RequiredSnrForEbNo { get => _requiredSnrForEbNo; private set => Set(ref _requiredSnrForEbNo, value); }
@@ -96,4 +96,6 @@ public sealed class DigitalViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
     private void Set<T>(ref T f, T v, [CallerMemberName] string? n = null)
     { if (Equals(f, v)) return; f = v; PropertyChanged?.Invoke(this, new(n)); }
+
+    public void Dispose() => _adapter.Dispose();
 }

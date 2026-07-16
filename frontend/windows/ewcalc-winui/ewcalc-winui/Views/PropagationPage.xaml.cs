@@ -2,6 +2,7 @@
 using EwCalc.Helpers;
 using EwCalc.ViewModels;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 
 namespace EwCalc.Views;
 
@@ -16,6 +17,15 @@ public sealed partial class PropagationPage : Page
         TxHeightBox         .Setup(0.1,  100000.0);
         RxHeightBox         .Setup(0.1,  100000.0);
         ObstructionHeightBox.Setup(0.0,   10000.0);
+    }
+
+    // Frame.Navigate creates a fresh page (and ViewModel) each time this page is
+    // navigated to, so the outgoing instance's native adapter must be disposed
+    // deterministically here rather than relying on its finalizer.
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        ViewModel.Dispose();
+        base.OnNavigatedFrom(e);
     }
 
     private void DistanceBox_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs e)

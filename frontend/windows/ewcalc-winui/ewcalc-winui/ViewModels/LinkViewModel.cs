@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace EwCalc.ViewModels;
 
-public sealed class LinkViewModel : INotifyPropertyChanged
+public sealed class LinkViewModel : INotifyPropertyChanged, IDisposable
 {
     private readonly LinkAdapter _adapter = new();
     private readonly DispatcherQueue _dispatcher;
@@ -16,7 +16,7 @@ public sealed class LinkViewModel : INotifyPropertyChanged
                    _linkMargin = string.Empty,    _fresnelZone = string.Empty,
                    _regime = string.Empty,        _effectiveRange = string.Empty,
                    _rangeRegime = string.Empty;
-    private bool _isValid = false;
+    private bool _isValid;
 
     public string ReceivedPower  { get => _receivedPower;  private set => Set(ref _receivedPower,  value); }
     public string PathLoss       { get => _pathLoss;       private set => Set(ref _pathLoss,       value); }
@@ -115,4 +115,6 @@ public sealed class LinkViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
     private void Set<T>(ref T f, T v, [CallerMemberName] string? n = null)
     { if (Equals(f, v)) return; f = v; PropertyChanged?.Invoke(this, new(n)); }
+
+    public void Dispose() => _adapter.Dispose();
 }

@@ -1,0 +1,36 @@
+# .editorconfig
+# The [*.cs] section below governs the WinUI C# frontend
+# (frontend/windows/ewcalc-winui/ewcalc-winui/) — see issue #44 and
+# AGENTS.md's Windows Frontend conventions. Analyzers are enabled via
+# EnableNETAnalyzers/AnalysisLevel in ewcalc-winui.csproj; this file adds
+# formatting conventions and a couple of severity overrides on top of that.
+root = true
+
+[*.cs]
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+
+# Already the codebase's existing style — pinned here so tooling enforces it
+# rather than just documenting it. Using directives are sorted plain
+# alphabetically (System namespaces are NOT hoisted first) — see e.g.
+# ViewModels/PropagationViewModel.cs, where EwCalc/EwPresenterNet/Microsoft
+# come before System.
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_using_directive_placement = outside_namespace:warning
+dotnet_sort_system_directives_first = false
+
+# IMPORTANT: this codebase uses deliberate multi-space vertical alignment for
+# readability in property/field blocks (see e.g.
+# ViewModels/PropagationViewModel.cs) — the same convention already documented
+# for the macOS frontend's .swiftlint.yml. IDE0055 ("Fix formatting") is the
+# rule that would otherwise collapse that alignment to single-space, so it is
+# explicitly silenced rather than left to default severity. Local/CI
+# verification also intentionally runs only `dotnet format style`, never bare
+# `dotnet format` / `dotnet format whitespace` — see scripts/build-windows.ps1
+# and .github/workflows/ci.yml for the exact invocation and rationale.
+dotnet_diagnostic.IDE0055.severity = silent
+
+[*.{xaml,csproj,props,targets}]
+indent_style = space
+indent_size = 2

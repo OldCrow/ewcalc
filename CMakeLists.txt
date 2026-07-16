@@ -67,18 +67,21 @@ add_subdirectory(bridge)
 
 if(EWCALC_BUILD_FRONTEND)
     if(WIN32)
-        # Locate MSBuild via vswhere
-        set(VSWHERE "$ENV{ProgramFiles\(x86\)}/Microsoft Visual Studio/Installer/vswhere.exe")
-        if(EXISTS "${VSWHERE}")
-            execute_process(
-                COMMAND "${VSWHERE}" -latest
-                    -requires Microsoft.Component.MSBuild
-                    -property installationPath
-                OUTPUT_VARIABLE VS_INSTALL_PATH
-                OUTPUT_STRIP_TRAILING_WHITESPACE
-            )
-            set(MSBUILD "${VS_INSTALL_PATH}/MSBuild/Current/Bin/MSBuild.exe")
-        endif()
+        # Locate MSBuild via the shared scripts/find-msbuild.ps1 helper (also
+        # used by scripts/build-windows.ps1) so both share one lookup
+        # implementation. It tries vswhere first, falling back to a
+        # filesystem scan of the standard VS install roots — see that
+        # script for the full rationale (vswhere's cached instance-state
+        # reader can lag the actual installer version after an in-place VS
+        # upgrade and silently report no installations even though VS is
+        # fully usable).
+        execute_process(
+            COMMAND powershell -NoProfile -ExecutionPolicy Bypass -File
+                "${CMAKE_SOURCE_DIR}/scripts/find-msbuild.ps1"
+            OUTPUT_VARIABLE MSBUILD
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+            ERROR_QUIET
+        )
 
         if(EXISTS "${MSBUILD}")
             set(WIN_SOLUTION

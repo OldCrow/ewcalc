@@ -7,14 +7,14 @@ using System.Runtime.CompilerServices;
 
 namespace EwCalc.ViewModels;
 
-public sealed class AntennaViewModel : INotifyPropertyChanged
+public sealed class AntennaViewModel : INotifyPropertyChanged, IDisposable
 {
     private readonly AntennaAdapter _adapter = new();
     private readonly DispatcherQueue _dispatcher;
 
     private string _erp = string.Empty,               _beamwidthFromGain = string.Empty,
                    _gainFromBeamwidth = string.Empty, _wavelength = string.Empty;
-    private bool _isValid = false;
+    private bool _isValid;
 
     public string Erp               { get => _erp;               private set => Set(ref _erp,               value); }
     public string BeamwidthFromGain { get => _beamwidthFromGain; private set => Set(ref _beamwidthFromGain, value); }
@@ -87,4 +87,6 @@ public sealed class AntennaViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
     private void Set<T>(ref T f, T v, [CallerMemberName] string? n = null)
     { if (Equals(f, v)) return; f = v; PropertyChanged?.Invoke(this, new(n)); }
+
+    public void Dispose() => _adapter.Dispose();
 }

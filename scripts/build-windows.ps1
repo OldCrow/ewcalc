@@ -34,21 +34,18 @@ $Solution = Join-Path $SolutionDir "ewcalc-winui.sln"
 # ── 1. Locate MSBuild ────────────────────────────────────────────────────────
 Write-Host "`n==> Locating MSBuild..." -ForegroundColor Cyan
 
-$VsWhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-if (-not (Test-Path $VsWhere)) {
-    throw "vswhere.exe not found — is Visual Studio installed?"
-}
-
-$VsInstallPath = & $VsWhere -latest -requires Microsoft.Component.MSBuild -property installationPath
-if (-not $VsInstallPath) {
-    throw "No Visual Studio installation with MSBuild found."
-}
-
-$MSBuild = Join-Path $VsInstallPath "MSBuild\Current\Bin\MSBuild.exe"
-if (-not (Test-Path $MSBuild)) {
-    throw "MSBuild.exe not found at: $MSBuild"
+# See find-msbuild.ps1 for the vswhere + filesystem-scan fallback rationale;
+# CMakeLists.txt's EWCALC_BUILD_FRONTEND target shares the same helper.
+$MSBuild = & (Join-Path $PSScriptRoot "find-msbuild.ps1")
+if ($LASTEXITCODE -ne 0 -or -not $MSBuild) {
+    throw "MSBuild.exe not found via vswhere or filesystem scan — is Visual Studio installed with the C++ and .NET desktop workloads?"
 }
 Write-Host "    MSBuild: $MSBuild" -ForegroundColor Gray
+
+# Reused below for makeappx/signtool lookup during MSIX packaging. Guarded at
+# each call site since it may be missing or stale (see find-msbuild.ps1) —
+# both call sites already fall back to well-known Windows SDK paths.
+$VsWhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
 
 # ── 2. CMake: build libew + ewpresenter ─────────────────────────────────────
 Write-Host "`n==> Building native libraries (CMake)..." -ForegroundColor Cyan
@@ -99,7 +96,10 @@ if ($Package) {
     }
 
     # MakeAppx is part of the Windows SDK
-    $MakeAppx = & $VsWhere -latest -find "**\makeappx.exe" | Select-Object -First 1
+    $MakeAppx = $null
+    if (Test-Path $VsWhere) {
+        $MakeAppx = & $VsWhere -latest -prerelease -find "**\makeappx.exe" | Select-Object -First 1
+    }
     if (-not $MakeAppx) {
         # Fall back to well-known Windows SDK path
         $SdkBin = "C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64\makeappx.exe"
@@ -132,7 +132,10 @@ if ($Package) {
             throw "-Sign requires -CertThumbprint <thumbprint>"
         }
 
-        $SignTool = & $VsWhere -latest -find "**\signtool.exe" | Select-Object -First 1
+        $SignTool = $null
+        if (Test-Path $VsWhere) {
+            $SignTool = & $VsWhere -latest -prerelease -find "**\signtool.exe" | Select-Object -First 1
+        }
         if (-not $SignTool) {
             $SignTool = "C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64\signtool.exe"
             if (-not (Test-Path $SignTool)) { throw "signtool.exe not found" }

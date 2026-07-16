@@ -48,6 +48,24 @@ jobs:
         shell: pwsh
         run: scripts\build-windows.ps1 -Config Release -Package
 
+      # C# style/analyzer gate for the WinUI frontend (see .editorconfig and
+      # ewcalc-winui.csproj's EnableNETAnalyzers/AnalysisLevel — issue #44).
+      # Scoped to `dotnet format style` only, targeting the .sln with
+      # --no-restore right after the build above:
+      #   - `style` (IDE code-style analyzers) is what's reliable here; the
+      #     `analyzers` subcommand and standalone-csproj invocation cannot
+      #     resolve the C++/CLI ewpresenter.net project reference's types
+      #     outside a full solution build context and fail with spurious
+      #     CS0246 errors.
+      #   - Bare `dotnet format` / `dotnet format whitespace` are never run:
+      #     the codebase uses deliberate multi-space vertical alignment (see
+      #     .editorconfig) that the raw whitespace formatter would collapse.
+      #   - Roslyn analyzer diagnostics (CA rules) are already gated by the
+      #     build step above, not by dotnet format.
+      - name: C# style check (dotnet format)
+        shell: pwsh
+        run: dotnet format style frontend\windows\ewcalc-winui\ewcalc-winui.sln --no-restore --verify-no-changes
+
       - name: Run tests
         shell: pwsh
         run: |

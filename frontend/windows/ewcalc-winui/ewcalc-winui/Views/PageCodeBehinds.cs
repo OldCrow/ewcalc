@@ -3,6 +3,7 @@
 using EwCalc.Helpers;
 using EwCalc.ViewModels;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 using Windows.ApplicationModel.DataTransfer;
 
 namespace EwCalc.Views;
@@ -20,6 +21,15 @@ public sealed partial class LinkPage : Page
         RxHeightBox     .Setup(0.1,  100000.0);
         RxGainBox       .Setup(-30.0,    60.0);
         RxSensitivityBox.Setup(-200.0,    0.0);
+    }
+
+    // Frame.Navigate creates a fresh page (and ViewModel) each time this page is
+    // navigated to, so the outgoing instance's native adapter must be disposed
+    // deterministically here rather than relying on its finalizer.
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        ViewModel.Dispose();
+        base.OnNavigatedFrom(e);
     }
 
     private void TxPowerBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)       { if (!double.IsNaN(e.NewValue)) ViewModel.SetTxPower(e.NewValue);       }
@@ -55,6 +65,12 @@ public sealed partial class JammingPage : Page
         JsThresholdBox .Setup(-30.0,    30.0);
     }
 
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        ViewModel.Dispose();
+        base.OnNavigatedFrom(e);
+    }
+
     private void SignalErpBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)     { if (!double.IsNaN(e.NewValue)) ViewModel.SetSignalErp(e.NewValue);       }
     private void JammerErpBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)     { if (!double.IsNaN(e.NewValue)) ViewModel.SetJammerErp(e.NewValue);       }
     private void SignalDistBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)    { if (!double.IsNaN(e.NewValue)) ViewModel.SetSignalToRxDist(e.NewValue);  }
@@ -86,6 +102,12 @@ public sealed partial class LocationPage : Page
         SemiMinorBox   .Setup(0.001, 1000.0);
     }
 
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        ViewModel.Dispose();
+        base.OnNavigatedFrom(e);
+    }
+
     private void BearingErrorBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)  { if (!double.IsNaN(e.NewValue)) ViewModel.SetRmsBearingError(e.NewValue); }
     private void AoaRangeBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)      { if (!double.IsNaN(e.NewValue)) ViewModel.SetAoaRange(e.NewValue);        }
     private void RmsTimeErrorBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)  { if (!double.IsNaN(e.NewValue)) ViewModel.SetRmsTimeError(e.NewValue);    }
@@ -114,6 +136,12 @@ public sealed partial class RadarPage : Page
         NumPulsesBox  .Setup(1.0,   100000.0);
     }
 
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        ViewModel.Dispose();
+        base.OnNavigatedFrom(e);
+    }
+
     private void TxPowerBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)    { if (!double.IsNaN(e.NewValue)) ViewModel.SetTxPower(e.NewValue);           }
     private void GainBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)       { if (!double.IsNaN(e.NewValue)) ViewModel.SetAntennaGain(e.NewValue);       }
     private void FrequencyBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)  { if (!double.IsNaN(e.NewValue)) ViewModel.SetFrequency(e.NewValue);         }
@@ -140,6 +168,12 @@ public sealed partial class ReceiverPage : Page
         Ip2Box        .Setup(-50.0,    100.0);
         Ip3Box        .Setup(-50.0,    100.0);
         AdcBitsBox    .Setup(1.0,       64.0);
+    }
+
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        ViewModel.Dispose();
+        base.OnNavigatedFrom(e);
     }
 
     private void BandwidthBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)   { if (!double.IsNaN(e.NewValue)) ViewModel.SetBandwidth(e.NewValue);     }
@@ -171,6 +205,12 @@ public sealed partial class DigitalPage : Page
         ImplLossBox    .Setup(0.0,       10.0);
     }
 
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        ViewModel.Dispose();
+        base.OnNavigatedFrom(e);
+    }
+
     private void DataRateBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)     { if (!double.IsNaN(e.NewValue)) ViewModel.SetDataRate(e.NewValue);           }
     private void BandwidthBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)    { if (!double.IsNaN(e.NewValue)) ViewModel.SetBandwidth(e.NewValue);          }
     private void SnrBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)          { if (!double.IsNaN(e.NewValue)) ViewModel.SetSnr(e.NewValue);                }
@@ -199,6 +239,12 @@ public sealed partial class AntennaPage : Page
         ElBeamwidthBox.Setup(0.1,    360.0);
         TxPowerBox    .Setup(-30.0,  100.0);
         FrequencyBox  .Setup(0.1, 100000.0);
+    }
+
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        ViewModel.Dispose();
+        base.OnNavigatedFrom(e);
     }
 
     private void GainBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)        { if (!double.IsNaN(e.NewValue)) ViewModel.SetGain(e.NewValue);        }

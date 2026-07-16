@@ -71,7 +71,7 @@ public sealed class StageItemViewModel : INotifyPropertyChanged
     }
 }
 
-public sealed class ReceiverViewModel : INotifyPropertyChanged
+public sealed class ReceiverViewModel : INotifyPropertyChanged, IDisposable
 {
     private readonly ReceiverAdapter _adapter = new();
     private readonly DispatcherQueue _dispatcher;
@@ -80,7 +80,7 @@ public sealed class ReceiverViewModel : INotifyPropertyChanged
                    _sfdr2 = string.Empty,       _sfdr3 = string.Empty,
                    _digitalDr = string.Empty,   _systemNoiseTemp = string.Empty,
                    _systemNf = string.Empty;
-    private bool _isValid = false;
+    private bool _isValid;
 
     public string Sensitivity    { get => _sensitivity;    private set => Set(ref _sensitivity,    value); }
     public string CascadedNf     { get => _cascadedNf;     private set => Set(ref _cascadedNf,     value); }
@@ -218,6 +218,8 @@ public sealed class ReceiverViewModel : INotifyPropertyChanged
         field = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
+
+    public void Dispose() => _adapter.Dispose();
 }
 
 internal sealed class RelayCommand(Action execute) : ICommand
