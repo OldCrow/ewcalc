@@ -6,6 +6,40 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [v1.0.2] — 2026-07-16
+
+Static-analysis parity release: SwiftLint (macOS), a cppcheck baseline
+sweep (Linux), and Roslyn analyzers/`dotnet format` (Windows) now match
+the existing clang-tidy+cppcheck coverage for the C++ core, closing out
+#43, #44, and #45.
+
+### Added
+
+- macOS: SwiftLint wired up as a standalone script (`scripts/lint-macos.sh`,
+  matching the `lint-cpp.sh`/`lint-linux.sh` pattern) with a baseline
+  `.swiftlint.yml`; codebase runs `--strict` clean (#43).
+- Windows: root `.editorconfig`, `EnableNETAnalyzers`/`AnalysisLevel`/
+  `EnforceCodeStyleInBuild` in `ewcalc-winui.csproj`, and a
+  `dotnet format style` CI verification step (#44).
+- `scripts/find-msbuild.ps1`: a shared MSBuild-location helper (vswhere
+  first, falling back to a version-sorted filesystem scan of the standard
+  VS install roots) used by both `scripts/build-windows.ps1` and
+  `CMakeLists.txt`'s `EWCALC_BUILD_FRONTEND` target.
+
+### Fixed
+
+- Linux: all four cppcheck baseline findings resolved;
+  `scripts/lint-linux.sh` now gated with `--error-exitcode=1` (#45).
+- Windows: all 8 ViewModels now implement `IDisposable` and dispose their
+  native `ewpresenter.net` adapter on page navigate-away (via
+  `OnNavigatedFrom`) instead of relying on the GC finalizer; also removes
+  redundant default-value field initializers flagged by the new analyzers
+  (#44).
+- MSBuild detection (`scripts/build-windows.ps1`,
+  `EWCALC_BUILD_FRONTEND`) no longer fails silently when `vswhere.exe`'s
+  cached instance-state reader lags the actual installer version after an
+  in-place Visual Studio upgrade.
+
 ## [v1.0.1] — 2026-07-12
 
 Icon/packaging patch release: Windows MSIX and Linux app icons were both
@@ -237,7 +271,9 @@ Architecture review remediation.
 - Antenna calculator across all platforms.
 - Knife-edge diffraction and SNR↔Eb/N₀ wired up.
 
-[Unreleased]: ../../compare/v1.0.0...HEAD
+[Unreleased]: ../../compare/v1.0.2...HEAD
+[v1.0.2]: ../../releases/tag/v1.0.2
+[v1.0.1]: ../../releases/tag/v1.0.1
 [v1.0.0]: ../../releases/tag/v1.0.0
 [v0.9.0]: ../../releases/tag/v0.9.0
 [v0.8.0]: ../../releases/tag/v0.8.0

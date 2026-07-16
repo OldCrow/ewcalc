@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 # Configured as a standalone CMake project (see scripts/build-linux.sh), so it
 # does not inherit the root CMakeLists.txt's project(ewcalc VERSION ...) —
 # keep this version in sync with that one and with CHANGELOG.md.
-project(ewcalc-linux VERSION 1.0.1 LANGUAGES CXX)
+project(ewcalc-linux VERSION 1.0.2 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
