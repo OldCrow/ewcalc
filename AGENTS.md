@@ -16,6 +16,11 @@ unset LDFLAGS CPPFLAGS CC CXX
 
 The `scripts/build-macos.sh` script does this automatically; only needed if invoking CMake directly.
 
+## Agent Workflow
+
+- When reviewing repository state or "what's changed" (e.g., syncing after time away, catching up on a branch), start with `git diff --stat` and `git log` rather than reading full file contents. Read complete files only for items you've determined are directly relevant to the task at hand.
+- For any subagent expected to run more than ~30 minutes, structure its brief to report interim progress at natural milestones (e.g., after each major deliverable) rather than running silently to a single final report.
+
 ## Build Commands
 
 The default CMake build produces `libew`, `ewpresenter`, and the test suite. To include a platform GUI target, set `EWCALC_BUILD_FRONTEND=ON` or use the platform build scripts instead (see Platform-Specific Notes).
