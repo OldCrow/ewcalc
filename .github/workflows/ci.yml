@@ -129,15 +129,16 @@ jobs:
           APPLE_TEAM_ID:         ${{ secrets.APPLE_TEAM_ID }}
           APPLE_APP_SPECIFIC_PWD: ${{ secrets.APPLE_APP_SPECIFIC_PWD }}
         run: |
-          KEYCHAIN=$RUNNER_TEMP/ewcalc-signing.keychain-db
-          security create-keychain -p "" $KEYCHAIN
-          security set-keychain-settings -lut 21600 $KEYCHAIN
-          security unlock-keychain -p "" $KEYCHAIN
+          KEYCHAIN="$RUNNER_TEMP/ewcalc-signing.keychain-db"
+          security create-keychain -p "" "$KEYCHAIN"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN"
+          security unlock-keychain -p "" "$KEYCHAIN"
           echo "$MACOS_CERTIFICATE" | base64 --decode > /tmp/cert.p12
           security import /tmp/cert.p12 -P "$MACOS_CERTIFICATE_PWD" \
-              -A -t cert -f pkcs12 -k $KEYCHAIN
-          security set-key-partition-list -S apple-tool:,apple: -s -k "" $KEYCHAIN
-          security list-keychain -d user -s $KEYCHAIN $(security list-keychains -d user | tr -d '"')
+              -A -t cert -f pkcs12 -k "$KEYCHAIN"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "" "$KEYCHAIN"
+          # shellcheck disable=SC2046  # intentional word-splitting: each existing keychain must be a separate arg
+          security list-keychain -d user -s "$KEYCHAIN" $(security list-keychains -d user | tr -d '"')
           rm /tmp/cert.p12
           xcrun notarytool store-credentials ewcalc-notarytool \
               --apple-id "$APPLE_ID" \
