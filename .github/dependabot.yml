@@ -14,3 +14,12 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    # codeql-action's sub-actions (init, analyze, ...) MUST run on the same
+    # version -- a mismatched pair fails with "Loaded a configuration file for
+    # version X, but running version Y". Dependabot otherwise opens a separate
+    # PR per sub-action, and each is individually un-mergeable. Grouping keeps
+    # them in one PR that bumps the whole set together.
+    groups:
+      codeql-action:
+        patterns:
+          - "github/codeql-action*"
