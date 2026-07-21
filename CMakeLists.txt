@@ -21,7 +21,7 @@ endif()
 # ── Options ──────────────────────────────────────────────────────────────
 option(EWCALC_BUILD_TESTS    "Build libew test suite"           ON)
 option(EWCALC_BUILD_FRONTEND "Build platform GUI frontend"      OFF)
-option(EWCALC_FRONTEND_CONFIG "MSBuild configuration (Windows)" "Release")
+set(EWCALC_FRONTEND_CONFIG "Release" CACHE STRING "MSBuild configuration (Windows)")
 option(EWCALC_BUILD_COVERAGE "Instrument libew/ewpresenter/tests for code coverage (GCC+gcov or Clang+llvm-cov)" OFF)
 
 # ── Test support ───────────────────────────────────────────────────────────
