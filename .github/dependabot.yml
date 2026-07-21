@@ -1,13 +1,16 @@
-# Keeps GitHub Actions versions and the WinUI frontend's NuGet packages
-# fresh; zero runner cost, weekly cadence.
+# Keeps GitHub Actions versions fresh; zero runner cost, weekly cadence.
+#
+# No nuget entry for the WinUI frontend (frontend/windows/ewcalc-winui/):
+# Dependabot's NuGet updater does `dotnet restore` on ewcalc-winui.csproj
+# in a Linux container, which fails resolving the C++/CLI adapter project
+# (ewpresenter.net) -- it needs $(VCTargetsPath)/Microsoft.Cpp.Default.props,
+# only present with a real Visual Studio C++ toolchain. Confirmed via an
+# actual failed Dependabot run (dependency_file_not_found). Matches the
+# same "can't resolve ewpresenter.net's C++/CLI types outside a full
+# solution build context" constraint AGENTS.md documents for dotnet format.
 version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /
-    schedule:
-      interval: weekly
-
-  - package-ecosystem: nuget
-    directory: /frontend/windows/ewcalc-winui/ewcalc-winui
     schedule:
       interval: weekly
