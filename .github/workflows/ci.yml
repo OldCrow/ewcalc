@@ -4,9 +4,16 @@ on:
   push:
     branches: [ main ]
     tags:     [ 'v*' ]          # trigger packaging on version tags
+    paths-ignore: ['**.md', 'docs/**', 'LICENSE']
   pull_request:
     branches: [ main ]
+    paths-ignore: ['**.md', 'docs/**', 'LICENSE']
   workflow_dispatch:             # allow manual runs to test secrets / packaging
+  # Monthly canary: catches drift with no code change to trigger it (runner
+  # image rolls, Qt/WinAppSDK NuGet updates). Packaging/signing steps stay
+  # skipped (gated on tag refs), so this only re-validates build+test.
+  schedule:
+    - cron: '55 3 1 * *'
 
 # Restrict GITHUB_TOKEN to read-only by default; the release job overrides to write.
 permissions:
@@ -23,14 +30,19 @@ jobs:
   build-windows:
     name: Windows (WinUI 3)
     runs-on: windows-2022
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
       - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v2
-
+        uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce # v2.0.0
       # Windows App SDK runtime is only needed to RUN the app, not to build it.
       # The NuGet packages (Microsoft.WindowsAppSDK etc.) are restored by
       # MSBuild /restore and supply all build-time headers and libs.
@@ -73,9 +85,15 @@ jobs:
           cmake --build build --config Release
           ctest --test-dir build --build-config Release --output-on-failure
 
+      - name: Attest MSIX provenance
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
+        with:
+          subject-path: build/msix/*.msix
+
       - name: Upload MSIX
         if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: ewcalc-windows-msix
           path: build/msix/*.msix
@@ -85,11 +103,17 @@ jobs:
   build-macos:
     name: macOS (SwiftUI) — Phase 4
     runs-on: macos-14           # Apple Silicon runner
+    timeout-minutes: 40         # notarization (tag/dispatch runs) can be slow
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
       - name: Install CMake
         run: brew install cmake
 
@@ -134,9 +158,15 @@ jobs:
           cmake --build build --config Release --parallel
           ctest --test-dir build --build-config Release --output-on-failure
 
+      - name: Attest DMG provenance
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
+        with:
+          subject-path: build/pkg/*.dmg
+
       - name: Upload DMG
         if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: ewcalc-macos-dmg
           path: build/pkg/*.dmg
@@ -156,11 +186,17 @@ jobs:
   build-linux:
     name: Linux (Qt6) — Phase 5
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -187,9 +223,15 @@ jobs:
           mv linuxdeploy-plugin-qt-x86_64.AppImage /usr/local/bin/linuxdeploy-plugin-qt
           bash scripts/build-linux.sh --config Release --package appimage
 
+      - name: Attest AppImage provenance
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
+        with:
+          subject-path: build/pkg/*.AppImage
+
       - name: Upload AppImage
         if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: ewcalc-linux-appimage
           path: build/pkg/*.AppImage
@@ -210,9 +252,15 @@ jobs:
           dpkg-deb --contents "$DEB" | grep -q 'usr/share/icons/hicolor/256x256/apps/ewcalc\.png'
           dpkg-deb --contents "$DEB" | grep -q 'usr/bin/ewcalc'
 
+      - name: Attest .deb provenance
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
+        with:
+          subject-path: build/pkg/*.deb
+
       - name: Upload .deb
         if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: ewcalc-linux-deb
           path: build/pkg/*.deb
@@ -222,11 +270,13 @@ jobs:
   sanitizers:
     name: Sanitizers (ASan/UBSan)
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -253,11 +303,13 @@ jobs:
   static-analysis:
     name: Static analysis (clang-tidy + cppcheck)
     runs-on: ubuntu-24.04
+    timeout-minutes: 15
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -287,11 +339,13 @@ jobs:
   docs:
     name: API docs (Doxygen)
     runs-on: ubuntu-24.04
+    timeout-minutes: 10
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
       - name: Install Doxygen
         run: |
           sudo apt-get update
@@ -301,7 +355,7 @@ jobs:
         run: doxygen Doxyfile
 
       - name: Upload docs artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: ewcalc-api-docs
           path: docs/html/
@@ -311,6 +365,7 @@ jobs:
   coverage:
     name: Code coverage
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
     env:
       # Initial baseline: measured ~79.5% line coverage for libew+ewpresenter
       # (Clang/llvm-cov, macOS validation build). Set a few points below the
@@ -320,8 +375,9 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -387,7 +443,7 @@ jobs:
           EOF
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: ewcalc-coverage-html
           path: coverage-html/
@@ -399,17 +455,18 @@ jobs:
     needs: [ build-windows, build-macos, build-linux ]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
 
     steps:
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           path: artifacts/
 
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           name: ewcalc ${{ github.ref_name }}
           draft: true             # review before publishing
