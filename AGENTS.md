@@ -8,7 +8,7 @@ This file provides project-scoped guidance to AI agents and contributors working
 
 ## Session Start
 
-**Requires CMake ≥ 3.20.** Before building, confirm the toolchain for this platform (see Platform-Specific Notes) is installed. On macOS, always unset Homebrew LLVM environment overrides first — Homebrew sets `CC`/`CXX`/`LDFLAGS` to Homebrew LLVM's libc++, which is ABI-incompatible with the macOS 13.0 deployment target used by the macOS frontend:
+**Requires CMake ≥ 3.25.** Before building, confirm the toolchain for this platform (see Platform-Specific Notes) is installed. On macOS, always unset Homebrew LLVM environment overrides first — Homebrew sets `CC`/`CXX`/`LDFLAGS` to Homebrew LLVM's libc++, which is ABI-incompatible with the macOS 13.0 deployment target used by the macOS frontend:
 
 ```bash
 unset LDFLAGS CPPFLAGS CC CXX
@@ -27,15 +27,17 @@ The default CMake build produces `libew`, `ewpresenter`, and the test suite. To 
 
 ### Build (core libs + presenter harness)
 ```bash
-# macOS/Linux (single-config generators: specify build type at configure time)
-cmake -B build -DCMAKE_BUILD_TYPE=Release
+# macOS/Linux
+cmake --preset release
 cmake --build build --parallel
 ```
 ```powershell
 # Windows (multi-config generator: build type set at build time)
-cmake -B build -G "Visual Studio 17 2022" -A x64
+cmake --preset release -G "Visual Studio 17 2022" -A x64
 cmake --build build --config Release --parallel
 ```
+Manual alternative (no preset): `cmake -B build -DCMAKE_BUILD_TYPE=Release` (macOS/Linux) or
+`cmake -B build -G "Visual Studio 17 2022" -A x64` (Windows).
 
 ### Run all tests
 ```
@@ -64,13 +66,31 @@ scripts\build-windows.ps1 [-Config Release]
 
 ### CMake options
 - `EWCALC_BUILD_TESTS` (default `ON`) — enables the test suite. The platform build scripts pass `-DEWCALC_BUILD_TESTS=OFF` for speed; re-enable for test runs.
-- `EWCALC_BUILD_FRONTEND` (default `OFF`) — builds the native GUI target via CMake; normally driven by the platform scripts instead.
+- `EWCALC_BUILD_FRONTEND` (default `OFF`) — builds the native GUI target via CMake; normally driven by the platform scripts instead. The `frontend` preset (below) sets it `ON` in its own binary dir.
+
+### CMake standard
+
+Full rules: `CMAKE-HOUSE-STYLE.md` in the Development root on dev machines (master copy, not checked in); this section is self-sufficient for this repo. ewcalc deviations
+(app, not a library — subprojects are never embedded elsewhere):
+- Unconditional `-Werror` on ewcalc's own targets (no `PROJECT_IS_TOP_LEVEL`
+  gate needed — there is no embedding consumer).
+- Directory-scope coverage flags before `add_subdirectory` for
+  `EWCALC_BUILD_COVERAGE`, deliberately — cross-cutting instrumentation, not
+  per-target build config.
+- No `install()` — platform scripts (`scripts/build-*.sh`/`.ps1`) own
+  packaging (`.dmg`/`.deb`/`.rpm`/AppImage/`.msix`), not CMake.
+- Presets (`CMakePresets.json`, schema 6, min CMake 3.25): `release` →
+  `build/`, `debug` → `build-debug/`, `rel-with-debug` →
+  `build-relwithdebinfo/`, plus the `frontend` extra → `build-frontend/`
+  (Release + `EWCALC_BUILD_FRONTEND=ON`, own binaryDir so toggling the
+  frontend never leaves a sticky cache variable in `build/`). No `generator`
+  field in any preset — pass `-G` explicitly on Windows.
 
 ## Platform-Specific Notes
 
 - **macOS:** Xcode (with Swift and SwiftUI support) from the Mac App Store. Minimum deployment target: macOS 13.0. For the core libs and tests only (no GUI), Xcode Command Line Tools (`xcode-select --install`) are sufficient.
-- **Linux:** Qt6 base development libraries (`apt install qt6-base-dev` on Debian/Ubuntu, or equivalent). A C++20 compiler (GCC ≥ 12 or Clang ≥ 14) and CMake ≥ 3.20 are also required. The Qt6 frontend is feature-complete for the current calculator set.
-- **Windows:** Visual Studio 2022 or newer (e.g. VS 18 2026) with the C++ and Windows App SDK workloads (for WinUI 3 support). Install from https://aka.ms/vs/17/release/vs_buildtools.exe, `winget install Microsoft.VisualStudio.2022.Community`, or `choco install visualstudio2022`. CMake ≥ 3.20: `winget install Kitware.CMake` or `choco install cmake`.
+- **Linux:** Qt6 base development libraries (`apt install qt6-base-dev` on Debian/Ubuntu, or equivalent). A C++20 compiler (GCC ≥ 12 or Clang ≥ 14) and CMake ≥ 3.25 are also required. The Qt6 frontend is feature-complete for the current calculator set.
+- **Windows:** Visual Studio 2022 or newer (e.g. VS 18 2026) with the C++ and Windows App SDK workloads (for WinUI 3 support). Install from https://aka.ms/vs/17/release/vs_buildtools.exe, `winget install Microsoft.VisualStudio.2022.Community`, or `choco install visualstudio2022`. CMake ≥ 3.25: `winget install Kitware.CMake` or `choco install cmake`.
 
 ### Windows toolchain setup
 
@@ -100,7 +120,7 @@ foreach ($line in $envVars) {
   - Build Tools default path: `C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\`
   - Full VS default path: `C:\Program Files\Microsoft Visual Studio\2022\{edition}\`
 - **Smart App Control must be Off** (Windows Security → App & Browser Control → SAC settings). SAC blocks locally compiled executables and cannot be re-enabled without a Windows reset.
-- CMake ≥ 3.20: https://cmake.org/download/, `winget install Kitware.CMake`, or `choco install cmake`.
+- CMake ≥ 3.25: https://cmake.org/download/, `winget install Kitware.CMake`, or `choco install cmake`.
 
 ## Architecture
 

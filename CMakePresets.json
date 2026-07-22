@@ -1,0 +1,47 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 25,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "release",
+      "displayName": "Release",
+      "description": "Optimised release build.",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "debug",
+      "displayName": "Debug",
+      "description": "Debug build with full symbols.",
+      "binaryDir": "${sourceDir}/build-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "rel-with-debug",
+      "displayName": "Release with Debug Info",
+      "description": "Optimised build with debug symbols — preferred for profiling.",
+      "binaryDir": "${sourceDir}/build-relwithdebinfo",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "frontend",
+      "displayName": "Frontend",
+      "description": "Release build with the native GUI frontend enabled.",
+      "binaryDir": "${sourceDir}/build-frontend",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "EWCALC_BUILD_FRONTEND": "ON"
+      }
+    }
+  ]
+}

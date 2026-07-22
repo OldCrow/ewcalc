@@ -65,7 +65,7 @@ A console harness (`ewpresenter_harness`) exercises all presenters against defau
 
 ## Building
 
-Requires CMake ≥ 3.20 and a C++20 compiler. See [`AGENTS.md`](AGENTS.md#platform-specific-notes)
+Requires CMake ≥ 3.25 and a C++20 compiler. See [`AGENTS.md`](AGENTS.md#platform-specific-notes)
 for per-platform toolchain prerequisites (Xcode, Qt6, Visual Studio, etc.).
 
 ### Core libraries and tests
