@@ -92,3 +92,11 @@ itemized since they're actionable.
 ## Known Gaps [OPEN]
 - WinUI3 colour-coding feature deferred due to x:Bind type-checking crash —
   not reattempted, root cause not fully resolved.
+
+## Build-Stack Standardization (2026-07-23) [DERIVED]
+Cross-repo effort tracked in `~/Development/BUILD-STANDARDIZATION-PLAN.md`.
+Commits: `25d1114` (`EWCALC_FRONTEND_CONFIG` fixed from a BOOL `option()` to
+a `CACHE STRING`), `c8494fa` (CMakePresets.json schema 6, CMake minimum
+bumped to 3.25, `frontend` extra preset). No Phase 3 work touched this repo
+(app, not a library — see AGENTS.md CMake-standard deviations); its
+AGENTS.md section checked post-Phase-3 and is still accurate.
