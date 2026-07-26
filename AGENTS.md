@@ -205,5 +205,44 @@ The conventions below are scoped per target — the frontends are Swift, C#, and
 - One page class per presenter domain under `frontend/linux/src/pages/`, hosted by `MainWindow` (sidebar `QListWidget` navigation + `QStackedWidget` page area).
 - Static analysis: `scripts/lint-linux.sh` runs cppcheck (`--error-exitcode=1`) against `frontend/linux/`. Qt's macro-heavy style (`Q_OBJECT`, signal/slot syntax) does not require suppressions or a Qt-aware ruleset — verified clean.
 
+## CI / Validation
+
+Fleet-wide workflow rules (runner budget, bounded parallelism, ISA hazards on
+hosted runners, action pinning):
+[CI House Style](https://github.com/OldCrow/standards/blob/main/CI-HOUSE-STYLE.md).
+
+Three workflows: `ci.yml`, `codeql.yml`, and `lint-workflows.yml`
+(actionlint + zizmor at `--min-severity medium`, on workflow-file changes
+only).
+
+`ci.yml` runs one job per frontend — Windows/WinUI 3, macOS/SwiftUI on
+Apple Silicon, Linux/Qt6 — plus sanitizers (ASan/UBSan), static analysis
+(clang-tidy + cppcheck), Doxygen docs, and coverage. The frontend jobs each
+own their platform's packaging: MSIX, signed+notarized DMG, AppImage, and
+.deb, each with a build-provenance attestation.
+
+Gating to keep straight when editing:
+
+- **Packaging, signing, and attestation steps are gated on tag refs**, and
+  `release` additionally needs all three frontend builds. A push or PR
+  builds and tests only. This is a deliberate trade against the
+  runner-budget rule — packaging regressions surface at release time, and
+  `workflow_dispatch` is the escape hatch for testing them early.
+- The monthly `schedule` canary catches drift with no code change to
+  trigger it (runner images, Qt and WinAppSDK NuGet updates). Because
+  packaging is tag-gated, scheduled runs re-validate build+test and never
+  publish or sign.
+- `permissions: contents: read` is workflow-wide; only `release` elevates
+  to `contents: write`.
+
+Unlike its five siblings, this repo carries GitHub **rulesets** (verified
+2026-07-26): "Protect main" on the default branch requires status checks
+and blocks force-push and deletion, and "Protect release tags" blocks
+force-push and deletion on `v*`. The `main` ruleset has a user bypass actor
+set to `always`, so a direct push reports `Bypassed rule violations ... 3 of
+3 required status checks are expected` and **lands without those checks
+having run**. Check a real CI run after pushing; the push's own success is
+not evidence.
+
 ## Open Items
 See PLAN.md for current status, in-progress work, and open questions.
