@@ -94,7 +94,8 @@ itemized since they're actionable.
   not reattempted, root cause not fully resolved.
 
 ## Build-Stack Standardization (2026-07-23) [DERIVED]
-Cross-repo effort tracked in `~/Development/BUILD-STANDARDIZATION-PLAN.md`.
+Cross-repo effort tracked in the fleet standards repo
+([record](https://github.com/OldCrow/standards/blob/main/records/BUILD-STANDARDIZATION-PLAN.md)).
 Commits: `25d1114` (`EWCALC_FRONTEND_CONFIG` fixed from a BOOL `option()` to
 a `CACHE STRING`), `c8494fa` (CMakePresets.json schema 6, CMake minimum
 bumped to 3.25, `frontend` extra preset). No Phase 3 work touched this repo

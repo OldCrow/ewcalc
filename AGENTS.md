@@ -70,7 +70,8 @@ scripts\build-windows.ps1 [-Config Release]
 
 ### CMake standard
 
-Full rules: `CMAKE-HOUSE-STYLE.md` in the Development root on dev machines (master copy, not checked in); this section is self-sufficient for this repo. ewcalc deviations
+Full rules: [CMake House Style](https://github.com/OldCrow/standards/blob/main/CMAKE-HOUSE-STYLE.md)
+in the fleet standards repo; this section is self-sufficient for this repo. ewcalc deviations
 (app, not a library — subprojects are never embedded elsewhere):
 - Unconditional `-Werror` on ewcalc's own targets (no `PROJECT_IS_TOP_LEVEL`
   gate needed — there is no embedding consumer).
