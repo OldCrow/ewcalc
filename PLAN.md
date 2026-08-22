@@ -39,7 +39,7 @@
   Windows Frontend conventions.
 
 ## GitHub Synchronization [DERIVED]
-Last reconciled against live GitHub state: 2026-07-16.
+Last reconciled against live GitHub state: 2026-08-22.
 - GitHub is the collaborator-facing source for issues and milestones; this
   PLAN.md is the agent-facing durable project state. Keep both in sync.
 - When creating, closing, reopening, retitling, or moving a GitHub issue or
@@ -54,6 +54,8 @@ Last reconciled against live GitHub state: 2026-07-16.
   wasted effort in one direction and a rubber stamp in the other. Update
   the "Last reconciled" date whenever this section is actually re-checked,
   whether or not anything had drifted.
+- Dependabot PRs #60 (codeql-action group) and #61 (actionlint 1.73.2) were
+  green and clean as of 2026-08-22, awaiting merge.
 
 ## GitHub Milestones [DERIVED]
 Closed milestones are summarized only (title + counts) since their issue
@@ -75,9 +77,9 @@ Same leaner convention as milestones above: closed items are a count only
 (fetch via `gh issue list --state closed --json number,title,milestone -q
 '.[] | select(.milestone == null)'` if ever needed); open items are fully
 itemized since they're actionable.
-- Open issues without milestone: 0 as of 2026-07-16.
+- Open issues without milestone: 0 as of 2026-08-22.
 - Closed issues without milestone: 9 (#5, #6, #37, #38, #39, #41, #43, #44,
-  #45) as of 2026-07-16.
+  #45) as of 2026-08-22.
   - #43 CLOSED 2026-07-15 — SwiftLint set up as a standalone script
     (`scripts/lint-macos.sh`, matching the `lint-cpp.sh`/`lint-linux.sh`
     pattern) with a baseline `.swiftlint.yml`; codebase runs `--strict`
@@ -91,7 +93,8 @@ itemized since they're actionable.
 
 ## Known Gaps [OPEN]
 - WinUI3 colour-coding feature deferred due to x:Bind type-checking crash —
-  not reattempted, root cause not fully resolved.
+  not reattempted, root cause not fully resolved. [OPEN, file issue] — no
+  GitHub issue yet; file one so the backlog has one source of truth.
 
 ## Build-Stack Standardization (2026-07-23) [DERIVED]
 Cross-repo effort tracked in the fleet standards repo

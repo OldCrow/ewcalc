@@ -32,7 +32,9 @@ cmake --preset release
 cmake --build build --parallel
 ```
 ```powershell
-# Windows (multi-config generator: build type set at build time)
+# Windows (multi-config generator: build type set at build time).
+# Match -G to the installed VS: "Visual Studio 17 2022" or "Visual Studio 18 2026".
+# scripts/find-msbuild.ps1 locates MSBuild only; it does not pick the generator.
 cmake --preset release -G "Visual Studio 17 2022" -A x64
 cmake --build build --config Release --parallel
 ```
@@ -202,7 +204,7 @@ The conventions below are scoped per target — the frontends are Swift, C#, and
 - Known limitation: dependency-property-based colour-coding caused startup crashes attributed to WinUI3's x:Bind type-checking; this feature is deferred, not implemented. Do not attempt it without addressing that first.
 
 ### Linux Frontend (Qt6 / C++)
-- One page class per presenter domain under `frontend/linux/src/pages/`, hosted by `MainWindow` (sidebar `QListWidget` navigation + `QStackedWidget` page area).
+- One page class per presenter domain under `frontend/linux/src/pages/` (plus `ReferencePage`, a static help page with no presenter), hosted by `MainWindow` (sidebar `QListWidget` navigation + `QStackedWidget` page area).
 - Static analysis: `scripts/lint-linux.sh` runs cppcheck (`--error-exitcode=1`) against `frontend/linux/`. Qt's macro-heavy style (`Q_OBJECT`, signal/slot syntax) does not require suppressions or a Qt-aware ruleset — verified clean.
 
 ## CI / Validation
