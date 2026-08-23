@@ -41,7 +41,7 @@
   Windows Frontend conventions.
 
 ## GitHub Synchronization [DERIVED]
-Last reconciled against live GitHub state: 2026-08-23.
+Last reconciled against live GitHub state: 2026-08-23 (#62 filed).
 - GitHub is the collaborator-facing source for issues and milestones; this
   PLAN.md is the agent-facing durable project state. Keep both in sync.
 - When creating, closing, reopening, retitling, or moving a GitHub issue or
@@ -95,8 +95,8 @@ itemized since they're actionable.
 
 ## Known Gaps [OPEN]
 - WinUI3 colour-coding feature deferred due to x:Bind type-checking crash —
-  not reattempted, root cause not fully resolved. [OPEN, file issue] — no
-  GitHub issue yet; file one so the backlog has one source of truth.
+  not reattempted, root cause not fully resolved. Filed as #62 (2026-08-23);
+  the issue is now the source of truth, this entry just points at it.
 - `EWCALC_BUILD_FRONTEND=ON` is a no-op on macOS: the APPLE branch of the
   top-level CMakeLists only prints "macOS frontend (Phase 4) — not yet
   implemented", although `frontend/macos/CMakeLists.txt` exists and
