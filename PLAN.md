@@ -12,11 +12,13 @@
   `ci.yml` are intentionally left as-is, not refactored to call the script).
 - cppcheck applies cleanly to the Linux Qt6 frontend with no suppressions
   or Qt-aware ruleset needed — verified against `frontend/linux/src`.
-- SwiftLint on this machine (macOS 13/Ventura) must come from the official
+- SwiftLint on the Ventura (macOS 13) machine must come from the official
   GitHub release's portable binary (`portable_swiftlint.zip`), not
-  `brew install swiftlint` — Homebrew has no bottle for this OS/formula
+  `brew install swiftlint` — Homebrew has no bottle for that OS/formula
   combination and falls back to building the entire Swift toolchain from
   source, which is impractically slow and already failed once (exit 132).
+  This is Ventura-specific: on current macOS (e.g. the Tahoe M1 box) the
+  formula is bottled and `brew install swiftlint` is fine.
   See `fix-homebrew-source-build` skill and `.swiftlint.yml`/
   `scripts/lint-macos.sh` (added 2026-07-15, closing #43).
 - Windows toolchain detection (`scripts/build-windows.ps1`,
@@ -39,7 +41,7 @@
   Windows Frontend conventions.
 
 ## GitHub Synchronization [DERIVED]
-Last reconciled against live GitHub state: 2026-08-22.
+Last reconciled against live GitHub state: 2026-08-23.
 - GitHub is the collaborator-facing source for issues and milestones; this
   PLAN.md is the agent-facing durable project state. Keep both in sync.
 - When creating, closing, reopening, retitling, or moving a GitHub issue or
@@ -54,8 +56,8 @@ Last reconciled against live GitHub state: 2026-08-22.
   wasted effort in one direction and a rubber stamp in the other. Update
   the "Last reconciled" date whenever this section is actually re-checked,
   whether or not anything had drifted.
-- Dependabot PRs #60 (codeql-action group) and #61 (actionlint 1.73.2) were
-  green and clean as of 2026-08-22, awaiting merge.
+- Dependabot PRs #60 (codeql-action group) and #61 (actionlint 1.73.2)
+  merged 2026-08-23 (ac33d41, daa89c5); no Dependabot PRs outstanding.
 
 ## GitHub Milestones [DERIVED]
 Closed milestones are summarized only (title + counts) since their issue
@@ -95,6 +97,13 @@ itemized since they're actionable.
 - WinUI3 colour-coding feature deferred due to x:Bind type-checking crash —
   not reattempted, root cause not fully resolved. [OPEN, file issue] — no
   GitHub issue yet; file one so the backlog has one source of truth.
+- `EWCALC_BUILD_FRONTEND=ON` is a no-op on macOS: the APPLE branch of the
+  top-level CMakeLists only prints "macOS frontend (Phase 4) — not yet
+  implemented", although `frontend/macos/CMakeLists.txt` exists and
+  `scripts/build-macos.sh` builds it (Xcode generator + signing vars).
+  Either wire the option to the real frontend or say in AGENTS.md that
+  the script is the only supported path. [OPEN, found 2026-08-23 during
+  an M1 verification pass; core+tests 13/13 green on macOS Tahoe]
 
 ## Build-Stack Standardization (2026-07-23) [DERIVED]
 Cross-repo effort tracked in the fleet standards repo
