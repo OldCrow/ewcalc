@@ -85,8 +85,13 @@ Open milestones are fully itemized here since they reflect actionable state.
     2026-09-05).
   - #68 OPEN — Citation sweep: resolve all [OPEN: page/eq TBD] pins
     (books needed: EW101, EW102, EW103 — no EW104 citations exist) and add
-    source attribution to the 7 uncited libew headers. Physical-book task:
-    EW101's index maps formulas to original EW101 column publications.
+    source attribution to the 7 uncited libew headers. PAUSED 2026-09-06
+    pending the provenance-framing decision below. First verified pin,
+    digital dynamic range, moved the citation to EW103 Ch. 4 Sec 4.5.3
+    p. 110 (EW102 was wrong) and exposed a formula discrepancy — see next
+    entry. Cross-referencing pins to the original JED columns was ruled
+    out (too diffuse: chapters span several monthly columns); cite the
+    books directly.
   - #69 OPEN — Radar detection statistics calculator (Pd/Pfa, Swerling,
     fluctuation loss, dwell/hits-per-scan).
   - #70 OPEN — Doppler & ambiguity calculator (Doppler shift, blind speeds,
@@ -116,6 +121,24 @@ itemized since they're actionable.
     See Decided above for the exact `dotnet format` scoping.
   - #45 CLOSED 2026-07-15 — All four cppcheck baseline findings fixed;
     `scripts/lint-linux.sh` gated with `--error-exitcode=1`.
+
+## Provenance Framing & Formula Fidelity [OPEN]
+- Found 2026-09-06 while pinning #68's first citation: Adamy EW103
+  Sec 4.5.3 p. 110 gives digital dynamic range as DR = 20·log10(2^n)
+  = 6.02·n, while libew's digital_dynamic_range() returns the full-scale
+  sinusoid SQNR 6.02·n + 1.76 (Walden). Both are standard; they differ by
+  a constant 1.76 dB and answer slightly different questions. Left as-is
+  for now — no code or doc change made.
+- The discrepancy raises the real question: is ewcalc (a) Adamy's
+  formulas, faithfully, or (b) "inspired by Adamy's EW 101 series in JED,
+  implementing the standard formulas, audited against the EW 101 books
+  and other authoritative resources"? The answer decides what a citation
+  claims (source-of-implementation vs. cross-reference) and whether
+  book-vs-code deltas are bugs or documented differences. Undecided.
+- Follow-up once framing is settled: a full formula-fidelity sweep of all
+  libew functions against the books (superset of #68's citation sweep;
+  the two should probably merge or sequence framing → fidelity sweep →
+  citation pins).
 
 ## Known Gaps [OPEN]
 - WinUI3 colour-coding feature deferred due to x:Bind type-checking crash —
