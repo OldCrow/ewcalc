@@ -65,6 +65,7 @@ struct AntennaView: View {
                 ResultRow("Wavelength",          cStr(adapter.output.wavelength_str),
                           help: "Free-space wavelength at the given frequency")
             }
+            DiagramSection(names: ["antenna-beamwidth"])
         }
         .formStyle(.grouped)
         .navigationTitle("Antenna")

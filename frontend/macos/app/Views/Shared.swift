@@ -173,6 +173,46 @@ struct ResultRow: View {
     }
 }
 
+// ── DiagramSection (#72) ─────────────────────────────────────────────────────
+
+/// A collapsible "Geometry" section showing a page's reference diagrams.
+/// The PNGs are bundled 2x renders (1280 px wide, transparent background,
+/// legible in light and dark appearance); each renders at up to its natural
+/// 640 pt logical width, shrinking with the pane and never upscaling.
+struct DiagramSection: View {
+    /// Bundle resource base names (no extension), in display order.
+    let names: [String]
+    @State private var expanded = false
+
+    var body: some View {
+        Section {
+            DisclosureGroup("Geometry", isExpanded: $expanded) {
+                ForEach(names, id: \.self) { name in
+                    DiagramImage(name: name)
+                }
+            }
+            .help("Reference diagrams for the geometry used by this page")
+        }
+    }
+}
+
+/// One diagram image, loaded by reference from the app bundle's Resources.
+private struct DiagramImage: View {
+    let name: String
+
+    var body: some View {
+        if let path = Bundle.main.path(forResource: name, ofType: "png"),
+           let nsImage = NSImage(byReferencingFile: path) {
+            Image(nsImage: nsImage)
+                .resizable()
+                .scaledToFit()
+                .frame(maxWidth: 640)                     // natural 1x size of the 2x PNG
+                .frame(maxWidth: .infinity, alignment: .center)
+                .accessibilityLabel(name.replacingOccurrences(of: "-", with: " "))
+        }
+    }
+}
+
 // ── CopyResultsButton (#21) ──────────────────────────────────────────────────────
 
 /// Toolbar button that copies a calculator page's results to the general

@@ -1,5 +1,6 @@
 // JammingPage.cpp
 #include "JammingPage.h"
+#include "DiagramUtils.h"
 #include "PageUtils.h"
 
 #include <QDoubleSpinBox>
@@ -94,6 +95,9 @@ JammingPage::JammingPage(QWidget* parent)
     vbox->addWidget(cmGroup);
     vbox->addWidget(jsGroup);
     vbox->addWidget(pbGroup);
+    vbox->addWidget(makeDiagramGroup({
+        QStringLiteral(":/diagrams/jamming-self-protection.png"),
+        QStringLiteral(":/diagrams/jamming-stand-off.png")}));
     vbox->addStretch();
 
     auto* scroll = new QScrollArea(this);

@@ -74,6 +74,7 @@ struct PropagationView: View {
                 ResultRow("Diffraction loss",   cStr(adapter.output.diffraction_loss_str),
                           help: "Knife-edge diffraction loss at path midpoint using the Fresnel diffraction parameter")
             }
+            DiagramSection(names: ["prop-two-ray", "prop-knife-edge", "prop-horizon-bulge"])
         }
         .formStyle(.grouped)
         .navigationTitle("Propagation")

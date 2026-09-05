@@ -1,5 +1,6 @@
 // ReceiverPage.cpp
 #include "ReceiverPage.h"
+#include "DiagramUtils.h"
 #include "PageUtils.h"
 
 #include <algorithm>
@@ -111,6 +112,8 @@ ReceiverPage::ReceiverPage(QWidget* parent)
     vbox->addWidget(inGroup);
     vbox->addWidget(stageGroup);
     vbox->addWidget(outGroup);
+    vbox->addWidget(makeDiagramGroup({
+        QStringLiteral(":/diagrams/receiver-cascade.png")}));
     vbox->addStretch();
 
     auto* scroll = new QScrollArea(this);

@@ -1,5 +1,6 @@
 // LocationPage.cpp
 #include "LocationPage.h"
+#include "DiagramUtils.h"
 #include "PageUtils.h"
 
 #include <QDoubleSpinBox>
@@ -69,6 +70,9 @@ LocationPage::LocationPage(QWidget* parent)
     vbox->addWidget(tdoaGroup);
     vbox->addWidget(eepGroup);
     vbox->addWidget(outGroup);
+    vbox->addWidget(makeDiagramGroup({
+        QStringLiteral(":/diagrams/loc-aoa-cep.png"),
+        QStringLiteral(":/diagrams/loc-eep-cep.png")}));
     vbox->addStretch();
 
     auto* scroll = new QScrollArea(this);

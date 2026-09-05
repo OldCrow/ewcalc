@@ -1,5 +1,6 @@
 // DopplerPage.cpp
 #include "DopplerPage.h"
+#include "DiagramUtils.h"
 #include "PageUtils.h"
 
 #include <QDoubleSpinBox>
@@ -71,6 +72,8 @@ DopplerPage::DopplerPage(QWidget* parent)
     auto* vbox    = new QVBoxLayout(content);
     vbox->addWidget(dopGroup);
     vbox->addWidget(resGroup);
+    vbox->addWidget(makeDiagramGroup({
+        QStringLiteral(":/diagrams/resolution-cell.png")}));
     vbox->addStretch();
 
     auto* scroll = new QScrollArea(this);

@@ -104,7 +104,26 @@ set(ICON_FILE "${CMAKE_CURRENT_SOURCE_DIR}/app/Assets/AppIcon.icns")
 set_source_files_properties(${ICON_FILE} PROPERTIES
     MACOSX_PACKAGE_LOCATION Resources)
 
-add_executable(ewcalc MACOSX_BUNDLE ${SWIFT_SOURCES} ${ICON_FILE})
+# Geometry diagram PNGs (issue #72) — bundled into Contents/Resources;
+# DiagramSection (app/Views/Shared.swift) loads them by base name from
+# Bundle.main. 2x renders (1280 px wide), shown at up to 640 pt.
+set(DIAGRAM_PNG_DIR "${EWCALC_SRC_ROOT}/assets/diagrams/png")
+set(DIAGRAM_PNGS
+    "${DIAGRAM_PNG_DIR}/antenna-beamwidth.png"
+    "${DIAGRAM_PNG_DIR}/jamming-self-protection.png"
+    "${DIAGRAM_PNG_DIR}/jamming-stand-off.png"
+    "${DIAGRAM_PNG_DIR}/loc-aoa-cep.png"
+    "${DIAGRAM_PNG_DIR}/loc-eep-cep.png"
+    "${DIAGRAM_PNG_DIR}/prop-horizon-bulge.png"
+    "${DIAGRAM_PNG_DIR}/prop-knife-edge.png"
+    "${DIAGRAM_PNG_DIR}/prop-two-ray.png"
+    "${DIAGRAM_PNG_DIR}/receiver-cascade.png"
+    "${DIAGRAM_PNG_DIR}/resolution-cell.png"
+)
+set_source_files_properties(${DIAGRAM_PNGS} PROPERTIES
+    MACOSX_PACKAGE_LOCATION Resources)
+
+add_executable(ewcalc MACOSX_BUNDLE ${SWIFT_SOURCES} ${ICON_FILE} ${DIAGRAM_PNGS})
 
 # libc++ must be explicitly listed: the bridge is a pre-built IMPORTED
 # static library; Xcode's Swift target does not automatically add C++

@@ -83,6 +83,7 @@ struct DopplerView: View {
                 ResultRow("Cross-range (el)",  cStr(adapter.output.cross_range_el_str),
                           help: "Elevation cross-range cell: range × elevation beamwidth")
             }
+            DiagramSection(names: ["resolution-cell"])
         }
         .formStyle(.grouped)
         .navigationTitle("Doppler & Resolution")

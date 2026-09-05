@@ -114,6 +114,7 @@ struct JammingView: View {
                 ResultRow("Duty cycle",        cStr(adapter.output.duty_cycle_str),
                           help: "Fraction of the hopping band covered by the optimum jamming bandwidth")
             }
+            DiagramSection(names: ["jamming-self-protection", "jamming-stand-off"])
         }
         .formStyle(.grouped)
         .navigationTitle("Jamming")

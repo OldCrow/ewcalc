@@ -110,8 +110,13 @@ Open milestones are fully itemized here since they reflect actionable state.
     test-guarded), range and az/el cross-range resolution. Core +
     bridge + macOS and Linux panes done; REMAINING (same as #69): the
     WinUI3 panes, and CI's Linux job gating the Qt6 pages.
-  - #72 OPEN — Static geometry diagrams (shared SVG/PNG asset set, stock
-    image controls; live plotting explicitly out of scope).
+  - #72 OPEN — Static geometry diagrams: ten SVG masters + PNG pipeline
+    shipped 2026-09-06 (7126d8c); style ratified by user (nose-up
+    crossing aircraft tracks). Wiring into macOS/Linux panes in
+    progress; REMAINING after that: WinUI3 wiring (Windows machine).
+    Tier-3 panes deliberately have no diagram (Link/Radar/Digital/
+    Detection are log-domain arithmetic; a Pd/SNR curve family would
+    cross into the fenced-off plotting scope).
   - Reference material: R&S "Radar and electronic warfare" eGuide
     (Christian Wolff) used 2026-09-05 as the coverage checklist for #69–#72.
 

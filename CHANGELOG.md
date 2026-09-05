@@ -8,6 +8,15 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Static geometry diagrams (#72): ten hand-authored SVG masters with a
+  checked-in PNG render pipeline (`scripts/render-diagrams.sh`),
+  displayed as a "Geometry" section on the Jamming (self-protection and
+  stand-off geometry), Propagation (two-ray, knife-edge, horizon/earth
+  bulge), Location (AOA error fan, EEP vs CEP), Doppler & Resolution
+  (resolution cell), Receiver (Friis cascade), and Antenna
+  (beamwidth/gain trade) panes on macOS and Linux (Windows pending).
+  One theme-neutral transparent asset set; live plotting remains
+  explicitly out of scope.
 - Doppler & Resolution calculator (#70, #71): two-way Doppler shift,
   unambiguous range, first blind speed and unambiguous velocity (the
   Doppler dilemma product R_u·v_u = c·λ/8 is test-guarded), range

@@ -27,7 +27,7 @@
 
   <!-- d1 / d2 -->
   <text x="195" y="248" text-anchor="middle" fill="#808080">d&#8321;</text>
-  <text x="440" y="248" text-anchor="middle" fill="#808080">d&#8322;</text>
+  <text x="500" y="252" text-anchor="middle" fill="#808080">d&#8322;</text>
 
   <!-- Takeaway -->
   <text x="320" y="36" text-anchor="middle" fill="#808080">The horizon limits how far antennas see; between them, the earth itself</text>

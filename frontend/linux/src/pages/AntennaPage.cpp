@@ -1,5 +1,6 @@
 // AntennaPage.cpp
 #include "AntennaPage.h"
+#include "DiagramUtils.h"
 #include "PageUtils.h"
 
 #include <QDoubleSpinBox>
@@ -59,6 +60,8 @@ AntennaPage::AntennaPage(QWidget* parent)
     auto* vbox    = new QVBoxLayout(content);
     vbox->addWidget(inGroup);
     vbox->addWidget(outGroup);
+    vbox->addWidget(makeDiagramGroup({
+        QStringLiteral(":/diagrams/antenna-beamwidth.png")}));
     vbox->addStretch();
 
     auto* scroll = new QScrollArea(this);

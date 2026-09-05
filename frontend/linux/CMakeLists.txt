@@ -66,6 +66,7 @@ set(SOURCES
     src/pages/AntennaPage.cpp
     src/pages/ReferencePage.cpp
     resources/icons.qrc
+    resources/diagrams.qrc
 )
 
 add_executable(ewcalc ${SOURCES})

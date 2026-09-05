@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/diagrams">
+        <file alias="antenna-beamwidth.png">../../../assets/diagrams/png/antenna-beamwidth.png</file>
+        <file alias="jamming-self-protection.png">../../../assets/diagrams/png/jamming-self-protection.png</file>
+        <file alias="jamming-stand-off.png">../../../assets/diagrams/png/jamming-stand-off.png</file>
+        <file alias="loc-aoa-cep.png">../../../assets/diagrams/png/loc-aoa-cep.png</file>
+        <file alias="loc-eep-cep.png">../../../assets/diagrams/png/loc-eep-cep.png</file>
+        <file alias="prop-horizon-bulge.png">../../../assets/diagrams/png/prop-horizon-bulge.png</file>
+        <file alias="prop-knife-edge.png">../../../assets/diagrams/png/prop-knife-edge.png</file>
+        <file alias="prop-two-ray.png">../../../assets/diagrams/png/prop-two-ray.png</file>
+        <file alias="receiver-cascade.png">../../../assets/diagrams/png/receiver-cascade.png</file>
+        <file alias="resolution-cell.png">../../../assets/diagrams/png/resolution-cell.png</file>
+    </qresource>
+</RCC>

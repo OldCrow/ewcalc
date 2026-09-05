@@ -1,5 +1,6 @@
 // PropagationPage.cpp
 #include "PropagationPage.h"
+#include "DiagramUtils.h"
 #include "PageUtils.h"
 
 #include <QDoubleSpinBox>
@@ -64,6 +65,10 @@ PropagationPage::PropagationPage(QWidget* parent)
     auto* vbox    = new QVBoxLayout(content);
     vbox->addWidget(inGroup);
     vbox->addWidget(outGroup);
+    vbox->addWidget(makeDiagramGroup({
+        QStringLiteral(":/diagrams/prop-two-ray.png"),
+        QStringLiteral(":/diagrams/prop-knife-edge.png"),
+        QStringLiteral(":/diagrams/prop-horizon-bulge.png")}));
     vbox->addStretch();
 
     auto* scroll = new QScrollArea(this);

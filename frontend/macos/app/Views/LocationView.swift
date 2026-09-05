@@ -72,6 +72,7 @@ struct LocationView: View {
                 ResultRow("CEP (EEP)",  cStr(adapter.output.cep_eep_str),
                           help: "CEP from an Elliptical Error Probable: 0.59 × (semi-major + semi-minor)")
             }
+            DiagramSection(names: ["loc-aoa-cep", "loc-eep-cep"])
         }
         .formStyle(.grouped)
         .navigationTitle("Location")

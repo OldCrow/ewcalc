@@ -118,6 +118,7 @@ struct ReceiverView: View {
                 ResultRow("Digital DR",       cStr(adapter.output.digital_dr_str),
                           help: "ADC quantisation dynamic range: 6.02·N + 1.76 dB")
             }
+            DiagramSection(names: ["receiver-cascade"])
         }
         .formStyle(.grouped)
         .navigationTitle("Receiver")
