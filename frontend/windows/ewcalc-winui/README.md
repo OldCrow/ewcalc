@@ -1,4 +1,4 @@
-# ewcalc-winui — Phase 3.1 Windows Frontend
+# ewcalc-winui — Windows Frontend
 
 WinUI 3 / C# frontend for ewcalc. Consumes `libew` and `ewpresenter`
 through a C++/CLI interop assembly (`ewpresenter.net`).
@@ -19,7 +19,7 @@ ewcalc-winui.sln
 │   └── DigitalAdapter.h/.cpp
 │
 └── ewcalc-winui/          C# WinUI 3 (.csproj)
-    ├── App.xaml            Loads XamlControlsResources — the key Phase 3.1 unlock
+    ├── App.xaml            Loads XamlControlsResources (required for WinUI controls)
     ├── MainWindow.xaml     NavigationView shell
     ├── Helpers/
     │   └── FieldErrorConverter.cs   FieldValidationError → BorderBrush / tooltip

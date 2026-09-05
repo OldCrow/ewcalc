@@ -1,4 +1,4 @@
-# ewcalc — macOS Frontend (Phase 4)
+# ewcalc — macOS Frontend
 
 SwiftUI frontend for ewcalc. Consumes `libew` and `ewpresenter` through a
 plain-C bridge (`ewcalc_bridge`, top-level `bridge/`) that Swift imports via

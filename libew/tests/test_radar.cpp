@@ -87,10 +87,9 @@ void test_wavelength() {
 // (see libew/include/libew/radar/radar.h derivation comment).
 // Source: Adamy EW102 Sec 3.9 "Low Probability of Intercept Radars", p.67-72
 //         (Sec 3.9.5 "LPI Figure of Merit", p.71). [OPEN: exact eq # TBD]
-// DISCREPANCY: libew/include/libew/radar/radar.h attributes this to "Adamy
-// EW103, LPI radar chapter", but EW103 ("Communications Electronic Warfare",
-// 2008) does not cover radar LPI; Adamy's LPI radar chapter is EW102 Sec 3.9.
-// Not corrected here (header edits out of scope) -- see audit report.
+// (An earlier audit note here flagged radar.h as citing EW103 for this; the
+// header now correctly cites EW102 — resolved in the v1.0.0 release change,
+// closed as #67.)
 // ---------------------------------------------------------------------------
 
 void test_lpi_advantage() {

@@ -48,8 +48,8 @@ endif()
 # ── Core libraries (always built) ────────────────────────────────────────────
 # These produce the static libs consumed by all platform frontends:
 #   Windows : ewpresenter.lib + libew.lib  → picked up by ewpresenter.net.vcxproj
-#   macOS   : ewpresenter.a  + libew.a     → linked by Xcode (Phase 4)
-#   Linux   : ewpresenter.a  + libew.a     → linked by Qt CMake (Phase 5)
+#   macOS   : ewpresenter.a  + libew.a     → linked by Xcode
+#   Linux   : ewpresenter.a  + libew.a     → linked by Qt CMake
 add_subdirectory(libew)
 add_subdirectory(ewpresenter)
 
@@ -107,11 +107,36 @@ if(EWCALC_BUILD_FRONTEND)
         endif()
 
     elseif(APPLE)
-        # Phase 4 — Xcode project not yet created
-        message(STATUS "ewcalc: macOS frontend (Phase 4) — not yet implemented")
+        # The SwiftUI frontend is a standalone CMake project (frontend/macos)
+        # that needs the Xcode generator, so it cannot be add_subdirectory'd
+        # into this build. Mirror the Windows pattern: a convenience target
+        # that configures and builds it against this build tree's native libs,
+        # with ad-hoc signing. Signed/notarized/packaged builds stay with
+        # scripts/build-macos.sh, which owns identity detection and packaging.
+        set(MACOS_FRONTEND_BUILD "${CMAKE_BINARY_DIR}/macos-frontend")
+        # This build is normally single-config; forward its type to the Xcode
+        # (multi-config) frontend build, defaulting to Release when unset.
+        set(MACOS_FRONTEND_CONFIG "${CMAKE_BUILD_TYPE}")
+        if(NOT MACOS_FRONTEND_CONFIG)
+            set(MACOS_FRONTEND_CONFIG "Release")
+        endif()
+
+        add_custom_target(ewcalc_frontend
+            COMMAND "${CMAKE_COMMAND}" -G Xcode
+                -B "${MACOS_FRONTEND_BUILD}"
+                -S "${CMAKE_SOURCE_DIR}/frontend/macos"
+                -DEWCALC_NATIVE_BUILD_DIR=${CMAKE_BINARY_DIR}
+            COMMAND "${CMAKE_COMMAND}" --build "${MACOS_FRONTEND_BUILD}"
+                --config "${MACOS_FRONTEND_CONFIG}"
+            DEPENDS ewpresenter ewcalc_bridge    # native libs + C bridge first
+            COMMENT "Building macOS SwiftUI frontend via Xcode (ad-hoc signing)"
+            VERBATIM
+        )
+        message(STATUS "ewcalc: macOS frontend target registered (Xcode, ad-hoc signing; use scripts/build-macos.sh for signed/packaged builds)")
 
     else()
-        # Phase 5 — Qt6 CMake frontend not yet created
-        message(STATUS "ewcalc: Linux frontend (Phase 5) — not yet implemented")
+        # The Qt6 frontend is likewise a standalone CMake project
+        # (frontend/linux); scripts/build-linux.sh drives the two-stage build.
+        message(STATUS "ewcalc: Linux frontend builds via scripts/build-linux.sh (standalone Qt6 project)")
     endif()
 endif()

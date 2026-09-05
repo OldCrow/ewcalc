@@ -1,4 +1,4 @@
-# ewcalc — Linux Frontend (Phase 5)
+# ewcalc — Linux Frontend
 
 Qt6 Widgets frontend for ewcalc. Consumes `libew` and `ewpresenter`
 directly as C++ static libraries — no interop layer required.

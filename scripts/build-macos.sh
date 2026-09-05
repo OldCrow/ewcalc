@@ -2,7 +2,7 @@
 # scripts/build-macos.sh
 # Builds the full macOS ewcalc stack:
 #   1. CMake: libew + ewpresenter (native C++ static libs)
-#   2. cmake -G Xcode: SwiftUI frontend (Phase 4)
+#   2. cmake -G Xcode: SwiftUI frontend
 #   3. Optionally notarizes and packages as .dmg (pass --package)
 #
 # Usage:
@@ -63,7 +63,7 @@ cmake --build "$BUILD_DIR" --config "$CONFIG" --parallel "$(sysctl -n hw.logical
 
 echo "    Native libs built to: $BUILD_DIR/lib/"
 
-# ── macOS frontend (Phase 4) ──────────────────────────────────────────────────
+# ── macOS frontend ──────────────────────────────────────────────────
 MACOS_FRONTEND="$REPO_ROOT/frontend/macos/CMakeLists.txt"
 
 if [[ -f "$MACOS_FRONTEND" ]]; then

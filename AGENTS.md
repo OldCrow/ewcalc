@@ -68,7 +68,7 @@ scripts\build-windows.ps1 [-Config Release]
 
 ### CMake options
 - `EWCALC_BUILD_TESTS` (default `ON`) — enables the test suite. The platform build scripts pass `-DEWCALC_BUILD_TESTS=OFF` for speed; re-enable for test runs.
-- `EWCALC_BUILD_FRONTEND` (default `OFF`) — builds the native GUI target via CMake; normally driven by the platform scripts instead. The `frontend` preset (below) sets it `ON` in its own binary dir.
+- `EWCALC_BUILD_FRONTEND` (default `OFF`) — registers the `ewcalc_frontend` convenience target. On Windows it drives MSBuild; on macOS it configures and builds the standalone Xcode frontend project with ad-hoc signing (signed/packaged builds stay with `scripts/build-macos.sh`); on Linux it is informational only — the Qt6 frontend builds via `scripts/build-linux.sh`. The `frontend` preset (below) sets it `ON` in its own binary dir.
 
 ### CMake standard
 

@@ -41,7 +41,8 @@
   Windows Frontend conventions.
 
 ## GitHub Synchronization [DERIVED]
-Last reconciled against live GitHub state: 2026-08-23 (#62 filed).
+Last reconciled against live GitHub state: 2026-09-05 (v1.1.0 milestone
+created; #66–#72 filed; #62 moved into the milestone).
 - GitHub is the collaborator-facing source for issues and milestones; this
   PLAN.md is the agent-facing durable project state. Keep both in sync.
 - When creating, closing, reopening, retitling, or moving a GitHub issue or
@@ -73,6 +74,29 @@ Open milestones are fully itemized here since they reflect actionable state.
   - #28 CLOSED — Create user-facing "Formulas & references" document (output ↔ EW101 equation map).
   - #29 CLOSED — Final domain audit: re-verify every formula against EW101/102/103 with citations recorded in tests.
   - Milestone closed on GitHub 2026-07-14; no further v1.0.0 work planned.
+- v1.1.0 — Coverage & Illustration (open, #5), created 2026-09-05:
+  - #62 OPEN — WinUI3 field colour-coding (x:Bind crash, deferred; needs the
+    Windows machine).
+  - #66 OPEN — macOS `EWCALC_BUILD_FRONTEND` no-op + stale Phase-N messaging
+    (fix in progress 2026-09-05).
+  - #67 OPEN — LPI attribution EW103→EW102; investigation showed radar.h and
+    formulas.md were already corrected in the v1.0.0 release change — only the
+    stale DISCREPANCY note in test_radar.cpp needed cleanup (fix in progress
+    2026-09-05).
+  - #68 OPEN — Citation sweep: resolve all [OPEN: page/eq TBD] pins
+    (books needed: EW101, EW102, EW103 — no EW104 citations exist) and add
+    source attribution to the 7 uncited libew headers. Physical-book task:
+    EW101's index maps formulas to original EW101 column publications.
+  - #69 OPEN — Radar detection statistics calculator (Pd/Pfa, Swerling,
+    fluctuation loss, dwell/hits-per-scan).
+  - #70 OPEN — Doppler & ambiguity calculator (Doppler shift, blind speeds,
+    unambiguous range, Doppler dilemma).
+  - #71 OPEN — Radar resolution calculator (range/angular, resolution cell);
+    may share a pane with #70.
+  - #72 OPEN — Static geometry diagrams (shared SVG/PNG asset set, stock
+    image controls; live plotting explicitly out of scope).
+  - Reference material: R&S "Radar and electronic warfare" eGuide
+    (Christian Wolff) used 2026-09-05 as the coverage checklist for #69–#72.
 
 ## GitHub Issues Without Milestone [DERIVED]
 Same leaner convention as milestones above: closed items are a count only
@@ -95,15 +119,11 @@ itemized since they're actionable.
 
 ## Known Gaps [OPEN]
 - WinUI3 colour-coding feature deferred due to x:Bind type-checking crash —
-  not reattempted, root cause not fully resolved. Filed as #62 (2026-08-23);
-  the issue is now the source of truth, this entry just points at it.
-- `EWCALC_BUILD_FRONTEND=ON` is a no-op on macOS: the APPLE branch of the
-  top-level CMakeLists only prints "macOS frontend (Phase 4) — not yet
-  implemented", although `frontend/macos/CMakeLists.txt` exists and
-  `scripts/build-macos.sh` builds it (Xcode generator + signing vars).
-  Either wire the option to the real frontend or say in AGENTS.md that
-  the script is the only supported path. [OPEN, found 2026-08-23 during
-  an M1 verification pass; core+tests 13/13 green on macOS Tahoe]
+  not reattempted, root cause not fully resolved. Filed as #62 (2026-08-23),
+  now under milestone v1.1.0; the issue is the source of truth.
+- macOS `EWCALC_BUILD_FRONTEND` no-op: filed as #66 and fixed 2026-09-05
+  (custom `ewcalc_frontend` target mirroring the Windows MSBuild pattern —
+  ad-hoc signing; `scripts/build-macos.sh` remains the signed/packaged path).
 
 ## Build-Stack Standardization (2026-07-23) [DERIVED]
 Cross-repo effort tracked in the fleet standards repo
