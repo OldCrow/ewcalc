@@ -188,4 +188,60 @@ enum class Swerling : std::uint8_t {
 /// @return False alarms per second (Hz)
 [[nodiscard]] double false_alarm_rate_hz(double pfa, Mhz bandwidth) noexcept;
 
+// ---------------------------------------------------------------------------
+// Doppler and PRF ambiguity
+// ---------------------------------------------------------------------------
+
+/// Two-way (radar) Doppler shift.
+///   f_d = 2 · v_r · f / c
+/// Positive radial speed (closing target) gives positive shift.
+/// @param frequency        Radar carrier frequency (MHz)
+/// @param radial_speed_m_s Target radial speed (m/s, closing positive)
+/// @return Doppler shift (Hz)
+[[nodiscard]] double doppler_shift_hz(Mhz frequency, double radial_speed_m_s) noexcept;
+
+/// Unambiguous range from PRF.
+///   R_u = c / (2 · PRF)
+/// @param prf_hz  Pulse repetition frequency (Hz)
+/// @return Maximum unambiguous range (km)
+[[nodiscard]] Km unambiguous_range(double prf_hz) noexcept;
+
+/// First blind speed — the lowest radial speed whose Doppler shift aliases
+/// onto zero (f_d = PRF), invisible to an MTI canceller.
+///   v_b = λ · PRF / 2
+/// Higher blind speeds are integer multiples n·v_b.
+/// @param frequency  Radar carrier frequency (MHz)
+/// @param prf_hz     Pulse repetition frequency (Hz)
+/// @return First blind speed (m/s)
+[[nodiscard]] double blind_speed_m_s(Mhz frequency, double prf_hz) noexcept;
+
+/// Unambiguous radial-velocity limit — Doppler is unambiguous only within
+/// ±PRF/2, i.e. radial speeds within ±v_u:
+///   v_u = λ · PRF / 4
+/// Together with unambiguous_range() this exposes the Doppler dilemma:
+/// R_u · v_u = c·λ/8 is fixed, so raising PRF to extend velocity coverage
+/// shrinks range coverage and vice versa.
+/// @param frequency  Radar carrier frequency (MHz)
+/// @param prf_hz     Pulse repetition frequency (Hz)
+/// @return Unambiguous radial-velocity limit (m/s, ±)
+[[nodiscard]] double unambiguous_velocity_m_s(Mhz frequency, double prf_hz) noexcept;
+
+// ---------------------------------------------------------------------------
+// Resolution
+// ---------------------------------------------------------------------------
+
+/// Range resolution from waveform bandwidth.
+///   ΔR = c / (2 · B)
+/// For an uncompressed pulse B ≈ 1/τ, giving the familiar ΔR = c·τ/2.
+/// @param bandwidth  Waveform (compressed) bandwidth (MHz)
+/// @return Range resolution (m)
+[[nodiscard]] Meters range_resolution(Mhz bandwidth) noexcept;
+
+/// Cross-range (angular) resolution at range R for a real-beam antenna.
+///   ΔX = R · θ_3dB   (θ in radians — small-angle arc length)
+/// @param range      Target range (km)
+/// @param beamwidth  3 dB beamwidth (degrees)
+/// @return Cross-range resolution (m)
+[[nodiscard]] Meters cross_range_resolution(Km range, Degrees beamwidth) noexcept;
+
 } // namespace libew::radar

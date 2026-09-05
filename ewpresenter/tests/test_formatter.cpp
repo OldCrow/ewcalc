@@ -146,6 +146,14 @@ void test_format_hz() {
     ASSERT_TRUE(format_hz(3.1e6).find("MHz") != std::string::npos);
 }
 
+void test_format_mps() {
+    ASSERT_SIZE(format_mps(0.0));
+    ASSERT_SIZE(format_mps(-3000.0));
+    ASSERT_SIZE(format_mps(1.0e9, 6));
+    ASSERT_TRUE(format_mps(15.0) == "15.0 m/s");
+    ASSERT_TRUE(format_mps(-0.0) == "0.0 m/s");   // negative-zero normalization
+}
+
 void test_format_count() {
     ASSERT_SIZE(format_count(0.0));
     ASSERT_SIZE(format_count(55.55));
@@ -189,6 +197,7 @@ int main() {
     RUN_TEST(test_format_percent);
     RUN_TEST(test_format_seconds);
     RUN_TEST(test_format_hz);
+    RUN_TEST(test_format_mps);
     RUN_TEST(test_format_count);
     RUN_TEST(test_format_kelvin);
     RUN_TEST(test_format_regime);

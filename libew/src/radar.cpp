@@ -165,4 +165,46 @@ double false_alarm_rate_hz(double pfa, Mhz bandwidth) noexcept {
     return pfa * bandwidth.value * 1.0e6;
 }
 
+// ---------------------------------------------------------------------------
+// Doppler and PRF ambiguity
+// ---------------------------------------------------------------------------
+
+double doppler_shift_hz(Mhz frequency, double radial_speed_m_s) noexcept {
+    // f_d = 2·v_r·f/c — two-way path, so twice the one-way shift.
+    return 2.0 * radial_speed_m_s * frequency.value * 1.0e6
+           / constants::speed_of_light_m_s;
+}
+
+Km unambiguous_range(double prf_hz) noexcept {
+    // R_u = c/(2·PRF): the echo must return before the next pulse leaves.
+    return Km{constants::speed_of_light_m_s / (2.0 * prf_hz) / 1000.0};
+}
+
+double blind_speed_m_s(Mhz frequency, double prf_hz) noexcept {
+    // v_b = λ·PRF/2: Doppler equals the PRF, aliasing onto the clutter line.
+    const double lambda = wavelength_m(frequency).value;
+    return lambda * prf_hz / 2.0;
+}
+
+double unambiguous_velocity_m_s(Mhz frequency, double prf_hz) noexcept {
+    // v_u = λ·PRF/4: Doppler sampled at PRF is unambiguous within ±PRF/2.
+    const double lambda = wavelength_m(frequency).value;
+    return lambda * prf_hz / 4.0;
+}
+
+// ---------------------------------------------------------------------------
+// Resolution
+// ---------------------------------------------------------------------------
+
+Meters range_resolution(Mhz bandwidth) noexcept {
+    // ΔR = c/(2B); the two-way path compresses apparent separation by half.
+    return Meters{constants::speed_of_light_m_s / (2.0 * bandwidth.value * 1.0e6)};
+}
+
+Meters cross_range_resolution(Km range, Degrees beamwidth) noexcept {
+    // Arc length R·θ with θ in radians (small-angle).
+    const double theta_rad = beamwidth.value * std::numbers::pi / 180.0;
+    return Meters{range.value * 1000.0 * theta_rad};
+}
+
 } // namespace libew::radar

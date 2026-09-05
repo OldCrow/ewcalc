@@ -12,6 +12,7 @@
 #include <ewpresenter/location_presenter.h>
 #include <ewpresenter/radar_presenter.h>
 #include <ewpresenter/detection_presenter.h>
+#include <ewpresenter/doppler_presenter.h>
 #include <ewpresenter/digital_presenter.h>
 #include <ewpresenter/antenna_presenter.h>
 
@@ -174,6 +175,27 @@ static EwpDetectionOutput to_c(const ewpresenter::DetectionPresenter::Output& o)
     copy_str(out.dwell_time_str,              o.dwell_time_str);
     copy_str(out.hits_per_scan_str,           o.hits_per_scan_str);
     copy_str(out.far_str,                     o.far_str);
+    out.valid = o.valid;
+    return out;
+}
+
+// ── Doppler & Resolution ─────────────────────────────────────────────────────
+
+struct DopplerWrapper {
+    ewpresenter::DopplerPresenter presenter;
+    EwpDopplerCallback cb = nullptr;
+    void* ctx = nullptr;
+};
+
+static EwpDopplerOutput to_c(const ewpresenter::DopplerPresenter::Output& o) noexcept {
+    EwpDopplerOutput out{};
+    copy_str(out.doppler_shift_str,        o.doppler_shift_str);
+    copy_str(out.unambiguous_range_str,    o.unambiguous_range_str);
+    copy_str(out.blind_speed_str,          o.blind_speed_str);
+    copy_str(out.unambiguous_velocity_str, o.unambiguous_velocity_str);
+    copy_str(out.range_resolution_str,     o.range_resolution_str);
+    copy_str(out.cross_range_az_str,       o.cross_range_az_str);
+    copy_str(out.cross_range_el_str,       o.cross_range_el_str);
     out.valid = o.valid;
     return out;
 }
@@ -504,6 +526,39 @@ double             ewp_detection_bandwidth(EwpDetectionRef ref)     { return cas
 EwpDetectionOutput ewp_detection_output(EwpDetectionRef ref)        { return to_c(cast<DetectionWrapper>(ref)->presenter.output()); }
 
 // ============================================================================
+// Doppler & Resolution implementation
+// ============================================================================
+
+EwpDopplerRef ewp_doppler_create(void) {
+    auto* w = new DopplerWrapper();
+    w->presenter.set_on_change([w](const ewpresenter::DopplerPresenter::Output& o) {
+        if (w->cb) w->cb(to_c(o), w->ctx);
+    });
+    return w;
+}
+void ewp_doppler_destroy(EwpDopplerRef ref) { delete cast<DopplerWrapper>(ref); }
+
+void ewp_doppler_set_frequency(EwpDopplerRef ref, double mhz)    { cast<DopplerWrapper>(ref)->presenter.set_frequency(mhz); }
+void ewp_doppler_set_radial_speed(EwpDopplerRef ref, double m_s) { cast<DopplerWrapper>(ref)->presenter.set_radial_speed(m_s); }
+void ewp_doppler_set_prf(EwpDopplerRef ref, double hz)           { cast<DopplerWrapper>(ref)->presenter.set_prf(hz); }
+void ewp_doppler_set_bandwidth(EwpDopplerRef ref, double mhz)    { cast<DopplerWrapper>(ref)->presenter.set_bandwidth(mhz); }
+void ewp_doppler_set_target_range(EwpDopplerRef ref, double km)  { cast<DopplerWrapper>(ref)->presenter.set_target_range(km); }
+void ewp_doppler_set_beamwidth_az(EwpDopplerRef ref, double deg) { cast<DopplerWrapper>(ref)->presenter.set_beamwidth_az(deg); }
+void ewp_doppler_set_beamwidth_el(EwpDopplerRef ref, double deg) { cast<DopplerWrapper>(ref)->presenter.set_beamwidth_el(deg); }
+void ewp_doppler_set_callback(EwpDopplerRef ref, EwpDopplerCallback cb, void* ctx) {
+    auto* w = cast<DopplerWrapper>(ref); w->cb = cb; w->ctx = ctx;
+}
+
+double           ewp_doppler_frequency(EwpDopplerRef ref)    { return cast<DopplerWrapper>(ref)->presenter.frequency_mhz(); }
+double           ewp_doppler_radial_speed(EwpDopplerRef ref) { return cast<DopplerWrapper>(ref)->presenter.radial_speed_m_s(); }
+double           ewp_doppler_prf(EwpDopplerRef ref)          { return cast<DopplerWrapper>(ref)->presenter.prf_hz(); }
+double           ewp_doppler_bandwidth(EwpDopplerRef ref)    { return cast<DopplerWrapper>(ref)->presenter.bandwidth_mhz(); }
+double           ewp_doppler_target_range(EwpDopplerRef ref) { return cast<DopplerWrapper>(ref)->presenter.target_range_km(); }
+double           ewp_doppler_beamwidth_az(EwpDopplerRef ref) { return cast<DopplerWrapper>(ref)->presenter.beamwidth_az_deg(); }
+double           ewp_doppler_beamwidth_el(EwpDopplerRef ref) { return cast<DopplerWrapper>(ref)->presenter.beamwidth_el_deg(); }
+EwpDopplerOutput ewp_doppler_output(EwpDopplerRef ref)       { return to_c(cast<DopplerWrapper>(ref)->presenter.output()); }
+
+// ============================================================================
 // Digital implementation
 // ============================================================================
 
@@ -634,6 +689,14 @@ EwpFieldError ewp_detection_beamwidth_error(EwpDetectionRef ref)     { return to
 EwpFieldError ewp_detection_scan_rate_error(EwpDetectionRef ref)     { return to_c(cast<DetectionWrapper>(ref)->presenter.scan_rate_error()); }
 EwpFieldError ewp_detection_prf_error(EwpDetectionRef ref)           { return to_c(cast<DetectionWrapper>(ref)->presenter.prf_error()); }
 EwpFieldError ewp_detection_bandwidth_error(EwpDetectionRef ref)     { return to_c(cast<DetectionWrapper>(ref)->presenter.bandwidth_error()); }
+
+EwpFieldError ewp_doppler_frequency_error(EwpDopplerRef ref)    { return to_c(cast<DopplerWrapper>(ref)->presenter.frequency_error()); }
+EwpFieldError ewp_doppler_radial_speed_error(EwpDopplerRef ref) { return to_c(cast<DopplerWrapper>(ref)->presenter.radial_speed_error()); }
+EwpFieldError ewp_doppler_prf_error(EwpDopplerRef ref)          { return to_c(cast<DopplerWrapper>(ref)->presenter.prf_error()); }
+EwpFieldError ewp_doppler_bandwidth_error(EwpDopplerRef ref)    { return to_c(cast<DopplerWrapper>(ref)->presenter.bandwidth_error()); }
+EwpFieldError ewp_doppler_target_range_error(EwpDopplerRef ref) { return to_c(cast<DopplerWrapper>(ref)->presenter.target_range_error()); }
+EwpFieldError ewp_doppler_beamwidth_az_error(EwpDopplerRef ref) { return to_c(cast<DopplerWrapper>(ref)->presenter.beamwidth_az_error()); }
+EwpFieldError ewp_doppler_beamwidth_el_error(EwpDopplerRef ref) { return to_c(cast<DopplerWrapper>(ref)->presenter.beamwidth_el_error()); }
 // Digital
 EwpFieldError ewp_digital_snr_error(EwpDigitalRef ref)                 { return to_c(cast<DigitalWrapper>(ref)->presenter.snr_error()); }
 EwpFieldError ewp_digital_bandwidth_error(EwpDigitalRef ref)           { return to_c(cast<DigitalWrapper>(ref)->presenter.bandwidth_error()); }

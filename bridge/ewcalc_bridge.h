@@ -380,6 +380,52 @@ EwpFieldError ewp_detection_bandwidth_error(EwpDetectionRef ref);
 EwpDetectionOutput ewp_detection_output(EwpDetectionRef ref);
 
 // ============================================================================
+// Doppler & Resolution
+// ============================================================================
+
+typedef struct EwpDopplerOutput {
+    char doppler_shift_str[EWP_STR_MAX];
+    char unambiguous_range_str[EWP_STR_MAX];
+    char blind_speed_str[EWP_STR_MAX];
+    char unambiguous_velocity_str[EWP_STR_MAX];
+    char range_resolution_str[EWP_STR_MAX];
+    char cross_range_az_str[EWP_STR_MAX];
+    char cross_range_el_str[EWP_STR_MAX];
+    bool valid;
+} EwpDopplerOutput;
+
+typedef void* EwpDopplerRef;
+typedef void (*EwpDopplerCallback)(EwpDopplerOutput output, void* ctx);
+
+EwpDopplerRef ewp_doppler_create(void);
+void          ewp_doppler_destroy(EwpDopplerRef ref);
+
+void ewp_doppler_set_frequency(EwpDopplerRef ref, double mhz);
+void ewp_doppler_set_radial_speed(EwpDopplerRef ref, double m_s);
+void ewp_doppler_set_prf(EwpDopplerRef ref, double hz);
+void ewp_doppler_set_bandwidth(EwpDopplerRef ref, double mhz);
+void ewp_doppler_set_target_range(EwpDopplerRef ref, double km);
+void ewp_doppler_set_beamwidth_az(EwpDopplerRef ref, double deg);
+void ewp_doppler_set_beamwidth_el(EwpDopplerRef ref, double deg);
+void ewp_doppler_set_callback(EwpDopplerRef ref, EwpDopplerCallback cb, void* ctx);
+
+double        ewp_doppler_frequency(EwpDopplerRef ref);
+double        ewp_doppler_radial_speed(EwpDopplerRef ref);
+double        ewp_doppler_prf(EwpDopplerRef ref);
+double        ewp_doppler_bandwidth(EwpDopplerRef ref);
+double        ewp_doppler_target_range(EwpDopplerRef ref);
+double        ewp_doppler_beamwidth_az(EwpDopplerRef ref);
+double        ewp_doppler_beamwidth_el(EwpDopplerRef ref);
+EwpFieldError ewp_doppler_frequency_error(EwpDopplerRef ref);
+EwpFieldError ewp_doppler_radial_speed_error(EwpDopplerRef ref);
+EwpFieldError ewp_doppler_prf_error(EwpDopplerRef ref);
+EwpFieldError ewp_doppler_bandwidth_error(EwpDopplerRef ref);
+EwpFieldError ewp_doppler_target_range_error(EwpDopplerRef ref);
+EwpFieldError ewp_doppler_beamwidth_az_error(EwpDopplerRef ref);
+EwpFieldError ewp_doppler_beamwidth_el_error(EwpDopplerRef ref);
+EwpDopplerOutput ewp_doppler_output(EwpDopplerRef ref);
+
+// ============================================================================
 // Digital / Spread Spectrum
 // ============================================================================
 

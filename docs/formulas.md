@@ -239,6 +239,42 @@ LOS: `d = 10^((margin - 32.44 - 20*log10(f))/20)`; 2-ray: `d = 10^((margin - 120
 - Source: standard result — one independent detection opportunity per resolution time 1/B (e.g. Skolnik, Introduction to Radar Systems [OPEN: page/eq TBD]).
 - Units: probability and MHz in, false alarms per second out.
 
+## Doppler & Resolution
+
+### Doppler shift (two-way)
+`f_d = 2 * v_r * f / c`
+
+- Source: standard radar Doppler relation (Richards, Fundamentals of Radar Signal Processing; Skolnik); Adamy EW102 radar chapter as EW-series anchor [OPEN: sec/page TBD].
+- Assumptions: monostatic radar, two-way path (twice the one-way shift); closing target positive.
+- Units: frequency in MHz, speed in m/s, shift in Hz.
+
+### Unambiguous range
+`R_u = c / (2 * PRF)`
+
+- Source: standard pulse-radar relation (Richards; Skolnik); Adamy EW102 anchor [OPEN: sec/page TBD].
+- Units: PRF in Hz, range in km.
+
+### Blind speed and unambiguous velocity
+`v_b = lambda * PRF / 2` (first blind speed; multiples n·v_b),
+`v_u = lambda * PRF / 4` (Doppler unambiguous within ±PRF/2)
+
+- Source: standard MTI/pulse-Doppler relations (Richards; Skolnik); Adamy EW102 anchor [OPEN: sec/page TBD].
+- Note: together with R_u these express the Doppler dilemma — R_u·v_u = c·lambda/8 is PRF-invariant (guarded by test_radar.cpp).
+- Units: frequency in MHz, PRF in Hz, speeds in m/s.
+
+### Range resolution
+`dR = c / (2 * B)`
+
+- Source: standard waveform-bandwidth resolution relation (Richards; Skolnik); Adamy EW102 anchor [OPEN: sec/page TBD].
+- Assumptions: compressed bandwidth B; for an uncompressed pulse B ≈ 1/tau gives dR = c·tau/2.
+- Units: bandwidth in MHz, resolution in m.
+
+### Cross-range resolution
+`dX = R * theta_3dB` (theta in radians)
+
+- Source: real-beam small-angle arc length (Richards; Skolnik); Adamy EW102 resolution-cell treatment as anchor [OPEN: sec/page TBD].
+- Units: range in km, beamwidth in degrees, resolution in m. The az and el extents together with dR bound the resolution cell.
+
 ## Digital/DSSS
 
 ### Eb/N0 ↔ SNR

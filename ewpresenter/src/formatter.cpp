@@ -97,6 +97,10 @@ std::string format_hz(double hz) {
     return fmt(hz, 2, "Hz");
 }
 
+std::string format_mps(double m_s, int decimals) {
+    return fmt(m_s, decimals, "m/s");
+}
+
 std::string format_percent(double fraction, int decimals) {
     return fmt(fraction * kPercentMultiplier, decimals, "%");
 }

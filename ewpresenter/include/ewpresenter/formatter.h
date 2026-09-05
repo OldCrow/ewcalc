@@ -53,6 +53,7 @@ inline constexpr const char* kDash = "\xe2\x80\x94";
 // ---------------------------------------------------------------------------
 [[nodiscard]] std::string format_seconds(Seconds value); // "1.500 s" / "55.6 ms" / "12.3 µs"
 [[nodiscard]] std::string format_hz(double hz);          // "1.00 Hz" / "2.50 kHz" / "3.10 MHz"
+[[nodiscard]] std::string format_mps(double m_s, int decimals = 1); // "15.0 m/s"
 
 // ---------------------------------------------------------------------------
 // Dimensionless / ratio

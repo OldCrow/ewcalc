@@ -8,6 +8,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Doppler & Resolution calculator (#70, #71): two-way Doppler shift,
+  unambiguous range, first blind speed and unambiguous velocity (the
+  Doppler dilemma product R_u·v_u = c·λ/8 is test-guarded), range
+  resolution from waveform bandwidth, and cross-range resolution in
+  azimuth and elevation. New `libew::radar` functions, a
+  `DopplerPresenter` pane through the C bridge and the macOS and Linux
+  frontends (Windows pane pending), and a `format_mps` formatter.
 - Detection statistics calculator (#69): required SNR via Albersheim's
   equation (nonfluctuating) and Shnidman's equation (Swerling 0–4),
   fluctuation loss, dwell time, hits per scan, and false-alarm rate.

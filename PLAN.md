@@ -104,10 +104,12 @@ Open milestones are fully itemized here since they reflect actionable state.
     test_radar.cpp). REMAINING: the WinUI3 pane (Windows machine) and
     ideally a Qt6 compile check of DetectionPage (written to pattern,
     not compiled — no Qt6 on the Mac; CI's Linux job will catch it).
-  - #70 OPEN — Doppler & ambiguity calculator (Doppler shift, blind speeds,
-    unambiguous range, Doppler dilemma).
-  - #71 OPEN — Radar resolution calculator (range/angular, resolution cell);
-    may share a pane with #70.
+  - #70/#71 OPEN — shipped together 2026-09-06 as one "Doppler &
+    Resolution" pane (DopplerPresenter): Doppler shift, unambiguous
+    range/velocity, first blind speed (dilemma product R_u·v_u = c·λ/8
+    test-guarded), range and az/el cross-range resolution. Core +
+    bridge + macOS and Linux panes done; REMAINING (same as #69): the
+    WinUI3 panes, and CI's Linux job gating the Qt6 pages.
   - #72 OPEN — Static geometry diagrams (shared SVG/PNG asset set, stock
     image controls; live plotting explicitly out of scope).
   - Reference material: R&S "Radar and electronic warfare" eGuide

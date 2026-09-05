@@ -191,6 +191,61 @@ void test_scan_timing() {
     ASSERT_NEAR(false_alarm_rate_hz(1.0e-6, Mhz{1.0}), 1.0, 1e-12);
 }
 
+// ---------------------------------------------------------------------------
+// Doppler, PRF ambiguity, and resolution.
+// Sources: standard pulse-radar relations (Richards, Fundamentals of Radar
+// Signal Processing; Skolnik, Introduction to Radar Systems); Adamy EW102
+// radar chapter as EW-series anchor [OPEN: sec/page TBD — #68 sweep].
+// Expected values hand-derived with c = 299 792 458 m/s.
+// ---------------------------------------------------------------------------
+
+void test_doppler_shift() {
+    // f = 10 GHz, v = 300 m/s closing:
+    // f_d = 2·300·1e10/c = 6e12/299792458 = 20013.84... Hz
+    ASSERT_NEAR(doppler_shift_hz(Mhz{10000.0}, 300.0), 20013.845, 0.01);
+    // Opening target: sign flips.
+    ASSERT_NEAR(doppler_shift_hz(Mhz{10000.0}, -300.0), -20013.845, 0.01);
+    // Zero radial speed: zero shift.
+    ASSERT_NEAR(doppler_shift_hz(Mhz{10000.0}, 0.0), 0.0, 1e-12);
+}
+
+void test_unambiguous_range() {
+    // PRF = 1 kHz: R_u = c/2000 m = 149.896229 km
+    ASSERT_NEAR(unambiguous_range(1000.0).value, 149.896229, 1e-5);
+    // PRF = 10 kHz: 14.9896229 km
+    ASSERT_NEAR(unambiguous_range(10000.0).value, 14.9896229, 1e-6);
+}
+
+void test_blind_speed_and_unambiguous_velocity() {
+    // f = 10 GHz → λ = 0.0299792458 m; PRF = 1 kHz:
+    // v_b = λ·PRF/2 = 14.9896229 m/s; v_u = λ·PRF/4 = 7.49481145 m/s
+    ASSERT_NEAR(blind_speed_m_s(Mhz{10000.0}, 1000.0), 14.9896229, 1e-6);
+    ASSERT_NEAR(unambiguous_velocity_m_s(Mhz{10000.0}, 1000.0), 7.49481145, 1e-7);
+    // Doppler dilemma invariant: R_u·v_u = c·λ/8 regardless of PRF.
+    const double product_1k  = unambiguous_range(1000.0).value * 1000.0
+                               * unambiguous_velocity_m_s(Mhz{10000.0}, 1000.0);
+    const double product_10k = unambiguous_range(10000.0).value * 1000.0
+                               * unambiguous_velocity_m_s(Mhz{10000.0}, 10000.0);
+    ASSERT_NEAR(product_1k, product_10k, 1e-3);
+    ASSERT_NEAR(product_1k, 299792458.0 * 0.0299792458 / 8.0, 1.0);
+}
+
+void test_range_resolution() {
+    // B = 1 MHz: ΔR = c/2e6 = 149.896229 m
+    ASSERT_NEAR(range_resolution(Mhz{1.0}).value, 149.896229, 1e-5);
+    // B = 100 MHz: 1.49896229 m
+    ASSERT_NEAR(range_resolution(Mhz{100.0}).value, 1.49896229, 1e-7);
+}
+
+void test_cross_range_resolution() {
+    // R = 100 km, θ = 2°: ΔX = 1e5 · 2·π/180 = 3490.6585... m
+    ASSERT_NEAR(cross_range_resolution(Km{100.0}, Degrees{2.0}).value,
+                3490.6585, 1e-3);
+    // Linear in both range and beamwidth.
+    ASSERT_NEAR(cross_range_resolution(Km{50.0}, Degrees{4.0}).value,
+                3490.6585, 1e-3);
+}
+
 int main() {
     std::cout << "=== test_radar ===\n";
     RUN_TEST(test_pulse_compression_gain);
@@ -204,5 +259,10 @@ int main() {
     RUN_TEST(test_shnidman_vs_exact);
     RUN_TEST(test_fluctuation_loss);
     RUN_TEST(test_scan_timing);
+    RUN_TEST(test_doppler_shift);
+    RUN_TEST(test_unambiguous_range);
+    RUN_TEST(test_blind_speed_and_unambiguous_velocity);
+    RUN_TEST(test_range_resolution);
+    RUN_TEST(test_cross_range_resolution);
     return test::summary();
 }

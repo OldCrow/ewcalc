@@ -20,6 +20,15 @@ disabled_rules:
 # them mid-sentence would hurt readability more than it helps. Limits are set
 # just above the current codebase max rather than left at the SwiftLint
 # default, so genuinely runaway lines still get caught.
+# SavedInputs.swift deliberately co-locates one Codable sub-struct plus its
+# capture/apply pair per calculator (see its header comment), so it grows by
+# ~35 lines with every pane added; splitting it would scatter exactly the
+# logic it exists to keep together. Raised just above the current size, same
+# philosophy as line_length below.
+file_length:
+  warning: 450
+  error: 500
+
 line_length:
   warning: 245
   error: 300

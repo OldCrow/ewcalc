@@ -345,6 +345,39 @@ void test_detection_validation() {
 }
 
 // ============================================================================
+// DopplerPresenter
+// ============================================================================
+
+void test_doppler_default_valid() {
+    ewpresenter::DopplerPresenter p;
+    ASSERT_TRUE(p.output().valid);
+}
+
+void test_doppler_default_values() {
+    // Defaults: f=10 GHz, v=300 m/s, PRF=1 kHz, B=1 MHz, R=100 km, 2°/2°.
+    // f_d = 20013.8 Hz; R_u = 149.896 km; ΔR = 149.896 m; ΔX = 3490.7 m.
+    ewpresenter::DopplerPresenter p;
+    ASSERT_NEAR(p.output().doppler_shift_hz, 20013.845, 0.01);
+    ASSERT_NEAR(p.output().unambiguous_range.value, 149.896229, 1e-5);
+    ASSERT_NEAR(p.output().range_resolution.value, 149.896229, 1e-5);
+    ASSERT_NEAR(p.output().cross_range_az.value, 3490.6585, 1e-3);
+    ASSERT_TRUE(p.output().doppler_shift_str.find("kHz") != std::string::npos);
+    ASSERT_TRUE(p.output().blind_speed_str.find("m/s") != std::string::npos);
+}
+
+void test_doppler_validation() {
+    ewpresenter::DopplerPresenter p;
+    p.set_prf(0.0);
+    ASSERT_FALSE(p.output().valid);
+    p.set_prf(1000.0);
+    ASSERT_TRUE(p.output().valid);
+    // Opening target: negative shift allowed and sign preserved.
+    p.set_radial_speed(-300.0);
+    ASSERT_TRUE(p.output().valid);
+    ASSERT_NEAR(p.output().doppler_shift_hz, -20013.845, 0.01);
+}
+
+// ============================================================================
 // LocationPresenter
 // ============================================================================
 
@@ -515,6 +548,10 @@ int main() {
     RUN_TEST(test_detection_default_valid);
     RUN_TEST(test_detection_default_values);
     RUN_TEST(test_detection_validation);
+
+    RUN_TEST(test_doppler_default_valid);
+    RUN_TEST(test_doppler_default_values);
+    RUN_TEST(test_doppler_validation);
 
     RUN_TEST(test_location_default_valid);
     RUN_TEST(test_location_or_validity_single_section);

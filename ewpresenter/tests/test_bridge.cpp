@@ -266,6 +266,35 @@ void test_detection_invalid_swerling() {
 }
 
 // ============================================================================
+// DopplerPresenter
+// ============================================================================
+
+void test_doppler_defaults_valid() {
+    EwpDopplerRef ref = ewp_doppler_create();
+    ASSERT_TRUE(ewp_doppler_output(ref).valid);
+    ASSERT_TRUE(ewp_doppler_frequency_error(ref)    == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_doppler_radial_speed_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_doppler_prf_error(ref)          == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_doppler_bandwidth_error(ref)    == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_doppler_target_range_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_doppler_beamwidth_az_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_doppler_beamwidth_el_error(ref) == EWP_FIELD_OK);
+    EwpDopplerOutput out = ewp_doppler_output(ref);
+    ASSERT_TRUE(out.doppler_shift_str[0] != '\0');
+    ASSERT_TRUE(out.range_resolution_str[0] != '\0');
+    ewp_doppler_destroy(ref);
+}
+
+void test_doppler_invalid_prf() {
+    EwpDopplerRef ref = ewp_doppler_create();
+    ewp_doppler_set_prf(ref, 0.0);
+    ASSERT_FALSE(ewp_doppler_output(ref).valid);
+    ewp_doppler_set_prf(ref, 1000.0);
+    ASSERT_TRUE(ewp_doppler_output(ref).valid);
+    ewp_doppler_destroy(ref);
+}
+
+// ============================================================================
 // DigitalPresenter
 // ============================================================================
 
@@ -347,6 +376,8 @@ int main() {
     RUN_TEST(test_radar_output_field_names);
     RUN_TEST(test_detection_defaults_valid);
     RUN_TEST(test_detection_invalid_swerling);
+    RUN_TEST(test_doppler_defaults_valid);
+    RUN_TEST(test_doppler_invalid_prf);
 
     RUN_TEST(test_digital_defaults_valid);
     RUN_TEST(test_digital_invalid_snr);

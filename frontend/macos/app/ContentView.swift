@@ -9,6 +9,7 @@ enum AppSection: String, CaseIterable, Identifiable {
     case location    = "Location"
     case radar       = "Radar"
     case detection   = "Detection"
+    case doppler     = "Doppler & Resolution"
     case digital     = "Digital / DSSS"
     case antenna     = "Antenna"
     case reference   = "Reference"
@@ -24,6 +25,7 @@ enum AppSection: String, CaseIterable, Identifiable {
         case .location:    return "location.circle"
         case .radar:       return "scope"
         case .detection:   return "target"
+        case .doppler:     return "waveform"
         case .digital:     return "waveform.badge.plus"
         case .antenna:     return "antenna.radiowaves.left.and.right.circle"
         case .reference:   return "book"
@@ -32,7 +34,7 @@ enum AppSection: String, CaseIterable, Identifiable {
 
     /// Ordered calculator pages — excludes the reference panel.
     static let calculators: [AppSection] = [
-        .propagation, .antenna, .link, .receiver, .jamming, .location, .radar, .detection, .digital
+        .propagation, .antenna, .link, .receiver, .jamming, .location, .radar, .detection, .doppler, .digital
     ]
 }
 
@@ -93,6 +95,7 @@ struct ContentView: View {
         case .location:    LocationView(adapter: store.location)
         case .radar:       RadarView(adapter: store.radar)
         case .detection:   DetectionView(adapter: store.detection)
+        case .doppler:     DopplerView(adapter: store.doppler)
         case .digital:     DigitalView(adapter: store.digital)
         case .antenna:     AntennaView(adapter: store.antenna)
         case .reference:   ReferenceView()

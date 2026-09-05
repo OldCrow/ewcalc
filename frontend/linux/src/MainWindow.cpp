@@ -8,6 +8,7 @@
 #include "pages/LocationPage.h"
 #include "pages/RadarPage.h"
 #include "pages/DetectionPage.h"
+#include "pages/DopplerPage.h"
 #include "pages/DigitalPage.h"
 #include "pages/AntennaPage.h"
 #include "pages/ReferencePage.h"
@@ -88,6 +89,7 @@ MainWindow::MainWindow(QWidget* parent)
     addPage(QStringLiteral("Location"),      QStringLiteral("mark-location"),           new LocationPage);
     addPage(QStringLiteral("Radar"),         QStringLiteral("system-search"),           new RadarPage);
     addPage(QStringLiteral("Detection"),     QStringLiteral("edit-find"),               new DetectionPage);
+    addPage(QStringLiteral("Doppler & Resolution"), QStringLiteral("media-playlist-shuffle"), new DopplerPage);
     addPage(QStringLiteral("Digital / DSSS"),QStringLiteral("media-playback-start"),    new DigitalPage);
 
     // ── Reference section ───────────────────────────────────────────────

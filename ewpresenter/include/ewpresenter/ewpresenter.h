@@ -12,5 +12,6 @@
 #include "ewpresenter/location_presenter.h"
 #include "ewpresenter/radar_presenter.h"
 #include "ewpresenter/detection_presenter.h"
+#include "ewpresenter/doppler_presenter.h"
 #include "ewpresenter/digital_presenter.h"
 #include "ewpresenter/antenna_presenter.h"

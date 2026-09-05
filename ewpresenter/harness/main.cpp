@@ -145,6 +145,20 @@ int main() {
         row("False-alarm rate",      out.far_str);
     }
 
+    section("Doppler & Resolution");
+    {
+        ewpresenter::DopplerPresenter p;
+        const auto& out = p.output();
+        row("Valid",                 out.valid ? "yes" : "NO");
+        row("Doppler shift",         out.doppler_shift_str);
+        row("Unambiguous range",     out.unambiguous_range_str);
+        row("First blind speed",     out.blind_speed_str);
+        row("Unambiguous velocity",  out.unambiguous_velocity_str);
+        row("Range resolution",      out.range_resolution_str);
+        row("Cross-range (az)",      out.cross_range_az_str);
+        row("Cross-range (el)",      out.cross_range_el_str);
+    }
+
     // -----------------------------------------------------------------------
     // 7. Antenna
     //    Default: 0 dBi gain, 60°/60° beamwidth, 30 dBm Tx, 1000 MHz

@@ -99,6 +99,16 @@ struct SavedInputs: Codable {
         var bandwidth: Double
     }
 
+    struct Doppler: Codable {
+        var frequency: Double
+        var radialSpeed: Double
+        var prf: Double
+        var bandwidth: Double
+        var targetRange: Double
+        var beamwidthAz: Double
+        var beamwidthEl: Double
+    }
+
     struct Digital: Codable {
         var snr: Double
         var bandwidth: Double
@@ -126,6 +136,10 @@ struct SavedInputs: Codable {
     // missing key as nil, so pre-Detection saved blobs still load without a
     // format-version bump; `apply` simply skips it when absent.
     var detection: Detection?
+    // Optional: added after format v1 shipped. Synthesized Codable decodes a
+    // missing key as nil, so pre-Doppler saved blobs still load without a
+    // format-version bump; `apply` simply skips it when absent.
+    var doppler: Doppler?
     var digital: Digital
     var antenna: Antenna
 }
@@ -301,6 +315,27 @@ extension SavedInputs.Detection {
     }
 }
 
+extension SavedInputs.Doppler {
+    init(from a: DopplerAdapter) {
+        frequency   = a.defaultFrequency
+        radialSpeed = a.defaultRadialSpeed
+        prf         = a.defaultPrf
+        bandwidth   = a.defaultBandwidth
+        targetRange = a.defaultTargetRange
+        beamwidthAz = a.defaultBeamwidthAz
+        beamwidthEl = a.defaultBeamwidthEl
+    }
+    func apply(to a: DopplerAdapter) {
+        a.setFrequency(frequency)
+        a.setRadialSpeed(radialSpeed)
+        a.setPrf(prf)
+        a.setBandwidth(bandwidth)
+        a.setTargetRange(targetRange)
+        a.setBeamwidthAz(beamwidthAz)
+        a.setBeamwidthEl(beamwidthEl)
+    }
+}
+
 extension SavedInputs.Digital {
     init(from a: DigitalAdapter) {
         snr                = a.defaultSnr
@@ -349,6 +384,7 @@ extension SavedInputs {
         location      = .init(from: store.location)
         radar         = .init(from: store.radar)
         detection     = .init(from: store.detection)
+        doppler       = .init(from: store.doppler)
         digital       = .init(from: store.digital)
         antenna       = .init(from: store.antenna)
     }
@@ -361,6 +397,7 @@ extension SavedInputs {
         location.apply(to: store.location)
         radar.apply(to: store.radar)
         detection?.apply(to: store.detection)
+        doppler?.apply(to: store.doppler)
         digital.apply(to: store.digital)
         antenna.apply(to: store.antenna)
     }
