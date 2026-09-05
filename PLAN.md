@@ -41,8 +41,8 @@
   Windows Frontend conventions.
 
 ## GitHub Synchronization [DERIVED]
-Last reconciled against live GitHub state: 2026-09-05 (v1.1.0 milestone
-created; #66–#72 filed; #62 moved into the milestone).
+Last reconciled against live GitHub state: 2026-09-06 (v1.2.0 milestone
+created; #73–#78 filed).
 - GitHub is the collaborator-facing source for issues and milestones; this
   PLAN.md is the agent-facing durable project state. Keep both in sync.
 - When creating, closing, reopening, retitling, or moving a GitHub issue or
@@ -119,6 +119,25 @@ Open milestones are fully itemized here since they reflect actionable state.
     cross into the fenced-off plotting scope).
   - Reference material: R&S "Radar and electronic warfare" eGuide
     (Christian Wolff) used 2026-09-05 as the coverage checklist for #69–#72.
+- v1.2.0 — Reference Library (open, #6), created 2026-09-06. Vision: a
+  reference page per calculator where it makes sense — formulas in
+  standard AND log form side by side (one equation per row), curated
+  tables, thumbnails in the #72 style. Content compiled clean-room from
+  multiple public sources under the citation precedence rule, never
+  transcribed from the R&S eGuide that inspired it.
+  - #73 OPEN — Reference data layer in ewpresenter (single source of
+    truth; frontends render, not own). PREREQUISITE for all pages.
+    Carries the open design point: formula rendering (monospace text
+    vs. typeset SVG snippets).
+  - #74 OPEN — Propagation reference page (+ dB math unless split out).
+  - #75 OPEN — Antenna types reference page (isotropic model, per-type
+    specs, pattern thumbnails; band-letters table here or split).
+  - #76 OPEN — Link budget reference page (canonical diagram + equation
+    columns).
+  - #77 OPEN — RCS reference page (simple-shape formulas + typical-
+    target table, m² and dBsm).
+  - #78 OPEN — Umbrella for remaining per-calculator reference pages;
+    split as designs firm up.
 
 ## GitHub Issues Without Milestone [DERIVED]
 Same leaner convention as milestones above: closed items are a count only
