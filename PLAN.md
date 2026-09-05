@@ -84,14 +84,17 @@ Open milestones are fully itemized here since they reflect actionable state.
     stale DISCREPANCY note in test_radar.cpp needed cleanup (fix in progress
     2026-09-05).
   - #68 OPEN — Citation sweep: resolve all [OPEN: page/eq TBD] pins
-    (books needed: EW101, EW102, EW103 — no EW104 citations exist) and add
-    source attribution to the 7 uncited libew headers. PAUSED 2026-09-06
-    pending the provenance-framing decision below. First verified pin,
-    digital dynamic range, moved the citation to EW103 Ch. 4 Sec 4.5.3
-    p. 110 (EW102 was wrong) and exposed a formula discrepancy — see next
-    entry. Cross-referencing pins to the original JED columns was ruled
-    out (too diffuse: chapters span several monthly columns); cite the
-    books directly.
+    (books: EW101, EW102, EW103 — no EW104 citations exist) and add
+    source attribution to the 7 uncited libew headers. UNPAUSED
+    2026-09-06 under the citation precedence rule (see Provenance
+    Framing below). Scope change: re-anchor the eight EW101-only pins
+    (4 antenna, 4 propagation) in EW102/EW103 where those books cover
+    them (EW103 propagation + antennas chapters, EW102 radar/location);
+    EW101 pins survive only where it is the sole Adamy treatment.
+    First verified pin: digital dynamic range → EW103 Ch. 4 Sec 4.5.3
+    p. 110 (EW102 was wrong), with a 1.76 dB formula delta recorded.
+    JED-column-level cross-referencing ruled out (too diffuse); cite
+    the books directly.
   - #69 OPEN — Radar detection statistics calculator: core + presenter +
     bridge + macOS and Linux panes shipped 2026-09-06 (Albersheim +
     Shnidman with Swerling 0–4, fluctuation loss, dwell/hits/FAR;
@@ -136,16 +139,26 @@ itemized since they're actionable.
   sinusoid SQNR 6.02·n + 1.76 (Walden). Both are standard; they differ by
   a constant 1.76 dB and answer slightly different questions. Left as-is
   for now — no code or doc change made.
-- The discrepancy raises the real question: is ewcalc (a) Adamy's
-  formulas, faithfully, or (b) "inspired by Adamy's EW 101 series in JED,
-  implementing the standard formulas, audited against the EW 101 books
-  and other authoritative resources"? The answer decides what a citation
-  claims (source-of-implementation vs. cross-reference) and whether
-  book-vs-code deltas are bugs or documented differences. Undecided.
-- Follow-up once framing is settled: a full formula-fidelity sweep of all
-  libew functions against the books (superset of #68's citation sweep;
-  the two should probably merge or sequence framing → fidelity sweep →
-  citation pins).
+- DECIDED 2026-09-06 (side chat): framing (b) — ewcalc implements the
+  standard formulas, inspired by and audited against Adamy's EW 101
+  series and other authoritative resources. Expressed as a citation
+  precedence rule:
+  1. PRIMARY: the authoritative source the implementation actually
+     follows (Friis, Walden, Shnidman, IEEE Std, ITU-R, ...).
+  2. EW-SERIES ANCHOR: EW102 or EW103.
+  3. EW101 only as fallback, and always annotated when its
+     rule-of-thumb form differs from the implemented one.
+  Book-vs-code deltas are documented differences at the definition
+  site, not bugs (unless the implemented form is itself wrong).
+- Fresnel-crossover finding (side chat, 2026-09-06): EW101's /75000 vs
+  EW102's /24000 is NOT a unit change — they are two breakpoint
+  definitions a factor of π apart: 4·h₁·h₂/λ (EW101 rule of thumb) vs
+  4π·h₁·h₂/λ (EW102, the FSPL/two-ray intersection, ≈/23900,
+  conventionally /24000). ewcalc implements the EW102 definition, which
+  is correct for its regime-selection use. Do NOT "correct" the
+  constant to EW101's. Recorded on #68.
+- Follow-up: full formula-fidelity sweep of all libew functions against
+  the books (superset of #68's pins; sequence: fidelity sweep → pins).
 
 ## Known Gaps [OPEN]
 - WinUI3 colour-coding feature deferred due to x:Bind type-checking crash —
