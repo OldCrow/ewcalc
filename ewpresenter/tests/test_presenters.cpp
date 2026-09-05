@@ -307,6 +307,44 @@ void test_radar_validation() {
 }
 
 // ============================================================================
+// DetectionPresenter
+// ============================================================================
+
+void test_detection_default_valid() {
+    ewpresenter::DetectionPresenter p;
+    ASSERT_TRUE(p.output().valid);
+}
+
+void test_detection_default_values() {
+    // Defaults: Pd=0.9, Pfa=1e-6, N=10, Swerling 1, 2° beam @ 36°/s,
+    // PRF 1 kHz, B=1 MHz.
+    // Shnidman Sw1 → 13.58 dB (exact 13.50, tol 0.5 dB in libew tests);
+    // dwell = 2/36 s = 55.6 ms; hits = 55.6; FAR = 1e-6 · 1e6 = 1 Hz.
+    ewpresenter::DetectionPresenter p;
+    ASSERT_NEAR(p.output().required_snr.value, 13.58, 0.05);
+    ASSERT_NEAR(p.output().dwell_time.value, 2.0 / 36.0, 1e-9);
+    ASSERT_NEAR(p.output().hits_per_scan, 2000.0 / 36.0, 1e-6);
+    ASSERT_NEAR(p.output().far_hz, 1.0, 1e-9);
+    ASSERT_TRUE(p.output().required_snr_str.find("dB") != std::string::npos);
+    ASSERT_TRUE(p.output().dwell_time_str.find("ms") != std::string::npos);
+}
+
+void test_detection_validation() {
+    ewpresenter::DetectionPresenter p;
+    p.set_pd(1.5);                       // out of range
+    ASSERT_FALSE(p.output().valid);
+    ASSERT_TRUE(p.pd_error() == ewpresenter::FieldError::above_maximum);
+    p.set_pd(0.9);
+    ASSERT_TRUE(p.output().valid);
+    p.set_swerling_case(7);
+    ASSERT_FALSE(p.output().valid);
+    p.set_swerling_case(0);
+    ASSERT_TRUE(p.output().valid);
+    // Swerling 0: fluctuation loss is identically zero.
+    ASSERT_NEAR(p.output().fluctuation_loss.value, 0.0, 1e-12);
+}
+
+// ============================================================================
 // LocationPresenter
 // ============================================================================
 
@@ -473,6 +511,10 @@ int main() {
     RUN_TEST(test_radar_default_valid);
     RUN_TEST(test_radar_default_range);
     RUN_TEST(test_radar_validation);
+
+    RUN_TEST(test_detection_default_valid);
+    RUN_TEST(test_detection_default_values);
+    RUN_TEST(test_detection_validation);
 
     RUN_TEST(test_location_default_valid);
     RUN_TEST(test_location_or_validity_single_section);

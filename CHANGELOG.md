@@ -6,6 +6,22 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Detection statistics calculator (#69): required SNR via Albersheim's
+  equation (nonfluctuating) and Shnidman's equation (Swerling 0–4),
+  fluctuation loss, dwell time, hits per scan, and false-alarm rate.
+  New `libew::radar` functions with a `Swerling` enum, a
+  `DetectionPresenter` pane wired through the C bridge and the macOS and
+  Linux frontends (Windows pane pending, needs the Windows machine),
+  `Seconds` unit type, and `format_seconds`/`format_hz`/`format_count`
+  formatters. Shnidman's implementation is gated against an exact
+  Marcum-Q/noncentral-chi-square oracle (`scripts/detection_oracle.py`);
+  worst observed error 0.30 dB over the validation grid.
+- `ewcalc_frontend` convenience target on macOS: `EWCALC_BUILD_FRONTEND=ON`
+  now configures and builds the Xcode frontend with ad-hoc signing (#66);
+  signed/packaged builds remain with `scripts/build-macos.sh`.
+
 ## [v1.0.2] — 2026-07-16
 
 Static-analysis parity release: SwiftLint (macOS), a cppcheck baseline

@@ -72,4 +72,97 @@ Db lpi_advantage(double time_bandwidth_product) noexcept {
     return Db{10.0 * std::log10(time_bandwidth_product) / 4.0};
 }
 
+// ---------------------------------------------------------------------------
+// Detection statistics
+// ---------------------------------------------------------------------------
+
+Db required_snr_albersheim(double pd, double pfa, int num_pulses) noexcept {
+    // Albersheim (1981), as given in Richards, "Noncoherent Integration Gain,
+    // and its Approximation" (2010), eq. 12. Empirical fit to Robertson's
+    // curves; linear detector, nonfluctuating target.
+    const double n = static_cast<double>(num_pulses);
+    const double a = std::log(0.62 / pfa);
+    const double b = std::log(pd / (1.0 - pd));
+    const double snr_db =
+        -5.0 * std::log10(n)
+        + (6.2 + 4.545 / std::sqrt(n + 0.44))
+              * std::log10(a + 0.12 * a * b + 1.7 * b);
+    return Db{snr_db};
+}
+
+Db required_snr_shnidman(double pd, double pfa, int num_pulses,
+                         Swerling swerling) noexcept {
+    // Shnidman (2002), "Determination of Required SNR Values", IEEE Trans.
+    // AES 38(3). Square-law detector, noncoherent integration of N pulses.
+    //
+    // The fluctuation correction divides by K, the number of independent
+    // RCS samples the detector effectively averages: scan-to-scan models
+    // give one (Sw1) or two (Sw3) degrees of freedom regardless of N;
+    // pulse-to-pulse models scale with N (Sw2: N, Sw4: 2N). K = inf (no
+    // correction) recovers the nonfluctuating case.
+    const double n = static_cast<double>(num_pulses);
+
+    // eta: two-sided Gaussian-tail surrogate for (Pfa, Pd). The 4·p·(1-p)
+    // form is symmetric about p = 0.5, where the Pd term vanishes.
+    const double eta =
+        std::sqrt(-0.8 * std::log(4.0 * pfa * (1.0 - pfa)))
+        + std::copysign(1.0, pd - 0.5)
+              * std::sqrt(-0.8 * std::log(4.0 * pd * (1.0 - pd)));
+
+    // X_inf: required *total* (N-pulse) SNR for the nonfluctuating target.
+    const double alpha = (num_pulses >= 40) ? 0.25 : 0.0;
+    const double x_inf = eta * (eta + 2.0 * std::sqrt(n / 2.0 + alpha - 0.25));
+
+    double c_db = 0.0;
+    if (swerling != Swerling::nonfluctuating) {
+        double k = 1.0;
+        switch (swerling) {
+            case Swerling::case1: k = 1.0;     break;
+            case Swerling::case2: k = n;       break;
+            case Swerling::case3: k = 2.0;     break;
+            case Swerling::case4: k = 2.0 * n; break;
+            case Swerling::nonfluctuating:     break; // unreachable
+        }
+        // C1: cubic-in-Pd fluctuation penalty; C2: high-Pd correction that
+        // switches in above Pd = 0.872 (Shnidman's stated breakpoint).
+        const double c1 =
+            (((17.7006 * pd - 18.4496) * pd + 14.5339) * pd - 3.525) / k;
+        double c2 = 0.0;
+        if (pd > 0.872) {
+            c2 = (1.0 / k)
+                 * (std::exp(27.31 * pd - 25.14)
+                    + (pd - 0.8) * (0.7 * std::log(1.0e-5 / pfa)
+                                    + (2.0 * n - 20.0) / 80.0));
+        }
+        c_db = c1 + c2;
+    }
+
+    // Per-pulse SNR: divide the total by N, then apply the fluctuation
+    // correction in dB.
+    return Db{10.0 * std::log10(x_inf / n) + c_db};
+}
+
+Db fluctuation_loss(double pd, double pfa, int num_pulses,
+                    Swerling swerling) noexcept {
+    return Db{required_snr_shnidman(pd, pfa, num_pulses, swerling).value
+              - required_snr_shnidman(pd, pfa, num_pulses,
+                                      Swerling::nonfluctuating).value};
+}
+
+// ---------------------------------------------------------------------------
+// Scan timing
+// ---------------------------------------------------------------------------
+
+Seconds dwell_time(Degrees azimuth_beamwidth, double scan_rate_deg_s) noexcept {
+    return Seconds{azimuth_beamwidth.value / scan_rate_deg_s};
+}
+
+double hits_per_scan(Seconds dwell, double prf_hz) noexcept {
+    return dwell.value * prf_hz;
+}
+
+double false_alarm_rate_hz(double pfa, Mhz bandwidth) noexcept {
+    return pfa * bandwidth.value * 1.0e6;
+}
+
 } // namespace libew::radar

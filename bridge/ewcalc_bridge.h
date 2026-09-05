@@ -332,6 +332,54 @@ EwpFieldError ewp_radar_num_pulses_error(EwpRadarRef ref);
 EwpRadarOutput ewp_radar_output(EwpRadarRef ref);
 
 // ============================================================================
+// Detection
+// ============================================================================
+
+typedef struct EwpDetectionOutput {
+    char required_snr_str[EWP_STR_MAX];
+    char required_snr_albersheim_str[EWP_STR_MAX];
+    char fluctuation_loss_str[EWP_STR_MAX];
+    char dwell_time_str[EWP_STR_MAX];
+    char hits_per_scan_str[EWP_STR_MAX];
+    char far_str[EWP_STR_MAX];
+    bool valid;
+} EwpDetectionOutput;
+
+typedef void* EwpDetectionRef;
+typedef void (*EwpDetectionCallback)(EwpDetectionOutput output, void* ctx);
+
+EwpDetectionRef ewp_detection_create(void);
+void            ewp_detection_destroy(EwpDetectionRef ref);
+
+void ewp_detection_set_pd(EwpDetectionRef ref, double pd);
+void ewp_detection_set_pfa_exponent(EwpDetectionRef ref, double x);
+void ewp_detection_set_num_pulses(EwpDetectionRef ref, int n);
+void ewp_detection_set_swerling_case(EwpDetectionRef ref, int c);
+void ewp_detection_set_beamwidth(EwpDetectionRef ref, double deg);
+void ewp_detection_set_scan_rate(EwpDetectionRef ref, double deg_s);
+void ewp_detection_set_prf(EwpDetectionRef ref, double hz);
+void ewp_detection_set_bandwidth(EwpDetectionRef ref, double mhz);
+void ewp_detection_set_callback(EwpDetectionRef ref, EwpDetectionCallback cb, void* ctx);
+
+double        ewp_detection_pd(EwpDetectionRef ref);
+double        ewp_detection_pfa_exponent(EwpDetectionRef ref);
+int           ewp_detection_num_pulses(EwpDetectionRef ref);
+int           ewp_detection_swerling_case(EwpDetectionRef ref);
+double        ewp_detection_beamwidth(EwpDetectionRef ref);
+double        ewp_detection_scan_rate(EwpDetectionRef ref);
+double        ewp_detection_prf(EwpDetectionRef ref);
+double        ewp_detection_bandwidth(EwpDetectionRef ref);
+EwpFieldError ewp_detection_pd_error(EwpDetectionRef ref);
+EwpFieldError ewp_detection_pfa_exponent_error(EwpDetectionRef ref);
+EwpFieldError ewp_detection_num_pulses_error(EwpDetectionRef ref);
+EwpFieldError ewp_detection_swerling_case_error(EwpDetectionRef ref);
+EwpFieldError ewp_detection_beamwidth_error(EwpDetectionRef ref);
+EwpFieldError ewp_detection_scan_rate_error(EwpDetectionRef ref);
+EwpFieldError ewp_detection_prf_error(EwpDetectionRef ref);
+EwpFieldError ewp_detection_bandwidth_error(EwpDetectionRef ref);
+EwpDetectionOutput ewp_detection_output(EwpDetectionRef ref);
+
+// ============================================================================
 // Digital / Spread Spectrum
 // ============================================================================
 

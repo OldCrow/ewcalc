@@ -88,6 +88,17 @@ struct SavedInputs: Codable {
         var numPulses: Int
     }
 
+    struct Detection: Codable {
+        var pd: Double
+        var pfaExponent: Double
+        var numPulses: Int
+        var swerlingCase: Int
+        var beamwidth: Double
+        var scanRate: Double
+        var prf: Double
+        var bandwidth: Double
+    }
+
     struct Digital: Codable {
         var snr: Double
         var bandwidth: Double
@@ -111,6 +122,10 @@ struct SavedInputs: Codable {
     var jamming: Jamming
     var location: Location
     var radar: Radar
+    // Optional: added after format v1 shipped. Synthesized Codable decodes a
+    // missing key as nil, so pre-Detection saved blobs still load without a
+    // format-version bump; `apply` simply skips it when absent.
+    var detection: Detection?
     var digital: Digital
     var antenna: Antenna
 }
@@ -263,6 +278,29 @@ extension SavedInputs.Radar {
     }
 }
 
+extension SavedInputs.Detection {
+    init(from a: DetectionAdapter) {
+        pd           = a.defaultPd
+        pfaExponent  = a.defaultPfaExponent
+        numPulses    = a.defaultNumPulses
+        swerlingCase = a.defaultSwerlingCase
+        beamwidth    = a.defaultBeamwidth
+        scanRate     = a.defaultScanRate
+        prf          = a.defaultPrf
+        bandwidth    = a.defaultBandwidth
+    }
+    func apply(to a: DetectionAdapter) {
+        a.setPd(pd)
+        a.setPfaExponent(pfaExponent)
+        a.setNumPulses(numPulses)
+        a.setSwerlingCase(swerlingCase)
+        a.setBeamwidth(beamwidth)
+        a.setScanRate(scanRate)
+        a.setPrf(prf)
+        a.setBandwidth(bandwidth)
+    }
+}
+
 extension SavedInputs.Digital {
     init(from a: DigitalAdapter) {
         snr                = a.defaultSnr
@@ -310,6 +348,7 @@ extension SavedInputs {
         jamming       = .init(from: store.jamming)
         location      = .init(from: store.location)
         radar         = .init(from: store.radar)
+        detection     = .init(from: store.detection)
         digital       = .init(from: store.digital)
         antenna       = .init(from: store.antenna)
     }
@@ -321,6 +360,7 @@ extension SavedInputs {
         jamming.apply(to: store.jamming)
         location.apply(to: store.location)
         radar.apply(to: store.radar)
+        detection?.apply(to: store.detection)
         digital.apply(to: store.digital)
         antenna.apply(to: store.antenna)
     }

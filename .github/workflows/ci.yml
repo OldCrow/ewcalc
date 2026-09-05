@@ -101,7 +101,7 @@ jobs:
 
   # ── macOS ───────────────────────────────────────────────────────────────────
   build-macos:
-    name: macOS (SwiftUI) — Phase 4
+    name: macOS (SwiftUI)
     runs-on: macos-14           # Apple Silicon runner
     timeout-minutes: 40         # notarization (tag/dispatch runs) can be slow
     permissions:
@@ -185,7 +185,7 @@ jobs:
   # libgcrypt.so.20) on older user systems. 22.04 is the oldest Ubuntu LTS
   # with qt6-base-dev available via apt.
   build-linux:
-    name: Linux (Qt6) — Phase 5
+    name: Linux (Qt6)
     runs-on: ubuntu-22.04
     timeout-minutes: 30
     permissions:

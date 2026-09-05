@@ -52,6 +52,7 @@ struct DegreesTag{}; ///< Angle (degrees)
 struct RadiansTag{}; ///< Angle (radians)
 struct SquareMetersTag{}; ///< Area — linear RCS (m²)
 struct KelvinTag   {};   ///< Temperature (K)
+struct SecondsTag  {};   ///< Time (s)
 
 // ---------------------------------------------------------------------------
 // Named quantity types
@@ -69,6 +70,7 @@ using Degrees     = Quantity<DegreesTag>;
 using Radians     = Quantity<RadiansTag>;
 using SquareMeters = Quantity<SquareMetersTag>;
 using Kelvin       = Quantity<KelvinTag>;
+using Seconds      = Quantity<SecondsTag>;
 
 // ---------------------------------------------------------------------------
 // Power-domain arithmetic

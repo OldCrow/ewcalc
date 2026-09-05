@@ -43,6 +43,8 @@ identifier_name:
     - km   # kilometers
     - ns   # nanoseconds
     - db   # decibels
+    - hz   # hertz — DetectionAdapter.setPrf(hz:)
+    - pd   # probability of detection — DetectionAdapter.setPd(pd:)
     - tb   # time-bandwidth product
     - cv   # ReferenceView.entry(_:_:copy:) copy-value alias
     - _cb  # static native-callback constant, one per Adapter class

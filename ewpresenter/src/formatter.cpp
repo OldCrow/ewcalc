@@ -69,8 +69,45 @@ std::string format_degrees(Degrees value, int decimals) {
     return buf;
 }
 
+static constexpr double kMillisThreshold = 1.0;     ///< Display in ms below this (s).
+static constexpr double kMicrosThreshold = 1.0e-3;  ///< Display in µs below this (s).
+static constexpr double kKiloThreshold   = 1.0e3;   ///< Display in kHz at/above this (Hz).
+static constexpr double kMegaThreshold   = 1.0e6;   ///< Display in MHz at/above this (Hz).
+
+std::string format_seconds(Seconds value) {
+    // Auto-scale: s → ms → µs, three significant-ish decimals per band.
+    const double s = value.value;
+    if (std::abs(s) < kMicrosThreshold && s != 0.0) {
+        return fmt(s * 1.0e6, 1, "\xc2\xb5s");   // UTF-8 micro sign
+    }
+    if (std::abs(s) < kMillisThreshold && s != 0.0) {
+        return fmt(s * 1.0e3, 1, "ms");
+    }
+    return fmt(s, 3, "s");
+}
+
+std::string format_hz(double hz) {
+    // Auto-scale: Hz → kHz → MHz.
+    if (std::abs(hz) >= kMegaThreshold) {
+        return fmt(hz / kMegaThreshold, 2, "MHz");
+    }
+    if (std::abs(hz) >= kKiloThreshold) {
+        return fmt(hz / kKiloThreshold, 2, "kHz");
+    }
+    return fmt(hz, 2, "Hz");
+}
+
 std::string format_percent(double fraction, int decimals) {
     return fmt(fraction * kPercentMultiplier, decimals, "%");
+}
+
+std::string format_count(double value, int decimals) {
+    // Trailing-space trim: fmt() appends " <unit>"; with an empty unit that
+    // leaves a trailing space, so format directly instead.
+    if (value == 0.0) value = 0.0;
+    char buf[64];
+    std::snprintf(buf, sizeof(buf), "%.*f", decimals, value);
+    return buf;
 }
 
 std::string format_regime(bool two_ray) noexcept {

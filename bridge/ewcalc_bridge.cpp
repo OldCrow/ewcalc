@@ -11,6 +11,7 @@
 #include <ewpresenter/jamming_presenter.h>
 #include <ewpresenter/location_presenter.h>
 #include <ewpresenter/radar_presenter.h>
+#include <ewpresenter/detection_presenter.h>
 #include <ewpresenter/digital_presenter.h>
 #include <ewpresenter/antenna_presenter.h>
 
@@ -153,6 +154,26 @@ static EwpRadarOutput to_c(const ewpresenter::RadarPresenter::Output& o) noexcep
     copy_str(out.coherent_integration_gain_str, o.coherent_integration_gain_str);
     copy_str(out.lpi_advantage_str,   o.lpi_advantage_str);
     copy_str(out.target_rcs_str,      o.target_rcs_str);
+    out.valid = o.valid;
+    return out;
+}
+
+// ── Detection ────────────────────────────────────────────────────────────────
+
+struct DetectionWrapper {
+    ewpresenter::DetectionPresenter presenter;
+    EwpDetectionCallback cb = nullptr;
+    void* ctx = nullptr;
+};
+
+static EwpDetectionOutput to_c(const ewpresenter::DetectionPresenter::Output& o) noexcept {
+    EwpDetectionOutput out{};
+    copy_str(out.required_snr_str,            o.required_snr_str);
+    copy_str(out.required_snr_albersheim_str, o.required_snr_albersheim_str);
+    copy_str(out.fluctuation_loss_str,        o.fluctuation_loss_str);
+    copy_str(out.dwell_time_str,              o.dwell_time_str);
+    copy_str(out.hits_per_scan_str,           o.hits_per_scan_str);
+    copy_str(out.far_str,                     o.far_str);
     out.valid = o.valid;
     return out;
 }
@@ -448,6 +469,41 @@ int            ewp_radar_num_pulses(EwpRadarRef ref)    { return cast<RadarWrapp
 EwpRadarOutput ewp_radar_output(EwpRadarRef ref)        { return to_c(cast<RadarWrapper>(ref)->presenter.output()); }
 
 // ============================================================================
+// Detection implementation
+// ============================================================================
+
+EwpDetectionRef ewp_detection_create(void) {
+    auto* w = new DetectionWrapper();
+    w->presenter.set_on_change([w](const ewpresenter::DetectionPresenter::Output& o) {
+        if (w->cb) w->cb(to_c(o), w->ctx);
+    });
+    return w;
+}
+void ewp_detection_destroy(EwpDetectionRef ref) { delete cast<DetectionWrapper>(ref); }
+
+void ewp_detection_set_pd(EwpDetectionRef ref, double pd)          { cast<DetectionWrapper>(ref)->presenter.set_pd(pd); }
+void ewp_detection_set_pfa_exponent(EwpDetectionRef ref, double x) { cast<DetectionWrapper>(ref)->presenter.set_pfa_exponent(x); }
+void ewp_detection_set_num_pulses(EwpDetectionRef ref, int n)      { cast<DetectionWrapper>(ref)->presenter.set_num_pulses(n); }
+void ewp_detection_set_swerling_case(EwpDetectionRef ref, int c)   { cast<DetectionWrapper>(ref)->presenter.set_swerling_case(c); }
+void ewp_detection_set_beamwidth(EwpDetectionRef ref, double deg)  { cast<DetectionWrapper>(ref)->presenter.set_beamwidth(deg); }
+void ewp_detection_set_scan_rate(EwpDetectionRef ref, double deg_s){ cast<DetectionWrapper>(ref)->presenter.set_scan_rate(deg_s); }
+void ewp_detection_set_prf(EwpDetectionRef ref, double hz)         { cast<DetectionWrapper>(ref)->presenter.set_prf(hz); }
+void ewp_detection_set_bandwidth(EwpDetectionRef ref, double mhz)  { cast<DetectionWrapper>(ref)->presenter.set_bandwidth(mhz); }
+void ewp_detection_set_callback(EwpDetectionRef ref, EwpDetectionCallback cb, void* ctx) {
+    auto* w = cast<DetectionWrapper>(ref); w->cb = cb; w->ctx = ctx;
+}
+
+double             ewp_detection_pd(EwpDetectionRef ref)            { return cast<DetectionWrapper>(ref)->presenter.pd(); }
+double             ewp_detection_pfa_exponent(EwpDetectionRef ref)  { return cast<DetectionWrapper>(ref)->presenter.pfa_exponent(); }
+int                ewp_detection_num_pulses(EwpDetectionRef ref)    { return cast<DetectionWrapper>(ref)->presenter.num_pulses(); }
+int                ewp_detection_swerling_case(EwpDetectionRef ref) { return cast<DetectionWrapper>(ref)->presenter.swerling_case(); }
+double             ewp_detection_beamwidth(EwpDetectionRef ref)     { return cast<DetectionWrapper>(ref)->presenter.beamwidth_deg(); }
+double             ewp_detection_scan_rate(EwpDetectionRef ref)     { return cast<DetectionWrapper>(ref)->presenter.scan_rate_deg_s(); }
+double             ewp_detection_prf(EwpDetectionRef ref)           { return cast<DetectionWrapper>(ref)->presenter.prf_hz(); }
+double             ewp_detection_bandwidth(EwpDetectionRef ref)     { return cast<DetectionWrapper>(ref)->presenter.bandwidth_mhz(); }
+EwpDetectionOutput ewp_detection_output(EwpDetectionRef ref)        { return to_c(cast<DetectionWrapper>(ref)->presenter.output()); }
+
+// ============================================================================
 // Digital implementation
 // ============================================================================
 
@@ -569,6 +625,15 @@ EwpFieldError ewp_radar_bandwidth_error(EwpRadarRef ref)     { return to_c(cast<
 EwpFieldError ewp_radar_required_snr_error(EwpRadarRef ref)  { return to_c(cast<RadarWrapper>(ref)->presenter.required_snr_error()); }
 EwpFieldError ewp_radar_time_bandwidth_error(EwpRadarRef ref){ return to_c(cast<RadarWrapper>(ref)->presenter.time_bandwidth_product_error()); }
 EwpFieldError ewp_radar_num_pulses_error(EwpRadarRef ref)    { return to_c(cast<RadarWrapper>(ref)->presenter.num_pulses_error()); }
+
+EwpFieldError ewp_detection_pd_error(EwpDetectionRef ref)            { return to_c(cast<DetectionWrapper>(ref)->presenter.pd_error()); }
+EwpFieldError ewp_detection_pfa_exponent_error(EwpDetectionRef ref)  { return to_c(cast<DetectionWrapper>(ref)->presenter.pfa_exponent_error()); }
+EwpFieldError ewp_detection_num_pulses_error(EwpDetectionRef ref)    { return to_c(cast<DetectionWrapper>(ref)->presenter.num_pulses_error()); }
+EwpFieldError ewp_detection_swerling_case_error(EwpDetectionRef ref) { return to_c(cast<DetectionWrapper>(ref)->presenter.swerling_case_error()); }
+EwpFieldError ewp_detection_beamwidth_error(EwpDetectionRef ref)     { return to_c(cast<DetectionWrapper>(ref)->presenter.beamwidth_error()); }
+EwpFieldError ewp_detection_scan_rate_error(EwpDetectionRef ref)     { return to_c(cast<DetectionWrapper>(ref)->presenter.scan_rate_error()); }
+EwpFieldError ewp_detection_prf_error(EwpDetectionRef ref)           { return to_c(cast<DetectionWrapper>(ref)->presenter.prf_error()); }
+EwpFieldError ewp_detection_bandwidth_error(EwpDetectionRef ref)     { return to_c(cast<DetectionWrapper>(ref)->presenter.bandwidth_error()); }
 // Digital
 EwpFieldError ewp_digital_snr_error(EwpDigitalRef ref)                 { return to_c(cast<DigitalWrapper>(ref)->presenter.snr_error()); }
 EwpFieldError ewp_digital_bandwidth_error(EwpDigitalRef ref)           { return to_c(cast<DigitalWrapper>(ref)->presenter.bandwidth_error()); }

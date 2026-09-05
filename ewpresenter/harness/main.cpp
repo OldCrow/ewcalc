@@ -132,6 +132,19 @@ int main() {
         row("Coh. int. gain (N=16)", out.coherent_integration_gain_str);
     }
 
+    section("Detection");
+    {
+        ewpresenter::DetectionPresenter p;
+        const auto& out = p.output();
+        row("Valid",                 out.valid ? "yes" : "NO");
+        row("Required SNR (Shnidman)", out.required_snr_str);
+        row("Required SNR (Albersheim)", out.required_snr_albersheim_str);
+        row("Fluctuation loss",      out.fluctuation_loss_str);
+        row("Dwell time",            out.dwell_time_str);
+        row("Hits per scan",         out.hits_per_scan_str);
+        row("False-alarm rate",      out.far_str);
+    }
+
     // -----------------------------------------------------------------------
     // 7. Antenna
     //    Default: 0 dBi gain, 60°/60° beamwidth, 30 dBm Tx, 1000 MHz

@@ -235,6 +235,37 @@ void test_radar_output_field_names() {
 }
 
 // ============================================================================
+// DetectionPresenter
+// ============================================================================
+
+void test_detection_defaults_valid() {
+    EwpDetectionRef ref = ewp_detection_create();
+    ASSERT_TRUE(ewp_detection_output(ref).valid);
+    ASSERT_TRUE(ewp_detection_pd_error(ref)            == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_detection_pfa_exponent_error(ref)  == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_detection_num_pulses_error(ref)    == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_detection_swerling_case_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_detection_beamwidth_error(ref)     == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_detection_scan_rate_error(ref)     == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_detection_prf_error(ref)           == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_detection_bandwidth_error(ref)     == EWP_FIELD_OK);
+    EwpDetectionOutput out = ewp_detection_output(ref);
+    ASSERT_TRUE(out.required_snr_str[0] != '\0');
+    ASSERT_TRUE(out.dwell_time_str[0] != '\0');
+    ewp_detection_destroy(ref);
+}
+
+void test_detection_invalid_swerling() {
+    EwpDetectionRef ref = ewp_detection_create();
+    ewp_detection_set_swerling_case(ref, 5);
+    ASSERT_FALSE(ewp_detection_output(ref).valid);
+    ASSERT_TRUE(ewp_detection_swerling_case_error(ref) == EWP_FIELD_ABOVE_MAXIMUM);
+    ewp_detection_set_swerling_case(ref, 1);
+    ASSERT_TRUE(ewp_detection_output(ref).valid);
+    ewp_detection_destroy(ref);
+}
+
+// ============================================================================
 // DigitalPresenter
 // ============================================================================
 
@@ -314,6 +345,8 @@ int main() {
     RUN_TEST(test_radar_defaults_valid);
     RUN_TEST(test_radar_invalid_num_pulses);
     RUN_TEST(test_radar_output_field_names);
+    RUN_TEST(test_detection_defaults_valid);
+    RUN_TEST(test_detection_invalid_swerling);
 
     RUN_TEST(test_digital_defaults_valid);
     RUN_TEST(test_digital_invalid_snr);

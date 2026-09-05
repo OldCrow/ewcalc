@@ -92,8 +92,15 @@ Open milestones are fully itemized here since they reflect actionable state.
     entry. Cross-referencing pins to the original JED columns was ruled
     out (too diffuse: chapters span several monthly columns); cite the
     books directly.
-  - #69 OPEN — Radar detection statistics calculator (Pd/Pfa, Swerling,
-    fluctuation loss, dwell/hits-per-scan).
+  - #69 OPEN — Radar detection statistics calculator: core + presenter +
+    bridge + macOS and Linux panes shipped 2026-09-06 (Albersheim +
+    Shnidman with Swerling 0–4, fluctuation loss, dwell/hits/FAR;
+    Shnidman constants validated against the exact-theory oracle in
+    scripts/detection_oracle.py, worst error 0.30 dB — the oracle needs
+    scipy, not part of the test suite; reference values are baked into
+    test_radar.cpp). REMAINING: the WinUI3 pane (Windows machine) and
+    ideally a Qt6 compile check of DetectionPage (written to pattern,
+    not compiled — no Qt6 on the Mac; CI's Linux job will catch it).
   - #70 OPEN — Doppler & ambiguity calculator (Doppler shift, blind speeds,
     unambiguous range, Doppler dilemma).
   - #71 OPEN — Radar resolution calculator (range/angular, resolution cell);

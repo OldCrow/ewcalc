@@ -49,9 +49,16 @@ inline constexpr const char* kDash = "\xe2\x80\x94";
 [[nodiscard]] std::string format_degrees(Degrees value, int decimals = 2); // "1.00°"
 
 // ---------------------------------------------------------------------------
+// Time / rate
+// ---------------------------------------------------------------------------
+[[nodiscard]] std::string format_seconds(Seconds value); // "1.500 s" / "55.6 ms" / "12.3 µs"
+[[nodiscard]] std::string format_hz(double hz);          // "1.00 Hz" / "2.50 kHz" / "3.10 MHz"
+
+// ---------------------------------------------------------------------------
 // Dimensionless / ratio
 // ---------------------------------------------------------------------------
 [[nodiscard]] std::string format_percent(double fraction, int decimals = 3); // "0.043%"
+[[nodiscard]] std::string format_count(double value, int decimals = 1);      // "55.6"
 
 // ---------------------------------------------------------------------------
 // Boolean / status

@@ -100,6 +100,97 @@ void test_lpi_advantage() {
     ASSERT_NEAR(lpi_advantage(10000.0).value, 10.0, 0.01);
 }
 
+// ---------------------------------------------------------------------------
+// Detection statistics.
+//
+// Sources: W. J. Albersheim, "Closed-Form Approximation to Robertson's
+// Detection Characteristics", Proc. IEEE 69(7), 1981 (as given in
+// M. A. Richards, "Noncoherent Integration Gain, and its Approximation",
+// 2010, eq. 12 — note the 4.545 constant); D. A. Shnidman, "Determination
+// of Required SNR Values", IEEE Trans. AES 38(3), 2002.
+//
+// Two kinds of expected values below:
+//  (1) Formula-fidelity spot values: the published closed forms evaluated
+//      independently in Python (tools-free transcription check, 1e-6 tol).
+//  (2) Exact-theory gates: required SNR computed from first principles
+//      (square-law detector, threshold from Q_gamma(N,T)=Pfa; Sw0 via the
+//      noncentral-chi-square SF, Sw1/Sw3 by averaging over the RCS pdf,
+//      Sw2 via Gamma(N, 1+chi), Sw4 by 1e7-sample Monte Carlo; bisection
+//      on chi). Oracle: scipy-based script, recorded values below; worst
+//      |Shnidman - exact| observed over the 60-point validation grid is
+//      0.30 dB, within Shnidman's published 0.5 dB envelope.
+//      Closed-form anchor validating the oracle itself: Swerling 1, N=1
+//      has PD = PFA^(1/(1+chi)), so chi = ln(Pfa)/ln(Pd) - 1 exactly.
+// ---------------------------------------------------------------------------
+
+void test_albersheim_formula_fidelity() {
+    // Independent Python evaluation of eq. 12:
+    ASSERT_NEAR(required_snr_albersheim(0.9, 1.0e-6, 1).value,  13.1200180104, 1e-6);
+    ASSERT_NEAR(required_snr_albersheim(0.5, 1.0e-6, 10).value,  3.5580323886, 1e-6);
+    ASSERT_NEAR(required_snr_albersheim(0.9, 1.0e-4, 30).value,  0.8278671048, 1e-6);
+}
+
+void test_albersheim_vs_exact() {
+    // Exact square-law values (oracle). Albersheim fits a *linear* detector
+    // (~0.2 dB from square-law), so gate at 0.5 dB.
+    ASSERT_NEAR(required_snr_albersheim(0.9, 1.0e-6, 1).value,  13.183, 0.5);
+    ASSERT_NEAR(required_snr_albersheim(0.5, 1.0e-6, 10).value,  3.651, 0.5);
+    ASSERT_NEAR(required_snr_albersheim(0.9, 1.0e-4, 30).value,  0.977, 0.5);
+}
+
+void test_shnidman_formula_fidelity() {
+    // Independent Python evaluation of Shnidman's closed form. The 0.95
+    // case exercises the Pd > 0.872 C2 branch; the N=39/40 pair exercises
+    // the alpha breakpoint (0 below 40 pulses, 0.25 at and above).
+    ASSERT_NEAR(required_snr_shnidman(0.9,  1.0e-6, 1,  Swerling::case1).value, 21.3460831936, 1e-6);
+    ASSERT_NEAR(required_snr_shnidman(0.9,  1.0e-6, 10, Swerling::case2).value,  6.1583306442, 1e-6);
+    ASSERT_NEAR(required_snr_shnidman(0.9,  1.0e-4, 30, Swerling::case3).value,  4.9865636374, 1e-6);
+    ASSERT_NEAR(required_snr_shnidman(0.5,  1.0e-6, 10, Swerling::case4).value,  3.8124525580, 1e-6);
+    ASSERT_NEAR(required_snr_shnidman(0.95, 1.0e-6, 10, Swerling::case1).value, 17.0031488483, 1e-6);
+    ASSERT_NEAR(required_snr_shnidman(0.9,  1.0e-6, 40, Swerling::case2).value,  1.4098749674, 1e-6);
+    ASSERT_NEAR(required_snr_shnidman(0.9,  1.0e-6, 39, Swerling::case2).value,  1.4681739259, 1e-6);
+}
+
+void test_shnidman_vs_exact() {
+    // Exact-theory oracle values; gate at Shnidman's published 0.5 dB.
+    // Swerling 1, N=1 closed-form anchors (exact to all digits shown):
+    ASSERT_NEAR(required_snr_shnidman(0.5, 1.0e-6, 1, Swerling::case1).value, 12.7719, 0.5);
+    ASSERT_NEAR(required_snr_shnidman(0.9, 1.0e-4, 1, Swerling::case1).value, 19.3660, 0.5);
+    // Grid points across all cases:
+    ASSERT_NEAR(required_snr_shnidman(0.9, 1.0e-6, 1,  Swerling::nonfluctuating).value, 13.183, 0.5);
+    ASSERT_NEAR(required_snr_shnidman(0.9, 1.0e-6, 10, Swerling::case2).value,  6.292, 0.5);
+    ASSERT_NEAR(required_snr_shnidman(0.9, 1.0e-6, 30, Swerling::case1).value, 10.367, 0.5);
+    ASSERT_NEAR(required_snr_shnidman(0.9, 1.0e-6, 10, Swerling::case3).value,  9.601, 0.5);
+    ASSERT_NEAR(required_snr_shnidman(0.9, 1.0e-6, 10, Swerling::case4).value,  5.808, 0.5);
+    ASSERT_NEAR(required_snr_shnidman(0.5, 1.0e-4, 30, Swerling::case3).value, -0.076, 0.5);
+}
+
+void test_fluctuation_loss() {
+    // Definition: SNR(case) - SNR(Sw0) at identical Pd/Pfa/N.
+    const Db l1 = fluctuation_loss(0.9, 1.0e-6, 10, Swerling::case1);
+    ASSERT_NEAR(l1.value,
+                required_snr_shnidman(0.9, 1.0e-6, 10, Swerling::case1).value
+                    - required_snr_shnidman(0.9, 1.0e-6, 10,
+                                            Swerling::nonfluctuating).value,
+                1e-12);
+    // Exact-theory value: 13.500 - 5.267 = 8.23 dB (oracle grid).
+    ASSERT_NEAR(l1.value, 8.23, 0.5);
+    // Scan-to-scan fluctuation at high Pd costs SNR; Sw0 loss is zero.
+    ASSERT_TRUE(l1.value > 0.0);
+    ASSERT_NEAR(fluctuation_loss(0.9, 1.0e-6, 10,
+                                 Swerling::nonfluctuating).value, 0.0, 1e-12);
+}
+
+void test_scan_timing() {
+    // Dwell: 2° beam scanning at 36°/s (10 s rotation) → 55.6 ms.
+    const Seconds td = dwell_time(Degrees{2.0}, 36.0);
+    ASSERT_NEAR(td.value, 2.0 / 36.0, 1e-12);
+    // Hits per scan: 55.6 ms × 1000 Hz PRF → 55.6 hits.
+    ASSERT_NEAR(hits_per_scan(td, 1000.0), 2000.0 / 36.0, 1e-9);
+    // FAR = Pfa · B: 1e-6 × 1 MHz → 1 false alarm per second.
+    ASSERT_NEAR(false_alarm_rate_hz(1.0e-6, Mhz{1.0}), 1.0, 1e-12);
+}
+
 int main() {
     std::cout << "=== test_radar ===\n";
     RUN_TEST(test_pulse_compression_gain);
@@ -107,5 +198,11 @@ int main() {
     RUN_TEST(test_radar_range_computed);
     RUN_TEST(test_wavelength);
     RUN_TEST(test_lpi_advantage);
+    RUN_TEST(test_albersheim_formula_fidelity);
+    RUN_TEST(test_albersheim_vs_exact);
+    RUN_TEST(test_shnidman_formula_fidelity);
+    RUN_TEST(test_shnidman_vs_exact);
+    RUN_TEST(test_fluctuation_loss);
+    RUN_TEST(test_scan_timing);
     return test::summary();
 }

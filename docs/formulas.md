@@ -199,6 +199,46 @@ LOS: `d = 10^((margin - 32.44 - 20*log10(f))/20)`; 2-ray: `d = 10^((margin - 120
 - Assumptions: compares matched-filter pulse-compression radar with non-coherent energy-detecting intercept receiver; advantage collapses to 0 dB if the intercept receiver also uses a matched filter.
 - Units: time-bandwidth product in, dB out.
 
+## Detection
+
+### Required SNR — Albersheim's equation
+`A = ln(0.62/Pfa)`, `B = ln(Pd/(1-Pd))`,
+`SNR_dB = -5*log10(N) + (6.2 + 4.545/sqrt(N + 0.44)) * log10(A + 0.12*A*B + 1.7*B)`
+
+- Source: W. J. Albersheim, "Closed-Form Approximation to Robertson's Detection Characteristics", Proc. IEEE 69(7), 1981, as reproduced in M. A. Richards, "Noncoherent Integration Gain, and its Approximation" (2010), eq. 12. Note the third constant is 4.545, not the oft-misquoted 4.54.
+- Assumptions: nonfluctuating target, linear detector, noncoherent integration of N pulses; error < 0.2 dB for 1e-7 <= Pfa <= 1e-3, 0.1 <= Pd <= 0.9, 1 <= N <= 8096; also serviceable for square-law detectors (~0.2 dB apart).
+- Units: probabilities and pulse count in, dB out.
+
+### Required SNR — Shnidman's equation (Swerling 0–4)
+`K = inf (Sw0), 1 (Sw1), N (Sw2), 2 (Sw3), 2N (Sw4)`; `alpha = 0.25 if N >= 40 else 0`;
+`eta = sqrt(-0.8*ln(4*Pfa*(1-Pfa))) + sign(Pd-0.5)*sqrt(-0.8*ln(4*Pd*(1-Pd)))`;
+`X_inf = eta*(eta + 2*sqrt(N/2 + alpha - 0.25))`;
+`C1 = {[(17.7006*Pd - 18.4496)*Pd + 14.5339]*Pd - 3.525}/K`;
+`C2 = (1/K)*{exp(27.31*Pd - 25.14) + (Pd - 0.8)*[0.7*ln(1e-5/Pfa) + (2N-20)/80]}` (only for Pd > 0.872);
+`SNR_dB = 10*log10(X_inf/N) + C1 + C2`
+
+- Source: D. A. Shnidman, "Determination of Required SNR Values", IEEE Trans. AES 38(3), 2002.
+- Validation: the implementation is gated in `libew/tests/test_radar.cpp` against an exact Marcum-Q / noncentral-chi-square oracle (`scripts/detection_oracle.py`); worst observed error over the 60-point grid is 0.30 dB, inside Shnidman's published 0.5 dB envelope (0.1 <= Pd <= 0.99, 1e-9 <= Pfa <= 1e-3, 1 <= N <= 100).
+- Units: probabilities, pulse count and Swerling case in, per-pulse dB out.
+
+### Fluctuation loss
+`L_f = SNR_required(Swerling case) - SNR_required(Swerling 0)`
+
+- Source: definitional, computed via Shnidman's equation above; concept per Swerling-model radar detection theory (e.g. Richards, Fundamentals of Radar Signal Processing, ch. 6).
+- Units: dB.
+
+### Dwell time and hits per scan
+`T_D = theta_az / scan_rate`, `hits = T_D * PRF`
+
+- Source: standard scanning-radar geometry (Adamy EW101 dwell-time treatment [OPEN: page/eq TBD]).
+- Units: beamwidth in degrees, scan rate in deg/s, PRF in Hz; dwell in seconds, hits dimensionless.
+
+### False-alarm rate
+`FAR = Pfa * B`
+
+- Source: standard result — one independent detection opportunity per resolution time 1/B (e.g. Skolnik, Introduction to Radar Systems [OPEN: page/eq TBD]).
+- Units: probability and MHz in, false alarms per second out.
+
 ## Digital/DSSS
 
 ### Eb/N0 ↔ SNR

@@ -123,6 +123,38 @@ void test_format_percent() {
 // ---------------------------------------------------------------------------
 // Temperature
 // ---------------------------------------------------------------------------
+void test_format_seconds() {
+    ASSERT_SIZE(format_seconds(Seconds{0.0}));
+    ASSERT_SIZE(format_seconds(Seconds{1.5}));       // "1.500 s"
+    ASSERT_SIZE(format_seconds(Seconds{0.0556}));    // "55.6 ms"
+    ASSERT_SIZE(format_seconds(Seconds{1.23e-5}));   // "12.3 µs"
+    ASSERT_SIZE(format_seconds(Seconds{1.0e9}));
+    // Band checks
+    ASSERT_TRUE(format_seconds(Seconds{1.5}).find(" s") != std::string::npos);
+    ASSERT_TRUE(format_seconds(Seconds{0.0556}).find("ms") != std::string::npos);
+    ASSERT_TRUE(format_seconds(Seconds{1.23e-5}).find("\xc2\xb5s") != std::string::npos);
+    ASSERT_TRUE(format_seconds(Seconds{0.0}) == "0.000 s");
+}
+
+void test_format_hz() {
+    ASSERT_SIZE(format_hz(0.0));
+    ASSERT_SIZE(format_hz(1.0));       // "1.00 Hz"
+    ASSERT_SIZE(format_hz(2500.0));    // "2.50 kHz"
+    ASSERT_SIZE(format_hz(3.1e6));     // "3.10 MHz"
+    ASSERT_SIZE(format_hz(1.0e12));
+    ASSERT_TRUE(format_hz(2500.0).find("kHz") != std::string::npos);
+    ASSERT_TRUE(format_hz(3.1e6).find("MHz") != std::string::npos);
+}
+
+void test_format_count() {
+    ASSERT_SIZE(format_count(0.0));
+    ASSERT_SIZE(format_count(55.55));
+    ASSERT_SIZE(format_count(1.0e15, 3));
+    // 55.55 is 55.5499… in binary — rounds down; avoid the half-way case.
+    ASSERT_TRUE(format_count(55.56) == "55.6");
+    ASSERT_TRUE(format_count(-0.0) == "0.0");   // negative-zero normalization
+}
+
 void test_format_kelvin() {
     ASSERT_SIZE(format_kelvin(Kelvin{0.0}));
     ASSERT_SIZE(format_kelvin(Kelvin{100000.0}));
@@ -155,6 +187,9 @@ int main() {
     RUN_TEST(test_format_m);
     RUN_TEST(test_format_degrees);
     RUN_TEST(test_format_percent);
+    RUN_TEST(test_format_seconds);
+    RUN_TEST(test_format_hz);
+    RUN_TEST(test_format_count);
     RUN_TEST(test_format_kelvin);
     RUN_TEST(test_format_regime);
 
