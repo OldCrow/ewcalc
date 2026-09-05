@@ -108,6 +108,8 @@ std::string format_percent(double fraction, int decimals) {
 std::string format_count(double value, int decimals) {
     // Trailing-space trim: fmt() appends " <unit>"; with an empty unit that
     // leaves a trailing space, so format directly instead.
+    // cppcheck-suppress duplicateConditionalAssign
+    // -0.0 == 0.0 is true, but assigning 0.0 flips the sign bit; not a no-op.
     if (value == 0.0) value = 0.0;
     char buf[64];
     std::snprintf(buf, sizeof(buf), "%.*f", decimals, value);
