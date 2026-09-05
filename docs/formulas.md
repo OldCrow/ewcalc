@@ -48,25 +48,27 @@ Piecewise Lee (1982) approximation to the Fresnel diffraction integral `J(v)`.
 ### Effective radiated power (ERP)
 `ERP = P_tx + G_tx`
 
-- Source: Adamy EW101 [OPEN: page/eq TBD].
+- Source: Adamy EW103 Sec. 5.2, p. 120 and Fig. 5.4, p. 121.
 - Units: power in dBm or dBW, gain in dB; result uses the same power unit as input.
 
 ### dBi ↔ dBd gain reference conversion
 `dBd = dBi - 2.15`, `dBi = dBd + 2.15`
 
-- Source: IEEE Std 145 antenna terminology; Adamy EW101 [OPEN: page/eq TBD]. The 2.15 dB offset is `10*log10(1.64)`, the half-wave dipole directivity over isotropic.
+- Source: IEEE Std 145 antenna terminology. The 2.15 dB offset is `10*log10(1.64)`, the half-wave dipole directivity over isotropic. Not treated in Adamy EW101–EW103 (verified 2026-09-06): his equations reference ERP directly and assume the user supplies the correct gain; his antenna tables are explicitly illustrative, with actual gain from antenna physics.
 
 ### Beamwidth from gain
 `theta_3dB ≈ sqrt(30000 / 10^(G_dBi / 10))` degrees
 
-- Source: Adamy EW101 [OPEN: page/eq TBD]. This is the circular/symmetric inverse of `gain_from_beamwidth()` where `theta_az == theta_el`, using the same 30000 beam-shape constant.
+- Source: Kraus/Tai-Pereira-family two-plane beamwidth-directivity rule of thumb, 30000 variant. This is the circular/symmetric inverse of `gain_from_beamwidth()` where `theta_az == theta_el`, using the same 30000 beam-shape constant.
+- DELTA vs. Adamy: EW103 uses `29000/(theta_az*theta_el)` (Sec. 3.7, p. 70), noting the underlying solution gives 28889 with 29000 in common use. The two rules differ by 10*log10(30000/29000) = 0.15 dB. Retained as a documented difference pending the formula-fidelity sweep (see PLAN.md Provenance Framing).
 - Assumptions: the presenter rejects gains below -6.35 dBi so the derived beamwidth does not exceed 360°.
 - Units: gain in dBi, result in degrees.
 
 ### Gain from beamwidth
 `G ≈ 10*log10(30000 / (theta_az_deg * theta_el_deg))`
 
-- Source: Adamy EW101 [OPEN: page/eq TBD]; same family as Kraus/Tai-Pereira two-plane beamwidth-directivity approximations; Adamy, "EW 101 — ES vs. SIGINT — Part 2," JED, February 2011, p. 52, Fig. 3 provides graphical context for gain vs. 3 dB beamwidth.
+- Source: Kraus/Tai-Pereira-family rule of thumb, 30000 variant; Adamy, "EW 101 — ES vs. SIGINT — Part 2," JED, February 2011, p. 52, Fig. 3 provides graphical context for gain vs. 3 dB beamwidth.
+- DELTA vs. Adamy: EW103 Sec. 3.7, p. 70's 29000 form — see Beamwidth from gain above; same 0.15 dB difference and same pending decision.
 - Units: beamwidths in degrees, result in dBi.
 
 ### Wavelength

@@ -8,7 +8,8 @@ using namespace libew::units::literals;
 
 // ---------------------------------------------------------------------------
 // ERP — Effective Radiated Power
-// Source: Adamy EW101 [OPEN: page/eq TBD]. ERP = Ptx + Gtx (log domain).
+// Source: Adamy EW103 Sec 5.2, p.120 and Fig 5.4, p.121. ERP = Ptx + Gtx
+// (log domain).
 // ---------------------------------------------------------------------------
 
 void test_erp_dbm() {
@@ -31,7 +32,9 @@ void test_erp_dbw() {
 // ---------------------------------------------------------------------------
 // Gain reference conversions: dBi ↔ dBd
 // 2.15 dB offset: isotropic antenna is 2.15 dB above half-wave dipole.
-// Source: IEEE Std 145 antenna terms; Adamy EW101 [OPEN: page/eq TBD].
+// Source: IEEE Std 145 antenna terms. Not treated in Adamy EW101-EW103
+// (verified 2026-09-06): his equations reference ERP directly, gain from
+// antenna physics; no dBi/dBd conversion appears.
 // (2.15 dB = 10*log10(1.64), the half-wave dipole's directivity over isotropic.)
 // ---------------------------------------------------------------------------
 
@@ -56,10 +59,12 @@ void test_dbi_dbd_roundtrip() {
 // ---------------------------------------------------------------------------
 // Beamwidth from gain
 // θ_3dB ≈ sqrt(30000 / 10^(G_dBi/10)) degrees
-// Source: Adamy EW101 [OPEN: page/eq TBD]. This is the symmetric inverse of
-// gain_from_beamwidth() below (θ_az == θ_el), using the same 30000 beam-shape
-// constant. Dave Adamy's "EW 101 -- ES vs. SIGINT -- Part 2" (JED, Feb 2011,
-// p. 52, Figure 3) provides graphical context for gain vs. 3 dB beamwidth.
+// Source: Kraus/Tai-Pereira-family rule of thumb, 30000 variant. This is the
+// symmetric inverse of gain_from_beamwidth() below (θ_az == θ_el), same
+// constant. DELTA: Adamy EW103 uses 29000 (exact solution 28889;
+// Sec 3.7, p.70) — 0.15 dB apart; documented difference, see
+// docs/formulas.md. Dave Adamy's "EW 101 -- ES vs. SIGINT -- Part 2" (JED,
+// Feb 2011, p. 52, Figure 3) provides graphical context.
 // ---------------------------------------------------------------------------
 
 void test_beamwidth_from_gain_0dbi() {
@@ -77,9 +82,11 @@ void test_beamwidth_from_gain_increases_with_lower_gain() {
 // ---------------------------------------------------------------------------
 // Gain from beamwidth
 // G ≈ 10*log10(30000 / (θ_az * θ_el))
-// Source: Adamy EW101 [OPEN: page/eq TBD]; qualitatively consistent with
-// Dave Adamy's "EW 101 -- ES vs. SIGINT -- Part 2" (JED, Feb 2011, p. 52,
-// Figure 3: gain vs. 3 dB beamwidth for a 55%-efficient parabolic dish),
+// Source: Kraus/Tai-Pereira-family rule of thumb, 30000 variant. DELTA:
+// Adamy EW103 uses 29000 (Sec 3.7, p.70) — see docs/formulas.md.
+// Qualitatively consistent with Dave Adamy's "EW 101 -- ES vs. SIGINT --
+// Part 2" (JED, Feb 2011, p. 52, Figure 3: gain vs. 3 dB beamwidth for a
+// 55%-efficient parabolic dish),
 // though that source is a graph rather than a closed-form equation. Same
 // family as the Kraus and Tai & Pereira two-plane beamwidth-directivity
 // approximations (D0 ~ K/(theta_az*theta_el)); the constant (commonly

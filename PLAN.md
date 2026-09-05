@@ -183,6 +183,13 @@ itemized since they're actionable.
   conventionally /24000). ewcalc implements the EW102 definition, which
   is correct for its regime-selection use. Do NOT "correct" the
   constant to EW101's. Recorded on #68.
+- Beamwidth-constant delta (found 2026-09-06, #68 sweep): libew's
+  gain↔beamwidth pair uses the 30000 rule-of-thumb constant; Adamy
+  EW103 uses 29000 (noting the exact solution is 28889). 0.15 dB apart.
+  Documented as a delta in formulas.md/test_antenna.cpp; whether to
+  adopt 29000 is deferred to the fidelity sweep. Also verified: Adamy
+  EW101–EW103 never define dBi↔dBd — that conversion now cites IEEE
+  Std 145 alone.
 - Follow-up: full formula-fidelity sweep of all libew functions against
   the books (superset of #68's pins; sequence: fidelity sweep → pins).
 
