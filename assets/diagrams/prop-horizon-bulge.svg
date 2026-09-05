@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" font-family="system-ui, sans-serif" font-size="14">
+  <!-- Curved-earth geometry: radar/radio horizon (tangent ray) and midpath
+       earth bulge, both on the 4/3-effective-earth radius. -->
+
+  <!-- Effective earth (arc) -->
+  <path d="M40 260 Q 320 170 600 260" stroke="#808080" stroke-width="2" fill="none"/>
+  <text x="320" y="286" text-anchor="middle" fill="#808080">effective earth (k = 4/3 radius)</text>
+
+  <!-- Tx mast on left slope -->
+  <line x1="90" y1="247" x2="90" y2="157" stroke="#808080" stroke-width="2"/>
+  <circle cx="90" cy="151" r="6" stroke="#808080" stroke-width="2" fill="none"/>
+  <text x="68" y="205" fill="#808080">h<tspan font-size="10" dy="3">tx</tspan><tspan dy="-3">&#8203;</tspan></text>
+
+  <!-- Rx mast on right slope -->
+  <line x1="550" y1="247" x2="550" y2="177" stroke="#808080" stroke-width="2"/>
+  <circle cx="550" cy="171" r="6" stroke="#808080" stroke-width="2" fill="none"/>
+  <text x="564" y="215" fill="#808080">h<tspan font-size="10" dy="3">rx</tspan><tspan dy="-3">&#8203;</tspan></text>
+
+  <!-- Tangent ray between antenna tops, grazing the arc -->
+  <path d="M96 152 Q 320 208 544 172" stroke="#3b82c4" stroke-width="2.5" fill="none"/>
+  <text x="320" y="146" text-anchor="middle" fill="#3b82c4">tangent ray &#8212; horizon range R = 4.12(&#8730;h<tspan font-size="10" dy="3">tx</tspan><tspan dy="-3">&#8203;</tspan> + &#8730;h<tspan font-size="10" dy="3">rx</tspan><tspan dy="-3">&#8203;</tspan>)</text>
+
+  <!-- Earth bulge at midpath -->
+  <line x1="320" y1="215" x2="320" y2="196" stroke="#c49a3b" stroke-width="2"/>
+  <path d="M320 196 l-4 9 l8 0 Z" fill="#c49a3b"/>
+  <text x="336" y="236" fill="#c49a3b">bulge h<tspan font-size="10" dy="3">b</tspan><tspan dy="-3">&#8203;</tspan> = d&#8321;d&#8322;/(2R<tspan font-size="10" dy="3">e</tspan><tspan dy="-3">&#8203;</tspan>)</text>
+
+  <!-- d1 / d2 -->
+  <text x="195" y="248" text-anchor="middle" fill="#808080">d&#8321;</text>
+  <text x="440" y="248" text-anchor="middle" fill="#808080">d&#8322;</text>
+
+  <!-- Takeaway -->
+  <text x="320" y="36" text-anchor="middle" fill="#808080">The horizon limits how far antennas see; between them, the earth itself</text>
+  <text x="320" y="54" text-anchor="middle" fill="#808080">bulges into the path &#8212; clearance must beat the bulge, not just terrain</text>
+</svg>

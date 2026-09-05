@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" font-family="system-ui, sans-serif" font-size="14">
+  <!-- Stand-off (support) jamming geometry: the jammer stays at R_j outside
+       the threat envelope, off the radar boresight, while the protected
+       target penetrates at R_t. Jamming enters through a sidelobe/offset
+       angle; the skin echo still pays the two-way path to the target. -->
+
+  <!-- Radar (left) -->
+  <g stroke="#808080" stroke-width="2" fill="none">
+    <path d="M60 170 L90 140 L90 200 Z"/>
+    <line x1="75" y1="185" x2="75" y2="220"/>
+    <line x1="58" y1="220" x2="92" y2="220"/>
+  </g>
+  <text x="75" y="242" text-anchor="middle" fill="#808080">Radar</text>
+
+  <!-- Boresight toward target -->
+  <line x1="95" y1="168" x2="545" y2="140" stroke="#808080" stroke-width="1" stroke-dasharray="5 4"/>
+
+  <!-- Target (penetrator, on boresight), crossing nose-up -->
+  <g stroke="#808080" stroke-width="2" fill="none">
+    <path d="M0 -18 L10 12 L0 5 L-10 12 Z" transform="translate(560,142) rotate(-18)"/>
+  </g>
+  <text x="560" y="112" text-anchor="middle" fill="#808080">Target</text>
+
+  <!-- Skin echo two-way (amber) along boresight -->
+  <g stroke="#c49a3b" stroke-width="2" fill="none">
+    <path d="M98 158 C 240 138, 400 128, 540 134"/>
+    <path d="M540 148 C 400 152, 240 162, 98 172"/>
+  </g>
+  <g fill="#c49a3b">
+    <path d="M540 134 l-12 -4 l6 10 Z"/>
+    <path d="M98 172 l12 2 l-6 -9 Z"/>
+  </g>
+  <text x="320" y="112" text-anchor="middle" fill="#c49a3b">skin echo, R&#8348;: two-way</text>
+
+  <!-- Stand-off jammer, holding a racetrack roughly parallel to the target's track -->
+  <g stroke="#808080" stroke-width="2" fill="none">
+    <path d="M0 -18 L10 12 L0 5 L-10 12 Z" transform="translate(476,258) rotate(-5)"/>
+  </g>
+  <circle cx="476" cy="258" r="5" fill="#3b82c4"/>
+  <text x="486" y="290" text-anchor="middle" fill="#808080">Stand-off jammer</text>
+
+  <line x1="470" y1="258" x2="97" y2="180" stroke="#3b82c4" stroke-width="2.5"/>
+  <path d="M97 180 l14 -2 l-3 10 Z" fill="#3b82c4"/>
+  <text x="255" y="246" text-anchor="middle" fill="#3b82c4">jamming, R&#11388;: one-way, off-boresight</text>
+
+  <!-- Offset angle arc -->
+  <path d="M150 165 A 58 58 0 0 1 148 192" stroke="#808080" stroke-width="1" fill="none"/>
+  <text x="168" y="186" fill="#808080">&#952;</text>
+
+  <!-- Takeaway -->
+  <text x="320" y="34" text-anchor="middle" fill="#808080">Jammer protects from outside the envelope: gain toward it is the</text>
+  <text x="320" y="52" text-anchor="middle" fill="#808080">sidelobe/offset gain G(&#952;), not the mainlobe gain the echo enjoys</text>
+</svg>

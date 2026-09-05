@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" font-family="system-ui, sans-serif" font-size="14">
+  <!-- Radar resolution cell: radial depth dR = c/2B, cross-range width
+       R·theta at range R. Two targets inside one cell merge into one blip. -->
+
+  <!-- Radar -->
+  <g stroke="#808080" stroke-width="2" fill="none">
+    <path d="M50 160 L80 130 L80 190 Z"/>
+    <line x1="65" y1="175" x2="65" y2="210"/>
+  </g>
+  <text x="65" y="230" text-anchor="middle" fill="#808080">Radar</text>
+
+  <!-- Beam edges -->
+  <g stroke="#808080" stroke-width="1.5" stroke-dasharray="6 4" fill="none">
+    <line x1="85" y1="150" x2="600" y2="80"/>
+    <line x1="85" y1="170" x2="600" y2="240"/>
+  </g>
+  <path d="M200 132 A 120 120 0 0 1 200 189" stroke="#808080" stroke-width="1" fill="none"/>
+  <text x="212" y="166" fill="#808080">&#952;<tspan font-size="10" dy="3">az</tspan><tspan dy="-3">&#8203;</tspan></text>
+
+  <!-- Resolution cell (blue wedge) at range R -->
+  <path d="M440 111 A 360 360 0 0 1 452 216 L 500 223 A 408 408 0 0 0 488 104 Z"
+        stroke="#3b82c4" stroke-width="2.5" fill="none"/>
+  <!-- dR dimension -->
+  <g stroke="#3b82c4" stroke-width="1">
+    <line x1="446" y1="238" x2="498" y2="245"/>
+  </g>
+  <text x="472" y="266" text-anchor="middle" fill="#3b82c4">&#916;R = c/2B</text>
+  <!-- cross-range dimension -->
+  <text x="558" y="162" fill="#3b82c4">R&#183;&#952;</text>
+
+  <!-- Two merged targets inside the cell -->
+  <circle cx="462" cy="140" r="4" fill="#c49a3b"/>
+  <circle cx="474" cy="180" r="4" fill="#c49a3b"/>
+  <text x="404" y="86" fill="#c49a3b">unresolved: same cell</text>
+
+  <!-- Range dimension -->
+  <line x1="65" y1="284" x2="470" y2="284" stroke="#808080" stroke-width="1" stroke-dasharray="2 4"/>
+  <text x="265" y="278" text-anchor="middle" fill="#808080">R</text>
+
+  <!-- Takeaway -->
+  <text x="320" y="34" text-anchor="middle" fill="#808080">Everything inside one cell &#8212; &#916;R deep, R&#183;&#952; wide &#8212; returns as a single target</text>
+</svg>

@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" font-family="system-ui, sans-serif" font-size="14">
+  <!-- Cascaded noise figure (Friis): each later stage's noise is divided by
+       all gain before it, so the first stage dominates the system NF. -->
+
+  <!-- Antenna input -->
+  <g stroke="#808080" stroke-width="2" fill="none">
+    <path d="M50 130 L70 100 L70 160 Z" transform="rotate(180 60 130)"/>
+    <line x1="70" y1="130" x2="110" y2="130"/>
+  </g>
+
+  <!-- Stage blocks -->
+  <g stroke="#3b82c4" stroke-width="2.5" fill="none">
+    <rect x="110" y="98" width="120" height="64" rx="6"/>
+    <rect x="290" y="98" width="120" height="64" rx="6"/>
+    <rect x="470" y="98" width="120" height="64" rx="6"/>
+  </g>
+  <g fill="#3b82c4" text-anchor="middle">
+    <text x="170" y="124">Stage 1</text>
+    <text x="170" y="146">G&#8321;, NF&#8321;</text>
+    <text x="350" y="124">Stage 2</text>
+    <text x="350" y="146">G&#8322;, NF&#8322;</text>
+    <text x="530" y="124">Stage 3</text>
+    <text x="530" y="146">G&#8323;, NF&#8323;</text>
+  </g>
+
+  <!-- Inter-stage arrows -->
+  <g stroke="#808080" stroke-width="2" fill="#808080">
+    <line x1="230" y1="130" x2="282" y2="130"/>
+    <path d="M282 130 l-12 -5 l0 10 Z"/>
+    <line x1="410" y1="130" x2="462" y2="130"/>
+    <path d="M462 130 l-12 -5 l0 10 Z"/>
+  </g>
+
+  <!-- Contribution annotations (amber) -->
+  <g fill="#c49a3b" text-anchor="middle">
+    <text x="170" y="196">NF&#8321;</text>
+    <text x="350" y="196">(NF&#8322; &#8722; 1)/G&#8321;</text>
+    <text x="530" y="196">(NF&#8323; &#8722; 1)/G&#8321;G&#8322;</text>
+  </g>
+  <g stroke="#c49a3b" stroke-width="1" fill="none">
+    <line x1="170" y1="168" x2="170" y2="182"/>
+    <line x1="350" y1="168" x2="350" y2="182"/>
+    <line x1="530" y1="168" x2="530" y2="182"/>
+  </g>
+
+  <!-- Friis sum -->
+  <text x="320" y="240" text-anchor="middle" fill="#808080">NF<tspan font-size="10" dy="3">sys</tspan><tspan dy="-3">&#8203;</tspan> = NF&#8321; + (NF&#8322; &#8722; 1)/G&#8321; + (NF&#8323; &#8722; 1)/G&#8321;G&#8322;   (linear terms)</text>
+
+  <!-- Takeaway -->
+  <text x="320" y="40" text-anchor="middle" fill="#808080">Later noise is divided by all the gain in front of it &#8212; the LNA sets the system</text>
+</svg>

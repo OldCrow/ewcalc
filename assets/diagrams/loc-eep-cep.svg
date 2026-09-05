@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" font-family="system-ui, sans-serif" font-size="14">
+  <!-- EEP vs CEP: the fix uncertainty is an ellipse (semi-axes a >= b along
+       the error eigendirections); CEP compresses it to one circle of equal
+       probability, CEP ~ 0.59(a + b). -->
+
+  <!-- EEP ellipse (amber), tilted -->
+  <g transform="translate(320 170) rotate(-25)">
+    <ellipse cx="0" cy="0" rx="170" ry="80" stroke="#c49a3b" stroke-width="2.5" fill="none"/>
+    <!-- semi-axes -->
+    <line x1="0" y1="0" x2="170" y2="0" stroke="#c49a3b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <line x1="0" y1="0" x2="0" y2="-80" stroke="#c49a3b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="86" y="-8" fill="#c49a3b">a</text>
+    <text x="10" y="-42" fill="#c49a3b">b</text>
+  </g>
+  <text x="420" y="278" fill="#c49a3b">EEP (elliptical error probable)</text>
+
+  <!-- CEP circle (blue) -->
+  <circle cx="320" cy="170" r="118" stroke="#3b82c4" stroke-width="2.5" fill="none"/>
+  <line x1="320" y1="170" x2="418" y2="104" stroke="#3b82c4" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="418" y="96" fill="#3b82c4">CEP</text>
+  <text x="130" y="62" fill="#3b82c4">CEP &#8776; 0.59&#183;(a + b)</text>
+
+  <!-- Fix -->
+  <circle cx="320" cy="170" r="4" fill="#808080"/>
+  <text x="320" y="192" text-anchor="middle" fill="#808080">estimated fix</text>
+
+  <!-- Takeaway -->
+  <text x="320" y="30" text-anchor="middle" fill="#808080">The measurement geometry makes an ellipse; CEP is the equal-probability circle</text>
+</svg>

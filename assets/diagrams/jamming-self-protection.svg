@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" font-family="system-ui, sans-serif" font-size="14">
+  <!-- Self-protection jamming geometry: the jammer rides on the target, so
+       jamming reaches the radar over the one-way path R while the skin echo
+       pays the two-way path. Theme-neutral palette: mid-gray structure
+       (#808080), accent blue jamming (#3b82c4), accent amber echo (#c49a3b). -->
+
+  <!-- Radar (left) -->
+  <g stroke="#808080" stroke-width="2" fill="none">
+    <path d="M60 200 L90 170 L90 230 Z"/>              <!-- dish -->
+    <line x1="75" y1="215" x2="75" y2="250"/>           <!-- pedestal -->
+    <line x1="58" y1="250" x2="92" y2="250"/>
+  </g>
+  <text x="75" y="272" text-anchor="middle" fill="#808080">Radar</text>
+
+  <!-- Target aircraft with jammer (right), crossing the LOS nose-up -->
+  <g stroke="#808080" stroke-width="2" fill="none">
+    <path d="M0 -18 L10 12 L0 5 L-10 12 Z" transform="translate(568,200) rotate(-12)"/>
+  </g>
+  <circle cx="568" cy="200" r="5" fill="#3b82c4"/>
+  <text x="568" y="170" text-anchor="middle" fill="#808080">Target + jammer</text>
+
+  <!-- Two-way skin echo (amber, out and back) -->
+  <g stroke="#c49a3b" stroke-width="2" fill="none">
+    <path d="M95 192 C 250 168, 420 168, 552 192"/>
+    <path d="M552 208 C 420 232, 250 232, 95 208"/>
+  </g>
+  <g fill="#c49a3b">
+    <path d="M552 192 l-12 -3 l7 9 Z"/>
+    <path d="M95 208 l12 3 l-7 -9 Z"/>
+  </g>
+  <text x="323" y="158" text-anchor="middle" fill="#c49a3b">skin echo: two-way, &#8733; 1/R&#8308;</text>
+
+  <!-- One-way jamming (blue, straight line) -->
+  <line x1="558" y1="200" x2="97" y2="200" stroke="#3b82c4" stroke-width="2.5"/>
+  <path d="M97 200 l13 -5 l0 10 Z" fill="#3b82c4"/>
+  <text x="323" y="222" text-anchor="middle" fill="#3b82c4">jamming: one-way, &#8733; 1/R&#178;</text>
+
+  <!-- Range dimension -->
+  <g stroke="#808080" stroke-width="1">
+    <line x1="75" y1="285" x2="566" y2="285"/>
+    <line x1="75" y1="280" x2="75" y2="290"/>
+    <line x1="566" y1="280" x2="566" y2="290"/>
+  </g>
+  <text x="320" y="281" text-anchor="middle" fill="#808080">R</text>
+
+  <!-- Takeaway -->
+  <text x="320" y="40" text-anchor="middle" fill="#808080">J/S grows as the range closes &#8212; until burnthrough,</text>
+  <text x="320" y="58" text-anchor="middle" fill="#808080">where the 1/R&#8308; echo finally overtakes the 1/R&#178; jamming</text>
+</svg>

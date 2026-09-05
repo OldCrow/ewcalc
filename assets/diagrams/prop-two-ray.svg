@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" font-family="system-ui, sans-serif" font-size="14">
+  <!-- Two-ray propagation geometry: direct ray plus ground reflection.
+       Below the Fresnel-zone crossover distance the two interfere (FSPL
+       regime); beyond it the ground bounce dominates (40 log d falloff). -->
+
+  <!-- Ground -->
+  <line x1="30" y1="240" x2="610" y2="240" stroke="#808080" stroke-width="2"/>
+
+  <!-- Tx mast -->
+  <line x1="80" y1="240" x2="80" y2="120" stroke="#808080" stroke-width="2"/>
+  <circle cx="80" cy="114" r="6" stroke="#808080" stroke-width="2" fill="none"/>
+  <text x="58" y="185" fill="#808080">h<tspan font-size="10" dy="3">tx</tspan><tspan dy="-3">&#8203;</tspan></text>
+  <text x="80" y="98" text-anchor="middle" fill="#808080">Tx</text>
+
+  <!-- Rx mast -->
+  <line x1="560" y1="240" x2="560" y2="150" stroke="#808080" stroke-width="2"/>
+  <circle cx="560" cy="144" r="6" stroke="#808080" stroke-width="2" fill="none"/>
+  <text x="572" y="200" fill="#808080">h<tspan font-size="10" dy="3">rx</tspan><tspan dy="-3">&#8203;</tspan></text>
+  <text x="560" y="128" text-anchor="middle" fill="#808080">Rx</text>
+
+  <!-- Direct ray (blue) -->
+  <line x1="86" y1="114" x2="554" y2="143" stroke="#3b82c4" stroke-width="2.5"/>
+  <path d="M554 143 l-13 -4 l2 9 Z" fill="#3b82c4"/>
+  <text x="320" y="112" text-anchor="middle" fill="#3b82c4">direct ray</text>
+
+  <!-- Reflected ray (amber) via ground bounce -->
+  <g stroke="#c49a3b" stroke-width="2" fill="none">
+    <path d="M84 119 L330 240 L556 149"/>
+  </g>
+  <path d="M556 149 l-13 1 l4 9 Z" fill="#c49a3b"/>
+  <text x="330" y="262" text-anchor="middle" fill="#c49a3b">ground reflection</text>
+
+  <!-- Distance dimension -->
+  <g stroke="#808080" stroke-width="1">
+    <line x1="80" y1="282" x2="560" y2="282"/>
+    <line x1="80" y1="277" x2="80" y2="287"/>
+    <line x1="560" y1="277" x2="560" y2="287"/>
+  </g>
+  <text x="320" y="278" text-anchor="middle" fill="#808080">d</text>
+
+  <!-- Takeaway -->
+  <text x="320" y="36" text-anchor="middle" fill="#808080">Below the crossover d<tspan font-size="10" dy="3">FZ</tspan><tspan dy="-3">&#8203;</tspan> = 4&#960;h<tspan font-size="10" dy="3">tx</tspan><tspan dy="-3">&#8203;</tspan>h<tspan font-size="10" dy="3">rx</tspan><tspan dy="-3">&#8203;</tspan>/&#955; the rays interfere (free space, 20 log d);</text>
+  <text x="320" y="54" text-anchor="middle" fill="#808080">beyond it the reflection dominates and loss steepens to 40 log d</text>
+</svg>

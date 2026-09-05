@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" font-family="system-ui, sans-serif" font-size="14">
+  <!-- Knife-edge diffraction geometry: the ridge interrupts the direct path;
+       loss depends on the clearance h of the edge relative to the LOS
+       (positive when the edge pokes above the line of sight). -->
+
+  <!-- Ground -->
+  <line x1="30" y1="250" x2="610" y2="250" stroke="#808080" stroke-width="2"/>
+
+  <!-- Ridge (knife edge) -->
+  <path d="M270 250 L330 120 L390 250" stroke="#808080" stroke-width="2" fill="none"/>
+
+  <!-- Tx / Rx masts -->
+  <line x1="80" y1="250" x2="80" y2="170" stroke="#808080" stroke-width="2"/>
+  <circle cx="80" cy="164" r="6" stroke="#808080" stroke-width="2" fill="none"/>
+  <text x="80" y="148" text-anchor="middle" fill="#808080">Tx</text>
+  <line x1="560" y1="250" x2="560" y2="180" stroke="#808080" stroke-width="2"/>
+  <circle cx="560" cy="174" r="6" stroke="#808080" stroke-width="2" fill="none"/>
+  <text x="560" y="158" text-anchor="middle" fill="#808080">Rx</text>
+
+  <!-- Blocked LOS (dashed) -->
+  <line x1="86" y1="164" x2="554" y2="174" stroke="#808080" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="180" y="188" fill="#808080">line of sight</text>
+
+  <!-- Clearance h from LOS up to the edge -->
+  <line x1="330" y1="169" x2="330" y2="122" stroke="#c49a3b" stroke-width="2"/>
+  <path d="M330 122 l-4 10 l8 0 Z" fill="#c49a3b"/>
+  <path d="M330 169 l-4 -10 l8 0 Z" fill="#c49a3b"/>
+  <text x="342" y="150" fill="#c49a3b">h &#62; 0</text>
+
+  <!-- Diffracted path (blue) over the edge -->
+  <g stroke="#3b82c4" stroke-width="2.5" fill="none">
+    <path d="M86 166 L330 121"/>
+    <path d="M330 121 L554 176"/>
+  </g>
+  <path d="M554 176 l-13 -5 l2 10 Z" fill="#3b82c4"/>
+  <text x="452" y="132" fill="#3b82c4">diffracted path</text>
+
+  <!-- Takeaway -->
+  <text x="320" y="36" text-anchor="middle" fill="#808080">h is measured from the LOS to the edge: positive when blocked (shown), negative</text>
+  <text x="320" y="54" text-anchor="middle" fill="#808080">with clearance &#8212; even a grazing edge (h = 0) still costs 6 dB</text>
+</svg>

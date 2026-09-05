@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" font-family="system-ui, sans-serif" font-size="14">
+  <!-- Antenna pattern: mainlobe with the 3 dB beamwidth marked, first
+       sidelobes. Narrower beam <=> more gain: G ~ 30000/(theta_az·theta_el). -->
+
+  <!-- Antenna -->
+  <g stroke="#808080" stroke-width="2" fill="none">
+    <path d="M60 160 L90 130 L90 190 Z"/>
+  </g>
+
+  <!-- Mainlobe (blue) -->
+  <path d="M95 160 C 240 60, 430 60, 560 150 C 570 158, 570 162, 560 170 C 430 260, 240 260, 95 160 Z"
+        stroke="#3b82c4" stroke-width="2.5" fill="none"/>
+
+  <!-- Sidelobes (gray) -->
+  <g stroke="#808080" stroke-width="1.5" fill="none">
+    <path d="M95 160 C 150 96, 210 88, 232 110 C 200 128, 150 146, 95 160"/>
+    <path d="M95 160 C 150 224, 210 232, 232 210 C 200 192, 150 174, 95 160"/>
+  </g>
+  <text x="235" y="92" fill="#808080">sidelobes</text>
+
+  <!-- Boresight axis -->
+  <line x1="95" y1="160" x2="600" y2="160" stroke="#808080" stroke-width="1" stroke-dasharray="6 4"/>
+
+  <!-- 3 dB beamwidth rays and arc (amber) -->
+  <g stroke="#c49a3b" stroke-width="1.5" fill="none" stroke-dasharray="6 4">
+    <line x1="95" y1="160" x2="540" y2="92"/>
+    <line x1="95" y1="160" x2="540" y2="228"/>
+  </g>
+  <path d="M395 114 A 310 310 0 0 1 395 206" stroke="#c49a3b" stroke-width="1.5" fill="none"/>
+  <text x="410" y="166" fill="#c49a3b">&#952;<tspan font-size="10" dy="3">3dB</tspan><tspan dy="-3">&#8203;</tspan></text>
+
+  <text x="330" y="150" fill="#3b82c4">mainlobe</text>
+  <text x="548" y="86" fill="#c49a3b">&#8722;3 dB</text>
+  <text x="548" y="244" fill="#c49a3b">&#8722;3 dB</text>
+
+  <!-- Takeaway -->
+  <text x="320" y="34" text-anchor="middle" fill="#808080">Gain and beamwidth trade directly: G &#8776; 30 000/(&#952;<tspan font-size="10" dy="3">az</tspan><tspan dy="-3">&#8203;</tspan>&#183;&#952;<tspan font-size="10" dy="3">el</tspan><tspan dy="-3">&#8203;</tspan>) &#8212; half the beam, four times the gain</text>
+</svg>

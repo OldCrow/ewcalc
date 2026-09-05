@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" font-family="system-ui, sans-serif" font-size="14">
+  <!-- AOA location geometry: a bearing with RMS error sigma_theta fans out
+       with range; at range R the cross-range uncertainty is ~R·tan(sigma),
+       giving CEP = 1.2·R·tan(sigma_theta) for a two-site fix. -->
+
+  <!-- Sensor site -->
+  <g stroke="#808080" stroke-width="2" fill="none">
+    <path d="M60 230 L90 200 L90 260 Z"/>
+    <line x1="75" y1="245" x2="75" y2="278"/>
+  </g>
+  <text x="75" y="296" text-anchor="middle" fill="#808080">DF site</text>
+
+  <!-- True bearing (blue) -->
+  <line x1="95" y1="228" x2="560" y2="150" stroke="#3b82c4" stroke-width="2.5"/>
+  <path d="M560 150 l-14 0 l3 9 Z" fill="#3b82c4"/>
+  <text x="300" y="176" fill="#3b82c4" transform="rotate(-9.5 300 176)">measured bearing</text>
+
+  <!-- Error fan (amber, dashed edges) -->
+  <g stroke="#c49a3b" stroke-width="1.5" fill="none" stroke-dasharray="6 4">
+    <line x1="95" y1="228" x2="574" y2="106"/>
+    <line x1="95" y1="228" x2="574" y2="196"/>
+  </g>
+  <path d="M574 106 A 245 245 0 0 1 574 196" stroke="#c49a3b" stroke-width="1.5" fill="none"/>
+  <text x="598" y="156" fill="#c49a3b">&#177;&#963;<tspan font-size="10" dy="3">&#952;</tspan><tspan dy="-3">&#8203;</tspan></text>
+
+  <!-- Cross-range error bar at the target -->
+  <line x1="560" y1="118" x2="560" y2="184" stroke="#c49a3b" stroke-width="2"/>
+  <text x="516" y="104" fill="#c49a3b">&#8776; R&#183;tan &#963;<tspan font-size="10" dy="3">&#952;</tspan><tspan dy="-3">&#8203;</tspan></text>
+
+  <!-- Target -->
+  <circle cx="560" cy="151" r="5" fill="#3b82c4"/>
+  <text x="560" y="212" text-anchor="middle" fill="#808080">emitter</text>
+
+  <!-- Range dimension -->
+  <g stroke="#808080" stroke-width="1">
+    <line x1="75" y1="270" x2="560" y2="270" stroke-dasharray="2 4"/>
+  </g>
+  <text x="320" y="264" text-anchor="middle" fill="#808080">R</text>
+
+  <!-- Takeaway -->
+  <text x="320" y="36" text-anchor="middle" fill="#808080">A bearing error is an angle: the position error it causes grows linearly</text>
+  <text x="320" y="54" text-anchor="middle" fill="#808080">with range &#8212; CEP &#8776; 1.2&#183;R&#183;tan &#963;<tspan font-size="10" dy="3">&#952;</tspan><tspan dy="-3">&#8203;</tspan> for a two-site AOA fix</text>
+</svg>
