@@ -21,14 +21,14 @@
   </g>
   <text x="560" y="112" text-anchor="middle" fill="#808080">Target</text>
 
-  <!-- Skin echo two-way (amber) along boresight -->
+  <!-- Skin echo two-way (amber): symmetric lens around the boresight line -->
   <g stroke="#c49a3b" stroke-width="2" fill="none">
-    <path d="M98 158 C 240 138, 400 128, 540 134"/>
-    <path d="M540 148 C 400 152, 240 162, 98 172"/>
+    <path d="M98 160 Q 321 124 540 133"/>
+    <path d="M540 141 Q 319 178 98 168"/>
   </g>
   <g fill="#c49a3b">
-    <path d="M540 134 l-12 -4 l6 10 Z"/>
-    <path d="M98 172 l12 2 l-6 -9 Z"/>
+    <path d="M540 133 l-13 -3 l5 10 Z"/>
+    <path d="M98 168 l13 3 l-5 -10 Z"/>
   </g>
   <text x="320" y="112" text-anchor="middle" fill="#c49a3b">skin echo, R&#8348;: two-way</text>
 
