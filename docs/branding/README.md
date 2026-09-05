@@ -17,6 +17,13 @@ secondary variant for print, docs headers, or in-app use.
 | `ewcalc-linkedin.{svg,png}` (+`@2x`) | 1200×627 | LinkedIn link/post card (master) |
 | `ewcalc-github-social-light.{svg,png}` (+`@2x`) | 1280×640 | Light variant |
 | `ewcalc-linkedin-light.{svg,png}` (+`@2x`) | 1200×627 | Light variant |
+| `ewcalc-icon.svg` | 512×512 | App icon source, rounded-square (Linux/ico) |
+| `ewcalc-icon-macos.svg` | 1024×1024 | App icon source, Apple squircle with margin |
+| `ewcalc-icon-wide.svg` | 620×300 | Wide/splash lockup source (MSIX) |
+
+The installed app icons (`assets/linux/hicolor/`, macOS `AppIcon.icns`,
+Windows `Assets/`) are rasterized from these sources: a solid-fill glyph
+below 128 px, the full hairline pattern at and above it.
 
 Design concept and rules are in
 [philosophy-the-emitter-located.md](philosophy-the-emitter-located.md).
