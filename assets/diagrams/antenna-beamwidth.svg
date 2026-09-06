@@ -34,5 +34,5 @@
   <text x="548" y="244" fill="#c49a3b">&#8722;3 dB</text>
 
   <!-- Takeaway -->
-  <text x="320" y="34" text-anchor="middle" fill="#808080">Gain and beamwidth trade directly: G &#8776; 30 000/(&#952;<tspan font-size="10" dy="3">az</tspan><tspan dy="-3">&#8203;</tspan>&#183;&#952;<tspan font-size="10" dy="3">el</tspan><tspan dy="-3">&#8203;</tspan>) &#8212; half the beam, four times the gain</text>
+  <text x="320" y="34" text-anchor="middle" fill="#808080">Gain and beamwidth trade directly: G &#8776; 29 000/(&#952;<tspan font-size="10" dy="3">az</tspan><tspan dy="-3">&#8203;</tspan>&#183;&#952;<tspan font-size="10" dy="3">el</tspan><tspan dy="-3">&#8203;</tspan>) &#8212; half the beam, four times the gain</text>
 </svg>
