@@ -15,7 +15,8 @@ frontend/macos/
 │   ├── Info.plist           Bundle metadata; version pulled from CMake via MARKETING_VERSION
 │   │
 │   ├── Adapters/
-│   │   ├── EwCalcStore.swift      Owns all nine adapter instances for the app lifetime
+│   │   ├── EwCalcStore.swift      Owns all ten adapter instances for the app lifetime
+│   │   ├── SavedInputs.swift      Versioned UserDefaults persistence snapshot
 │   │   ├── PropagationAdapter.swift
 │   │   ├── AntennaAdapter.swift
 │   │   ├── LinkAdapter.swift
@@ -23,10 +24,12 @@ frontend/macos/
 │   │   ├── JammingAdapter.swift
 │   │   ├── LocationAdapter.swift
 │   │   ├── RadarAdapter.swift
+│   │   ├── DetectionAdapter.swift
+│   │   ├── DopplerAdapter.swift
 │   │   └── DigitalAdapter.swift
 │   │
 │   └── Views/
-│       ├── Shared.swift           ResultRow, InputRow, and other reusable SwiftUI components
+│       ├── Shared.swift           ResultRow, InputRow, DiagramSection, and other reusable SwiftUI components
 │       ├── PropagationView.swift
 │       ├── AntennaView.swift
 │       ├── LinkView.swift
@@ -34,6 +37,8 @@ frontend/macos/
 │       ├── JammingView.swift
 │       ├── LocationView.swift
 │       ├── RadarView.swift
+│       ├── DetectionView.swift
+│       ├── DopplerView.swift
 │       ├── DigitalView.swift
 │       └── ReferenceView.swift
 │
@@ -112,10 +117,20 @@ Each Swift adapter class wraps the C bridge for one presenter. It:
 adding a new Swift file, add it to the `SWIFT_SOURCES` list in
 `frontend/macos/CMakeLists.txt`.
 
-## Current state (v1.0.0)
+## Current state (v1.1.0)
 
-Nine calculator pages: Propagation, Antenna, Link Budget, Receiver,
-Jamming, Location, Radar, Digital/DSSS, and Reference.
+Eleven pages: Propagation, Antenna, Link Budget, Receiver, Jamming,
+Location, Radar, Detection, Doppler & Resolution, Digital/DSSS, and
+Reference.
+
+v1.1.0 (coverage & illustration, #69–#72): new `DetectionView` and
+`DopplerView` with their adapters and bridge functions (required SNR via
+Albersheim/Shnidman with Swerling 0–4, fluctuation loss, scan timing,
+false-alarm rate; Doppler shift, PRF ambiguity, blind speed, range and
+cross-range resolution); collapsible `DiagramSection` geometry-diagram
+groups on six pages; an SQNR result row on the Receiver page from the
+core's DR/SQNR split; and help tooltips filled in on the fields that
+lacked them.
 
 v1.0.0 (release readiness, #37): `AntennaView`'s gain `InputRow` lower bound
 tightened from -10 to -6.35 dBi to match `AntennaPresenter::set_gain()`'s

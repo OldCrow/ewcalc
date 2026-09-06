@@ -8,10 +8,13 @@ directly as C++ static libraries — no interop layer required.
 ```
 frontend/linux/
 ├── CMakeLists.txt     Finds Qt6, imports native libs, lists sources
+├── resources/
+│   └── diagrams.qrc   Compiles the shared geometry-diagram PNGs into the binary
 └── src/
     ├── main.cpp
     ├── MainWindow.h/.cpp      QMainWindow shell: sidebar QListWidget + QStackedWidget
     ├── PageUtils.h            Shared helpers: makeSpinBox, makeResultRow, settings, copy results
+    ├── DiagramUtils.h         Collapsible "Geometry" diagram group (#72)
     └── pages/
         ├── PropagationPage.h/.cpp
         ├── AntennaPage.h/.cpp
@@ -20,6 +23,8 @@ frontend/linux/
         ├── JammingPage.h/.cpp
         ├── LocationPage.h/.cpp
         ├── RadarPage.h/.cpp
+        ├── DetectionPage.h/.cpp
+        ├── DopplerPage.h/.cpp
         ├── DigitalPage.h/.cpp
         └── ReferencePage.h/.cpp
 ```
@@ -93,10 +98,19 @@ per-field validation UI (#41). Cross-field checks that clamping can't express
 chain's aggregate stage-NF error — are surfaced the same way on the affected
 field(s).
 
-## Current state (v1.0.0)
+## Current state (v1.1.0)
 
-Nine calculator pages: Propagation, Antenna, Link Budget, Receiver,
-Jamming, Location, Radar, Digital/DSSS, and Reference.
+Eleven pages: Propagation, Antenna, Link Budget, Receiver, Jamming,
+Location, Radar, Detection, Doppler & Resolution, Digital/DSSS, and
+Reference.
+
+v1.1.0 (coverage & illustration, #69–#72): new `DetectionPage` (required
+SNR via Albersheim/Shnidman with Swerling 0–4, fluctuation loss, scan
+timing, false-alarm rate) and `DopplerPage` (Doppler shift, PRF ambiguity,
+blind speed, range and cross-range resolution); collapsible "Geometry"
+diagram groups (`DiagramUtils.h` + `resources/diagrams.qrc`) on six pages;
+an SQNR result row on the Receiver page from the core's DR/SQNR split; and
+help tooltips filled in on the fields that lacked them.
 
 v1.0.0 (release readiness, #37/#41): every calculator page now surfaces
 presenter `FieldError` state as a red spinbox outline and tooltip via the new

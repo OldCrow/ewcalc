@@ -16,6 +16,8 @@ ewcalc-winui.sln
 │   ├── JammingAdapter.h/.cpp
 │   ├── LocationAdapter.h/.cpp
 │   ├── RadarAdapter.h/.cpp
+│   ├── DetectionAdapter.h/.cpp
+│   ├── DopplerAdapter.h/.cpp
 │   └── DigitalAdapter.h/.cpp
 │
 └── ewcalc-winui/          C# WinUI 3 (.csproj)
@@ -29,6 +31,8 @@ ewcalc-winui.sln
 │   ├── LinkViewModel.cs
 │   ├── ReceiverViewModel.cs     (+ StageItemViewModel, RelayCommand)
 │   ├── JammingLocationRadarViewModels.cs
+│   ├── DetectionViewModel.cs
+│   ├── DopplerViewModel.cs
 │   └── DigitalViewModel.cs
     └── Views/
         ├── ResultRow.xaml/.cs       Shared label/value row control
@@ -39,6 +43,8 @@ ewcalc-winui.sln
         ├── JammingPage.xaml/.cs
         ├── LocationPage.xaml/.cs
         ├── RadarPage.xaml/.cs
+        ├── DetectionPage.xaml
+        ├── DopplerPage.xaml
         └── DigitalPage.xaml
 ```
 
@@ -51,9 +57,9 @@ cmake --build build --config Release
 ```
 This produces `build\lib\Release\libew.lib` and `build\lib\Release\ewpresenter.lib`.
 
-**Step 2 — Open `ewcalc-winui.sln` in Visual Studio 2022** (17.x, with the
-"Desktop development with C++" and ".NET desktop development" workloads, plus
-the Windows App SDK extension).
+**Step 2 — Open `ewcalc-winui.sln` in Visual Studio 2022 or newer** (e.g.
+VS 18 2026, with the "Desktop development with C++" and ".NET desktop
+development" workloads, plus the Windows App SDK extension).
 
 **Step 3 — Set configuration to `Release | x64` and build the solution.**
 VS builds `ewpresenter.net` first (it links against the .lib files from Step 1),
@@ -136,11 +142,33 @@ notarization (see `frontend/macos/CMakeLists.txt` and the `build-macos` job in
 `.github/workflows/ci.yml`). There is no Store-specific step here — Microsoft
 Store submission re-signs the package with its own certificate at ingestion.
 
-## Current state (v1.0.0)
+## Current state (v1.1.0)
 
-This frontend covers all nine calculator pages (Propagation, Antenna, Link Budget,
-Receiver, Jamming, Location, Radar, Digital/DSSS, Reference) at v0.6 parity with macOS,
-with the v0.7.0 through v1.0.0 changes below layered on top.
+This frontend covers all eleven pages (Propagation, Antenna, Link Budget,
+Receiver, Jamming, Location, Radar, Detection, Doppler & Resolution,
+Digital/DSSS, Reference) at full parity with macOS and Linux.
+
+## Completed in v1.1.0
+
+- **Detection page** — new `DetectionAdapter` + `DetectionPage.xaml` backed by
+  `DetectionPresenter` (required SNR via Albersheim/Shnidman with Swerling
+  0–4, fluctuation loss, dwell time, hits per scan, false-alarm rate).
+- **Doppler & Resolution page** — new `DopplerAdapter` + `DopplerPage.xaml`
+  backed by `DopplerPresenter` (Doppler shift, unambiguous range/velocity,
+  blind speed, range and cross-range resolution).
+- **SQNR row** on the Receiver page, from the core's DR/SQNR split.
+- **Geometry sections** (#72) — collapsed Expanders on six pages showing the
+  shared diagram PNGs, MSBuild-linked from `assets/diagrams/png/` rather
+  than duplicated.
+- **Help tooltips** on every input and result row across all pages, matching
+  the macOS/Linux help strings; the four error-bound tooltips fall back to
+  help text via `ConverterParameter` instead of showing an empty square.
+- The Propagation regime InfoBar became a standard "Regime" result row, the
+  Location "About CEP" InfoBar became per-row CEP tooltips, and the nav pane
+  widened so "Doppler & Resolution" fits.
+- #62 (field colour-coding) closed as already implemented since v0.8.0 and
+  verified at runtime; the app must run packaged — see AGENTS.md's Windows
+  Frontend notes for the loose-layout dev-run recipe.
 
 ## Completed in v1.0.0
 

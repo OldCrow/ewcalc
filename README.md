@@ -5,7 +5,9 @@
 
 A multi-platform electronic warfare engineering calculator covering antenna analysis,
 RF propagation, link budgets, receiver performance, jamming analysis, emitter location,
-radar, and spread-spectrum communications — based on the EW101 series by David Adamy.
+radar (range equation, detection statistics, Doppler & resolution), and spread-spectrum
+communications — implementing the standard formulas, inspired by and audited against
+the EW101 series by David Adamy.
 
 ## Getting ewcalc
 
@@ -38,25 +40,27 @@ Layered, with clean separation:
 | `propagation` | FSPL, 2-ray ground reflection, Fresnel zone, knife-edge diffraction, earth bulge, radar horizon range |
 | `antenna` | ERP, gain conversions, beamwidth |
 | `link` | One-way link budget, effective range |
-| `receiver` | Sensitivity, cascaded NF (Friis), SFDR, digital DR, noise temperature conversions |
+| `receiver` | Sensitivity, cascaded NF (Friis), SFDR, digital DR and SQNR, noise temperature conversions |
 | `jamming` | J/S ratio, burnthrough range, partial-band optimization |
 | `location` | CEP from AOA bearing error, TDOA timing error, and EEP |
-| `radar` | Radar range equation, pulse compression, coherent integration gain, LPI advantage |
+| `radar` | Radar range equation, pulse compression, coherent integration gain, LPI advantage; detection statistics (Albersheim, Shnidman with Swerling 0–4, fluctuation loss, dwell/hits per scan, false-alarm rate); Doppler shift, unambiguous range/velocity, blind speed, range and cross-range resolution |
 | `digital` | Eb/N₀ ↔ SNR conversion (both directions), DSSS process gain, jamming margin, required J/S |
 
 ## ewpresenter
 
-Eight presenters wrap the `libew` modules for use by any view layer:
+Ten presenters wrap the `libew` modules for use by any view layer:
 
 | Presenter | Inputs | Key outputs |
 |-----------|--------|-------------|
 | `PropagationPresenter` | distance, frequency, antenna heights, obstruction height | FSPL, 2-ray loss, Fresnel zone, regime, earth bulge, radar horizon, knife-edge diffraction loss |
 | `AntennaPresenter` | gain, az/el beamwidth, Tx power, frequency | ERP, beamwidth from gain, gain from beamwidth, wavelength |
 | `LinkPresenter` | Tx power/gain, Rx gain, geometry, sensitivity | Received power, link margin, effective range |
-| `ReceiverPresenter` | Bandwidth, NF, SNR, stage chain, ADC bits | Sensitivity, cascaded NF, system noise temp, SFDR, digital DR |
+| `ReceiverPresenter` | Bandwidth, NF, SNR, stage chain, ADC bits | Sensitivity, cascaded NF, system noise temp, SFDR, digital DR, SQNR |
 | `JammingPresenter` | Signal/jammer ERP, geometry, frequency, J/S threshold | J/S ratio, burnthrough range, partial-band optimum BW (N/A when hop range = 0) |
 | `LocationPresenter` | Bearing error, range, TDOA timing error, EEP semi-axes | CEP (AOA, TDOA, and EEP methods) |
 | `RadarPresenter` | Tx power, gain, RCS, frequency, NF, TB product | Max range, two-way loss, PC gain, coherent integration gain, LPI advantage |
+| `DetectionPresenter` | Pd, Pfa exponent, pulses, Swerling case, beamwidth, scan rate, PRF, bandwidth | Required SNR (Shnidman and Albersheim), fluctuation loss, dwell time, hits per scan, false-alarm rate |
+| `DopplerPresenter` | Frequency, radial speed, PRF, bandwidth, range, az/el beamwidths | Doppler shift, unambiguous range/velocity, blind speed, range and cross-range resolution |
 | `DigitalPresenter` | SNR, bandwidth, data rate, chip rate, required Eb/N₀, impl. loss | Eb/N₀, SNR from Eb/N₀, DSSS process gain, jamming margin, required J/S |
 
 Each presenter validates inputs, calls `libew`, and fires a `std::function` callback with formatted output strings. No platform types are exposed.
@@ -124,8 +128,9 @@ for how to report it privately.
 ## Current status
 
 All three platform frontends — Windows (WinUI 3), macOS (SwiftUI), and Linux
-(Qt6 Widgets) — are feature-complete across all eight calculators plus a
-Reference page. See [`CHANGELOG.md`](CHANGELOG.md) for release history.
+(Qt6 Widgets) — are feature-complete across all ten calculators plus a
+Reference page, with collapsible geometry-diagram sections on six of the
+panes. See [`CHANGELOG.md`](CHANGELOG.md) for release history.
 
 ## License
 

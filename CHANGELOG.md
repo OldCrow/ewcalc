@@ -4,12 +4,12 @@ All notable changes to this project are documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [v1.1.0] — 2026-09-05
+## [v1.1.0] — 2026-09-06
 
 Coverage & Illustration release: two new calculators (Detection statistics,
 Doppler & Resolution) across all three frontends, static geometry diagrams
-on six panes, the DR/SQNR split on the Receiver pane, and the last three
-formula-provenance deltas resolved (#68).
+on six panes, the DR/SQNR split on the Receiver pane, and all five
+formula-provenance deltas from the #68 citation sweep resolved.
 
 ### Changed
 
@@ -30,7 +30,10 @@ formula-provenance deltas resolved (#68).
   standard "Regime" result row (matching Link and the macOS/Linux
   presentation), the always-open "About CEP" InfoBar on Location replaced
   by per-row CEP tooltips (matching macOS), and the navigation pane
-  widened so "Doppler & Resolution" no longer truncates.
+  widened so "Doppler & Resolution" no longer truncates. The tooltip
+  audit was then ported back: 21 fields on macOS/Linux that lacked help
+  text picked up the same strings, and the antenna-beamwidth diagram
+  caption now quotes the adopted 29000 constant.
 - Windows field colour-coding gap (#62) closed as already implemented:
   the converter-based error styling (`FieldErrorToBrushConverter` on
   `BorderBrush`) shipped in v0.8.0 covers every input on all pages and is
