@@ -8,7 +8,6 @@ using namespace libew::units::literals;
 // ---------------------------------------------------------------------------
 // Pulse compression gain: G_pc = 10*log10(time_bandwidth_product).
 // Source: Adamy EW102 (2004) Sec 3.5.2 "Pulse Compression", p.51.
-// [OPEN: exact eq # TBD]
 // ---------------------------------------------------------------------------
 
 void test_pulse_compression_gain() {
@@ -37,7 +36,6 @@ void test_coherent_integration_gain() {
 // equation, applied one-way each direction plus RCS gain term).
 // Source: Adamy EW102 Sec 3.2 "Radar Range Equation", p.36;
 //         Sec 3.2.2 "Radar Detection Range", p.40.
-// [OPEN: exact eq # TBD]
 // ---------------------------------------------------------------------------
 
 void test_radar_range_computed() {
@@ -86,7 +84,7 @@ void test_wavelength() {
 // versus a non-coherent intercept receiver's range scaling as (peak power)^(1/2)
 // (see libew/include/libew/radar/radar.h derivation comment).
 // Source: Adamy EW102 Sec 3.9 "Low Probability of Intercept Radars", p.67-72
-//         (Sec 3.9.5 "LPI Figure of Merit", p.71). [OPEN: exact eq # TBD]
+//         (Sec 3.9.5 "LPI Figure of Merit", p.71).
 // (An earlier audit note here flagged radar.h as citing EW103 for this; the
 // header now correctly cites EW102 — resolved in the v1.0.0 release change,
 // closed as #67.)

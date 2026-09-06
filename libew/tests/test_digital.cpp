@@ -11,7 +11,7 @@ using namespace libew::units::literals;
 //
 // Eb/N₀ = SNR + 10·log10(BW / Rb)
 // Source: Adamy EW102 (2004) Sec 5.6.6 "Signal-to-Noise Ratio", p.128;
-// Sec 5.6.7 "Bit-Error Rate Versus RF SNR", p.128. [OPEN: exact eq # TBD]
+// Sec 5.6.7 "Bit-Error Rate Versus RF SNR", p.128.
 // General relation also standard in digital comms texts (e.g. Proakis).
 // ---------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ void test_snr_from_eb_no_is_inverse() {
 //
 // PG = 10·log10(chip_rate / data_rate)
 // Source: Adamy EW102 (2004) Sec 5.7.3 "Direct Sequence Spread Spectrum
-// Signals", p.136. [OPEN: exact eq # TBD]
+// Signals", p.136.
 // General relation also standard in spread-spectrum texts (e.g. Dixon).
 // ---------------------------------------------------------------------------
 
@@ -73,8 +73,8 @@ void test_dsss_process_gain_doubles_with_10x_chip_rate() {
 // JM = PG - Eb/N₀_req - L_impl
 // J/S_req = -JM
 // Source: Adamy EW102 (2004) Sec 5.9.3 "Jamming DSSS Signals", p.147-149;
-// Adamy EW103 "Communications Electronic Warfare" (2008) covers comms
-// jamming margin at book level [OPEN: page/eq TBD].
+// Adamy EW103 "Communications Electronic Warfare" (2008) Ch. 9 covers comms
+// jamming margin in its Ch. 9 (cf. Sec 9.3.1 for partial-band/DSSS-adjacent material).
 // General relation also standard in spread-spectrum texts (e.g. Torrieri).
 // ---------------------------------------------------------------------------
 

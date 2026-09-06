@@ -14,22 +14,24 @@ using namespace libew::units::literals;
 //        → BW_opt=0.025 MHz, duty=0.000431
 //
 // J/S ratio: J/S = J_rx - S_rx (dB), each term from libew::propagation::path_loss.
-// Source: Adamy EW101 (2001) Ch.9 "Jamming", "Jamming-to-Signal Ratio";
-//         Adamy EW102 (2004) Sec 5.8.1 "Jamming-to-Signal Ratio", p.138.
-// [OPEN: exact eq # TBD]
+// Source: Adamy EW102 (2004) Sec 5.8.1 "Jamming-to-Signal Ratio", p.138;
+//         equivalently Adamy EW103 (2008) Sec 9.1, p.252.
+//
 //
 // Burnthrough range: analytic inversion of the same LOS/2-ray path-loss model
 // used by libew::propagation, solved for J/S == threshold (the range at which
 // jamming just achieves the minimum effective J/S).
-// Source: Adamy EW101 Ch.9 "Burn-Through"; Adamy EW102 Sec 5.8, p.137-140.
-// [OPEN: exact eq # TBD]
+// Source: Adamy EW101 Sec 9.3, pp.187-191 — the fullest Adamy treatment
+// (self-protection, stand-off, and comms burnthrough together); also
+// Adamy EW102 Sec 5.8, pp.137-140.
+//
 //
 // Partial-band jamming: BW_opt = signal_bw * 10^(J/S_single/10), capped only
 // by hop_range_bandwidth. Per v0.7.0 fix, this widens the jamming bandwidth
 // for J/S_single >= 0 dB rather than capping it at signal_bandwidth (see
-// libew/src/jamming.cpp). Concept and treatment consistent with Adamy EW102
-// Sec 5.9.1 "Jamming Frequency Hop Signals", p.141-146.
-// [OPEN: exact eq # TBD]
+// libew/src/jamming.cpp). Concept and treatment per Adamy EW102
+// Sec 5.9.1.2, pp.144-147; equivalently Adamy EW103 Sec 9.3.1, pp.259-262.
+//
 // The doc comment in libew/include/libew/jamming/jamming.h (partial-band
 // section) now matches this implementation and these tests (issue #38).
 

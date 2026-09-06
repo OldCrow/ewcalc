@@ -1,6 +1,6 @@
 # Formulas and references
 
-This document maps `ewcalc` calculator outputs to the equations implemented in `libew`. It records sources, assumptions, sign conventions, and unit conventions. Adamy book page/equation numbers are marked `[OPEN]` where the source family is known but a precise equation pin has not yet been verified.
+This document maps `ewcalc` calculator outputs to the equations implemented in `libew`. It records sources, assumptions, sign conventions, and unit conventions. Adamy book pages are marked `[OPEN]` where the source family is known but a precise pin has not yet been verified. Adamy does not number equations in EW101-EW103 (verified 2026-09-06), so book citations pin section/page only.
 
 ## Propagation
 
@@ -133,7 +133,7 @@ Maximum range where `P_rx == receiver sensitivity`, solved by inverting the one-
 ### Communications J/S ratio
 `J/S = J_rx - S_rx`, where each received power is `ERP + Rx_gain - path_loss`.
 
-- Source: Adamy EW101 Ch. 9 "Jamming"; Adamy EW102 Sec. 5.8.1 "Jamming-to-Signal Ratio", p. 138 [OPEN: exact eq # TBD].
+- Source: Adamy EW102 Sec. 5.8.1 "Jamming-to-Signal Ratio", p. 138; equivalently Adamy EW103 Sec. 9.1, p. 252.
 - Assumptions: signal and jammer paths are evaluated independently and may use different LOS/2-ray regimes.
 - Sign convention: positive J/S favors the jammer.
 - Units: powers/gains in dBm/dB; distances in km; heights in meters; frequency in MHz.
@@ -141,14 +141,14 @@ Maximum range where `P_rx == receiver sensitivity`, solved by inverting the one-
 ### Burnthrough range
 LOS: `d = 10^((margin - 32.44 - 20*log10(f))/20)`; 2-ray: `d = 10^((margin - 120 + 20*log10(h_tx) + 20*log10(h_rx))/40)`.
 
-- Source: Adamy EW101 Ch. 9 "Burn-Through"; Adamy EW102 Sec. 5.8, pp. 137-140 [OPEN: exact eq # TBD].
+- Source: Adamy EW101 Sec. 9.3, pp. 187-191 — the fullest Adamy treatment (self-protection, stand-off, and comms burnthrough together); also Adamy EW102 Sec. 5.8, pp. 137-140.
 - Assumptions: jammer geometry is fixed; signal range is solved for `J/S = threshold`.
 - Units: km, m, MHz, dB/dBm.
 
 ### Partial-band / spot jamming
 `BW_opt = signal_bandwidth * 10^(single_channel_js/10)`, capped only by `hop_range_bandwidth`; `duty_cycle = min(BW_opt, hop_range) / hop_range`.
 
-- Source: Adamy EW102 Sec. 5.9.1 "Jamming Frequency Hop Signals", pp. 141-146 [OPEN: exact eq # TBD].
+- Source: Adamy EW102 Sec. 5.9.1.2, pp. 144-147; equivalently Adamy EW103 Sec. 9.3.1, pp. 259-262 (essentially the same material).
 - Assumptions: for `single_channel_js >= 0 dB`, surplus jammer power should widen bandwidth beyond the signal bandwidth to cover more hops (the corrected v0.7.0 behavior).
 - Units: bandwidths in MHz, J/S in dB.
 
@@ -157,21 +157,21 @@ LOS: `d = 10^((margin - 32.44 - 20*log10(f))/20)`; 2-ray: `d = 10^((margin - 120
 ### CEP from AOA
 `CEP ≈ 1.2 * R * tan(sigma_theta)`
 
-- Source: Adamy EW102 Sec. 6.6.2 "Circular Error Probable", p. 182 [OPEN: exact eq # TBD].
+- Source: Adamy EW102 Sec. 6.6.2 "Circular Error Probable", p. 182.
 - Assumptions: ideal two-receiver 90-degree crossing geometry; `R*tan(sigma_theta)` is RMS cross-range error.
 - Units: bearing error in degrees, range in km, CEP in km.
 
 ### CEP from TDOA
 `CEP ≈ c * sigma_t * R / (2 * B)`
 
-- Source: Adamy EW102 Sec. 6.7.1 "TDOA System Accuracy", p. 183 [OPEN: exact eq # TBD].
+- Source: Adamy EW102 Sec. 6.7.1 "TDOA System Accuracy", p. 183.
 - Assumptions: ideal perpendicular baseline-to-emitter geometry.
 - Units: timing error in nanoseconds, range/baseline in km, CEP in km.
 
 ### CEP from EEP
 `CEP ≈ 0.59 * (a + b)`
 
-- Source: Adamy EW102 Sec. 6.4.3 "Elliptical Error Probable", p. 174 [OPEN: exact eq # TBD].
+- Source: Adamy EW102 Sec. 6.4.3 "Elliptical Error Probable", p. 174.
 - Assumptions: `a` and `b` are 1-sigma semi-major/semi-minor axes; approximation is accurate to about 1% for axis ratio `a/b <= 4`.
 - Units: axes and CEP in km.
 
@@ -180,14 +180,14 @@ LOS: `d = 10^((margin - 32.44 - 20*log10(f))/20)`; 2-ray: `d = 10^((margin - 120
 ### Radar range equation
 `20*log10(R_max) = (P_t + 2G + 20*log10(lambda) + sigma - 30*log10(4*pi) - noise_power - SNR - L_sys) / 4`
 
-- Source: Adamy EW102 Sec. 3.2 "Radar Range Equation", p. 36; Sec. 3.2.2 "Radar Detection Range", p. 40 [OPEN: exact eq # TBD].
+- Source: Adamy EW102 Sec. 3.2 "Radar Range Equation", p. 36; Sec. 3.2.2 "Radar Detection Range", p. 40.
 - Assumptions: monostatic radar with the same antenna gain for transmit and receive; `noise_power = sensitivity - SNR`.
 - Units: powers/gains in dBm/dBi/dB, RCS in dBsm, frequency/bandwidth in MHz, range in km.
 
 ### Pulse compression gain
 `G_pc = 10*log10(time_bandwidth_product)`
 
-- Source: Adamy EW102 Sec. 3.5.2 "Pulse Compression", p. 51 [OPEN: exact eq # TBD].
+- Source: Adamy EW102 Sec. 3.5.2 "Pulse Compression", p. 51.
 - Units: dimensionless time-bandwidth product in, dB out.
 
 ### Coherent integration gain
@@ -199,7 +199,7 @@ LOS: `d = 10^((margin - 32.44 - 20*log10(f))/20)`; 2-ray: `d = 10^((margin - 120
 ### LPI advantage
 `LPI advantage = pulse_compression_gain / 4 = 10*log10(TB) / 4`
 
-- Source: Adamy EW102 Sec. 3.9 "Low Probability of Intercept Radars", pp. 67-72; Sec. 3.9.5 "LPI Figure of Merit", p. 71 [OPEN: exact eq # TBD].
+- Source: Adamy EW102 Sec. 3.9 "Low Probability of Intercept Radars", pp. 67-72; Sec. 3.9.5 "LPI Figure of Merit", p. 71.
 - Assumptions: compares matched-filter pulse-compression radar with non-coherent energy-detecting intercept receiver; advantage collapses to 0 dB if the intercept receiver also uses a matched filter.
 - Units: time-bandwidth product in, dB out.
 
@@ -284,19 +284,19 @@ LOS: `d = 10^((margin - 32.44 - 20*log10(f))/20)`; 2-ray: `d = 10^((margin - 120
 ### Eb/N0 ↔ SNR
 `Eb/N0 = SNR + 10*log10(BW/R_b)`; inverse `SNR = Eb/N0 - 10*log10(BW/R_b)`.
 
-- Source: Adamy EW102 Sec. 5.6.6 "Signal-to-Noise Ratio", p. 128; Sec. 5.6.7 "Bit-Error Rate Versus RF SNR", p. 128 [OPEN: exact eq # TBD]; standard digital communications relation.
+- Source: Adamy EW102 Sec. 5.6.6 "Signal-to-Noise Ratio", p. 128; Sec. 5.6.7 "Bit-Error Rate Versus RF SNR", p. 128; standard digital communications relation.
 - Assumptions: `BW` is receiver noise bandwidth for the measured SNR.
 - Units: `BW` and `R_b` use the same scale, stored as MHz/Mcps-equivalent; ratios are dimensionless, results in dB.
 
 ### DSSS process gain
 `PG = 10*log10(chip_rate / data_rate)`
 
-- Source: Adamy EW102 Sec. 5.7.3 "Direct Sequence Spread Spectrum Signals", p. 136 [OPEN: exact eq # TBD].
+- Source: Adamy EW102 Sec. 5.7.3 "Direct Sequence Spread Spectrum Signals", p. 136.
 - Units: chip rate and data rate in the same scale, result in dB.
 
 ### DSSS jamming margin and required J/S
 `JM = PG - Eb/N0_required - implementation_loss`; `J/S_required = -JM`.
 
-- Source: Adamy EW102 Sec. 5.9.3 "Jamming DSSS Signals", pp. 147-149 [OPEN: exact eq # TBD]; Adamy EW103 book-level comms-jamming context [OPEN: page/eq TBD].
+- Source: Adamy EW102 Sec. 5.9.3 "Jamming DSSS Signals", pp. 147-149; Adamy EW103 Ch. 9 (comms jamming; cf. Sec. 9.3.1).
 - Sign convention: positive jamming margin means spreading gain exceeds jammer advantage; positive required J/S means the jammer must exceed signal power at the receiver.
 - Units: all terms in dB.

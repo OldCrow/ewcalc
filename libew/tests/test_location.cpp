@@ -13,7 +13,7 @@ using namespace libew::units::literals;
 //
 // Formula: CEP = 1.2 * R * tan(σ_θ)
 // Source: Adamy EW102 (2004) Sec 6.6.2 "Circular Error Probable" (Conversion
-// of AOA Errors to Location Errors), p.182. [OPEN: exact eq # TBD]
+// of AOA Errors to Location Errors), p.182.
 //
 // R*tan(σ_θ) is the RMS cross-range position error; the 1.2 coefficient
 // matches the standard RMS-to-CEP conversion factor for a 2D Gaussian error
@@ -57,7 +57,7 @@ void test_cep_aoa_zero_error() {
 //   c·σ_t = range-difference uncertainty
 //   R/B   = geometric dilution (position from range-difference)
 // Source: Adamy EW102 (2004) Sec 6.7.1 "TDOA System Accuracy", p.183.
-// [OPEN: exact eq # TBD]
+//
 //
 // Reference derivation (σ_t=10 ns, R=100 km, B=10 km):
 //   σ_r = 2.99792458e8 * 10e-9 / 1000 = 2.99792e-3 km
@@ -96,7 +96,7 @@ void test_cep_tdoa_scales_with_timing_error() {
 //
 // Formula: CEP ≈ 0.59 * (a + b)   where a ≥ b are the 1-sigma semi-axes.
 // Source: Adamy EW102 (2004) Sec 6.4.3 "Elliptical Error Probable", p.174;
-// approximation accurate to ~1% for a/b ≤ 4. [OPEN: exact eq # TBD]
+// approximation accurate to ~1% for a/b ≤ 4.
 //
 // For a = b (circular): CEP = 0.59 * 2σ = 1.18σ, consistent with
 // the theoretical CEP = σ * sqrt(2*ln(2)) = 1.177σ for a 2D isotropic Gaussian.
