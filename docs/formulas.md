@@ -157,7 +157,8 @@ LOS: `d = 10^((margin - 32.44 - 20*log10(f))/20)`; 2-ray: `d = 10^((margin - 120
 ### CEP from AOA
 `CEP ≈ 1.2 * R * tan(sigma_theta)`
 
-- Source: Adamy EW102 Sec. 6.6.2 "Circular Error Probable", p. 182.
+- Source: standard RMS-to-CEP rule of thumb (CEP ≈ 1.2·RMS for a 2D Gaussian) [OPEN: primary TBD — Adamy cites Wegner (1971), RAND report, as his source for this material — the likely primary for the whole CEP/EEP family; verify whether the implemented form appears there].
+- MIS-ANCHOR RESOLVED (2026-09-06): Adamy EW102 Sec. 6.6.2, p. 182 treats the topic differently — 46.5%/68% RMS figures, a 1.036 axis scaling to 50%, then `CEP = 0.75*sqrt(a^2+b^2)`. Concept anchor only; his formula is not the one implemented. Fidelity-sweep docket: compare and choose.
 - Assumptions: ideal two-receiver 90-degree crossing geometry; `R*tan(sigma_theta)` is RMS cross-range error.
 - Units: bearing error in degrees, range in km, CEP in km.
 
@@ -171,7 +172,8 @@ LOS: `d = 10^((margin - 32.44 - 20*log10(f))/20)`; 2-ray: `d = 10^((margin - 120
 ### CEP from EEP
 `CEP ≈ 0.59 * (a + b)`
 
-- Source: Adamy EW102 Sec. 6.4.3 "Elliptical Error Probable", p. 174.
+- Source: standard bivariate-normal CEP approximation (0.589 ≈ 0.59) [OPEN: primary TBD — Adamy cites Wegner (1971), RAND report, as his source for this material — the likely primary for the whole CEP/EEP family; verify whether the implemented form appears there].
+- MIS-ANCHOR RESOLVED (2026-09-06): Adamy EW102 Sec. 6.4.3, p. 174 defines EEP only (an ellipse at 103.6% of the ellipse just fitting inside the RMS lines) and contains no CEP-from-EEP formula; anchor removed.
 - Assumptions: `a` and `b` are 1-sigma semi-major/semi-minor axes; approximation is accurate to about 1% for axis ratio `a/b <= 4`.
 - Units: axes and CEP in km.
 

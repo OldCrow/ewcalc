@@ -12,13 +12,17 @@ using namespace libew::units::literals;
 // equidistant from emitter).
 //
 // Formula: CEP = 1.2 * R * tan(σ_θ)
-// Source: Adamy EW102 (2004) Sec 6.6.2 "Circular Error Probable" (Conversion
-// of AOA Errors to Location Errors), p.182.
-//
-// R*tan(σ_θ) is the RMS cross-range position error; the 1.2 coefficient
-// matches the standard RMS-to-CEP conversion factor for a 2D Gaussian error
-// distribution (CEP ≈ 1.2 * RMS), independently documented in CEP/accuracy-
-// measure conversion references.
+// Source: standard RMS-to-CEP rule of thumb — R*tan(σ_θ) is the RMS
+// cross-range position error and CEP ≈ 1.2 * RMS for a 2D Gaussian error
+// distribution [OPEN: primary TBD —
+// Adamy cites Wegner (1971, RAND) for this material; check whether the
+// 1.2 form appears there].
+// MIS-ANCHOR RESOLVED (verified 2026-09-06): Adamy EW102 Sec 6.6.2 p.182
+// covers the same topic but with a DIFFERENT formulation — 46.5%/68% RMS
+// figures, a 1.036 scaling of the error-ellipse axes to reach 50%
+// probability, then CEP = 0.75*sqrt(a^2 + b^2). His section anchors the
+// concept only; the implemented rule of thumb is not his. Fidelity-sweep
+// docket: compare the two forms and decide which to implement.
 // ---------------------------------------------------------------------------
 
 void test_cep_aoa_formula_derivation() {
@@ -95,8 +99,12 @@ void test_cep_tdoa_scales_with_timing_error() {
 // CEP from EEP (Elliptical Error Probable).
 //
 // Formula: CEP ≈ 0.59 * (a + b)   where a ≥ b are the 1-sigma semi-axes.
-// Source: Adamy EW102 (2004) Sec 6.4.3 "Elliptical Error Probable", p.174;
-// approximation accurate to ~1% for a/b ≤ 4.
+// Source: standard bivariate-normal CEP approximation (0.589 rounded to
+// 0.59; accurate to ~1% for a/b ≤ 4) [OPEN: primary TBD — Adamy cites Wegner (1971,
+// RAND) for this material; check whether the 0.59 form appears there].
+// MIS-ANCHOR RESOLVED (verified 2026-09-06): Adamy EW102 Sec 6.4.3 p.174
+// defines EEP only — an ellipse at 103.6% of the ellipse fitting inside
+// the RMS lines — and gives NO CEP-from-EEP formula. Anchor removed.
 //
 // For a = b (circular): CEP = 0.59 * 2σ = 1.18σ, consistent with
 // the theoretical CEP = σ * sqrt(2*ln(2)) = 1.177σ for a 2D isotropic Gaussian.

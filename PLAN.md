@@ -200,6 +200,14 @@ itemized since they're actionable.
   adopt 29000 is deferred to the fidelity sweep. Also verified: Adamy
   EW101–EW103 never define dBi↔dBd — that conversion now cites IEEE
   Std 145 alone.
+- Location mis-anchors (found 2026-09-06, #68 sweep): Adamy EW102
+  Sec 6.6.2 gives CEP = 0.75·√(a²+b²) after a 1.036 axis scaling — NOT
+  the implemented 1.2·R·tan(σθ); Sec 6.4.3 defines EEP only (103.6% of
+  the RMS-inscribed ellipse), no CEP-from-EEP formula at all. Both
+  implemented forms (1.2·RMS rule, 0.59·(a+b)) now cite standard-
+  approximation status with primaries [OPEN]; Adamy cites Wegner (1971,
+  RAND) — likely primary for the family, to be checked. Fidelity-sweep
+  docket: compare Adamy's 0.75·√(a²+b²) vs our forms and choose.
 - Follow-up: full formula-fidelity sweep of all libew functions against
   the books (superset of #68's pins; sequence: fidelity sweep → pins).
 
