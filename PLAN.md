@@ -77,12 +77,11 @@ Open milestones are fully itemized here since they reflect actionable state.
 - v1.1.0 — Coverage & Illustration (open, #5), created 2026-09-05:
   - #62 OPEN — WinUI3 field colour-coding (x:Bind crash, deferred; needs the
     Windows machine).
-  - #66 OPEN — macOS `EWCALC_BUILD_FRONTEND` no-op + stale Phase-N messaging
-    (fix in progress 2026-09-05).
-  - #67 OPEN — LPI attribution EW103→EW102; investigation showed radar.h and
-    formulas.md were already corrected in the v1.0.0 release change — only the
-    stale DISCREPANCY note in test_radar.cpp needed cleanup (fix in progress
-    2026-09-05).
+  - #66 CLOSED 2026-09-05 — ewcalc_frontend target wired on macOS
+    (ad-hoc signing; scripts/build-macos.sh stays the signed path);
+    stale Phase-N naming purged repo-wide.
+  - #67 CLOSED 2026-09-05 — header/formulas.md were already correct;
+    stale DISCREPANCY note retired from test_radar.cpp.
   - #68 DONE 2026-09-06 — citation sweep completed against the physical
     books under the precedence rule; all seven headers now carry source
     attribution. Yield: firm pins (ERP, sensitivity, Fresnel, bulge,
@@ -113,8 +112,9 @@ Open milestones are fully itemized here since they reflect actionable state.
     WinUI3 panes, and CI's Linux job gating the Qt6 pages.
   - #72 OPEN — Static geometry diagrams: ten SVG masters + PNG pipeline
     shipped 2026-09-06 (7126d8c); style ratified by user (nose-up
-    crossing aircraft tracks). Wiring into macOS/Linux panes in
-    progress; REMAINING after that: WinUI3 wiring (Windows machine).
+    crossing aircraft tracks). Wired into six macOS/Linux panes as
+    collapsed "Geometry" sections (32f7d83, pane renders user-approved,
+    CI green). REMAINING: WinUI3 wiring (Windows machine).
     Tier-3 panes deliberately have no diagram (Link/Radar/Digital/
     Detection are log-domain arithmetic; a Pd/SNR curve family would
     cross into the fenced-off plotting scope).
@@ -158,6 +158,23 @@ itemized since they're actionable.
     See Decided above for the exact `dotnet format` scoping.
   - #45 CLOSED 2026-07-15 — All four cppcheck baseline findings fixed;
     `scripts/lint-linux.sh` gated with `--error-exitcode=1`.
+
+## Session Close-out 2026-09-05/06 [DERIVED]
+- Everything achievable on the macOS/Ventura machine for v1.1.0 is DONE:
+  #66/#67/#68 closed; #69/#70/#71/#72 shipped through macOS+Linux with
+  CI green; all five fidelity deltas resolved (DR/SQNR both offered,
+  29000 adopted, 4.122 kept, location items closed via Wegner).
+- NEXT (Windows machine, one consolidated session closes v1.1.0):
+  WinUI panes for Detection (#69) and Doppler & Resolution (#70/#71),
+  Receiver SQNR result row (from the DR/SQNR split), #72 Geometry
+  sections, #62 colour-coding retry. Then CHANGELOG Unreleased →
+  v1.1.0 and tag (CI does signed packaging on tag).
+- OPTIONAL (Linux VM, before tagging): visual smoke of the Qt6 panes
+  (Detection, Doppler, Geometry sections, SQNR row) — CI compiles and
+  ctests them but nobody has SEEN the Linux UI; packaging (.deb/
+  AppImage) is tag-triggered in CI.
+- THEN: v1.2.0 Reference Library opens with #73 (data layer);
+  full formula-fidelity sweep remains as future assurance work.
 
 ## Provenance Framing & Formula Fidelity [OPEN]
 - Found 2026-09-06 while pinning #68's first citation: Adamy EW103
