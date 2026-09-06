@@ -105,7 +105,8 @@
                                ValueChanged="SemiMinorBox_ValueChanged">
                         <ToolTipService.ToolTip>
                             <ToolTip Content="{x:Bind ViewModel.SemiMinorError, Mode=OneWay,
-                                         Converter={StaticResource FieldErrorToTooltip}}" />
+                                         Converter={StaticResource FieldErrorToTooltip},
+                                         ConverterParameter='Semi-minor axis of the 1σ error ellipse (must be ≤ semi-major)'}" />
                         </ToolTipService.ToolTip>
                     </NumberBox>
                 </StackPanel>

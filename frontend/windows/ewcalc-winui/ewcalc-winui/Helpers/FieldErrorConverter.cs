@@ -26,6 +26,9 @@ public sealed class FieldErrorToBrushConverter : IValueConverter
 
 public sealed class FieldErrorToTooltipConverter : IValueConverter
 {
+    // With no error, falls back to the field's static help text passed as
+    // ConverterParameter — a bare empty string would render as a small blank
+    // tooltip square rather than suppressing the tooltip.
     public object Convert(object value, Type targetType, object parameter, string language)
     {
         if (value is FieldValidationError err && err != FieldValidationError.None)
@@ -37,10 +40,10 @@ public sealed class FieldErrorToTooltipConverter : IValueConverter
                 FieldValidationError.InvalidZero     => "Value must be positive",
                 FieldValidationError.InvalidNegative => "Value must not be negative",
                 FieldValidationError.NotFinite        => "Value must be a finite number",
-                _                                    => string.Empty,
+                _                                    => parameter as string ?? string.Empty,
             };
         }
-        return string.Empty;
+        return parameter as string ?? string.Empty;
     }
     public object ConvertBack(object value, Type targetType, object parameter, string language)
         => throw new NotSupportedException();

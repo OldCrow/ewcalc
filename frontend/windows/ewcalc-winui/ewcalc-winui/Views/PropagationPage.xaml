@@ -54,7 +54,8 @@
                                ValueChanged="DistanceBox_ValueChanged">
                         <ToolTipService.ToolTip>
                             <ToolTip Content="{x:Bind ViewModel.DistanceError, Mode=OneWay,
-                                         Converter={StaticResource FieldErrorToTooltip}}" />
+                                         Converter={StaticResource FieldErrorToTooltip},
+                                         ConverterParameter='Total path length between transmitter and receiver'}" />
                         </ToolTipService.ToolTip>
                     </NumberBox>
                     <NumberBox x:Name="FrequencyBox"
@@ -104,7 +105,8 @@
                                ValueChanged="ObstructionHeightBox_ValueChanged">
                         <ToolTipService.ToolTip>
                             <ToolTip Content="{x:Bind ViewModel.ObstructionHeightError, Mode=OneWay,
-                                         Converter={StaticResource FieldErrorToTooltip}}" />
+                                         Converter={StaticResource FieldErrorToTooltip},
+                                         ConverterParameter='Knife-edge obstacle height above flat-earth baseline at path midpoint — 0 = no obstruction'}" />
                         </ToolTipService.ToolTip>
                     </NumberBox>
                 </StackPanel>

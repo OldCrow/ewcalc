@@ -51,7 +51,8 @@
                                ValueChanged="GainBox_ValueChanged">
                         <ToolTipService.ToolTip>
                             <ToolTip Content="{x:Bind ViewModel.GainError, Mode=OneWay,
-                                         Converter={StaticResource FieldErrorToTooltip}}" />
+                                         Converter={StaticResource FieldErrorToTooltip},
+                                         ConverterParameter='Antenna gain relative to an isotropic radiator'}" />
                         </ToolTipService.ToolTip>
                     </NumberBox>
                     <NumberBox x:Name="AzBeamwidthBox" Header="Az beamwidth (deg)"
