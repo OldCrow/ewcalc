@@ -56,13 +56,16 @@ struct LinkView: View {
             Section("Geometry") {
                 InputRow("Distance", unit: "km", value: $distance,
                          in: 0.01...10000, step: 0.1, decimals: 3,
-                         error: adapter.distanceError) { adapter.setDistance($0) }
+                         error: adapter.distanceError,
+                         help: "Straight-line distance between transmitter and receiver") { adapter.setDistance($0) }
                 InputRow("Tx height", unit: "m", value: $txHeight,
                          in: 0.1...100000, step: 0.5, decimals: 1,
-                         error: adapter.txHeightError) { adapter.setTxHeight($0) }
+                         error: adapter.txHeightError,
+                         help: "Transmit antenna height above ground level") { adapter.setTxHeight($0) }
                 InputRow("Rx height", unit: "m", value: $rxHeight,
                          in: 0.1...100000, step: 0.5, decimals: 1,
-                         error: adapter.rxHeightError) { adapter.setRxHeight($0) }
+                         error: adapter.rxHeightError,
+                         help: "Receive antenna height above ground level") { adapter.setRxHeight($0) }
             }
             Section("Receiver") {
                 InputRow("Rx gain", unit: "dB", value: $rxGain,
@@ -77,12 +80,14 @@ struct LinkView: View {
             Section("Results") {
                 ResultRow("Received power",  cStr(adapter.output.received_power_str),
                           help: "Signal power at the receiver input: Ptx + Gtx + Grx − path loss")
-                ResultRow("Path loss",       cStr(adapter.output.path_loss_str))
+                ResultRow("Path loss",       cStr(adapter.output.path_loss_str),
+                          help: "Attenuation of the signal as it travels from transmitter to receiver")
                 ResultRow("Link margin",     cStr(adapter.output.link_margin_str),
                           help: "Received power minus sensitivity — positive = link closed; negative = link failure")
                 ResultRow("Fresnel crossover",cStr(adapter.output.fresnel_zone_str),
                           help: "Range at which ground reflection begins to dominate")
-                ResultRow("Regime",          cStr(adapter.output.regime_str))
+                ResultRow("Regime",          cStr(adapter.output.regime_str),
+                          help: "Propagation model — free-space or two-ray — that applies at the given distance")
                 ResultRow("Effective range", cStr(adapter.output.effective_range_str),
                           help: "Maximum range at which the link closes — where received power equals sensitivity")
                 ResultRow("Range regime",    cStr(adapter.output.range_regime_str),

@@ -29,9 +29,11 @@ DetectionPage::DetectionPage(QWidget* parent)
         presenter_.pfa_exponent(), 1.0, 0, kGroup, QStringLiteral("pfa_exponent"),
         QStringLiteral("False-alarm probability exponent x, Pfa = 10^x \u2014 e.g. \u22126 for Pfa = 10\u207b\u2076"));
     auto* npSb = addIntSpinRow(statForm, QStringLiteral("Pulses integrated"), 1, 100,
-        presenter_.num_pulses(), kGroup, QStringLiteral("num_pulses"));
+        presenter_.num_pulses(), kGroup, QStringLiteral("num_pulses"),
+        QStringLiteral("Pulses noncoherently integrated \u2014 Shnidman's equation is valid for 1 to 100"));
     auto* swSb = addIntSpinRow(statForm, QStringLiteral("Swerling case (0\u20134)"), 0, 4,
-        presenter_.swerling_case(), kGroup, QStringLiteral("swerling_case"));
+        presenter_.swerling_case(), kGroup, QStringLiteral("swerling_case"),
+        QStringLiteral("Target fluctuation model: 0 nonfluctuating, 1\u20134 the Swerling cases"));
 
     required_snr_ = addResultRow(statForm, QStringLiteral("Required SNR (Shnidman)"),
         QStringLiteral("Single-pulse SNR required for the chosen Pd/Pfa and Swerling case, after noncoherent integration (Shnidman's equation)"), &results);

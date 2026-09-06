@@ -21,7 +21,8 @@ RadarPage::RadarPage(QWidget* parent)
     auto* inGroup = makeGroup(QStringLiteral("Radar Parameters"), inForm);
 
     auto* txPwrSb = addSpinRow(inForm, QStringLiteral("Tx power (dBm)"), -50.0, 200.0,
-        presenter_.tx_power_dbm(), 1.0, 1, kGroup, QStringLiteral("tx_power_dbm"));
+        presenter_.tx_power_dbm(), 1.0, 1, kGroup, QStringLiteral("tx_power_dbm"),
+        QStringLiteral("Transmitter output power at the antenna port"));
     auto* antGainSb = addSpinRow(inForm, QStringLiteral("Antenna gain (dBi)"), -30.0, 60.0,
         presenter_.antenna_gain_dbi(), 1.0, 1, kGroup, QStringLiteral("antenna_gain_dbi"),
         QStringLiteral("Same antenna used for transmit and receive \u2014 appears squared in the radar range equation"));
@@ -29,12 +30,14 @@ RadarPage::RadarPage(QWidget* parent)
         presenter_.target_rcs_dbsm(), 1.0, 1, kGroup, QStringLiteral("target_rcs_dbsm"),
         QStringLiteral("Radar cross-section of the target (dB relative to 1 m\u00b2) \u2014 fighter ~0 to +10 dBsm, missile \u221210 dBsm"));
     auto* freqSb = addSpinRow(inForm, QStringLiteral("Frequency (MHz)"), 1.0, 100000.0,
-        presenter_.frequency_mhz(), 1.0, 1, kGroup, QStringLiteral("frequency_mhz"));
+        presenter_.frequency_mhz(), 1.0, 1, kGroup, QStringLiteral("frequency_mhz"),
+        QStringLiteral("Radar carrier frequency"));
     auto* losseSb = addSpinRow(inForm, QStringLiteral("System losses (dB)"), 0.0, 30.0,
         presenter_.system_losses_db(), 0.5, 1, kGroup, QStringLiteral("system_losses_db"),
         QStringLiteral("Combined one-way losses: feed line, atmospheric absorption, beam-shape, etc."));
     auto* nfSb = addSpinRow(inForm, QStringLiteral("Noise figure (dB)"), 0.0, 30.0,
-        presenter_.noise_figure_db(), 0.5, 1, kGroup, QStringLiteral("noise_figure_db"));
+        presenter_.noise_figure_db(), 0.5, 1, kGroup, QStringLiteral("noise_figure_db"),
+        QStringLiteral("Receiver noise figure \u2014 NF = 0 dB is ideal (noiseless); each additional dB raises the sensitivity floor"));
     auto* bwSb = addSpinRow(inForm, QStringLiteral("Bandwidth (MHz)"), 0.001, 10000.0,
         presenter_.bandwidth_mhz(), 0.1, 3, kGroup, QStringLiteral("bandwidth_mhz"),
         QStringLiteral("Matched-filter noise bandwidth \u2014 sets the thermal noise floor"));
@@ -50,7 +53,8 @@ RadarPage::RadarPage(QWidget* parent)
         presenter_.time_bandwidth_product(), 10.0, 0, kGroup, QStringLiteral("time_bandwidth_product"),
         QStringLiteral("Pulse compression ratio: pulse width \u00d7 bandwidth \u2014 determines PC gain and LPI advantage"));
     auto* npSb = addIntSpinRow(spForm, QStringLiteral("Coherent pulses"), 1, 100000,
-        presenter_.num_pulses(), kGroup, QStringLiteral("num_pulses"));
+        presenter_.num_pulses(), kGroup, QStringLiteral("num_pulses"),
+        QStringLiteral("Number of pulses combined coherently \u2014 sets the coherent integration gain"));
 
     // ── Outputs ───────────────────────────────────────────────────────────────
     QFormLayout* outForm = nullptr;
@@ -59,7 +63,8 @@ RadarPage::RadarPage(QWidget* parent)
     ResultRowRegistry results;
     max_range_ = addResultRow(outForm, QStringLiteral("Max range"),
         QStringLiteral("Maximum detection range at the required SNR with no signal processing gain applied"), &results);
-    two_way_loss_ = addResultRow(outForm, QStringLiteral("Two-way loss"), QString(), &results);
+    two_way_loss_ = addResultRow(outForm, QStringLiteral("Two-way loss"),
+        QStringLiteral("Total two-way propagation loss at the maximum range"), &results);
     target_rcs_ = addResultRow(outForm, QStringLiteral("Target RCS"),
         QStringLiteral("Target radar cross-section (dB relative to 1 m\u00b2) \u2014 shown here with dBsm suffix so the result panel is self-contained"), &results);
     pc_gain_ = addResultRow(outForm, QStringLiteral("PC gain"),

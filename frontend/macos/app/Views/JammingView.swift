@@ -55,10 +55,12 @@ struct JammingView: View {
                          help: "Effective radiated power of the desired signal: transmitter power + antenna gain") { adapter.setSignalErp($0) }
                 InputRow("Signal→Rx dist", unit: "km", value: $signalDist,
                          in: 0.01...10000, step: 0.1, decimals: 3,
-                         error: adapter.signalDistError) { adapter.setSignalDist($0) }
+                         error: adapter.signalDistError,
+                         help: "Ground range from the signal transmitter to the receiver") { adapter.setSignalDist($0) }
                 InputRow("Signal Tx height", unit: "m", value: $signalHeight,
                          in: 0.1...100000, step: 0.5, decimals: 1,
-                         error: adapter.signalHeightError) { adapter.setSignalHeight($0) }
+                         error: adapter.signalHeightError,
+                         help: "Signal transmitter antenna height above ground — determines the propagation model (LOS or 2-ray) and Fresnel zone crossover distance") { adapter.setSignalHeight($0) }
                 InputRow("Signal BW", unit: "MHz", value: $signalBw,
                          in: 0.001...1000, step: 0.001, decimals: 3,
                          error: adapter.signalBandwidthError,
@@ -71,10 +73,12 @@ struct JammingView: View {
                          help: "Effective radiated power of the jammer toward the receiver") { adapter.setJammerErp($0) }
                 InputRow("Jammer→Rx dist", unit: "km", value: $jammerDist,
                          in: 0.01...10000, step: 0.1, decimals: 3,
-                         error: adapter.jammerDistError) { adapter.setJammerDist($0) }
+                         error: adapter.jammerDistError,
+                         help: "Ground range from the jammer to the receiver") { adapter.setJammerDist($0) }
                 InputRow("Jammer height", unit: "m", value: $jammerHeight,
                          in: 0.1...100000, step: 0.5, decimals: 1,
-                         error: adapter.jammerHeightError) { adapter.setJammerHeight($0) }
+                         error: adapter.jammerHeightError,
+                         help: "Jammer antenna height above ground — determines the propagation model (LOS or 2-ray) and Fresnel zone crossover distance") { adapter.setJammerHeight($0) }
                 InputRow("Hop range", unit: "MHz", value: $hopRange,
                          in: 0...10000, step: 1,
                          error: adapter.hopRangeError,
@@ -87,10 +91,12 @@ struct JammingView: View {
             Section("Shared") {
                 InputRow("Frequency", unit: "MHz", value: $frequency,
                          in: 0.1...100000, step: 1,
-                         error: adapter.frequencyError) { adapter.setFrequency($0) }
+                         error: adapter.frequencyError,
+                         help: "Carrier frequency — used for both signal and jammer path-loss calculations") { adapter.setFrequency($0) }
                 InputRow("Rx height", unit: "m", value: $rxHeight,
                          in: 0.1...100000, step: 0.5, decimals: 1,
-                         error: adapter.rxHeightError) { adapter.setRxHeight($0) }
+                         error: adapter.rxHeightError,
+                         help: "Receiver antenna height above ground — determines the propagation model (LOS or 2-ray) and Fresnel zone crossover distance") { adapter.setRxHeight($0) }
                 InputRow("Rx gain → signal", unit: "dB", value: $rxGainSignal,
                          in: -30...60,
                          error: adapter.rxGainSignalError,
@@ -103,8 +109,10 @@ struct JammingView: View {
             Section("J/S Analysis") {
                 ResultRow("J/S ratio",    cStr(adapter.output.js_ratio_str),
                           help: "Jammer-to-signal power ratio at the receiver input (dB)")
-                ResultRow("Signal at Rx", cStr(adapter.output.signal_at_rx_str))
-                ResultRow("Jammer at Rx", cStr(adapter.output.jammer_at_rx_str))
+                ResultRow("Signal at Rx", cStr(adapter.output.signal_at_rx_str),
+                          help: "Received signal power at the receiver input")
+                ResultRow("Jammer at Rx", cStr(adapter.output.jammer_at_rx_str),
+                          help: "Received jammer power at the receiver input")
                 ResultRow("Burnthrough",  cStr(adapter.output.burnthrough_range_str),
                           help: "Signal range at which J/S falls to the threshold — the jammer becomes ineffective beyond this distance")
             }

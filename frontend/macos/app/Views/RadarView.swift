@@ -45,7 +45,8 @@ struct RadarView: View {
             Section("Radar Parameters") {
                 InputRow("Tx power", unit: "dBm", value: $txPower,
                          in: -50...200,
-                         error: adapter.txPowerError) { adapter.setTxPower($0) }
+                         error: adapter.txPowerError,
+                         help: "Transmitter output power at the antenna port") { adapter.setTxPower($0) }
                 InputRow("Antenna gain", unit: "dBi", value: $antennaGain,
                          in: -30...60,
                          error: adapter.antennaGainError,
@@ -56,14 +57,16 @@ struct RadarView: View {
                          help: "Radar cross-section of the target (dB relative to 1 m²) — fighter ~0 to +10 dBsm, missile −10 dBsm") { adapter.setTargetRcs($0) }
                 InputRow("Frequency", unit: "MHz", value: $frequency,
                          in: 1...100000, step: 10, decimals: 0,
-                         error: adapter.frequencyError) { adapter.setFrequency($0) }
+                         error: adapter.frequencyError,
+                         help: "Radar carrier frequency") { adapter.setFrequency($0) }
                 InputRow("System losses", unit: "dB", value: $systemLosses,
                          in: 0...30, step: 0.5,
                          error: adapter.systemLossesError,
                          help: "Combined one-way losses: feed line, atmospheric absorption, beam-shape, etc.") { adapter.setSystemLosses($0) }
                 InputRow("Noise figure", unit: "dB", value: $noiseFigure,
                          in: 0...30, step: 0.5,
-                         error: adapter.noiseFigureError) { adapter.setNoiseFigure($0) }
+                         error: adapter.noiseFigureError,
+                         help: "Receiver noise figure — NF = 0 dB is ideal (noiseless); each additional dB raises the sensitivity floor") { adapter.setNoiseFigure($0) }
                 InputRow("Bandwidth", unit: "MHz", value: $bandwidth,
                          in: 0.001...10000, step: 0.1, decimals: 3,
                          error: adapter.bandwidthError,
@@ -90,12 +93,14 @@ struct RadarView: View {
                         Spacer().frame(width: 38)
                     }
                 }
+                .help("Number of pulses combined coherently — sets the coherent integration gain")
                 .onChange(of: numPulses) { adapter.setNumPulses($0) }
             }
             Section("Results") {
                 ResultRow("Max range",                cStr(adapter.output.max_range_str),
                           help: "Maximum detection range at the required SNR with no signal processing gain applied")
-                ResultRow("Two-way loss",             cStr(adapter.output.two_way_loss_str))
+                ResultRow("Two-way loss",             cStr(adapter.output.two_way_loss_str),
+                          help: "Total two-way propagation loss at the maximum range")
                 ResultRow("PC gain",                  cStr(adapter.output.pulse_compression_gain_str),
                           help: "Pulse compression SNR gain: 10·log₁₀(time-bandwidth product)")
                 ResultRow("Coherent integration gain",cStr(adapter.output.coherent_integration_gain_str),

@@ -69,7 +69,8 @@ ReceiverPage::ReceiverPage(QWidget* parent)
         presenter_.third_order_ip_dbm(), 1.0, 1, kGroup, QStringLiteral("third_order_ip_dbm"),
         QStringLiteral("Third-order input intercept point \u2014 sets the 3rd-order intermodulation floor; typically the tighter limit"));
     auto* adcSb = addIntSpinRow(inForm, QStringLiteral("ADC bits"), 1, 64,
-        presenter_.adc_bits(), kGroup, QStringLiteral("adc_bits"));
+        presenter_.adc_bits(), kGroup, QStringLiteral("adc_bits"),
+        QStringLiteral("Number of ADC quantisation bits \u2014 more bits raise the digital dynamic range and SQNR"));
 
     // ── Noise-chain stage cascade ─────────────────────────────────────────────
     auto* stageGroup = new QGroupBox(QStringLiteral("Noise Chain Stages"));

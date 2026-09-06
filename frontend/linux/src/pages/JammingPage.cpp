@@ -24,9 +24,11 @@ JammingPage::JammingPage(QWidget* parent)
         presenter_.signal_erp_dbm(), 1.0, 1, kGroup, QStringLiteral("signal_erp_dbm"),
         QStringLiteral("Effective radiated power of the desired signal: transmitter power + antenna gain"));
     auto* sigHtSb = addSpinRow(sigForm, QStringLiteral("Signal Tx height (m)"), 0.1, 100000.0,
-        presenter_.signal_tx_height_m(), 0.5, 1, kGroup, QStringLiteral("signal_tx_height_m"));
+        presenter_.signal_tx_height_m(), 0.5, 1, kGroup, QStringLiteral("signal_tx_height_m"),
+        QStringLiteral("Signal transmitter antenna height above ground \u2014 determines the propagation model (LOS or 2-ray) and Fresnel zone crossover distance"));
     auto* sigDistSb = addSpinRow(sigForm, QStringLiteral("Signal\u2192Rx dist (km)"), 0.01, 10000.0,
-        presenter_.signal_to_rx_dist_km(), 0.1, 3, kGroup, QStringLiteral("signal_to_rx_dist_km"));
+        presenter_.signal_to_rx_dist_km(), 0.1, 3, kGroup, QStringLiteral("signal_to_rx_dist_km"),
+        QStringLiteral("Ground range from the signal transmitter to the receiver"));
     auto* sigBwSb = addSpinRow(sigForm, QStringLiteral("Signal BW (MHz)"), 0.001, 1000.0,
         presenter_.signal_bandwidth_mhz(), 0.001, 3, kGroup, QStringLiteral("signal_bandwidth_mhz"),
         QStringLiteral("Occupied bandwidth of the target signal \u2014 used for partial-band jamming optimisation"));
@@ -39,9 +41,11 @@ JammingPage::JammingPage(QWidget* parent)
         presenter_.jammer_erp_dbm(), 1.0, 1, kGroup, QStringLiteral("jammer_erp_dbm"),
         QStringLiteral("Effective radiated power of the jammer toward the receiver"));
     auto* jamHtSb = addSpinRow(jamForm, QStringLiteral("Jammer height (m)"), 0.1, 100000.0,
-        presenter_.jammer_height_m(), 0.5, 1, kGroup, QStringLiteral("jammer_height_m"));
+        presenter_.jammer_height_m(), 0.5, 1, kGroup, QStringLiteral("jammer_height_m"),
+        QStringLiteral("Jammer antenna height above ground \u2014 determines the propagation model (LOS or 2-ray) and Fresnel zone crossover distance"));
     auto* jamDistSb = addSpinRow(jamForm, QStringLiteral("Jammer\u2192Rx dist (km)"), 0.01, 10000.0,
-        presenter_.jammer_to_rx_dist_km(), 0.1, 3, kGroup, QStringLiteral("jammer_to_rx_dist_km"));
+        presenter_.jammer_to_rx_dist_km(), 0.1, 3, kGroup, QStringLiteral("jammer_to_rx_dist_km"),
+        QStringLiteral("Ground range from the jammer to the receiver"));
     auto* hopRgSb = addSpinRow(jamForm, QStringLiteral("Hop range (MHz)"), 0.0, 10000.0,
         presenter_.hop_range_mhz(), 1.0, 1, kGroup, QStringLiteral("hop_range_mhz"),
         QStringLiteral("Total frequency-hopping bandwidth of the target signal \u2014 set to 0 for a non-hopping (single-channel) signal; partial-band results will show N/A"));
@@ -54,9 +58,11 @@ JammingPage::JammingPage(QWidget* parent)
     auto* cmGroup = makeGroup(QStringLiteral("Shared"), cmForm);
 
     auto* freqSb = addSpinRow(cmForm, QStringLiteral("Frequency (MHz)"), 0.1, 100000.0,
-        presenter_.frequency_mhz(), 1.0, 1, kGroup, QStringLiteral("frequency_mhz"));
+        presenter_.frequency_mhz(), 1.0, 1, kGroup, QStringLiteral("frequency_mhz"),
+        QStringLiteral("Carrier frequency \u2014 used for both signal and jammer path-loss calculations"));
     auto* rxHtSb = addSpinRow(cmForm, QStringLiteral("Rx height (m)"), 0.1, 100000.0,
-        presenter_.rx_height_m(), 0.5, 1, kGroup, QStringLiteral("rx_height_m"));
+        presenter_.rx_height_m(), 0.5, 1, kGroup, QStringLiteral("rx_height_m"),
+        QStringLiteral("Receiver antenna height above ground \u2014 determines the propagation model (LOS or 2-ray) and Fresnel zone crossover distance"));
     auto* rxGainSigSb = addSpinRow(cmForm, QStringLiteral("Rx gain \u2192 signal (dB)"), -30.0, 60.0,
         presenter_.rx_gain_signal_db(), 1.0, 1, kGroup, QStringLiteral("rx_gain_signal_db"),
         QStringLiteral("Receive antenna gain toward the signal transmitter \u2014 use the main lobe gain if the receiver antenna is pointed at the signal"));
@@ -71,8 +77,10 @@ JammingPage::JammingPage(QWidget* parent)
     ResultRowRegistry results;
     js_ratio_ = addResultRow(jsForm, QStringLiteral("J/S ratio"),
         QStringLiteral("Jammer-to-signal power ratio at the receiver input (dB)"), &results);
-    signal_at_rx_ = addResultRow(jsForm, QStringLiteral("Signal at Rx"), QString(), &results);
-    jammer_at_rx_ = addResultRow(jsForm, QStringLiteral("Jammer at Rx"), QString(), &results);
+    signal_at_rx_ = addResultRow(jsForm, QStringLiteral("Signal at Rx"),
+        QStringLiteral("Received signal power at the receiver input"), &results);
+    jammer_at_rx_ = addResultRow(jsForm, QStringLiteral("Jammer at Rx"),
+        QStringLiteral("Received jammer power at the receiver input"), &results);
     burnthrough_range_ = addResultRow(jsForm, QStringLiteral("Burnthrough range"),
         QStringLiteral("Signal range at which J/S falls to the threshold \u2014 the jammer becomes ineffective beyond this distance"), &results);
 

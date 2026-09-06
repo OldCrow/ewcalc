@@ -59,6 +59,7 @@ struct DetectionView: View {
                         Spacer().frame(width: 38)
                     }
                 }
+                .help("Pulses noncoherently integrated — Shnidman's equation is valid for 1 to 100")
                 .onChange(of: numPulses) { adapter.setNumPulses($0) }
                 LabeledContent("Swerling case (0–4)") {
                     HStack(spacing: 4) {
@@ -72,6 +73,7 @@ struct DetectionView: View {
                         Spacer().frame(width: 38)
                     }
                 }
+                .help("Target fluctuation model: 0 nonfluctuating, 1–4 the Swerling cases")
                 .onChange(of: swerlingCase) { adapter.setSwerlingCase($0) }
                 ResultRow("Required SNR (Shnidman)",        cStr(adapter.output.required_snr_str),
                           help: "Single-pulse SNR required for the chosen Pd/Pfa and Swerling case, after noncoherent integration (Shnidman's equation)")

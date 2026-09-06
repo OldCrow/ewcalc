@@ -79,7 +79,8 @@ struct ReceiverView: View {
                         Spacer().frame(width: 38)
                     }
                 }
-                .help(adapter.adcBitsError.isError ? adapter.adcBitsError.message : "")
+                .help(adapter.adcBitsError.isError ? adapter.adcBitsError.message
+                                                   : "Number of ADC quantisation bits — more bits raise the digital dynamic range and SQNR")
                 .onChange(of: adcBits) { adapter.setAdcBits($0) }
             }
             Section("Noise Chain Stages") {

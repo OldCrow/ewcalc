@@ -34,11 +34,14 @@ LinkPage::LinkPage(QWidget* parent)
     auto* geoGroup = makeGroup(QStringLiteral("Geometry"), geoForm);
 
     auto* distSb = addSpinRow(geoForm, QStringLiteral("Distance (km)"), 0.01, 10000.0,
-        presenter_.distance_km(), 0.1, 3, kGroup, QStringLiteral("distance_km"));
+        presenter_.distance_km(), 0.1, 3, kGroup, QStringLiteral("distance_km"),
+        QStringLiteral("Straight-line distance between transmitter and receiver"));
     auto* txHtSb = addSpinRow(geoForm, QStringLiteral("Tx height (m)"), 0.1, 100000.0,
-        presenter_.tx_height_m(), 0.5, 1, kGroup, QStringLiteral("tx_height_m"));
+        presenter_.tx_height_m(), 0.5, 1, kGroup, QStringLiteral("tx_height_m"),
+        QStringLiteral("Transmit antenna height above ground level"));
     auto* rxHtSb = addSpinRow(geoForm, QStringLiteral("Rx height (m)"), 0.1, 100000.0,
-        presenter_.rx_height_m(), 0.5, 1, kGroup, QStringLiteral("rx_height_m"));
+        presenter_.rx_height_m(), 0.5, 1, kGroup, QStringLiteral("rx_height_m"),
+        QStringLiteral("Receive antenna height above ground level"));
 
     // ── Receiver: Rx gain, Rx sensitivity (matches macOS) ───────────
     QFormLayout* rxForm = nullptr;
@@ -58,12 +61,14 @@ LinkPage::LinkPage(QWidget* parent)
     ResultRowRegistry results;
     received_power_ = addResultRow(outForm, QStringLiteral("Received power"),
         QStringLiteral("Signal power at the receiver input: Ptx + Gtx + Grx \u2212 path loss"), &results);
-    path_loss_ = addResultRow(outForm, QStringLiteral("Path loss"), QString(), &results);
+    path_loss_ = addResultRow(outForm, QStringLiteral("Path loss"),
+        QStringLiteral("Attenuation of the signal as it travels from transmitter to receiver"), &results);
     link_margin_ = addResultRow(outForm, QStringLiteral("Link margin"),
         QStringLiteral("Received power minus sensitivity \u2014 positive = link closed; negative = link failure"), &results);
     fresnel_zone_ = addResultRow(outForm, QStringLiteral("Fresnel crossover"),
         QStringLiteral("Range at which ground reflection begins to dominate"), &results);
-    regime_ = addResultRow(outForm, QStringLiteral("Regime"), QString(), &results);
+    regime_ = addResultRow(outForm, QStringLiteral("Regime"),
+        QStringLiteral("Propagation model \u2014 free-space or two-ray \u2014 that applies at the given distance"), &results);
     effective_range_ = addResultRow(outForm, QStringLiteral("Effective range"),
         QStringLiteral("Maximum range at which the link closes \u2014 where received power equals sensitivity"), &results);
     range_regime_ = addResultRow(outForm, QStringLiteral("Range regime"),
