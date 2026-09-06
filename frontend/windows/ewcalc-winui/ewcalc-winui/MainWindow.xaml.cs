@@ -18,6 +18,8 @@ public sealed partial class MainWindow : Window
         ("Jamming",     typeof(JammingPage)),
         ("Location",    typeof(LocationPage)),
         ("Radar",       typeof(RadarPage)),
+        ("Detection",   typeof(DetectionPage)),
+        ("Doppler",     typeof(DopplerPage)),
         ("Digital",     typeof(DigitalPage)),
         ("Antenna",     typeof(AntennaPage)),
         ("Reference",   typeof(ReferencePage)),

@@ -118,6 +118,21 @@
                      Title="About CEP"
                      Message="The 50% circular error probable is the radius within which 50% of location estimates fall." />
 
+            <Expander Header="Geometry"
+                      AutomationProperties.Name="Geometry diagrams"
+                      ToolTipService.ToolTip="Show or hide the geometry diagrams for this page"
+                      HorizontalAlignment="Stretch"
+                      HorizontalContentAlignment="Stretch">
+                <StackPanel Spacing="8">
+                    <Image Source="ms-appx:///Assets/Diagrams/loc-aoa-cep.png"
+                           MaxWidth="640" Stretch="Uniform" HorizontalAlignment="Center"
+                           AutomationProperties.Name="loc aoa cep" />
+                    <Image Source="ms-appx:///Assets/Diagrams/loc-eep-cep.png"
+                           MaxWidth="640" Stretch="Uniform" HorizontalAlignment="Center"
+                           AutomationProperties.Name="loc eep cep" />
+                </StackPanel>
+            </Expander>
+
         </StackPanel>
     </ScrollViewer>
 </Page>

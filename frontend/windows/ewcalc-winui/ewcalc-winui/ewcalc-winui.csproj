@@ -43,6 +43,8 @@
     <Page Include="Views\JammingPage.xaml">         <Generator>MSBuild:Compile</Generator></Page>
     <Page Include="Views\LocationPage.xaml">        <Generator>MSBuild:Compile</Generator></Page>
     <Page Include="Views\RadarPage.xaml">           <Generator>MSBuild:Compile</Generator></Page>
+    <Page Include="Views\DetectionPage.xaml">       <Generator>MSBuild:Compile</Generator></Page>
+    <Page Include="Views\DopplerPage.xaml">         <Generator>MSBuild:Compile</Generator></Page>
     <Page Include="Views\DigitalPage.xaml">         <Generator>MSBuild:Compile</Generator></Page>
     <Page Include="Views\AntennaPage.xaml">          <Generator>MSBuild:Compile</Generator></Page>
     <Page Include="Views\ReferencePage.xaml">       <Generator>MSBuild:Compile</Generator></Page>
@@ -64,6 +66,13 @@
   -->
   <ItemGroup>
     <Content Include="Assets\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <!-- Geometry diagram PNGs (#72) are shared repo assets, linked into the
+         payload rather than duplicated — same source files the Linux qrc and
+         macOS bundle reference. -->
+    <Content Include="..\..\..\..\assets\diagrams\png\*.png">
+      <Link>Assets\Diagrams\%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

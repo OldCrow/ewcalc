@@ -164,6 +164,21 @@
                 </StackPanel>
             </Border>
 
+            <Expander Header="Geometry"
+                      AutomationProperties.Name="Geometry diagrams"
+                      ToolTipService.ToolTip="Show or hide the geometry diagrams for this page"
+                      HorizontalAlignment="Stretch"
+                      HorizontalContentAlignment="Stretch">
+                <StackPanel Spacing="8">
+                    <Image Source="ms-appx:///Assets/Diagrams/jamming-self-protection.png"
+                           MaxWidth="640" Stretch="Uniform" HorizontalAlignment="Center"
+                           AutomationProperties.Name="jamming self protection" />
+                    <Image Source="ms-appx:///Assets/Diagrams/jamming-stand-off.png"
+                           MaxWidth="640" Stretch="Uniform" HorizontalAlignment="Center"
+                           AutomationProperties.Name="jamming stand off" />
+                </StackPanel>
+            </Expander>
+
         </StackPanel>
     </ScrollViewer>
 </Page>

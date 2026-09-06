@@ -1,5 +1,5 @@
 // Views/PageCodeBehinds.cs
-// Code-behind for Link, Jamming, Location, Radar, Receiver, Home, Digital, Antenna, and Reference pages.
+// Code-behind for Link, Jamming, Location, Radar, Detection, Doppler, Receiver, Home, Digital, Antenna, and Reference pages.
 using EwCalc.Helpers;
 using EwCalc.ViewModels;
 using Microsoft.UI.Xaml.Controls;
@@ -152,6 +152,72 @@ public sealed partial class RadarPage : Page
     private void SnrBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)        { if (!double.IsNaN(e.NewValue)) ViewModel.SetRequiredSnr(e.NewValue);       }
     private void TbProductBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)  { if (!double.IsNaN(e.NewValue)) ViewModel.SetTimeBandwidthProd(e.NewValue); }
     private void NumPulsesBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)  { if (!double.IsNaN(e.NewValue)) ViewModel.SetNumPulses((int)e.NewValue);    }
+
+    private void CopyResultsButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        => ClipboardHelper.CopyText(ViewModel.BuildResultsText());
+}
+
+public sealed partial class DetectionPage : Page
+{
+    public DetectionViewModel ViewModel { get; } = new();
+    public DetectionPage() {
+        InitializeComponent();
+        PdBox          .Setup(0.1,       0.99);
+        PfaExponentBox .Setup(-9.0,      -3.0);
+        NumPulsesBox   .Setup(1.0,      100.0);
+        SwerlingCaseBox.Setup(0.0,        4.0);
+        BeamwidthBox   .Setup(0.1,       45.0);
+        ScanRateBox    .Setup(1.0,      720.0);
+        PrfBox         .Setup(10.0, 1000000.0);
+        BandwidthBox   .Setup(0.001,  10000.0);
+    }
+
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        ViewModel.Dispose();
+        base.OnNavigatedFrom(e);
+    }
+
+    private void PdBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)           { if (!double.IsNaN(e.NewValue)) ViewModel.SetPd(e.NewValue);                }
+    private void PfaExponentBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)  { if (!double.IsNaN(e.NewValue)) ViewModel.SetPfaExponent(e.NewValue);       }
+    private void NumPulsesBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)    { if (!double.IsNaN(e.NewValue)) ViewModel.SetNumPulses((int)e.NewValue);    }
+    private void SwerlingCaseBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e) { if (!double.IsNaN(e.NewValue)) ViewModel.SetSwerlingCase((int)e.NewValue); }
+    private void BeamwidthBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)    { if (!double.IsNaN(e.NewValue)) ViewModel.SetBeamwidth(e.NewValue);         }
+    private void ScanRateBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)     { if (!double.IsNaN(e.NewValue)) ViewModel.SetScanRate(e.NewValue);          }
+    private void PrfBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)          { if (!double.IsNaN(e.NewValue)) ViewModel.SetPrf(e.NewValue);               }
+    private void BandwidthBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)    { if (!double.IsNaN(e.NewValue)) ViewModel.SetBandwidth(e.NewValue);         }
+
+    private void CopyResultsButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        => ClipboardHelper.CopyText(ViewModel.BuildResultsText());
+}
+
+public sealed partial class DopplerPage : Page
+{
+    public DopplerViewModel ViewModel { get; } = new();
+    public DopplerPage() {
+        InitializeComponent();
+        FrequencyBox   .Setup(1.0,   100000.0);
+        RadialSpeedBox .Setup(-3000.0, 3000.0);
+        PrfBox         .Setup(10.0, 1000000.0);
+        BandwidthBox   .Setup(0.001,  10000.0);
+        TargetRangeBox .Setup(0.1,     5000.0);
+        BeamwidthAzBox .Setup(0.1,       45.0);
+        BeamwidthElBox .Setup(0.1,       45.0);
+    }
+
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        ViewModel.Dispose();
+        base.OnNavigatedFrom(e);
+    }
+
+    private void FrequencyBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)   { if (!double.IsNaN(e.NewValue)) ViewModel.SetFrequency(e.NewValue);   }
+    private void RadialSpeedBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e) { if (!double.IsNaN(e.NewValue)) ViewModel.SetRadialSpeed(e.NewValue); }
+    private void PrfBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)         { if (!double.IsNaN(e.NewValue)) ViewModel.SetPrf(e.NewValue);         }
+    private void BandwidthBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)   { if (!double.IsNaN(e.NewValue)) ViewModel.SetBandwidth(e.NewValue);   }
+    private void TargetRangeBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e) { if (!double.IsNaN(e.NewValue)) ViewModel.SetTargetRange(e.NewValue); }
+    private void BeamwidthAzBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e) { if (!double.IsNaN(e.NewValue)) ViewModel.SetBeamwidthAz(e.NewValue); }
+    private void BeamwidthElBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e) { if (!double.IsNaN(e.NewValue)) ViewModel.SetBeamwidthEl(e.NewValue); }
 
     private void CopyResultsButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         => ClipboardHelper.CopyText(ViewModel.BuildResultsText());

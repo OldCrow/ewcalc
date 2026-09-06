@@ -99,6 +99,18 @@
                 </StackPanel>
             </Border>
 
+            <Expander Header="Geometry"
+                      AutomationProperties.Name="Geometry diagrams"
+                      ToolTipService.ToolTip="Show or hide the geometry diagrams for this page"
+                      HorizontalAlignment="Stretch"
+                      HorizontalContentAlignment="Stretch">
+                <StackPanel Spacing="8">
+                    <Image Source="ms-appx:///Assets/Diagrams/antenna-beamwidth.png"
+                           MaxWidth="640" Stretch="Uniform" HorizontalAlignment="Center"
+                           AutomationProperties.Name="antenna beamwidth" />
+                </StackPanel>
+            </Expander>
+
         </StackPanel>
     </ScrollViewer>
 </Page>

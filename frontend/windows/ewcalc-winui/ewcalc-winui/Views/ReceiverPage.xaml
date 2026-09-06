@@ -160,8 +160,21 @@
                     <local:ResultRow Label="SFDR (2nd)"     Value="{x:Bind ViewModel.Sfdr2,          Mode=OneWay}" />
                     <local:ResultRow Label="SFDR (3rd)"     Value="{x:Bind ViewModel.Sfdr3,          Mode=OneWay}" />
                     <local:ResultRow Label="Digital DR"     Value="{x:Bind ViewModel.DigitalDr,      Mode=OneWay}" />
+                    <local:ResultRow Label="SQNR"           Value="{x:Bind ViewModel.DigitalSqnr,    Mode=OneWay}" />
                 </StackPanel>
             </Border>
+
+            <Expander Header="Geometry"
+                      AutomationProperties.Name="Geometry diagrams"
+                      ToolTipService.ToolTip="Show or hide the geometry diagrams for this page"
+                      HorizontalAlignment="Stretch"
+                      HorizontalContentAlignment="Stretch">
+                <StackPanel Spacing="8">
+                    <Image Source="ms-appx:///Assets/Diagrams/receiver-cascade.png"
+                           MaxWidth="640" Stretch="Uniform" HorizontalAlignment="Center"
+                           AutomationProperties.Name="receiver cascade" />
+                </StackPanel>
+            </Expander>
 
         </StackPanel>
     </ScrollViewer>

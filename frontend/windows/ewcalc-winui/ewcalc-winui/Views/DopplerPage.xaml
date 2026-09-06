@@ -1,0 +1,146 @@
+<Page
+    x:Class="EwCalc.Views.DopplerPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:helpers="using:EwCalc.Helpers"
+    xmlns:local="using:EwCalc.Views">
+
+    <Page.Resources>
+        <helpers:FieldErrorToBrushConverter x:Key="FieldErrorToBrush" />
+        <helpers:FieldErrorToTooltipConverter x:Key="FieldErrorToTooltip" />
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24,20,24,24" Spacing="8">
+
+            <Grid Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Doppler &amp; Resolution" Style="{ThemeResource TitleTextBlockStyle}" />
+                    <TextBlock Text="Doppler shift · PRF ambiguity · Blind speed · Range &amp; cross-range resolution"
+                               Style="{ThemeResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <Button Grid.Column="1" VerticalAlignment="Top"
+                        Click="CopyResultsButton_Click"
+                        AutomationProperties.Name="Copy results to clipboard"
+                        ToolTipService.ToolTip="Copy all results to clipboard">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" FontSize="14" />
+                        <TextBlock Text="Copy results" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <TextBlock Text="DOPPLER &amp; AMBIGUITY" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource InputCardStyle}">
+                <StackPanel Spacing="12">
+                    <NumberBox x:Name="FrequencyBox" Header="Carrier frequency (MHz)"
+                               AutomationProperties.Name="Carrier frequency (MHz)"
+                               ToolTipService.ToolTip="Radar carrier frequency"
+                               Value="{x:Bind ViewModel.DefaultFrequency, Mode=OneTime}"
+                               Minimum="1" Maximum="100000"
+                               SpinButtonPlacementMode="Compact" SmallChange="100"
+                               BorderBrush="{x:Bind ViewModel.FrequencyError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
+                               ValueChanged="FrequencyBox_ValueChanged" />
+                    <NumberBox x:Name="RadialSpeedBox" Header="Radial speed (closing +) (m/s)"
+                               AutomationProperties.Name="Radial speed (metres per second, closing positive)"
+                               ToolTipService.ToolTip="Target radial speed — positive closing, negative opening"
+                               Value="{x:Bind ViewModel.DefaultRadialSpeed, Mode=OneTime}"
+                               Minimum="-3000" Maximum="3000"
+                               SpinButtonPlacementMode="Compact" SmallChange="10"
+                               BorderBrush="{x:Bind ViewModel.RadialSpeedError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
+                               ValueChanged="RadialSpeedBox_ValueChanged" />
+                    <NumberBox x:Name="PrfBox" Header="PRF (Hz)"
+                               AutomationProperties.Name="PRF (Hz)"
+                               ToolTipService.ToolTip="Pulse repetition frequency"
+                               Value="{x:Bind ViewModel.DefaultPrf, Mode=OneTime}"
+                               Minimum="10" Maximum="1000000"
+                               SpinButtonPlacementMode="Compact" SmallChange="10"
+                               BorderBrush="{x:Bind ViewModel.PrfError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
+                               ValueChanged="PrfBox_ValueChanged" />
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="RESOLUTION" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource InputCardStyle}">
+                <StackPanel Spacing="12">
+                    <NumberBox x:Name="BandwidthBox" Header="Waveform bandwidth (MHz)"
+                               AutomationProperties.Name="Waveform bandwidth (MHz)"
+                               ToolTipService.ToolTip="Compressed waveform bandwidth — sets the range resolution"
+                               Value="{x:Bind ViewModel.DefaultBandwidth, Mode=OneTime}"
+                               Minimum="0.001" Maximum="10000"
+                               SpinButtonPlacementMode="Compact" SmallChange="0.1"
+                               BorderBrush="{x:Bind ViewModel.BandwidthError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
+                               ValueChanged="BandwidthBox_ValueChanged" />
+                    <NumberBox x:Name="TargetRangeBox" Header="Target range (km)"
+                               AutomationProperties.Name="Target range (km)"
+                               ToolTipService.ToolTip="Range to the target — scales the cross-range cell size"
+                               Value="{x:Bind ViewModel.DefaultTargetRange, Mode=OneTime}"
+                               Minimum="0.1" Maximum="5000"
+                               SpinButtonPlacementMode="Compact" SmallChange="10"
+                               BorderBrush="{x:Bind ViewModel.TargetRangeError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
+                               ValueChanged="TargetRangeBox_ValueChanged" />
+                    <NumberBox x:Name="BeamwidthAzBox" Header="Azimuth beamwidth (deg)"
+                               AutomationProperties.Name="Azimuth beamwidth (degrees)"
+                               ToolTipService.ToolTip="Antenna 3 dB azimuth beamwidth"
+                               Value="{x:Bind ViewModel.DefaultBeamwidthAz, Mode=OneTime}"
+                               Minimum="0.1" Maximum="45"
+                               SpinButtonPlacementMode="Compact" SmallChange="0.5"
+                               BorderBrush="{x:Bind ViewModel.BeamwidthAzError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
+                               ValueChanged="BeamwidthAzBox_ValueChanged" />
+                    <NumberBox x:Name="BeamwidthElBox" Header="Elevation beamwidth (deg)"
+                               AutomationProperties.Name="Elevation beamwidth (degrees)"
+                               ToolTipService.ToolTip="Antenna 3 dB elevation beamwidth"
+                               Value="{x:Bind ViewModel.DefaultBeamwidthEl, Mode=OneTime}"
+                               Minimum="0.1" Maximum="45"
+                               SpinButtonPlacementMode="Compact" SmallChange="0.5"
+                               BorderBrush="{x:Bind ViewModel.BeamwidthElError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
+                               ValueChanged="BeamwidthElBox_ValueChanged" />
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="DOPPLER RESULTS" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource ResultCardStyle}">
+                <StackPanel Spacing="0">
+                    <local:ResultRow Label="Doppler shift"             Value="{x:Bind ViewModel.DopplerShift,        Mode=OneWay}" IsHighlighted="True" />
+                    <local:ResultRow Label="Unambiguous range"         Value="{x:Bind ViewModel.UnambiguousRange,    Mode=OneWay}" />
+                    <local:ResultRow Label="First blind speed"         Value="{x:Bind ViewModel.BlindSpeed,          Mode=OneWay}" />
+                    <local:ResultRow Label="Unambiguous velocity (±)"  Value="{x:Bind ViewModel.UnambiguousVelocity, Mode=OneWay}" />
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="RESOLUTION RESULTS" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource ResultCardStyle}">
+                <StackPanel Spacing="0">
+                    <local:ResultRow Label="Range resolution" Value="{x:Bind ViewModel.RangeResolution, Mode=OneWay}" />
+                    <local:ResultRow Label="Cross-range (az)" Value="{x:Bind ViewModel.CrossRangeAz,    Mode=OneWay}" />
+                    <local:ResultRow Label="Cross-range (el)" Value="{x:Bind ViewModel.CrossRangeEl,    Mode=OneWay}" />
+                </StackPanel>
+            </Border>
+
+            <Expander Header="Geometry"
+                      AutomationProperties.Name="Geometry diagrams"
+                      ToolTipService.ToolTip="Show or hide the geometry diagrams for this page"
+                      HorizontalAlignment="Stretch"
+                      HorizontalContentAlignment="Stretch">
+                <StackPanel Spacing="8">
+                    <Image Source="ms-appx:///Assets/Diagrams/resolution-cell.png"
+                           MaxWidth="640" Stretch="Uniform" HorizontalAlignment="Center"
+                           AutomationProperties.Name="resolution cell" />
+                </StackPanel>
+            </Expander>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

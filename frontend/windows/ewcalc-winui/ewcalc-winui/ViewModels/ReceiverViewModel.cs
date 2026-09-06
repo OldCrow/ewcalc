@@ -78,7 +78,8 @@ public sealed class ReceiverViewModel : INotifyPropertyChanged, IDisposable
 
     private string _sensitivity = string.Empty, _cascadedNf = string.Empty,
                    _sfdr2 = string.Empty,       _sfdr3 = string.Empty,
-                   _digitalDr = string.Empty,   _systemNoiseTemp = string.Empty,
+                   _digitalDr = string.Empty,   _digitalSqnr = string.Empty,
+                   _systemNoiseTemp = string.Empty,
                    _systemNf = string.Empty;
     private bool _isValid;
 
@@ -87,6 +88,7 @@ public sealed class ReceiverViewModel : INotifyPropertyChanged, IDisposable
     public string Sfdr2          { get => _sfdr2;          private set => Set(ref _sfdr2,          value); }
     public string Sfdr3          { get => _sfdr3;          private set => Set(ref _sfdr3,          value); }
     public string DigitalDr      { get => _digitalDr;      private set => Set(ref _digitalDr,      value); }
+    public string DigitalSqnr    { get => _digitalSqnr;    private set => Set(ref _digitalSqnr,    value); }
     public string SystemNoiseTemp { get => _systemNoiseTemp; private set => Set(ref _systemNoiseTemp, value); }
     public string SystemNf       { get => _systemNf;       private set => Set(ref _systemNf,       value); }
     public bool   IsValid        { get => _isValid;        private set => Set(ref _isValid,        value); }
@@ -197,12 +199,14 @@ public sealed class ReceiverViewModel : INotifyPropertyChanged, IDisposable
         $"SFDR (2nd): {Sfdr2}",
         $"SFDR (3rd): {Sfdr3}",
         $"Digital DR: {DigitalDr}",
+        $"SQNR: {DigitalSqnr}",
     });
 
     private void ApplyOutput(ReceiverOutput o)
     {
         Sensitivity = o.SensitivityStr; CascadedNf = o.CascadedNfStr;
         Sfdr2 = o.Sfdr2Str; Sfdr3 = o.Sfdr3Str; DigitalDr = o.DigitalDrStr;
+        DigitalSqnr = o.DigitalSqnrStr;
         SystemNoiseTemp = o.SystemNoiseTempStr; SystemNf = o.SystemNfStr; IsValid = o.Valid;
         BandwidthError = _adapter.BandwidthError; NoiseFigureError = _adapter.NoiseFigureError;
         RequiredSnrError = _adapter.RequiredSnrError; SecondOrderIpError = _adapter.SecondOrderIpError;

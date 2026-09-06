@@ -99,6 +99,29 @@ public sealed class RadarSettings
     public int? NumPulses { get; set; }
 }
 
+public sealed class DetectionSettings
+{
+    public double? Pd { get; set; }
+    public double? PfaExponent { get; set; }
+    public int? NumPulses { get; set; }
+    public int? SwerlingCase { get; set; }
+    public double? Beamwidth { get; set; }
+    public double? ScanRate { get; set; }
+    public double? Prf { get; set; }
+    public double? Bandwidth { get; set; }
+}
+
+public sealed class DopplerSettings
+{
+    public double? Frequency { get; set; }
+    public double? RadialSpeed { get; set; }
+    public double? Prf { get; set; }
+    public double? Bandwidth { get; set; }
+    public double? TargetRange { get; set; }
+    public double? BeamwidthAz { get; set; }
+    public double? BeamwidthEl { get; set; }
+}
+
 public sealed class DigitalSettings
 {
     public double? Snr { get; set; }
@@ -122,6 +145,8 @@ public sealed class AppSettings
     public JammingSettings     Jamming     { get; set; } = new();
     public LocationSettings    Location    { get; set; } = new();
     public RadarSettings       Radar       { get; set; } = new();
+    public DetectionSettings   Detection   { get; set; } = new();
+    public DopplerSettings     Doppler     { get; set; } = new();
     public DigitalSettings     Digital     { get; set; } = new();
 }
 

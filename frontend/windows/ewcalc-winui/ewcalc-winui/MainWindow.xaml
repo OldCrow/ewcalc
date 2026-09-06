@@ -88,6 +88,24 @@
                 </NavigationViewItem>
 
                 <NavigationViewItem
+                    x:Name="NavDetection"
+                    Tag="Detection"
+                    Content="Detection">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE721;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem
+                    x:Name="NavDoppler"
+                    Tag="Doppler"
+                    Content="Doppler &amp; Resolution">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xEC4A;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem
                     x:Name="NavDigital"
                     Tag="Digital"
                     Content="Digital / DSSS">
