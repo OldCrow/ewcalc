@@ -12,11 +12,12 @@ using namespace libew::units::literals;
 // equidistant from emitter).
 //
 // Formula: CEP = 1.2 * R * tan(σ_θ)
-// Source: standard RMS-to-CEP rule of thumb — R*tan(σ_θ) is the RMS
-// cross-range position error and CEP ≈ 1.2 * RMS for a 2D Gaussian error
-// distribution [OPEN: primary TBD —
-// Adamy cites Wegner (1971, RAND) for this material; check whether the
-// 1.2 form appears there].
+// Source: standard 2D-Gaussian RMS-to-CEP relation (CEP = 1.1774·σ for
+// the circular case, conventionally rounded to 1.2), applied to the RMS
+// cross-range error R*tan(σ_θ). Rigorous DF treatment: Wegner, RAND
+// R-722-PR (1971), Sec III pp.16-38 — Cramér-Rao covariance and CEP
+// isocontours; no closed form of this shape appears (verified 2026-09-06
+// against the report).
 // MIS-ANCHOR RESOLVED (verified 2026-09-06): Adamy EW102 Sec 6.6.2 p.182
 // covers the same topic but with a DIFFERENT formulation — 46.5%/68% RMS
 // figures, a 1.036 scaling of the error-ellipse axes to reach 50%
@@ -60,12 +61,12 @@ void test_cep_aoa_zero_error() {
 // Formula: CEP_TDOA = c·σ_t·R / (2·B)
 //   c·σ_t = range-difference uncertainty
 //   R/B   = geometric dilution (position from range-difference)
-// Source: Adamy EW102 (2004) Sec 6.7.1 "TDOA System Accuracy", p.183 —
-// CONCEPT ANCHOR ONLY (verified 2026-09-06): Sec 6.7 derives TDOA/FDOA
-// accuracy from hyperbolic path intercepts off the baseline and states no
-// closed-form equation. The implemented c*sigma_t*R/(2B) rule of thumb is a
-// simplification of that geometry [OPEN: primary TBD — check Wegner (1971,
-// RAND), Adamy's cited source for the chapter's accuracy material].
+// Source: standard EW baseline-dilution rule of thumb. Rigorous treatment:
+// Wegner, RAND R-722-PR (1971), Sec IV pp.39ff — hyperbolic TOA geometry,
+// CEP = K·c·σ_TOA with geometry-dependent K from isocontour charts; no
+// closed form of this shape (verified 2026-09-06 against the report).
+// Adamy EW102 Sec 6.7.1 p.183 is a concept anchor only (hyperbolic
+// derivation, no equation).
 //
 //
 // Reference derivation (σ_t=10 ns, R=100 km, B=10 km):
@@ -104,12 +105,13 @@ void test_cep_tdoa_scales_with_timing_error() {
 // CEP from EEP (Elliptical Error Probable).
 //
 // Formula: CEP ≈ 0.59 * (a + b)   where a ≥ b are the 1-sigma semi-axes.
-// Source: standard bivariate-normal CEP approximation (0.589 rounded to
-// 0.59; accurate to ~1% for a/b ≤ 4) [OPEN: primary TBD — Adamy cites Wegner (1971,
-// RAND) for this material; check whether the 0.59 form appears there].
-// MIS-ANCHOR RESOLVED (verified 2026-09-06): Adamy EW102 Sec 6.4.3 p.174
-// defines EEP only — an ellipse at 103.6% of the ellipse fitting inside
-// the RMS lines — and gives NO CEP-from-EEP formula. Anchor removed.
+// Source: Wegner, "On the Accuracy Analysis of Airborne Techniques for
+// Passively Locating Electromagnetic Emitters", RAND R-722-PR (1971),
+// Eq. (24a), p.14: CEP = 0.59(σ_s + σ_l) for uncorrelated coordinates with
+// σ_s/σ_l ≥ 0.5, max error 1% (rotate per Eqs. (25)-(27) when correlated).
+// Adamy's 0.75*sqrt(a²+b²) (EW102 Sec 6.6.2) is Wegner Eq. (30) p.15 — the
+// rotation-free 10%-error shortcut; libew keeps the tighter Eq. (24a).
+// (Adamy EW102 Sec 6.4.3 defines EEP only; no CEP formula there.)
 //
 // For a = b (circular): CEP = 0.59 * 2σ = 1.18σ, consistent with
 // the theoretical CEP = σ * sqrt(2*ln(2)) = 1.177σ for a 2D isotropic Gaussian.

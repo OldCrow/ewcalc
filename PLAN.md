@@ -92,8 +92,10 @@ Open milestones are fully itemized here since they reflect actionable state.
     closed form, SFDR, noise temp, coherent integration, dwell/FAR,
     all five Doppler/Resolution formulas — Adamy teaches those by
     nomograph/context), and the convention that Adamy never numbers
-    equations. Only deliberate [OPEN]s remain: three location primaries
-    pointing at Wegner (1971, RAND) — chase with the fidelity sweep.
+    equations. Wegner R-722-PR itself was then obtained from rand.org
+    and checked: all three location primaries resolved, zero [OPEN]
+    markers remain repo-wide. Fidelity docket now three items: DR
+    1.76 dB, beamwidth 30000/29000, horizon 4.122/4.11.
   - #69 OPEN — Radar detection statistics calculator: core + presenter +
     bridge + macOS and Linux panes shipped 2026-09-06 (Albersheim +
     Shnidman with Swerling 0–4, fluctuation loss, dwell/hits/FAR;
@@ -199,17 +201,17 @@ itemized since they're actionable.
   adopt 29000 is deferred to the fidelity sweep. Also verified: Adamy
   EW101–EW103 never define dBi↔dBd — that conversion now cites IEEE
   Std 145 alone.
-- Location mis-anchors (found 2026-09-06, #68 sweep): Adamy EW102
-  Sec 6.6.2 gives CEP = 0.75·√(a²+b²) after a 1.036 axis scaling — NOT
-  the implemented 1.2·R·tan(σθ); Sec 6.4.3 defines EEP only (103.6% of
-  the RMS-inscribed ellipse), no CEP-from-EEP formula at all. Both
-  implemented forms (1.2·RMS rule, 0.59·(a+b)) now cite standard-
-  approximation status with primaries [OPEN]; Adamy cites Wegner (1971,
-  RAND) — likely primary for the family, to be checked. Same pattern
-  for TDOA: Sec 6.7 derives accuracy from hyperbolic intercepts, no
-  closed form — the implemented c·σt·R/(2B) is a simplification,
-  primary [OPEN] (Wegner again the lead). Fidelity-sweep docket:
-  compare Adamy's 0.75·√(a²+b²) vs our forms and choose.
+- Location primaries RESOLVED 2026-09-06 against Wegner, RAND R-722-PR
+  (1971) itself (free PDF at rand.org/pubs/reports/R0722.html; OCR'd
+  locally): the implemented 0.59·(σs+σl) IS Wegner Eq. (24a) p.14 (max
+  error 1% for σs/σl ≥ 0.5), and Adamy's 0.75·√(a²+b²) is Wegner
+  Eq. (30) p.15 — the rotation-free 10%-error shortcut. Same primary,
+  ours the tighter form → that fidelity item is CLOSED (keep 0.59).
+  The 1.2·R·tan(σθ) and c·σt·R/(2B) rules have no closed-form twin in
+  Wegner (he treats DF/TOA rigorously via Cramér-Rao covariance and
+  isocontour charts, Secs III/IV) — both now cite their standard-
+  rule-of-thumb status with Wegner as the rigorous treatment. Zero
+  [OPEN] markers remain repo-wide.
 - Follow-up: full formula-fidelity sweep of all libew functions against
   the books (superset of #68's pins; sequence: fidelity sweep → pins).
 

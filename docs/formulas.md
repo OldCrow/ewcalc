@@ -157,7 +157,7 @@ LOS: `d = 10^((margin - 32.44 - 20*log10(f))/20)`; 2-ray: `d = 10^((margin - 120
 ### CEP from AOA
 `CEP ≈ 1.2 * R * tan(sigma_theta)`
 
-- Source: standard RMS-to-CEP rule of thumb (CEP ≈ 1.2·RMS for a 2D Gaussian) [OPEN: primary TBD — Adamy cites Wegner (1971), RAND report, as his source for this material — the likely primary for the whole CEP/EEP family; verify whether the implemented form appears there].
+- Source: standard 2D-Gaussian RMS-to-CEP relation (CEP = 1.1774·sigma for the circular case, conventionally rounded to 1.2), applied to the cross-range error R·tan(sigma_theta). Rigorous DF-location treatment: L. H. Wegner, "On the Accuracy Analysis of Airborne Techniques for Passively Locating Electromagnetic Emitters", RAND R-722-PR, 1971, Sec. III, pp. 16-38 (Cramér-Rao covariance and CEP isocontours; no closed form of this shape appears — verified 2026-09-06 against the report).
 - MIS-ANCHOR RESOLVED (2026-09-06): Adamy EW102 Sec. 6.6.2, p. 182 treats the topic differently — 46.5%/68% RMS figures, a 1.036 axis scaling to 50%, then `CEP = 0.75*sqrt(a^2+b^2)`. Concept anchor only; his formula is not the one implemented. Fidelity-sweep docket: compare and choose.
 - Assumptions: ideal two-receiver 90-degree crossing geometry; `R*tan(sigma_theta)` is RMS cross-range error.
 - Units: bearing error in degrees, range in km, CEP in km.
@@ -165,16 +165,16 @@ LOS: `d = 10^((margin - 32.44 - 20*log10(f))/20)`; 2-ray: `d = 10^((margin - 120
 ### CEP from TDOA
 `CEP ≈ c * sigma_t * R / (2 * B)`
 
-- Source: Adamy EW102 Sec. 6.7.1 "TDOA System Accuracy", p. 183 — concept anchor only (verified 2026-09-06): Sec 6.7 derives TDOA/FDOA accuracy from hyperbolic path intercepts off the baseline, with no closed-form equation. The implemented rule of thumb simplifies that geometry [OPEN: primary TBD — check Wegner (1971, RAND)].
+- Source: standard EW baseline-dilution rule of thumb. Rigorous treatment: L. H. Wegner, "On the Accuracy Analysis of Airborne Techniques for Passively Locating Electromagnetic Emitters", RAND R-722-PR, 1971, Sec. IV, pp. 39 ff. (hyperbolic TOA geometry; CEP = K·c·sigma_TOA with geometry-dependent K from isocontour charts — no closed form of this shape; verified 2026-09-06 against the report). Adamy EW102 Sec. 6.7.1, p. 183 is a concept anchor only (derivation from hyperbolic intercepts, no equation).
 - Assumptions: ideal perpendicular baseline-to-emitter geometry.
 - Units: timing error in nanoseconds, range/baseline in km, CEP in km.
 
 ### CEP from EEP
 `CEP ≈ 0.59 * (a + b)`
 
-- Source: standard bivariate-normal CEP approximation (0.589 ≈ 0.59) [OPEN: primary TBD — Adamy cites Wegner (1971), RAND report, as his source for this material — the likely primary for the whole CEP/EEP family; verify whether the implemented form appears there].
-- MIS-ANCHOR RESOLVED (2026-09-06): Adamy EW102 Sec. 6.4.3, p. 174 defines EEP only (an ellipse at 103.6% of the ellipse just fitting inside the RMS lines) and contains no CEP-from-EEP formula; anchor removed.
-- Assumptions: `a` and `b` are 1-sigma semi-major/semi-minor axes; approximation is accurate to about 1% for axis ratio `a/b <= 4`.
+- Source: L. H. Wegner, "On the Accuracy Analysis of Airborne Techniques for Passively Locating Electromagnetic Emitters", RAND R-722-PR, 1971, Eq. (24a), p. 14: `CEP = 0.59*(sigma_s + sigma_l)` for uncorrelated coordinates with `sigma_s/sigma_l >= 0.5`, maximum error 1% (rotate per Wegner Eqs. (25)-(27) when correlated). PRIMARY RESOLVED 2026-09-06 from the report itself.
+- DELTA vs. Adamy RESOLVED: Adamy's `0.75*sqrt(a^2+b^2)` (EW102 Sec. 6.6.2) is Wegner Eq. (30), p. 15 — the rotation-free shortcut with 10% maximum error. Both trace to the same primary; libew keeps the tighter Eq. (24a). Adamy EW102 Sec. 6.4.3 defines EEP only, no CEP formula (anchor removed earlier).
+- Assumptions: `a` and `b` are 1-sigma semi-major/semi-minor axes; per Wegner, error <= 1% requires axis ratio `a/b <= 2` (`sigma_s/sigma_l >= 0.5`).
 - Units: axes and CEP in km.
 
 ## Radar
