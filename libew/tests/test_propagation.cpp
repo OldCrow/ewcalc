@@ -79,7 +79,10 @@ void test_two_ray_double_height_subtracts_6dB() {
 
 // ---------------------------------------------------------------------------
 // Fresnel zone crossover: d_FZ = h_tx * h_rx * f_MHz / 24000
-// Source: Adamy EW101 [OPEN: page/eq TBD]. This is the range at which the
+// Source: Adamy EW103 Sec 5.6, p.135 (the 4-pi form; Adamy notes many
+// Fresnel formulae exist and chooses this one precisely because it yields
+// the distance at which LOS and two-ray attenuation are equal — exactly the
+// regime-selection use here). This is the range at which the
 // FSPL and two-ray curves above intersect; verified analytically by setting
 // the two path-loss formulas equal (result: d_FZ = h_tx*h_rx*f/23885,
 // consistent with the commonly quoted 24000 rule-of-thumb constant).
@@ -119,9 +122,12 @@ void test_path_loss_selects_correct_model() {
 
 // ---------------------------------------------------------------------------
 // Knife-edge diffraction: Lee approximation to Fresnel integral.
-// Source: Adamy EW101 [OPEN: page/eq TBD]; Lee (1982) piecewise approximation
-// to J(v), the same breakpoints and expressions as ITU-R P.526's knife-edge
-// diffraction model.
+// Source: Lee (1982) piecewise approximation to J(v), the same breakpoints
+// and expressions as ITU-R P.526's knife-edge diffraction model. METHOD
+// DELTA: Adamy EW103 Sec 5.7, pp.137-140 treats knife-edge diffraction by
+// nomograph (d, H, frequency; d = [sqrt(2)/(1+d1/d2)]*d1), not a closed
+// form — his nomograph anchors the concept, Lee's formula is what we
+// implement.
 //
 // The Fresnel parameter: v = h * sqrt(2*(d1+d2)/(λ*d1*d2))
 // where h > 0 = edge above LOS (obstruction), h < 0 = edge below LOS (clearance).
@@ -161,8 +167,10 @@ void test_knife_edge_negative_v_approx() {
 // ---------------------------------------------------------------------------
 // Earth bulge: h_m = d1_km * d2_km / (2 * R_eff_km) * 1000
 // R_eff = (4/3) * 6371 = 8494.67 km
-// Source: Adamy EW101 [OPEN: page/eq TBD]; standard 4/3-effective-earth-radius
-// bulge geometry (also in ITU-R P.526).
+// Source: Adamy EW103 Sec 6.5, pp.170-174 (4/3 earth cited there as the
+// "standard factor" for curvature plus atmospheric refraction; the section
+// works largely by nomograph, so the anchor is conceptual); standard
+// 4/3-effective-earth-radius bulge geometry (also in ITU-R P.526).
 // ---------------------------------------------------------------------------
 
 void test_earth_bulge_symmetric_midpoint() {
@@ -187,8 +195,10 @@ void test_earth_bulge_scales_quadratically_with_distance() {
 
 // ---------------------------------------------------------------------------
 // Radar horizon range: R_km = 4.122 * (sqrt(h_tx_m) + sqrt(h_rx_m))
-// Source: Adamy EW101 [OPEN: page/eq TBD]; standard k=4/3-earth radar/radio
-// horizon formula (verified analytically: sqrt(2*(4/3)*6371 km) = 4.122).
+// Source: standard k=4/3-earth radar/radio horizon formula (verified
+// analytically: sqrt(2*(4/3)*6371 km) = 4.122). DELTA: Adamy EW103 Sec 6.5,
+// p.170 rounds the constant to 4.11; libew keeps the exact 4/3-earth value
+// 4.122 (~0.3% longer). Documented difference, see docs/formulas.md.
 // ---------------------------------------------------------------------------
 
 void test_radar_horizon_single_end() {

@@ -21,26 +21,27 @@ This document maps `ewcalc` calculator outputs to the equations implemented in `
 ### Fresnel-zone crossover distance
 `d_FZ = h_tx_m * h_rx_m * f_MHz / 24000` km
 
-- Source: Adamy EW101 [OPEN: page/eq TBD]. Derived as the range where FSPL and two-ray curves intersect; exact algebra gives approximately `/23885`, conventionally rounded to `/24000`.
+- Source: Adamy EW103 Sec. 5.6, p. 135 — the 4-pi form; Adamy notes many Fresnel formulae exist and chooses this one because it yields the distance at which LOS and two-ray attenuation are equal, which is exactly its regime-selection role here. Derived as the range where FSPL and two-ray curves intersect; exact algebra gives approximately `/23885`, conventionally rounded to `/24000`. (EW101's `/75000` rule of thumb is the 4·h·h/lambda breakpoint, a factor of pi apart — a different definition, not an error; never "correct" this constant to it.)
 - Units: heights in meters, frequency in MHz, result in km.
 
 ### Knife-edge diffraction loss
 Piecewise Lee (1982) approximation to the Fresnel diffraction integral `J(v)`.
 
-- Source: Adamy EW101 [OPEN: page/eq TBD]; Lee (1982); ITU-R P.526.
+- Source: Lee (1982); ITU-R P.526. METHOD DELTA: Adamy EW103 Sec. 5.7, pp. 137-140 treats knife-edge diffraction by nomograph (d, H, frequency, with `d = [sqrt(2)/(1+d1/d2)]*d1`) rather than a closed form; his treatment anchors the concept, Lee's approximation is what libew implements.
 - Sign convention: `los_clearance > 0` means the knife edge is below the line-of-sight; `< 0` means obstruction above LOS.
 - Units: distances in km, clearance in meters, frequency in MHz, loss in dB (positive = additional loss). At `v = 0`, loss is 6.02 dB.
 
 ### Earth bulge
 `h_m = d1_km * d2_km / (2 * R_eff_km) * 1000`, with `R_eff = (4/3) * 6371 km`.
 
-- Source: Adamy EW101 [OPEN: page/eq TBD]; standard 4/3-effective-earth-radius geometry; ITU-R P.526.
+- Source: Adamy EW103 Sec. 6.5, pp. 170-174 (4/3 earth cited as the "standard factor" for curvature plus atmospheric refraction; note the section works largely by nomograph, so the anchor is conceptual); standard 4/3-effective-earth-radius geometry; ITU-R P.526.
 - Units: distances in km, result in meters (positive = earth bulge above the flat-earth chord).
 
 ### Radar/radio horizon range
 `R_km = 4.122 * (sqrt(h_tx_m) + sqrt(h_rx_m))`
 
-- Source: Adamy EW101 [OPEN: page/eq TBD]; standard k=4/3 earth-horizon formula.
+- Source: standard k=4/3 earth-horizon formula (exact constant: `sqrt(2*(4/3)*6371 km)` = 4.122).
+- DELTA vs. Adamy: EW103 Sec. 6.5, p. 170 rounds the constant to 4.11 (~0.3% shorter ranges; the section otherwise works largely by nomograph). libew keeps the exact 4/3-earth value; documented difference pending the fidelity sweep.
 - Units: heights in meters, result in km.
 
 ## Antenna

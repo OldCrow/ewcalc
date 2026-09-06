@@ -176,13 +176,23 @@ itemized since they're actionable.
      rule-of-thumb form differs from the implemented one.
   Book-vs-code deltas are documented differences at the definition
   site, not bugs (unless the implemented form is itself wrong).
-- Fresnel-crossover finding (side chat, 2026-09-06): EW101's /75000 vs
-  EW102's /24000 is NOT a unit change — they are two breakpoint
-  definitions a factor of π apart: 4·h₁·h₂/λ (EW101 rule of thumb) vs
-  4π·h₁·h₂/λ (EW102, the FSPL/two-ray intersection, ≈/23900,
-  conventionally /24000). ewcalc implements the EW102 definition, which
-  is correct for its regime-selection use. Do NOT "correct" the
-  constant to EW101's. Recorded on #68.
+- Fresnel-crossover finding (side chat 2026-09-06; book location
+  corrected during the sweep): EW101's /75000 vs the /24000 form is NOT
+  a unit change — two breakpoint definitions a factor of π apart:
+  4·h₁·h₂/λ (EW101 rule of thumb) vs 4π·h₁·h₂/λ (the FSPL/two-ray
+  intersection, ≈/23900, conventionally /24000 — found in EW103
+  Sec 5.6 p.135, not EW102 as first guessed; Adamy explicitly chooses
+  it because it equates LOS and two-ray attenuation). ewcalc implements
+  this definition, correct for its regime-selection use. Do NOT
+  "correct" the constant to EW101's. Recorded on #68.
+- Horizon-constant delta (found 2026-09-06, #68 sweep): libew uses the
+  exact k=4/3 value 4.122 (√(2·(4/3)·6371 km)); Adamy EW103 Sec 6.5
+  p.170 rounds to 4.11 (~0.3%). Documented difference; fidelity-sweep
+  docket alongside the 1.76 dB DR and 30000/29000 beamwidth deltas.
+- Nomograph method note (2026-09-06): Adamy EW103 Sec 5.7 (knife-edge)
+  and nearly all of Sec 6.5 (bulge/horizon) work by nomograph, not
+  closed form; libew implements Lee (1982) and the standard 4/3-earth
+  algebra. Method difference documented at the definition sites.
 - Beamwidth-constant delta (found 2026-09-06, #68 sweep): libew's
   gain↔beamwidth pair uses the 30000 rule-of-thumb constant; Adamy
   EW103 uses 29000 (noting the exact solution is 28889). 0.15 dB apart.
