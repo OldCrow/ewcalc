@@ -4,7 +4,12 @@ All notable changes to this project are documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [v1.1.0] — 2026-09-05
+
+Coverage & Illustration release: two new calculators (Detection statistics,
+Doppler & Resolution) across all three frontends, static geometry diagrams
+on six panes, the DR/SQNR split on the Receiver pane, and the last three
+formula-provenance deltas resolved (#68).
 
 ### Changed
 
@@ -19,6 +24,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   ~1.7% (beamwidth); the rule's intrinsic accuracy is ±1-2 dB.
 - Radar/radio horizon keeps the exact k=4/3 constant 4.122 (Adamy rounds
   to 4.11); documented as a deliberate difference, no change.
+- Windows field colour-coding gap (#62) closed as already implemented:
+  the converter-based error styling (`FieldErrorToBrushConverter` on
+  `BorderBrush`) shipped in v0.8.0 covers every input on all pages and is
+  now verified at runtime (clean startup, red border on invalid fields,
+  matching macOS/Linux). The stale "known limitation" notes in AGENTS.md
+  and PLAN.md are removed; the failed dependency-property approach they
+  described was superseded, not still pending.
 
 ### Added
 
@@ -28,22 +40,24 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   stand-off geometry), Propagation (two-ray, knife-edge, horizon/earth
   bulge), Location (AOA error fan, EEP vs CEP), Doppler & Resolution
   (resolution cell), Receiver (Friis cascade), and Antenna
-  (beamwidth/gain trade) panes on macOS and Linux (Windows pending).
-  One theme-neutral transparent asset set; live plotting remains
-  explicitly out of scope.
+  (beamwidth/gain trade) panes on macOS, Linux, and Windows (collapsed
+  Expander sections; the PNGs are linked from the shared asset set, not
+  duplicated). One theme-neutral transparent asset set; live plotting
+  remains explicitly out of scope.
 - Doppler & Resolution calculator (#70, #71): two-way Doppler shift,
   unambiguous range, first blind speed and unambiguous velocity (the
   Doppler dilemma product R_u·v_u = c·λ/8 is test-guarded), range
   resolution from waveform bandwidth, and cross-range resolution in
   azimuth and elevation. New `libew::radar` functions, a
-  `DopplerPresenter` pane through the C bridge and the macOS and Linux
-  frontends (Windows pane pending), and a `format_mps` formatter.
+  `DopplerPresenter` pane on all three frontends (macOS/Linux via the C
+  bridge and Qt; Windows via a `DopplerAdapter` in `ewpresenter.net`),
+  and a `format_mps` formatter.
 - Detection statistics calculator (#69): required SNR via Albersheim's
   equation (nonfluctuating) and Shnidman's equation (Swerling 0–4),
   fluctuation loss, dwell time, hits per scan, and false-alarm rate.
   New `libew::radar` functions with a `Swerling` enum, a
-  `DetectionPresenter` pane wired through the C bridge and the macOS and
-  Linux frontends (Windows pane pending, needs the Windows machine),
+  `DetectionPresenter` pane on all three frontends (Windows via a
+  `DetectionAdapter` in `ewpresenter.net`), a
   `Seconds` unit type, and `format_seconds`/`format_hz`/`format_count`
   formatters. Shnidman's implementation is gated against an exact
   Marcum-Q/noncentral-chi-square oracle (`scripts/detection_oracle.py`);

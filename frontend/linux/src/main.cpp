@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
     QApplication app(argc, argv);
     app.setApplicationName(QStringLiteral("ewcalc"));
     app.setApplicationDisplayName(QStringLiteral("EW Calculator"));
-    app.setApplicationVersion(QStringLiteral("1.0.2"));
+    app.setApplicationVersion(QStringLiteral("1.1.0"));
 
     // Set the window/taskbar icon explicitly rather than relying on the
     // window manager to match WM_CLASS against the installed .desktop entry

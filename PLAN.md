@@ -41,8 +41,8 @@
   Windows Frontend conventions.
 
 ## GitHub Synchronization [DERIVED]
-Last reconciled against live GitHub state: 2026-09-06 (v1.2.0 milestone
-created; #73–#78 filed).
+Last reconciled against live GitHub state: 2026-09-06 UTC (v1.1.0 leg:
+#62/#69/#70/#71/#72 closed, milestone #5 closed, tag v1.1.0 pushed).
 - GitHub is the collaborator-facing source for issues and milestones; this
   PLAN.md is the agent-facing durable project state. Keep both in sync.
 - When creating, closing, reopening, retitling, or moving a GitHub issue or
@@ -74,9 +74,16 @@ Open milestones are fully itemized here since they reflect actionable state.
   - #28 CLOSED — Create user-facing "Formulas & references" document (output ↔ EW101 equation map).
   - #29 CLOSED — Final domain audit: re-verify every formula against EW101/102/103 with citations recorded in tests.
   - Milestone closed on GitHub 2026-07-14; no further v1.0.0 work planned.
-- v1.1.0 — Coverage & Illustration (open, #5), created 2026-09-05:
-  - #62 OPEN — WinUI3 field colour-coding (x:Bind crash, deferred; needs the
-    Windows machine).
+- v1.1.0 — Coverage & Illustration (closed 2026-09-06 UTC, #5), created
+  2026-09-05. Released as tag v1.1.0.
+  - #62 CLOSED 2026-09-06 — resolved as already-implemented: the
+    converter-based colour-coding (`FieldErrorToBrushConverter` on
+    `BorderBrush`) shipped in v0.8.0 on every input of all pages; verified
+    at runtime on the Windows machine (clean startup, red border + dashed
+    sub-section on an invalid Location EEP input). The issue's premise
+    ("ships without colour-coding") was stale — the crashing
+    dependency-property attempt had already been superseded by the
+    classic-binding approach the issue itself proposed as option 2.
   - #66 CLOSED 2026-09-05 — ewcalc_frontend target wired on macOS
     (ad-hoc signing; scripts/build-macos.sh stays the signed path);
     stale Phase-N naming purged repo-wide.
@@ -95,29 +102,26 @@ Open milestones are fully itemized here since they reflect actionable state.
     and checked: all three location primaries resolved, zero [OPEN]
     markers remain repo-wide. Fidelity docket subsequently cleared —
     see Provenance Framing.
-  - #69 OPEN — Radar detection statistics calculator: core + presenter +
-    bridge + macOS and Linux panes shipped 2026-09-06 (Albersheim +
-    Shnidman with Swerling 0–4, fluctuation loss, dwell/hits/FAR;
-    Shnidman constants validated against the exact-theory oracle in
-    scripts/detection_oracle.py, worst error 0.30 dB — the oracle needs
-    scipy, not part of the test suite; reference values are baked into
-    test_radar.cpp). REMAINING: the WinUI3 pane (Windows machine) and
-    ideally a Qt6 compile check of DetectionPage (written to pattern,
-    not compiled — no Qt6 on the Mac; CI's Linux job will catch it).
-  - #70/#71 OPEN — shipped together 2026-09-06 as one "Doppler &
-    Resolution" pane (DopplerPresenter): Doppler shift, unambiguous
-    range/velocity, first blind speed (dilemma product R_u·v_u = c·λ/8
-    test-guarded), range and az/el cross-range resolution. Core +
-    bridge + macOS and Linux panes done; REMAINING (same as #69): the
-    WinUI3 panes, and CI's Linux job gating the Qt6 pages.
-  - #72 OPEN — Static geometry diagrams: ten SVG masters + PNG pipeline
-    shipped 2026-09-06 (7126d8c); style ratified by user (nose-up
-    crossing aircraft tracks). Wired into six macOS/Linux panes as
-    collapsed "Geometry" sections (32f7d83, pane renders user-approved,
-    CI green). REMAINING: WinUI3 wiring (Windows machine).
-    Tier-3 panes deliberately have no diagram (Link/Radar/Digital/
-    Detection are log-domain arithmetic; a Pd/SNR curve family would
-    cross into the fenced-off plotting scope).
+  - #69 CLOSED 2026-09-06 — Radar detection statistics calculator on all
+    three frontends (Albersheim + Shnidman with Swerling 0–4, fluctuation
+    loss, dwell/hits/FAR; Shnidman constants validated against the
+    exact-theory oracle in scripts/detection_oracle.py, worst error
+    0.30 dB — the oracle needs scipy, not part of the test suite;
+    reference values are baked into test_radar.cpp). WinUI3 pane shipped
+    and runtime-verified (outputs match the presenter defaults).
+  - #70/#71 CLOSED 2026-09-06 — one "Doppler & Resolution" pane
+    (DopplerPresenter): Doppler shift, unambiguous range/velocity, first
+    blind speed (dilemma product R_u·v_u = c·λ/8 test-guarded), range and
+    az/el cross-range resolution. All three frontends; WinUI3 pane
+    runtime-verified.
+  - #72 CLOSED 2026-09-06 — Static geometry diagrams: ten SVG masters +
+    PNG pipeline (7126d8c); style ratified by user. Wired into six panes
+    on all three platforms — macOS/Linux (32f7d83), WinUI3 as collapsed
+    Expander sections with the PNGs MSBuild-linked from the shared
+    assets/diagrams/png set (not duplicated). Tier-3 panes deliberately
+    have no diagram (Link/Radar/Digital/Detection are log-domain
+    arithmetic; a Pd/SNR curve family would cross into the fenced-off
+    plotting scope).
   - Reference material: R&S "Radar and electronic warfare" eGuide
     (Christian Wolff) used 2026-09-05 as the coverage checklist for #69–#72.
 - v1.2.0 — Reference Library (open, #6), created 2026-09-06. Vision: a
@@ -159,21 +163,27 @@ itemized since they're actionable.
   - #45 CLOSED 2026-07-15 — All four cppcheck baseline findings fixed;
     `scripts/lint-linux.sh` gated with `--error-exitcode=1`.
 
-## Session Close-out 2026-09-05/06 [DERIVED]
-- Everything achievable on the macOS/Ventura machine for v1.1.0 is DONE:
-  #66/#67/#68 closed; #69/#70/#71/#72 shipped through macOS+Linux with
-  CI green; all five fidelity deltas resolved (DR/SQNR both offered,
-  29000 adopted, 4.122 kept, location items closed via Wegner).
-- NEXT (Windows machine, one consolidated session closes v1.1.0):
-  WinUI panes for Detection (#69) and Doppler & Resolution (#70/#71),
-  Receiver SQNR result row (from the DR/SQNR split), #72 Geometry
-  sections, #62 colour-coding retry. Then CHANGELOG Unreleased →
-  v1.1.0 and tag (CI does signed packaging on tag).
-- OPTIONAL (Linux VM, before tagging): visual smoke of the Qt6 panes
+## Session Close-out 2026-09-05/06 (Windows) [DERIVED]
+- v1.1.0 is COMPLETE and tagged. The Windows session delivered: WinUI3
+  Detection and Doppler & Resolution panes (DetectionAdapter /
+  DopplerAdapter in ewpresenter.net + XAML pages + settings
+  persistence), the Receiver SQNR result row, #72 Geometry Expander
+  sections on all six panes, and #62 closed as already-implemented
+  (see milestone notes). Verified on the Windows machine: MSVC core
+  build with all 13 tests passing, solution build warning-free,
+  `dotnet format style --verify-no-changes` clean, and a runtime smoke
+  of the packaged app (outputs cross-checked: SQNR−DR = 1.76 dB,
+  Doppler 20.01 kHz @ 10 GHz/300 m/s, diagrams render, red-border
+  validation live).
+- Windows dev-run quirk recorded in AGENTS.md: the raw exe cannot run
+  unpackaged (no WindowsPackageType=None) — register the loose AppX
+  layout instead. The stale packaged v1.0.2 install was removed from
+  this machine in the process; installing the v1.1.0 release MSIX
+  restores it.
+- OPTIONAL follow-up (Linux VM): visual smoke of the Qt6 panes
   (Detection, Doppler, Geometry sections, SQNR row) — CI compiles and
-  ctests them but nobody has SEEN the Linux UI; packaging (.deb/
-  AppImage) is tag-triggered in CI.
-- THEN: v1.2.0 Reference Library opens with #73 (data layer);
+  ctests them but nobody has SEEN the Linux UI. [OPEN]
+- NEXT: v1.2.0 Reference Library opens with #73 (data layer);
   full formula-fidelity sweep remains as future assurance work.
 
 ## Provenance Framing & Formula Fidelity [OPEN]
@@ -241,12 +251,9 @@ itemized since they're actionable.
   the books (superset of #68's pins; sequence: fidelity sweep → pins).
 
 ## Known Gaps [OPEN]
-- WinUI3 colour-coding feature deferred due to x:Bind type-checking crash —
-  not reattempted, root cause not fully resolved. Filed as #62 (2026-08-23),
-  now under milestone v1.1.0; the issue is the source of truth.
-- macOS `EWCALC_BUILD_FRONTEND` no-op: filed as #66 and fixed 2026-09-05
-  (custom `ewcalc_frontend` target mirroring the Windows MSBuild pattern —
-  ad-hoc signing; `scripts/build-macos.sh` remains the signed/packaged path).
+- None currently tracked here; gaps are filed as GitHub issues on sight
+  (see milestones above). The former entries — WinUI3 colour-coding (#62)
+  and the macOS `EWCALC_BUILD_FRONTEND` no-op (#66) — are both closed.
 
 ## Build-Stack Standardization (2026-07-23) [DERIVED]
 Cross-repo effort tracked in the fleet standards repo
