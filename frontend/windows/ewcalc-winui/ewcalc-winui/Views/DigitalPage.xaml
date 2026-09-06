@@ -41,6 +41,7 @@
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="DataRateBox" Header="Data rate (Mbps)"
                                AutomationProperties.Name="Data rate (Mbps)"
+                               ToolTipService.ToolTip="Information bit rate — shared between the Eb/N₀ conversion and DSSS process gain"
                                Value="{x:Bind ViewModel.DefaultDataRate, Mode=OneTime}"
                                Minimum="0.0001" Maximum="10000" SmallChange="0.1"
                                BorderBrush="{x:Bind ViewModel.DataRateError, Mode=OneWay,
@@ -48,6 +49,7 @@
                                ValueChanged="DataRateBox_ValueChanged" />
                     <NumberBox x:Name="BandwidthBox" Header="Bandwidth (MHz)"
                                AutomationProperties.Name="Bandwidth (MHz)"
+                               ToolTipService.ToolTip="Receiver noise bandwidth — wider than the data rate gives Eb/N₀ &gt; SNR"
                                Value="{x:Bind ViewModel.DefaultBandwidth, Mode=OneTime}"
                                Minimum="0.001" Maximum="10000" SmallChange="1"
                                BorderBrush="{x:Bind ViewModel.BandwidthError, Mode=OneWay,
@@ -55,6 +57,7 @@
                                ValueChanged="BandwidthBox_ValueChanged" />
                     <NumberBox x:Name="SnrBox" Header="SNR (dB)"
                                AutomationProperties.Name="SNR (dB)"
+                               ToolTipService.ToolTip="Carrier-to-noise ratio measured in the noise bandwidth"
                                Value="{x:Bind ViewModel.DefaultSnr, Mode=OneTime}"
                                Minimum="-30" Maximum="60" SmallChange="0.5"
                                BorderBrush="{x:Bind ViewModel.SnrError, Mode=OneWay,
@@ -68,6 +71,7 @@
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="ChipRateBox" Header="Chip rate (Mcps)"
                                AutomationProperties.Name="Chip rate (Mcps)"
+                               ToolTipService.ToolTip="Spread-spectrum chipping rate — determines the spreading bandwidth and process gain"
                                Value="{x:Bind ViewModel.DefaultChipRate, Mode=OneTime}"
                                Minimum="0.0001" Maximum="10000" SmallChange="1"
                                BorderBrush="{x:Bind ViewModel.ChipRateError, Mode=OneWay,
@@ -75,6 +79,7 @@
                                ValueChanged="ChipRateBox_ValueChanged" />
                     <NumberBox x:Name="RequiredEbNoBox" Header="Required Eb/N₀ (dB)"
                                AutomationProperties.Name="Required Eb over N0 (dB)"
+                               ToolTipService.ToolTip="Minimum energy-per-bit to noise density for acceptable BER — typically 10–13 dB for BPSK/QPSK"
                                Value="{x:Bind ViewModel.DefaultRequiredEbNo, Mode=OneTime}"
                                Minimum="-10" Maximum="30" SmallChange="0.5"
                                BorderBrush="{x:Bind ViewModel.RequiredEbNoError, Mode=OneWay,
@@ -82,6 +87,7 @@
                                ValueChanged="RequiredEbNoBox_ValueChanged" />
                     <NumberBox x:Name="ImplLossBox" Header="Implementation loss (dB)"
                                AutomationProperties.Name="Implementation loss (dB)"
+                               ToolTipService.ToolTip="Practical losses from non-ideal code synchronisation, filter roll-off, etc. — typically 1–3 dB"
                                Value="{x:Bind ViewModel.DefaultImplementationLoss, Mode=OneTime}"
                                Minimum="0" Maximum="10" SmallChange="0.1"
                                BorderBrush="{x:Bind ViewModel.ImplementationLossError, Mode=OneWay,
@@ -93,11 +99,16 @@
             <TextBlock Text="RESULTS" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource ResultCardStyle}">
                 <StackPanel Spacing="0">
-                    <local:ResultRow Label="Eb/N₀"        Value="{x:Bind ViewModel.EbNo,               Mode=OneWay}" IsHighlighted="True" />
-                    <local:ResultRow Label="Required SNR" Value="{x:Bind ViewModel.RequiredSnrForEbNo, Mode=OneWay}" />
-                    <local:ResultRow Label="Process gain"     Value="{x:Bind ViewModel.ProcessGain,   Mode=OneWay}" />
-                    <local:ResultRow Label="Jamming margin"   Value="{x:Bind ViewModel.JammingMargin, Mode=OneWay}" IsHighlighted="True" />
-                    <local:ResultRow Label="Required J/S"    Value="{x:Bind ViewModel.RequiredJs,    Mode=OneWay}" />
+                    <local:ResultRow Label="Eb/N₀"        Value="{x:Bind ViewModel.EbNo,               Mode=OneWay}" IsHighlighted="True"
+                                     ToolTipService.ToolTip="Energy-per-bit to noise density: SNR + 10·log₁₀(bandwidth / data rate)" />
+                    <local:ResultRow Label="Required SNR" Value="{x:Bind ViewModel.RequiredSnrForEbNo, Mode=OneWay}"
+                                     ToolTipService.ToolTip="Carrier SNR needed to achieve the required Eb/N₀, given the same bandwidth and data rate" />
+                    <local:ResultRow Label="Process gain"     Value="{x:Bind ViewModel.ProcessGain,   Mode=OneWay}"
+                                     ToolTipService.ToolTip="DSSS spreading gain: 10·log₁₀(chip rate / data rate)" />
+                    <local:ResultRow Label="Jamming margin"   Value="{x:Bind ViewModel.JammingMargin, Mode=OneWay}" IsHighlighted="True"
+                                     ToolTipService.ToolTip="Process gain minus required Eb/N₀ minus implementation losses — positive means spreading gain exceeds jammer advantage" />
+                    <local:ResultRow Label="Required J/S"    Value="{x:Bind ViewModel.RequiredJs,    Mode=OneWay}"
+                                     ToolTipService.ToolTip="J/S a jammer must achieve to overcome the spreading gain — negative means the jammer has an inherent advantage" />
                 </StackPanel>
             </Border>
 

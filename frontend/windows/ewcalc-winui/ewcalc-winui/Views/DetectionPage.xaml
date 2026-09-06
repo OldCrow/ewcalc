@@ -128,18 +128,24 @@
             <TextBlock Text="REQUIRED SNR" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource ResultCardStyle}">
                 <StackPanel Spacing="0">
-                    <local:ResultRow Label="Required SNR (Shnidman)"        Value="{x:Bind ViewModel.RequiredSnr,           Mode=OneWay}" IsHighlighted="True" />
-                    <local:ResultRow Label="Required SNR (Albersheim, Sw0)" Value="{x:Bind ViewModel.RequiredSnrAlbersheim, Mode=OneWay}" />
-                    <local:ResultRow Label="Fluctuation loss"               Value="{x:Bind ViewModel.FluctuationLoss,       Mode=OneWay}" />
+                    <local:ResultRow Label="Required SNR (Shnidman)"        Value="{x:Bind ViewModel.RequiredSnr,           Mode=OneWay}" IsHighlighted="True"
+                                     ToolTipService.ToolTip="Single-pulse SNR required for the chosen Pd/Pfa and Swerling case, after noncoherent integration (Shnidman's equation)" />
+                    <local:ResultRow Label="Required SNR (Albersheim, Sw0)" Value="{x:Bind ViewModel.RequiredSnrAlbersheim, Mode=OneWay}"
+                                     ToolTipService.ToolTip="Nonfluctuating-target reference from Albersheim's equation — compare against the Shnidman value to see the fluctuation penalty" />
+                    <local:ResultRow Label="Fluctuation loss"               Value="{x:Bind ViewModel.FluctuationLoss,       Mode=OneWay}"
+                                     ToolTipService.ToolTip="Extra SNR the fluctuating target needs over the nonfluctuating (Swerling 0) case" />
                 </StackPanel>
             </Border>
 
             <TextBlock Text="SCAN &amp; FALSE ALARMS" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource ResultCardStyle}">
                 <StackPanel Spacing="0">
-                    <local:ResultRow Label="Dwell time"       Value="{x:Bind ViewModel.DwellTime,   Mode=OneWay}" />
-                    <local:ResultRow Label="Hits per scan"    Value="{x:Bind ViewModel.HitsPerScan, Mode=OneWay}" />
-                    <local:ResultRow Label="False-alarm rate" Value="{x:Bind ViewModel.Far,         Mode=OneWay}" />
+                    <local:ResultRow Label="Dwell time"       Value="{x:Bind ViewModel.DwellTime,   Mode=OneWay}"
+                                     ToolTipService.ToolTip="Time the beam illuminates a point target each scan: beamwidth ÷ scan rate" />
+                    <local:ResultRow Label="Hits per scan"    Value="{x:Bind ViewModel.HitsPerScan, Mode=OneWay}"
+                                     ToolTipService.ToolTip="Pulses on target per scan: dwell time × PRF" />
+                    <local:ResultRow Label="False-alarm rate" Value="{x:Bind ViewModel.Far,         Mode=OneWay}"
+                                     ToolTipService.ToolTip="Average false alarms per second: Pfa × noise bandwidth" />
                 </StackPanel>
             </Border>
 

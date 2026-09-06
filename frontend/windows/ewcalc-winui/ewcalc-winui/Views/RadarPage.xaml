@@ -40,6 +40,7 @@
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="TxPowerBox"   Header="Tx power (dBm)"
                                AutomationProperties.Name="Tx power (dBm)"
+                               ToolTipService.ToolTip="Transmitter output power at the antenna port"
                                Value="{x:Bind ViewModel.DefaultTxPower, Mode=OneTime}"
                                Minimum="-50" Maximum="200"
                                SpinButtonPlacementMode="Compact" SmallChange="1"
@@ -48,6 +49,7 @@
                                ValueChanged="TxPowerBox_ValueChanged" />
                     <NumberBox x:Name="GainBox"      Header="Antenna gain (dBi)"
                                AutomationProperties.Name="Antenna gain (dBi)"
+                               ToolTipService.ToolTip="Same antenna used for transmit and receive — appears squared in the radar range equation"
                                Value="{x:Bind ViewModel.DefaultAntennaGain, Mode=OneTime}"
                                Minimum="-30" Maximum="60"
                                SpinButtonPlacementMode="Compact" SmallChange="0.5"
@@ -56,6 +58,7 @@
                                ValueChanged="GainBox_ValueChanged" />
                     <NumberBox x:Name="FrequencyBox" Header="Frequency (MHz)"
                                AutomationProperties.Name="Frequency (MHz)"
+                               ToolTipService.ToolTip="Radar carrier frequency"
                                Value="{x:Bind ViewModel.DefaultFrequency, Mode=OneTime}"
                                Minimum="1" Maximum="100000"
                                SpinButtonPlacementMode="Compact" SmallChange="100"
@@ -64,6 +67,7 @@
                                ValueChanged="FrequencyBox_ValueChanged" />
                     <NumberBox x:Name="RcsBox"       Header="Target RCS (dBsm)"
                                AutomationProperties.Name="Target RCS (dBsm)"
+                               ToolTipService.ToolTip="Radar cross-section of the target (dB relative to 1 m²) — fighter ~0 to +10 dBsm, missile −10 dBsm"
                                Value="{x:Bind ViewModel.DefaultTargetRcs, Mode=OneTime}"
                                Minimum="-40" Maximum="60"
                                SpinButtonPlacementMode="Compact" SmallChange="1"
@@ -72,6 +76,7 @@
                                ValueChanged="RcsBox_ValueChanged" />
                     <NumberBox x:Name="LossBox"      Header="System losses (dB)"
                                AutomationProperties.Name="System losses (dB)"
+                               ToolTipService.ToolTip="Combined one-way losses: feed line, atmospheric absorption, beam-shape, etc."
                                Value="{x:Bind ViewModel.DefaultSystemLosses, Mode=OneTime}"
                                Minimum="0" Maximum="30"
                                SpinButtonPlacementMode="Compact" SmallChange="0.5"
@@ -86,6 +91,7 @@
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="NfBox"  Header="Noise figure (dB)"
                                AutomationProperties.Name="Noise figure (dB)"
+                               ToolTipService.ToolTip="Receiver noise figure — NF = 0 dB is ideal (noiseless); each additional dB raises the sensitivity floor"
                                Value="{x:Bind ViewModel.DefaultNoiseFigure, Mode=OneTime}"
                                Minimum="0" Maximum="30"
                                SpinButtonPlacementMode="Compact" SmallChange="0.5"
@@ -94,6 +100,7 @@
                                ValueChanged="NfBox_ValueChanged" />
                     <NumberBox x:Name="BwBox"  Header="Bandwidth (MHz)"
                                AutomationProperties.Name="Bandwidth (MHz)"
+                               ToolTipService.ToolTip="Matched-filter noise bandwidth — sets the thermal noise floor"
                                Value="{x:Bind ViewModel.DefaultBandwidth, Mode=OneTime}"
                                Minimum="0.001" Maximum="10000"
                                SpinButtonPlacementMode="Compact" SmallChange="0.1"
@@ -102,6 +109,7 @@
                                ValueChanged="BwBox_ValueChanged" />
                     <NumberBox x:Name="SnrBox" Header="Required SNR (dB)"
                                AutomationProperties.Name="Required SNR (dB)"
+                               ToolTipService.ToolTip="Minimum SNR for the desired probability of detection / false-alarm rate"
                                Value="{x:Bind ViewModel.DefaultRequiredSnr, Mode=OneTime}"
                                Minimum="-10" Maximum="50"
                                SpinButtonPlacementMode="Compact" SmallChange="0.5"
@@ -116,6 +124,7 @@
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="TbProductBox" Header="Time-BW product"
                                AutomationProperties.Name="Time-bandwidth product"
+                               ToolTipService.ToolTip="Pulse compression ratio: pulse width × bandwidth — determines PC gain and LPI advantage"
                                Value="{x:Bind ViewModel.DefaultTimeBandwidthProd, Mode=OneTime}"
                                Minimum="1" Maximum="1000000"
                                SpinButtonPlacementMode="Compact" SmallChange="10"
@@ -124,6 +133,7 @@
                                ValueChanged="TbProductBox_ValueChanged" />
                     <NumberBox x:Name="NumPulsesBox" Header="Coherent pulses"
                                AutomationProperties.Name="Coherent pulses"
+                               ToolTipService.ToolTip="Number of pulses combined coherently — sets the coherent integration gain"
                                Value="{x:Bind ViewModel.DefaultNumPulses, Mode=OneTime}"
                                Minimum="1" Maximum="100000"
                                SpinButtonPlacementMode="Compact" SmallChange="1"
@@ -136,18 +146,24 @@
             <TextBlock Text="RANGE EQUATION" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource ResultCardStyle}">
                 <StackPanel Spacing="0">
-                    <local:ResultRow Label="Max range"    Value="{x:Bind ViewModel.MaxRange,   Mode=OneWay}" IsHighlighted="True" />
-                    <local:ResultRow Label="Two-way loss" Value="{x:Bind ViewModel.TwoWayLoss, Mode=OneWay}" />
-                    <local:ResultRow Label="Target RCS"   Value="{x:Bind ViewModel.TargetRcs,  Mode=OneWay}" />
+                    <local:ResultRow Label="Max range"    Value="{x:Bind ViewModel.MaxRange,   Mode=OneWay}" IsHighlighted="True"
+                                     ToolTipService.ToolTip="Maximum detection range at the required SNR with no signal processing gain applied" />
+                    <local:ResultRow Label="Two-way loss" Value="{x:Bind ViewModel.TwoWayLoss, Mode=OneWay}"
+                                     ToolTipService.ToolTip="Total two-way propagation loss at the maximum range" />
+                    <local:ResultRow Label="Target RCS"   Value="{x:Bind ViewModel.TargetRcs,  Mode=OneWay}"
+                                     ToolTipService.ToolTip="Target radar cross-section (dB relative to 1 m²) — shown here with dBsm suffix so the result panel is self-contained" />
                 </StackPanel>
             </Border>
 
             <TextBlock Text="SIGNAL PROCESSING GAIN" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource ResultCardStyle}">
                 <StackPanel Spacing="0">
-                    <local:ResultRow Label="Pulse compression gain"    Value="{x:Bind ViewModel.PcGain,        Mode=OneWay}" />
-                    <local:ResultRow Label="Coherent integration gain" Value="{x:Bind ViewModel.CohGain,       Mode=OneWay}" />
-                    <local:ResultRow Label="LPI advantage"             Value="{x:Bind ViewModel.LpiAdvantage,  Mode=OneWay}" />
+                    <local:ResultRow Label="Pulse compression gain"    Value="{x:Bind ViewModel.PcGain,        Mode=OneWay}"
+                                     ToolTipService.ToolTip="Pulse compression SNR gain: 10·log₁₀(time-bandwidth product)" />
+                    <local:ResultRow Label="Coherent integration gain" Value="{x:Bind ViewModel.CohGain,       Mode=OneWay}"
+                                     ToolTipService.ToolTip="Coherent integration SNR gain: 10·log₁₀(number of pulses)" />
+                    <local:ResultRow Label="LPI advantage"             Value="{x:Bind ViewModel.LpiAdvantage,  Mode=OneWay}"
+                                     ToolTipService.ToolTip="Detection-range advantage an LPI waveform has against an intercept receiver: PC gain ÷ 4" />
                 </StackPanel>
             </Border>
 

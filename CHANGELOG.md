@@ -24,6 +24,13 @@ formula-provenance deltas resolved (#68).
   ~1.7% (beamwidth); the rule's intrinsic accuracy is ±1-2 dB.
 - Radar/radio horizon keeps the exact k=4/3 constant 4.122 (Adamy rounds
   to 4.11); documented as a deliberate difference, no change.
+- Windows UX parity pass (post-review): help tooltips on every input and
+  result row across all ten panes (previously only the two new panes had
+  them), the Propagation regime indicator converted from an InfoBar to a
+  standard "Regime" result row (matching Link and the macOS/Linux
+  presentation), the always-open "About CEP" InfoBar on Location replaced
+  by per-row CEP tooltips (matching macOS), and the navigation pane
+  widened so "Doppler & Resolution" no longer truncates.
 - Windows field colour-coding gap (#62) closed as already implemented:
   the converter-based error styling (`FieldErrorToBrushConverter` on
   `BorderBrush`) shipped in v0.8.0 covers every input on all pages and is

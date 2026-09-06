@@ -13,7 +13,7 @@
             IsBackButtonVisible="Collapsed"
             IsSettingsVisible="False"
             SelectionChanged="NavView_SelectionChanged"
-            OpenPaneLength="200"
+            OpenPaneLength="220"
             CompactModeThresholdWidth="0"
             ExpandedModeThresholdWidth="1400">
 

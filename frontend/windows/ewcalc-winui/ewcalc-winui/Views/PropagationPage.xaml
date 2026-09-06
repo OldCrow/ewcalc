@@ -60,6 +60,7 @@
                     <NumberBox x:Name="FrequencyBox"
                                Header="Frequency (MHz)"
                                AutomationProperties.Name="Frequency (MHz)"
+                               ToolTipService.ToolTip="Carrier frequency — path loss scales as f² in free space"
                                Value="{x:Bind ViewModel.DefaultFrequency, Mode=OneTime}"
                                Minimum="0.1" Maximum="100000"
                                SpinButtonPlacementMode="Compact" SmallChange="10"
@@ -74,6 +75,7 @@
                         <NumberBox Grid.Column="0" x:Name="TxHeightBox"
                                    Header="Tx height (m)"
                                    AutomationProperties.Name="Tx height (m)"
+                                   ToolTipService.ToolTip="Transmit antenna height above ground — determines the Fresnel zone crossover distance"
                                    Value="{x:Bind ViewModel.DefaultTxHeight, Mode=OneTime}"
                                    Minimum="0.1" Maximum="100000"
                                    SpinButtonPlacementMode="Compact" SmallChange="1"
@@ -83,6 +85,7 @@
                         <NumberBox Grid.Column="1" x:Name="RxHeightBox"
                                    Header="Rx height (m)"
                                    AutomationProperties.Name="Rx height (m)"
+                                   ToolTipService.ToolTip="Receive antenna height above ground — determines the Fresnel zone crossover distance"
                                    Value="{x:Bind ViewModel.DefaultRxHeight, Mode=OneTime}"
                                    Minimum="0.1" Maximum="100000"
                                    SpinButtonPlacementMode="Compact" SmallChange="1"
@@ -110,17 +113,22 @@
             <TextBlock Text="RESULTS" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource ResultCardStyle}">
                 <StackPanel Spacing="0">
-                    <InfoBar IsOpen="True" IsClosable="False" Severity="Informational"
-                             Message="{x:Bind ViewModel.Regime, Mode=OneWay}"
-                             AutomationProperties.Name="Propagation regime"
-                             Margin="0,0,0,12" />
-                    <local:ResultRow Label="Path loss"        Value="{x:Bind ViewModel.PathLoss,     Mode=OneWay}" />
-                    <local:ResultRow Label="FSPL"             Value="{x:Bind ViewModel.Fspl,         Mode=OneWay}" />
-                    <local:ResultRow Label="2-ray loss"       Value="{x:Bind ViewModel.TwoRayLoss,   Mode=OneWay}" />
-                    <local:ResultRow Label="Fresnel zone dist." Value="{x:Bind ViewModel.Fresnel,    Mode=OneWay}" />
-                    <local:ResultRow Label="Earth bulge (mid)" Value="{x:Bind ViewModel.EarthBulge,       Mode=OneWay}" />
-                    <local:ResultRow Label="Radar horizon"    Value="{x:Bind ViewModel.HorizonRange,     Mode=OneWay}" />
-                    <local:ResultRow Label="Diffraction loss" Value="{x:Bind ViewModel.DiffractionLoss,  Mode=OneWay}" />
+                    <local:ResultRow Label="Regime"           Value="{x:Bind ViewModel.Regime,       Mode=OneWay}"
+                                     ToolTipService.ToolTip="Propagation model in use: LOS (free-space) or 2-ray (ground reflection)" />
+                    <local:ResultRow Label="Path loss"        Value="{x:Bind ViewModel.PathLoss,     Mode=OneWay}"
+                                     ToolTipService.ToolTip="Applicable loss for this geometry — FSPL below the Fresnel crossover, 2-ray above it" />
+                    <local:ResultRow Label="FSPL"             Value="{x:Bind ViewModel.Fspl,         Mode=OneWay}"
+                                     ToolTipService.ToolTip="Free-space path loss: 32.44 + 20·log₁₀(km) + 20·log₁₀(MHz) — valid below the Fresnel zone crossover" />
+                    <local:ResultRow Label="2-ray loss"       Value="{x:Bind ViewModel.TwoRayLoss,   Mode=OneWay}"
+                                     ToolTipService.ToolTip="Two-ray ground-reflection loss: 120 + 40·log₁₀(km) − 20·log₁₀(h_tx) − 20·log₁₀(h_rx) — loss scales as d⁴ beyond Fresnel crossover" />
+                    <local:ResultRow Label="Fresnel zone dist." Value="{x:Bind ViewModel.Fresnel,    Mode=OneWay}"
+                                     ToolTipService.ToolTip="Range at which ground reflection begins to dominate: h_tx·h_rx·f / 24 000 km" />
+                    <local:ResultRow Label="Earth bulge (mid)" Value="{x:Bind ViewModel.EarthBulge,       Mode=OneWay}"
+                                     ToolTipService.ToolTip="Height the earth surface rises at the path midpoint under a standard k = 4/3 atmosphere" />
+                    <local:ResultRow Label="Radar horizon"    Value="{x:Bind ViewModel.HorizonRange,     Mode=OneWay}"
+                                     ToolTipService.ToolTip="Maximum visibility range combining both antenna heights: 4.12 × (√h_tx + √h_rx) km" />
+                    <local:ResultRow Label="Diffraction loss" Value="{x:Bind ViewModel.DiffractionLoss,  Mode=OneWay}"
+                                     ToolTipService.ToolTip="Knife-edge diffraction loss at path midpoint using the Fresnel diffraction parameter" />
                 </StackPanel>
             </Border>
 

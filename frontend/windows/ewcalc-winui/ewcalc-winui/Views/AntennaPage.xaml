@@ -56,6 +56,7 @@
                     </NumberBox>
                     <NumberBox x:Name="AzBeamwidthBox" Header="Az beamwidth (deg)"
                                AutomationProperties.Name="Az beamwidth (deg)"
+                               ToolTipService.ToolTip="Azimuth 3 dB beamwidth — used with elevation beamwidth to estimate gain"
                                Value="{x:Bind ViewModel.DefaultAzBeamwidth, Mode=OneTime}"
                                Minimum="0.1" Maximum="360"
                                SpinButtonPlacementMode="Compact" SmallChange="1"
@@ -64,6 +65,7 @@
                                ValueChanged="AzBeamwidthBox_ValueChanged" />
                     <NumberBox x:Name="ElBeamwidthBox" Header="El beamwidth (deg)"
                                AutomationProperties.Name="El beamwidth (deg)"
+                               ToolTipService.ToolTip="Elevation 3 dB beamwidth"
                                Value="{x:Bind ViewModel.DefaultElBeamwidth, Mode=OneTime}"
                                Minimum="0.1" Maximum="360"
                                SpinButtonPlacementMode="Compact" SmallChange="1"
@@ -72,6 +74,7 @@
                                ValueChanged="ElBeamwidthBox_ValueChanged" />
                     <NumberBox x:Name="TxPowerBox"     Header="Tx power (dBm)"
                                AutomationProperties.Name="Tx power (dBm)"
+                               ToolTipService.ToolTip="Transmitter output power — used to compute ERP"
                                Value="{x:Bind ViewModel.DefaultTxPower, Mode=OneTime}"
                                Minimum="-30" Maximum="100"
                                SpinButtonPlacementMode="Compact" SmallChange="1"
@@ -80,6 +83,7 @@
                                ValueChanged="TxPowerBox_ValueChanged" />
                     <NumberBox x:Name="FrequencyBox"   Header="Frequency (MHz)"
                                AutomationProperties.Name="Frequency (MHz)"
+                               ToolTipService.ToolTip="Carrier frequency — used to compute free-space wavelength"
                                Value="{x:Bind ViewModel.DefaultFrequency, Mode=OneTime}"
                                Minimum="0.1" Maximum="100000"
                                SpinButtonPlacementMode="Compact" SmallChange="10"
@@ -92,10 +96,14 @@
             <TextBlock Text="RESULTS" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource ResultCardStyle}">
                 <StackPanel Spacing="0">
-                    <local:ResultRow Label="ERP"                 Value="{x:Bind ViewModel.Erp,               Mode=OneWay}" IsHighlighted="True" />
-                    <local:ResultRow Label="Beamwidth from gain" Value="{x:Bind ViewModel.BeamwidthFromGain, Mode=OneWay}" />
-                    <local:ResultRow Label="Gain from beamwidth" Value="{x:Bind ViewModel.GainFromBeamwidth, Mode=OneWay}" />
-                    <local:ResultRow Label="Wavelength"          Value="{x:Bind ViewModel.Wavelength,        Mode=OneWay}" />
+                    <local:ResultRow Label="ERP"                 Value="{x:Bind ViewModel.Erp,               Mode=OneWay}" IsHighlighted="True"
+                                     ToolTipService.ToolTip="Effective Radiated Power = Tx power + antenna gain" />
+                    <local:ResultRow Label="Beamwidth from gain" Value="{x:Bind ViewModel.BeamwidthFromGain, Mode=OneWay}"
+                                     ToolTipService.ToolTip="Approximate 3 dB beamwidth derived from gain (Tai &amp; Pereira approximation)" />
+                    <local:ResultRow Label="Gain from beamwidth" Value="{x:Bind ViewModel.GainFromBeamwidth, Mode=OneWay}"
+                                     ToolTipService.ToolTip="Approximate gain from az × el beamwidth: 10·log₁₀(29000 / (θ_az · θ_el))" />
+                    <local:ResultRow Label="Wavelength"          Value="{x:Bind ViewModel.Wavelength,        Mode=OneWay}"
+                                     ToolTipService.ToolTip="Free-space wavelength at the given frequency" />
                 </StackPanel>
             </Border>
 

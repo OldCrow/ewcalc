@@ -41,6 +41,7 @@
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="BandwidthBox" Header="Bandwidth (MHz)"
                                AutomationProperties.Name="Bandwidth (MHz)"
+                               ToolTipService.ToolTip="IF noise bandwidth — wider bandwidth raises the noise floor and degrades sensitivity"
                                Value="{x:Bind ViewModel.DefaultBandwidth, Mode=OneTime}"
                                Minimum="0.001" Maximum="10000"
                                BorderBrush="{x:Bind ViewModel.BandwidthError, Mode=OneWay,
@@ -48,6 +49,7 @@
                                ValueChanged="BandwidthBox_ValueChanged" />
                     <NumberBox x:Name="NoiseFigureBox" Header="Noise figure (dB)"
                                AutomationProperties.Name="Noise figure (dB)"
+                               ToolTipService.ToolTip="System noise figure — NF = 0 dB is ideal (noiseless); each additional dB raises the sensitivity floor"
                                Value="{x:Bind ViewModel.DefaultNoiseFigure, Mode=OneTime}"
                                Minimum="0" Maximum="30" SmallChange="0.5"
                                BorderBrush="{x:Bind ViewModel.NoiseFigureError, Mode=OneWay,
@@ -55,6 +57,7 @@
                                ValueChanged="NoiseFigureBox_ValueChanged" />
                     <NumberBox x:Name="SnrBox" Header="Required SNR (dB)"
                                AutomationProperties.Name="Required SNR (dB)"
+                               ToolTipService.ToolTip="Minimum pre-detection SNR for acceptable output — depends on modulation and required BER"
                                Value="{x:Bind ViewModel.DefaultRequiredSnr, Mode=OneTime}"
                                Minimum="-20" Maximum="50" SmallChange="0.5"
                                BorderBrush="{x:Bind ViewModel.RequiredSnrError, Mode=OneWay,
@@ -68,6 +71,7 @@
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="Ip2Box" Header="IP2 (dBm)"
                                AutomationProperties.Name="IP2 (dBm)"
+                               ToolTipService.ToolTip="Second-order input intercept point — sets the 2nd-order intermodulation floor"
                                Value="{x:Bind ViewModel.DefaultSecondOrderIp, Mode=OneTime}"
                                Minimum="-50" Maximum="100"
                                BorderBrush="{x:Bind ViewModel.SecondOrderIpError, Mode=OneWay,
@@ -75,6 +79,7 @@
                                ValueChanged="Ip2Box_ValueChanged" />
                     <NumberBox x:Name="Ip3Box" Header="IP3 (dBm)"
                                AutomationProperties.Name="IP3 (dBm)"
+                               ToolTipService.ToolTip="Third-order input intercept point — sets the 3rd-order intermodulation floor; typically the tighter limit"
                                Value="{x:Bind ViewModel.DefaultThirdOrderIp, Mode=OneTime}"
                                Minimum="-50" Maximum="100"
                                BorderBrush="{x:Bind ViewModel.ThirdOrderIpError, Mode=OneWay,
@@ -82,6 +87,7 @@
                                ValueChanged="Ip3Box_ValueChanged" />
                     <NumberBox x:Name="AdcBitsBox" Header="ADC bits"
                                AutomationProperties.Name="ADC bits"
+                               ToolTipService.ToolTip="Number of ADC quantisation bits — more bits raise the digital dynamic range and SQNR"
                                Value="{x:Bind ViewModel.DefaultAdcBits, Mode=OneTime}"
                                Minimum="1" Maximum="64" SmallChange="1"
                                BorderBrush="{x:Bind ViewModel.AdcBitsError, Mode=OneWay,
@@ -129,10 +135,12 @@
                                                VerticalAlignment="Center" HorizontalAlignment="Center" />
                                     <NumberBox Grid.Column="1"
                                                AutomationProperties.Name="{x:Bind NfAutomationName, Mode=OneWay}"
+                                               ToolTipService.ToolTip="{x:Bind NfAutomationName, Mode=OneWay}"
                                                Value="{x:Bind NoiseFigureDb, Mode=TwoWay}"
                                                Minimum="0" Maximum="30" SmallChange="0.5" />
                                     <NumberBox Grid.Column="2"
                                                AutomationProperties.Name="{x:Bind GainAutomationName, Mode=OneWay}"
+                                               ToolTipService.ToolTip="{x:Bind GainAutomationName, Mode=OneWay}"
                                                Value="{x:Bind GainDb, Mode=TwoWay}"
                                                Minimum="-60" Maximum="60" SmallChange="1" />
                                     <Button Grid.Column="3" Content="✕"
@@ -153,14 +161,22 @@
             <TextBlock Text="RESULTS" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource ResultCardStyle}">
                 <StackPanel Spacing="0">
-                    <local:ResultRow Label="Sensitivity"    Value="{x:Bind ViewModel.Sensitivity,    Mode=OneWay}" />
-                    <local:ResultRow Label="Cascaded NF"    Value="{x:Bind ViewModel.CascadedNf,     Mode=OneWay}" />
-                    <local:ResultRow Label="Sys. noise temp" Value="{x:Bind ViewModel.SystemNoiseTemp, Mode=OneWay}" />
-                    <local:ResultRow Label="Sys. NF equiv."  Value="{x:Bind ViewModel.SystemNf,       Mode=OneWay}" />
-                    <local:ResultRow Label="SFDR (2nd)"     Value="{x:Bind ViewModel.Sfdr2,          Mode=OneWay}" />
-                    <local:ResultRow Label="SFDR (3rd)"     Value="{x:Bind ViewModel.Sfdr3,          Mode=OneWay}" />
-                    <local:ResultRow Label="Digital DR"     Value="{x:Bind ViewModel.DigitalDr,      Mode=OneWay}" />
-                    <local:ResultRow Label="SQNR"           Value="{x:Bind ViewModel.DigitalSqnr,    Mode=OneWay}" />
+                    <local:ResultRow Label="Sensitivity"    Value="{x:Bind ViewModel.Sensitivity,    Mode=OneWay}"
+                                     ToolTipService.ToolTip="Minimum detectable signal: −114 + 10·log₁₀(BW) + NF + SNR (dBm)" />
+                    <local:ResultRow Label="Cascaded NF"    Value="{x:Bind ViewModel.CascadedNf,     Mode=OneWay}"
+                                     ToolTipService.ToolTip="System noise figure from the Friis formula across the stage chain — front-end stage dominates" />
+                    <local:ResultRow Label="Sys. noise temp" Value="{x:Bind ViewModel.SystemNoiseTemp, Mode=OneWay}"
+                                     ToolTipService.ToolTip="Equivalent noise temperature: Tₑ = (NFₗᵢₙ − 1) × 290 K" />
+                    <local:ResultRow Label="Sys. NF equiv."  Value="{x:Bind ViewModel.SystemNf,       Mode=OneWay}"
+                                     ToolTipService.ToolTip="System NF re-derived from system noise temperature — confirms the round-trip conversion" />
+                    <local:ResultRow Label="SFDR (2nd)"     Value="{x:Bind ViewModel.Sfdr2,          Mode=OneWay}"
+                                     ToolTipService.ToolTip="2nd-order spurious-free dynamic range: ½ × (IIP2 − sensitivity)" />
+                    <local:ResultRow Label="SFDR (3rd)"     Value="{x:Bind ViewModel.Sfdr3,          Mode=OneWay}"
+                                     ToolTipService.ToolTip="3rd-order spurious-free dynamic range: ⅔ × (IIP3 − sensitivity) — usually the binding constraint" />
+                    <local:ResultRow Label="Digital DR"     Value="{x:Bind ViewModel.DigitalDr,      Mode=OneWay}"
+                                     ToolTipService.ToolTip="ADC full-scale-to-LSB level ratio: 20·log₁₀(2ᴺ) ≈ 6.02·N dB" />
+                    <local:ResultRow Label="SQNR"           Value="{x:Bind ViewModel.DigitalSqnr,    Mode=OneWay}"
+                                     ToolTipService.ToolTip="Quantisation SNR of a full-scale sine: 6.02·N + 1.76 dB — the DR plus the sine's 1.76 dB" />
                 </StackPanel>
             </Border>
 

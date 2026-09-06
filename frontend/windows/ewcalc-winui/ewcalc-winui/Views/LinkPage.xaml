@@ -40,6 +40,7 @@
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="TxPowerBox"   Header="Tx power (dBm)"
                                AutomationProperties.Name="Tx power (dBm)"
+                               ToolTipService.ToolTip="Transmitter output power at the antenna port"
                                Value="{x:Bind ViewModel.DefaultTxPower,   Mode=OneTime}"
                                Minimum="-50" Maximum="200" SmallChange="1"
                                BorderBrush="{x:Bind ViewModel.TxPowerError, Mode=OneWay,
@@ -47,6 +48,7 @@
                                ValueChanged="TxPowerBox_ValueChanged" />
                     <NumberBox x:Name="TxGainBox"    Header="Tx gain (dB)"
                                AutomationProperties.Name="Tx gain (dB)"
+                               ToolTipService.ToolTip="Transmit antenna gain toward the receiver (dBi)"
                                Value="{x:Bind ViewModel.DefaultTxGain,    Mode=OneTime}"
                                Minimum="-30" Maximum="60" SmallChange="0.5"
                                BorderBrush="{x:Bind ViewModel.TxGainError, Mode=OneWay,
@@ -54,6 +56,7 @@
                                ValueChanged="TxGainBox_ValueChanged" />
                     <NumberBox x:Name="FrequencyBox" Header="Frequency (MHz)"
                                AutomationProperties.Name="Frequency (MHz)"
+                               ToolTipService.ToolTip="Carrier frequency — used to select the propagation regime"
                                Value="{x:Bind ViewModel.DefaultFrequency, Mode=OneTime}"
                                Minimum="0.1" Maximum="100000" SmallChange="10"
                                BorderBrush="{x:Bind ViewModel.FrequencyError, Mode=OneWay,
@@ -67,6 +70,7 @@
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="DistanceBox" Header="Distance (km)"
                                AutomationProperties.Name="Distance (km)"
+                               ToolTipService.ToolTip="Straight-line distance between transmitter and receiver"
                                Value="{x:Bind ViewModel.DefaultDistance, Mode=OneTime}"
                                Minimum="0.01" Maximum="10000" SmallChange="1"
                                BorderBrush="{x:Bind ViewModel.DistanceError, Mode=OneWay,
@@ -79,6 +83,7 @@
                         </Grid.ColumnDefinitions>
                         <NumberBox Grid.Column="0" x:Name="TxHeightBox" Header="Tx height (m)"
                                    AutomationProperties.Name="Tx height (m)"
+                                   ToolTipService.ToolTip="Transmit antenna height above ground level"
                                    Value="{x:Bind ViewModel.DefaultTxHeight, Mode=OneTime}"
                                    Minimum="0.1" Maximum="100000" SmallChange="1"
                                    BorderBrush="{x:Bind ViewModel.TxHeightError, Mode=OneWay,
@@ -86,6 +91,7 @@
                                    ValueChanged="TxHeightBox_ValueChanged" />
                         <NumberBox Grid.Column="1" x:Name="RxHeightBox" Header="Rx height (m)"
                                    AutomationProperties.Name="Rx height (m)"
+                                   ToolTipService.ToolTip="Receive antenna height above ground level"
                                    Value="{x:Bind ViewModel.DefaultRxHeight, Mode=OneTime}"
                                    Minimum="0.1" Maximum="100000" SmallChange="1"
                                    BorderBrush="{x:Bind ViewModel.RxHeightError, Mode=OneWay,
@@ -100,6 +106,7 @@
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="RxGainBox" Header="Rx gain (dB)"
                                AutomationProperties.Name="Rx gain (dB)"
+                               ToolTipService.ToolTip="Receive antenna gain toward the transmitter (dBi)"
                                Value="{x:Bind ViewModel.DefaultRxGain, Mode=OneTime}"
                                Minimum="-30" Maximum="60" SmallChange="0.5"
                                BorderBrush="{x:Bind ViewModel.RxGainError, Mode=OneWay,
@@ -107,6 +114,7 @@
                                ValueChanged="RxGainBox_ValueChanged" />
                     <NumberBox x:Name="RxSensitivityBox" Header="Rx sensitivity (dBm)"
                                AutomationProperties.Name="Rx sensitivity (dBm)"
+                               ToolTipService.ToolTip="Minimum signal level the receiver can detect; the link closes when received power ≥ sensitivity"
                                Value="{x:Bind ViewModel.DefaultRxSensitivity, Mode=OneTime}"
                                Minimum="-200" Maximum="0" SmallChange="1"
                                BorderBrush="{x:Bind ViewModel.RxSensitivityError, Mode=OneWay,
@@ -118,13 +126,20 @@
             <TextBlock Text="RESULTS" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource ResultCardStyle}">
                 <StackPanel Spacing="0">
-                    <local:ResultRow Label="Received power"  Value="{x:Bind ViewModel.ReceivedPower,  Mode=OneWay}" />
-                    <local:ResultRow Label="Path loss"       Value="{x:Bind ViewModel.PathLoss,       Mode=OneWay}" />
-                    <local:ResultRow Label="Link margin"     Value="{x:Bind ViewModel.LinkMargin,     Mode=OneWay}" />
-                    <local:ResultRow Label="Fresnel zone"    Value="{x:Bind ViewModel.FresnelZone,    Mode=OneWay}" />
-                    <local:ResultRow Label="Regime"          Value="{x:Bind ViewModel.Regime,         Mode=OneWay}" />
-                    <local:ResultRow Label="Effective range" Value="{x:Bind ViewModel.EffectiveRange, Mode=OneWay}" />
-                    <local:ResultRow Label="Range regime"    Value="{x:Bind ViewModel.RangeRegime,    Mode=OneWay}" />
+                    <local:ResultRow Label="Received power"  Value="{x:Bind ViewModel.ReceivedPower,  Mode=OneWay}"
+                                     ToolTipService.ToolTip="Signal power at the receiver input: Ptx + Gtx + Grx − path loss" />
+                    <local:ResultRow Label="Path loss"       Value="{x:Bind ViewModel.PathLoss,       Mode=OneWay}"
+                                     ToolTipService.ToolTip="Attenuation of the signal as it travels from transmitter to receiver" />
+                    <local:ResultRow Label="Link margin"     Value="{x:Bind ViewModel.LinkMargin,     Mode=OneWay}"
+                                     ToolTipService.ToolTip="Received power minus sensitivity — positive = link closed; negative = link failure" />
+                    <local:ResultRow Label="Fresnel zone"    Value="{x:Bind ViewModel.FresnelZone,    Mode=OneWay}"
+                                     ToolTipService.ToolTip="Range at which ground reflection begins to dominate" />
+                    <local:ResultRow Label="Regime"          Value="{x:Bind ViewModel.Regime,         Mode=OneWay}"
+                                     ToolTipService.ToolTip="Propagation model — free-space or two-ray — that applies at the given distance" />
+                    <local:ResultRow Label="Effective range" Value="{x:Bind ViewModel.EffectiveRange, Mode=OneWay}"
+                                     ToolTipService.ToolTip="Maximum range at which the link closes — where received power equals sensitivity" />
+                    <local:ResultRow Label="Range regime"    Value="{x:Bind ViewModel.RangeRegime,    Mode=OneWay}"
+                                     ToolTipService.ToolTip="Propagation model that limits the effective range" />
                 </StackPanel>
             </Border>
 

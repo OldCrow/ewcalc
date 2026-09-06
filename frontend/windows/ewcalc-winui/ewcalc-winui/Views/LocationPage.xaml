@@ -40,6 +40,7 @@
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="BearingErrorBox" Header="RMS bearing error (°)"
                                AutomationProperties.Name="RMS bearing error (degrees)"
+                               ToolTipService.ToolTip="RMS angular error of the direction-finding receivers"
                                Value="{x:Bind ViewModel.DefaultRmsBearingError, Mode=OneTime}"
                                Minimum="0.01" Maximum="45"
                                SpinButtonPlacementMode="Compact" SmallChange="0.1"
@@ -48,6 +49,7 @@
                                ValueChanged="BearingErrorBox_ValueChanged" />
                     <NumberBox x:Name="AoaRangeBox"     Header="Range to emitter (km)"
                                AutomationProperties.Name="Range to emitter (km)"
+                               ToolTipService.ToolTip="Slant range from receivers to emitter — shared by AOA and TDOA calculations"
                                Value="{x:Bind ViewModel.DefaultAoaRange, Mode=OneTime}"
                                Minimum="0.1" Maximum="10000"
                                SpinButtonPlacementMode="Compact" SmallChange="1"
@@ -62,6 +64,7 @@
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="RmsTimeErrorBox" Header="RMS timing error (ns)"
                                AutomationProperties.Name="RMS timing error (ns)"
+                               ToolTipService.ToolTip="RMS TDOA measurement error — converts to a range-difference error via speed of light"
                                Value="{x:Bind ViewModel.DefaultRmsTimeError, Mode=OneTime}"
                                Minimum="0.001" Maximum="100000"
                                SpinButtonPlacementMode="Compact" SmallChange="1"
@@ -70,6 +73,7 @@
                                ValueChanged="RmsTimeErrorBox_ValueChanged" />
                     <NumberBox x:Name="BaselineBox" Header="Receiver baseline (km)"
                                AutomationProperties.Name="Receiver baseline (km)"
+                               ToolTipService.ToolTip="Receiver separation distance — wider baseline reduces CEP: CEP = c·σ_t·R / (2·B)"
                                Value="{x:Bind ViewModel.DefaultBaseline, Mode=OneTime}"
                                Minimum="0.1" Maximum="10000"
                                SpinButtonPlacementMode="Compact" SmallChange="1"
@@ -84,6 +88,7 @@
                 <StackPanel Spacing="12">
                     <NumberBox x:Name="SemiMajorBox" Header="Semi-major axis (km, 1σ)"
                                AutomationProperties.Name="Semi-major axis (km, 1 sigma)"
+                               ToolTipService.ToolTip="Semi-major axis of the 1σ error ellipse (must be ≥ semi-minor)"
                                Value="{x:Bind ViewModel.DefaultSemiMajor, Mode=OneTime}"
                                Minimum="0.001" Maximum="1000"
                                SpinButtonPlacementMode="Compact" SmallChange="0.1"
@@ -109,15 +114,14 @@
             <TextBlock Text="RESULTS" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource ResultCardStyle}">
                 <StackPanel Spacing="0">
-                    <local:ResultRow Label="CEP (AOA method)"  Value="{x:Bind ViewModel.CepAoa,  Mode=OneWay}" IsHighlighted="True" />
-                    <local:ResultRow Label="CEP (TDOA)"        Value="{x:Bind ViewModel.CepTdoa, Mode=OneWay}" IsHighlighted="True" />
-                    <local:ResultRow Label="CEP (EEP method)"  Value="{x:Bind ViewModel.CepEep,  Mode=OneWay}" IsHighlighted="True" />
+                    <local:ResultRow Label="CEP (AOA method)"  Value="{x:Bind ViewModel.CepAoa,  Mode=OneWay}" IsHighlighted="True"
+                                     ToolTipService.ToolTip="50% Circular Error Probable from angle-of-arrival: 1.2 × range × tan(RMS error) — the radius within which 50% of location estimates fall" />
+                    <local:ResultRow Label="CEP (TDOA)"        Value="{x:Bind ViewModel.CepTdoa, Mode=OneWay}" IsHighlighted="True"
+                                     ToolTipService.ToolTip="50% Circular Error Probable from TDOA: c·σ_t·R / (2·B) — improves with wider baseline or shorter range" />
+                    <local:ResultRow Label="CEP (EEP method)"  Value="{x:Bind ViewModel.CepEep,  Mode=OneWay}" IsHighlighted="True"
+                                     ToolTipService.ToolTip="50% Circular Error Probable from the error ellipse: 0.59 × (σ_major + σ_minor), max 1% error for axis ratios down to 0.5 (Wegner Eq. 24a)" />
                 </StackPanel>
             </Border>
-            <InfoBar IsOpen="True" IsClosable="False" Severity="Informational"
-                     Title="About CEP"
-                     Message="The 50% circular error probable is the radius within which 50% of location estimates fall." />
-
             <Expander Header="Geometry"
                       AutomationProperties.Name="Geometry diagrams"
                       ToolTipService.ToolTip="Show or hide the geometry diagrams for this page"

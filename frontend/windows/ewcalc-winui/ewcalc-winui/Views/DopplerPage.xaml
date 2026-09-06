@@ -113,19 +113,26 @@
             <TextBlock Text="DOPPLER RESULTS" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource ResultCardStyle}">
                 <StackPanel Spacing="0">
-                    <local:ResultRow Label="Doppler shift"             Value="{x:Bind ViewModel.DopplerShift,        Mode=OneWay}" IsHighlighted="True" />
-                    <local:ResultRow Label="Unambiguous range"         Value="{x:Bind ViewModel.UnambiguousRange,    Mode=OneWay}" />
-                    <local:ResultRow Label="First blind speed"         Value="{x:Bind ViewModel.BlindSpeed,          Mode=OneWay}" />
-                    <local:ResultRow Label="Unambiguous velocity (±)"  Value="{x:Bind ViewModel.UnambiguousVelocity, Mode=OneWay}" />
+                    <local:ResultRow Label="Doppler shift"             Value="{x:Bind ViewModel.DopplerShift,        Mode=OneWay}" IsHighlighted="True"
+                                     ToolTipService.ToolTip="Two-way Doppler shift: 2 × radial speed ÷ wavelength" />
+                    <local:ResultRow Label="Unambiguous range"         Value="{x:Bind ViewModel.UnambiguousRange,    Mode=OneWay}"
+                                     ToolTipService.ToolTip="Maximum unambiguous range: c ÷ (2 × PRF)" />
+                    <local:ResultRow Label="First blind speed"         Value="{x:Bind ViewModel.BlindSpeed,          Mode=OneWay}"
+                                     ToolTipService.ToolTip="Radial speed whose Doppler shift equals the PRF — invisible to an MTI canceller" />
+                    <local:ResultRow Label="Unambiguous velocity (±)"  Value="{x:Bind ViewModel.UnambiguousVelocity, Mode=OneWay}"
+                                     ToolTipService.ToolTip="Radial-velocity window measurable without aliasing: half the blind speed each way" />
                 </StackPanel>
             </Border>
 
             <TextBlock Text="RESOLUTION RESULTS" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource ResultCardStyle}">
                 <StackPanel Spacing="0">
-                    <local:ResultRow Label="Range resolution" Value="{x:Bind ViewModel.RangeResolution, Mode=OneWay}" />
-                    <local:ResultRow Label="Cross-range (az)" Value="{x:Bind ViewModel.CrossRangeAz,    Mode=OneWay}" />
-                    <local:ResultRow Label="Cross-range (el)" Value="{x:Bind ViewModel.CrossRangeEl,    Mode=OneWay}" />
+                    <local:ResultRow Label="Range resolution" Value="{x:Bind ViewModel.RangeResolution, Mode=OneWay}"
+                                     ToolTipService.ToolTip="Range resolution: c ÷ (2 × bandwidth)" />
+                    <local:ResultRow Label="Cross-range (az)" Value="{x:Bind ViewModel.CrossRangeAz,    Mode=OneWay}"
+                                     ToolTipService.ToolTip="Azimuth cross-range cell: range × azimuth beamwidth" />
+                    <local:ResultRow Label="Cross-range (el)" Value="{x:Bind ViewModel.CrossRangeEl,    Mode=OneWay}"
+                                     ToolTipService.ToolTip="Elevation cross-range cell: range × elevation beamwidth" />
                 </StackPanel>
             </Border>
 

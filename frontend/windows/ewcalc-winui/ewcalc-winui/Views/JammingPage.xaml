@@ -41,6 +41,7 @@
                     <StackPanel Spacing="12">
                         <NumberBox x:Name="SignalErpBox"    Header="Signal ERP (dBm)"
                                    AutomationProperties.Name="Signal ERP (dBm)"
+                                   ToolTipService.ToolTip="Effective radiated power of the desired signal: transmitter power + antenna gain"
                                    Value="{x:Bind ViewModel.DefaultSignalErp, Mode=OneTime}"
                                    Minimum="-100" Maximum="200" SmallChange="1"
                                    BorderBrush="{x:Bind ViewModel.SignalErpError, Mode=OneWay,
@@ -48,6 +49,7 @@
                                    ValueChanged="SignalErpBox_ValueChanged" />
                         <NumberBox x:Name="SignalDistBox"   Header="Signal→Rx distance (km)"
                                    AutomationProperties.Name="Signal to Rx distance (km)"
+                                   ToolTipService.ToolTip="Ground range from the signal transmitter to the receiver"
                                    Value="{x:Bind ViewModel.DefaultSignalToRxDist, Mode=OneTime}"
                                    Minimum="0.01" Maximum="10000" SmallChange="1"
                                    BorderBrush="{x:Bind ViewModel.SignalDistError, Mode=OneWay,
@@ -55,6 +57,7 @@
                                    ValueChanged="SignalDistBox_ValueChanged" />
                         <NumberBox x:Name="SignalHeightBox" Header="Signal Tx height (m)"
                                    AutomationProperties.Name="Signal Tx height (m)"
+                                   ToolTipService.ToolTip="Signal transmitter antenna height above ground — determines the propagation model (LOS or 2-ray) and Fresnel zone crossover distance"
                                    Value="{x:Bind ViewModel.DefaultSignalTxHeight, Mode=OneTime}"
                                    Minimum="0.1" Maximum="100000" SmallChange="1"
                                    BorderBrush="{x:Bind ViewModel.SignalHeightError, Mode=OneWay,
@@ -62,6 +65,7 @@
                                    ValueChanged="SignalHeightBox_ValueChanged" />
                         <NumberBox x:Name="SignalBwBox"     Header="Signal bandwidth (MHz)"
                                    AutomationProperties.Name="Signal bandwidth (MHz)"
+                                   ToolTipService.ToolTip="Occupied bandwidth of the target signal — used for partial-band jamming optimisation"
                                    Value="{x:Bind ViewModel.DefaultSignalBandwidth, Mode=OneTime}"
                                    Minimum="0.001" Maximum="1000" SmallChange="0.01"
                                    BorderBrush="{x:Bind ViewModel.SignalBandwidthError, Mode=OneWay,
@@ -75,6 +79,7 @@
                     <StackPanel Spacing="12">
                         <NumberBox x:Name="JammerErpBox"    Header="Jammer ERP (dBm)"
                                    AutomationProperties.Name="Jammer ERP (dBm)"
+                                   ToolTipService.ToolTip="Effective radiated power of the jammer toward the receiver"
                                    Value="{x:Bind ViewModel.DefaultJammerErp, Mode=OneTime}"
                                    Minimum="-100" Maximum="200" SmallChange="1"
                                    BorderBrush="{x:Bind ViewModel.JammerErpError, Mode=OneWay,
@@ -82,6 +87,7 @@
                                    ValueChanged="JammerErpBox_ValueChanged" />
                         <NumberBox x:Name="JammerDistBox"   Header="Jammer→Rx distance (km)"
                                    AutomationProperties.Name="Jammer to Rx distance (km)"
+                                   ToolTipService.ToolTip="Ground range from the jammer to the receiver"
                                    Value="{x:Bind ViewModel.DefaultJammerToRxDist, Mode=OneTime}"
                                    Minimum="0.01" Maximum="10000" SmallChange="1"
                                    BorderBrush="{x:Bind ViewModel.JammerDistError, Mode=OneWay,
@@ -89,6 +95,7 @@
                                    ValueChanged="JammerDistBox_ValueChanged" />
                         <NumberBox x:Name="JammerHeightBox" Header="Jammer height (m)"
                                    AutomationProperties.Name="Jammer height (m)"
+                                   ToolTipService.ToolTip="Jammer antenna height above ground — determines the propagation model (LOS or 2-ray) and Fresnel zone crossover distance"
                                    Value="{x:Bind ViewModel.DefaultJammerHeight, Mode=OneTime}"
                                    Minimum="0.1" Maximum="100000" SmallChange="1"
                                    BorderBrush="{x:Bind ViewModel.JammerHeightError, Mode=OneWay,
@@ -96,6 +103,7 @@
                                    ValueChanged="JammerHeightBox_ValueChanged" />
                         <NumberBox x:Name="HopRangeBox"     Header="Hop range (MHz)"
                                    AutomationProperties.Name="Hop range (MHz)"
+                                   ToolTipService.ToolTip="Total frequency-hopping bandwidth of the target signal — set to 0 for a non-hopping (single-channel) signal; partial-band results will show N/A"
                                    Value="{x:Bind ViewModel.DefaultHopRange, Mode=OneTime}"
                                    Minimum="0" Maximum="10000" SmallChange="1"
                                    BorderBrush="{x:Bind ViewModel.HopRangeError, Mode=OneWay,
@@ -103,6 +111,7 @@
                                    ValueChanged="HopRangeBox_ValueChanged" />
                         <NumberBox x:Name="JsThresholdBox" Header="J/S threshold (dB)"
                                    AutomationProperties.Name="J/S threshold (dB)"
+                                   ToolTipService.ToolTip="J/S level at which jamming is considered effective — used to calculate burnthrough range"
                                    Value="{x:Bind ViewModel.DefaultJsThreshold, Mode=OneTime}"
                                    Minimum="-30" Maximum="30" SmallChange="0.5"
                                    BorderBrush="{x:Bind ViewModel.JsThresholdError, Mode=OneWay,
@@ -116,6 +125,7 @@
                     <StackPanel Spacing="12">
                         <NumberBox x:Name="FrequencyBox"    Header="Frequency (MHz)"
                                    AutomationProperties.Name="Frequency (MHz)"
+                                   ToolTipService.ToolTip="Carrier frequency — used for both signal and jammer path-loss calculations"
                                    Value="{x:Bind ViewModel.DefaultFrequency, Mode=OneTime}"
                                    Minimum="0.1" Maximum="100000" SmallChange="10"
                                    BorderBrush="{x:Bind ViewModel.FrequencyError, Mode=OneWay,
@@ -123,6 +133,7 @@
                                    ValueChanged="FrequencyBox_ValueChanged" />
                         <NumberBox x:Name="RxHeightBox"     Header="Rx height (m)"
                                    AutomationProperties.Name="Rx height (m)"
+                                   ToolTipService.ToolTip="Receiver antenna height above ground — determines the propagation model (LOS or 2-ray) and Fresnel zone crossover distance"
                                    Value="{x:Bind ViewModel.DefaultRxHeight, Mode=OneTime}"
                                    Minimum="0.1" Maximum="100000" SmallChange="1"
                                    BorderBrush="{x:Bind ViewModel.RxHeightError, Mode=OneWay,
@@ -130,6 +141,7 @@
                                    ValueChanged="RxHeightBox_ValueChanged" />
                         <NumberBox x:Name="RxGainSignalBox" Header="Rx gain → signal (dB)"
                                    AutomationProperties.Name="Rx gain to signal (dB)"
+                                   ToolTipService.ToolTip="Receive antenna gain toward the signal transmitter — use the main lobe gain if the receiver antenna is pointed at the signal"
                                    Value="{x:Bind ViewModel.DefaultRxGainSignal, Mode=OneTime}"
                                    Minimum="-30" Maximum="60" SmallChange="0.5"
                                    BorderBrush="{x:Bind ViewModel.RxGainSignalError, Mode=OneWay,
@@ -137,6 +149,7 @@
                                    ValueChanged="RxGainSignalBox_ValueChanged" />
                         <NumberBox x:Name="RxGainJammerBox" Header="Rx gain → jammer (dB)"
                                    AutomationProperties.Name="Rx gain to jammer (dB)"
+                                   ToolTipService.ToolTip="Receive antenna gain toward the jammer — a directional antenna with low sidelobes can reject an off-axis jammer by 20–30 dB; sidelobes are typically −13 to −20 dBc"
                                    Value="{x:Bind ViewModel.DefaultRxGainJammer, Mode=OneTime}"
                                    Minimum="-30" Maximum="60" SmallChange="0.5"
                                    BorderBrush="{x:Bind ViewModel.RxGainJammerError, Mode=OneWay,
@@ -149,18 +162,24 @@
             <TextBlock Text="J/S ANALYSIS" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource ResultCardStyle}">
                 <StackPanel Spacing="0">
-                    <local:ResultRow Label="J/S ratio"    Value="{x:Bind ViewModel.JsRatio,     Mode=OneWay}" />
-                    <local:ResultRow Label="Signal at Rx" Value="{x:Bind ViewModel.SignalAtRx,  Mode=OneWay}" />
-                    <local:ResultRow Label="Jammer at Rx" Value="{x:Bind ViewModel.JammerAtRx,  Mode=OneWay}" />
-                    <local:ResultRow Label="Burnthrough"  Value="{x:Bind ViewModel.Burnthrough, Mode=OneWay}" />
+                    <local:ResultRow Label="J/S ratio"    Value="{x:Bind ViewModel.JsRatio,     Mode=OneWay}"
+                                     ToolTipService.ToolTip="Jammer-to-signal power ratio at the receiver input (dB)" />
+                    <local:ResultRow Label="Signal at Rx" Value="{x:Bind ViewModel.SignalAtRx,  Mode=OneWay}"
+                                     ToolTipService.ToolTip="Received signal power at the receiver input" />
+                    <local:ResultRow Label="Jammer at Rx" Value="{x:Bind ViewModel.JammerAtRx,  Mode=OneWay}"
+                                     ToolTipService.ToolTip="Received jammer power at the receiver input" />
+                    <local:ResultRow Label="Burnthrough"  Value="{x:Bind ViewModel.Burnthrough, Mode=OneWay}"
+                                     ToolTipService.ToolTip="Signal range at which J/S falls to the threshold — the jammer becomes ineffective beyond this distance" />
                 </StackPanel>
             </Border>
 
             <TextBlock Text="PARTIAL-BAND" Style="{StaticResource SectionHeaderStyle}" />
             <Border Style="{StaticResource ResultCardStyle}">
                 <StackPanel Spacing="0">
-                    <local:ResultRow Label="Optimum BW" Value="{x:Bind ViewModel.OptimumBw, Mode=OneWay}" />
-                    <local:ResultRow Label="Duty cycle" Value="{x:Bind ViewModel.DutyCycle, Mode=OneWay}" />
+                    <local:ResultRow Label="Optimum BW" Value="{x:Bind ViewModel.OptimumBw, Mode=OneWay}"
+                                     ToolTipService.ToolTip="Narrowing the jamming bandwidth increases instantaneous J/S at the cost of hit probability; this is the optimum trade-off" />
+                    <local:ResultRow Label="Duty cycle" Value="{x:Bind ViewModel.DutyCycle, Mode=OneWay}"
+                                     ToolTipService.ToolTip="Fraction of the hopping band covered by the optimum jamming bandwidth" />
                 </StackPanel>
             </Border>
 
