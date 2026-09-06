@@ -9,8 +9,11 @@ using namespace libew::units::literals;
 
 // ---------------------------------------------------------------------------
 // Sensitivity: S = -114 + 10*log10(BW_MHz) + NF_dB + SNR_dB
-// Source: Dave Adamy, "EW 101 -- ES vs. SIGINT -- Part 3: Receiver
-// Considerations," Journal of Electronic Defense, March 2011, p. 58:
+// Source: Adamy EW103 Sec 4.4, p.97: S = kTB + NF + RFSNR (pre-detection
+// SNR), with kTB = -114 dBm + 10*log10(BW/1 MHz) — matching this
+// implementation exactly. Also Dave Adamy, "EW 101 -- ES vs. SIGINT --
+// Part 3: Receiver Considerations," Journal of Electronic Defense,
+// March 2011, p. 58:
 // "S = kTB + NF + Required RFSNR" (S in dBm, kTB the thermal noise floor,
 // NF the system noise figure, RFSNR the required pre-detection SNR). The
 // -114 dBm/MHz baseline is kT at 290 K = -174 dBm/Hz + 60 dB for MHz
@@ -43,7 +46,10 @@ void test_sensitivity_additive() {
 // ---------------------------------------------------------------------------
 // Cascaded noise figure (Friis formula):
 // NF_sys = NF1 + (NF2-1)/G1 + (NF3-1)/(G1*G2) + ...
-// Source: Friis (1944); Adamy EW102 [OPEN: page/eq TBD].
+// Source: Friis (1944), sole formula source. Adamy's receiver coverage
+// (verified 2026-09-06) implies the cascade only via component diagrams
+// and calculations en route to sensitivity — the closed Friis form never
+// appears, so no book anchor is pinned.
 //
 // For a lossless passive element of L dB: NF = L dB, gain = -L dB.
 // Derivation of test values is done analytically from the Friis formula.
@@ -96,9 +102,11 @@ void test_cascaded_nf_four_stage_chain() {
 
 // ---------------------------------------------------------------------------
 // Digital dynamic range: DR = 6.02*N + 1.76 dB
-// Source: Walden (1999) ADC survey; standard ADC quantization-noise SNR
-// relation, widely reproduced in EW/DSP texts including Adamy EW102/103
-// [OPEN: page/eq TBD]. No fixed book page applies (general DSP result).
+// Source: Walden (1999) ADC survey; standard full-scale-sinusoid SQNR
+// relation. DELTA: Adamy EW103 Sec 4.5.3, p.110 gives DR = 20*log10(2^n)
+// = 6.02*n (nomograph/table treatment) — the level-ratio form, omitting
+// the sinusoid's 1.76 dB term. Documented difference, see
+// docs/formulas.md and PLAN.md Provenance Framing.
 // ---------------------------------------------------------------------------
 
 void test_digital_dr_1bit() {
@@ -128,8 +136,9 @@ void test_digital_dr_each_bit_adds_6db() {
 // 2nd order: SFDR2 = (1/2) * (IIP2 - S)   — IM2 grows at 2:1 slope
 // 3rd order: SFDR3 = (2/3) * (IIP3 - S)   — IM3 grows at 3:1 slope
 // Source: standard IP2/IP3 spurious-free dynamic range definitions (Razavi,
-// RF Microelectronics; Pozar, Microwave Engineering); Adamy EW102
-// [OPEN: page/eq TBD].
+// RF Microelectronics; Pozar, Microwave Engineering). Adamy's treatment
+// (verified 2026-09-06) is graphical — slope-intercept plots, no closed
+// form to pin — so no book anchor.
 // ---------------------------------------------------------------------------
 
 void test_sfdr_third_order_derivation() {
@@ -163,8 +172,10 @@ void test_sfdr_linearity_second_order() {
 //
 // T_e = (NF_lin - 1) * T_ref,  T_ref = 290 K
 // NF  = 10·log10(1 + T_e / T_ref)
-// Source: IEEE Std 686 noise-temperature convention (T_ref = 290 K); Adamy
-// EW102 [OPEN: page/eq TBD].
+// Source: IEEE Std 686 noise-temperature convention (T_ref = 290 K), sole
+// source. Adamy (verified 2026-09-06) builds system NF as a component sum
+// (NF = L1 + Np + Deg, with a nomograph-based degradation factor) and never
+// uses equivalent noise temperature — no book anchor.
 // ---------------------------------------------------------------------------
 
 void test_nf_from_noise_temp_at_t_ref() {

@@ -98,33 +98,34 @@ Maximum range where `P_rx == receiver sensitivity`, solved by inverting the one-
 ### System sensitivity
 `S_dBm = -114 + 10*log10(BW_MHz) + NF_dB + SNR_dB`
 
-- Source: Dave Adamy, "EW 101 — ES vs. SIGINT — Part 3: Receiver Considerations," *The Journal of Electronic Defense*, March 2011, p. 58: `S = kTB + NF + Required RFSNR`.
+- Source: Adamy EW103 Sec. 4.4, p. 97: `S = kTB + NF + RFSNR` (pre-detection SNR), with `kTB = -114 dBm + 10*log10(BW/1 MHz)` — matching this implementation exactly; also Dave Adamy, "EW 101 — ES vs. SIGINT — Part 3: Receiver Considerations," *The Journal of Electronic Defense*, March 2011, p. 58.
 - Units: bandwidth in MHz, NF/SNR in dB, result in dBm. `-114 dBm/MHz` is `kT` at 290 K (`-174 dBm/Hz`) plus 60 dB for MHz normalization.
 
 ### Cascaded noise figure
 `NF_sys = NF1 + (NF2 - 1)/G1 + (NF3 - 1)/(G1*G2) + ...` in linear domain, converted to/from dB.
 
-- Source: Friis (1944); Adamy EW102 [OPEN: page/eq TBD].
+- Source: Friis (1944), sole formula source. Adamy's receiver coverage implies the cascade only through component diagrams/calculations toward sensitivity — the closed Friis form never appears (verified 2026-09-06), so no book anchor.
 - Assumptions: stages are ordered front-to-back; gains and NFs are converted between dB and linear forms.
 - Units: dB in, dB out.
 
 ### Digital dynamic range
 `DR_dB = 6.02*N_bits + 1.76`
 
-- Source: standard ADC quantization-noise SNR relation; Walden (1999); Adamy EW102/EW103 [OPEN: page/eq TBD].
+- Source: standard full-scale-sinusoid SQNR relation; Walden (1999).
+- DELTA vs. Adamy: EW103 Sec. 4.5.3, p. 110 gives `DR = 20*log10(2^n)` = 6.02·n (nomograph/table treatment) — the level-ratio form, omitting the sinusoid's 1.76 dB term. Both are standard; they answer slightly different questions. Retained as a documented difference pending the fidelity sweep (PLAN.md Provenance Framing).
 - Units: bits in, dB out.
 
 ### Spurious-free dynamic range (SFDR)
 `SFDR2 = (IIP2 - S) / 2`, `SFDR3 = 2*(IIP3 - S) / 3`
 
-- Source: standard IP2/IP3 SFDR definitions; Adamy EW102 [OPEN: page/eq TBD].
+- Source: standard IP2/IP3 SFDR definitions (Razavi, RF Microelectronics; Pozar, Microwave Engineering). Adamy's treatment is graphical (slope-intercept plots, verified 2026-09-06); no closed form to pin, so no book anchor.
 - Assumptions: IM2 products grow at 2:1 slope and IM3 products at 3:1 slope relative to the fundamental.
 - Units: intercept points and sensitivity in dBm, result in dB.
 
 ### Noise temperature conversions
 `T_e = (NF_lin - 1) * 290 K`, `NF_dB = 10*log10(1 + T_e/290)`; passive loss: `T_e = (L_lin - 1) * T_phys`.
 
-- Source: IEEE Std 686 noise-temperature convention; Adamy EW102 [OPEN: page/eq TBD].
+- Source: IEEE Std 686 noise-temperature convention, sole source. Adamy builds system NF as a component sum (`NF = L1 + Np + Deg`, nomograph-based degradation factor) and never uses equivalent noise temperature (verified 2026-09-06); no book anchor.
 - Units: NF in dB, temperatures in Kelvin.
 
 ## Jamming
