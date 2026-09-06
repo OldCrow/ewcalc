@@ -32,7 +32,8 @@ struct ReceiverView: View {
             ("Sys. NF equiv.",   cStr(adapter.output.system_nf_str)),
             ("SFDR (2nd order)", cStr(adapter.output.sfdr2_str)),
             ("SFDR (3rd order)", cStr(adapter.output.sfdr3_str)),
-            ("Digital DR",       cStr(adapter.output.digital_dr_str))
+            ("Digital DR",       cStr(adapter.output.digital_dr_str)),
+            ("SQNR",             cStr(adapter.output.digital_sqnr_str))
         ]
     }
 
@@ -116,7 +117,9 @@ struct ReceiverView: View {
                 ResultRow("SFDR (3rd order)", cStr(adapter.output.sfdr3_str),
                           help: "3rd-order spurious-free dynamic range: ⅔ × (IIP3 − sensitivity) — usually the binding constraint")
                 ResultRow("Digital DR",       cStr(adapter.output.digital_dr_str),
-                          help: "ADC quantisation dynamic range: 6.02·N + 1.76 dB")
+                          help: "ADC full-scale-to-LSB level ratio: 20·log₁₀(2ᴺ) ≈ 6.02·N dB")
+                ResultRow("SQNR",             cStr(adapter.output.digital_sqnr_str),
+                          help: "Quantisation SNR of a full-scale sine: 6.02·N + 1.76 dB — the DR plus the sine's 1.76 dB")
             }
             DiagramSection(names: ["receiver-cascade"])
         }

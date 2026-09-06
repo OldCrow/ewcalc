@@ -5,6 +5,8 @@
 namespace ewpresenter {
 namespace {
 constexpr double kMinGainDbiForBeamwidth = -6.35; // keeps circular beamwidth <= 360°
+// (bound predates the 29000 constant; exact limit is now -6.50, so -6.35 is
+// slightly conservative — at -6.35 dBi the beamwidth is ~354°, still <= 360°)
 constexpr double kMaxGainDbi = 60.0;
 } // namespace
 

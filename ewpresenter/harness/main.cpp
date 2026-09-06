@@ -85,6 +85,7 @@ int main() {
         row("SFDR2",           out.sfdr2_str);
         row("SFDR3",           out.sfdr3_str);
         row("Digital DR",      out.digital_dr_str);
+        row("SQNR",            out.digital_sqnr_str);
     }
 
     // -----------------------------------------------------------------------

@@ -96,6 +96,7 @@ static EwpReceiverOutput to_c(const ewpresenter::ReceiverPresenter::Output& o) n
     copy_str(out.sfdr2_str,              o.sfdr2_str);
     copy_str(out.sfdr3_str,              o.sfdr3_str);
     copy_str(out.digital_dr_str,         o.digital_dr_str);
+    copy_str(out.digital_sqnr_str,       o.digital_sqnr_str);
     copy_str(out.system_noise_temp_str,  o.system_noise_temp_str);
     copy_str(out.system_nf_str,          o.system_nf_str);
     out.valid = o.valid;

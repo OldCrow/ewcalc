@@ -58,18 +58,16 @@ Piecewise Lee (1982) approximation to the Fresnel diffraction integral `J(v)`.
 - Source: IEEE Std 145 antenna terminology. The 2.15 dB offset is `10*log10(1.64)`, the half-wave dipole directivity over isotropic. Not treated in Adamy EW101–EW103 (verified 2026-09-06): his equations reference ERP directly and assume the user supplies the correct gain; his antenna tables are explicitly illustrative, with actual gain from antenna physics.
 
 ### Beamwidth from gain
-`theta_3dB ≈ sqrt(30000 / 10^(G_dBi / 10))` degrees
+`theta_3dB ≈ sqrt(29000 / 10^(G_dBi / 10))` degrees
 
-- Source: Kraus/Tai-Pereira-family two-plane beamwidth-directivity rule of thumb, 30000 variant. This is the circular/symmetric inverse of `gain_from_beamwidth()` where `theta_az == theta_el`, using the same 30000 beam-shape constant.
-- DELTA vs. Adamy: EW103 uses `29000/(theta_az*theta_el)` (Sec. 3.7, p. 70), noting the underlying solution gives 28889 with 29000 in common use. The two rules differ by 10*log10(30000/29000) = 0.15 dB. Retained as a documented difference pending the formula-fidelity sweep (see PLAN.md Provenance Framing).
+- Source: Adamy EW103 Sec. 3.7, p. 70 — 29000 is his stated choice among the Kraus/Tai-Pereira-family rule-of-thumb constants (literature spans ~26000-41253; the underlying solution gives 28889, 29000 in common use). Adopted 2026-09-06, replacing the 30000 variant (a 0.15 dB shift — see CHANGELOG). This is the circular/symmetric inverse of `gain_from_beamwidth()` where `theta_az == theta_el`.
 - Assumptions: the presenter rejects gains below -6.35 dBi so the derived beamwidth does not exceed 360°.
 - Units: gain in dBi, result in degrees.
 
 ### Gain from beamwidth
-`G ≈ 10*log10(30000 / (theta_az_deg * theta_el_deg))`
+`G ≈ 10*log10(29000 / (theta_az_deg * theta_el_deg))`
 
-- Source: Kraus/Tai-Pereira-family rule of thumb, 30000 variant; Adamy, "EW 101 — ES vs. SIGINT — Part 2," JED, February 2011, p. 52, Fig. 3 provides graphical context for gain vs. 3 dB beamwidth.
-- DELTA vs. Adamy: EW103 Sec. 3.7, p. 70's 29000 form — see Beamwidth from gain above; same 0.15 dB difference and same pending decision.
+- Source: Adamy EW103 Sec. 3.7, p. 70 — his choice among the rule-of-thumb constants (see Beamwidth from gain above); Adamy, "EW 101 — ES vs. SIGINT — Part 2," JED, February 2011, p. 52, Fig. 3 provides graphical context for gain vs. 3 dB beamwidth.
 - Units: beamwidths in degrees, result in dBi.
 
 ### Wavelength
@@ -108,11 +106,12 @@ Maximum range where `P_rx == receiver sensitivity`, solved by inverting the one-
 - Assumptions: stages are ordered front-to-back; gains and NFs are converted between dB and linear forms.
 - Units: dB in, dB out.
 
-### Digital dynamic range
-`DR_dB = 6.02*N_bits + 1.76`
+### Digital dynamic range and SQNR
+`DR_dB = 20*log10(2^N) ≈ 6.02*N` and `SQNR_dB = 6.02*N + 1.76` — two distinct quantities, both computed (delta resolved 2026-09-06 by offering both).
 
-- Source: standard full-scale-sinusoid SQNR relation; Walden (1999).
-- DELTA vs. Adamy: EW103 Sec. 4.5.3, p. 110 gives `DR = 20*log10(2^n)` = 6.02·n (nomograph/table treatment) — the level-ratio form, omitting the sinusoid's 1.76 dB term. Both are standard; they answer slightly different questions. Retained as a documented difference pending the fidelity sweep (PLAN.md Provenance Framing).
+- Source (DR): Adamy EW103 Sec. 4.5.3, p. 110 — the full-scale-to-LSB level ratio (his treatment is nomograph/table).
+- Source (SQNR): standard full-scale-sinusoid quantization-SNR relation; Walden (1999); not treated by Adamy. The 1.76 dB is the sine's `10*log10(1.5)` crest-factor term.
+- Units: bits in, dB out.
 - Units: bits in, dB out.
 
 ### Spurious-free dynamic range (SFDR)

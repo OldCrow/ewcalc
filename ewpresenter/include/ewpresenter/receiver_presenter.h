@@ -35,7 +35,9 @@ public:
 
         // Digital dynamic range
         Db  digital_dr{};
+        Db  digital_sqnr{};
         std::string digital_dr_str;
+        std::string digital_sqnr_str;
 
         // System noise temperature and equivalent NF (from system NF input)
         Kelvin system_noise_temp{};

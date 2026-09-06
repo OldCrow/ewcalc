@@ -58,18 +58,19 @@ void test_dbi_dbd_roundtrip() {
 
 // ---------------------------------------------------------------------------
 // Beamwidth from gain
-// θ_3dB ≈ sqrt(30000 / 10^(G_dBi/10)) degrees
-// Source: Kraus/Tai-Pereira-family rule of thumb, 30000 variant. This is the
-// symmetric inverse of gain_from_beamwidth() below (θ_az == θ_el), same
-// constant. DELTA: Adamy EW103 uses 29000 (exact solution 28889;
-// Sec 3.7, p.70) — 0.15 dB apart; documented difference, see
-// docs/formulas.md. Dave Adamy's "EW 101 -- ES vs. SIGINT -- Part 2" (JED,
-// Feb 2011, p. 52, Figure 3) provides graphical context.
+// θ_3dB ≈ sqrt(29000 / 10^(G_dBi/10)) degrees
+// Source: Adamy EW103 Sec 3.7, p.70 — his stated choice among the
+// Kraus/Tai-Pereira-family rule-of-thumb constants (literature spans
+// ~26000-41253; the underlying solution gives 28889, 29000 in common use).
+// Adopted 2026-09-06, replacing the 30000 variant (0.15 dB shift). This is
+// the symmetric inverse of gain_from_beamwidth() below (θ_az == θ_el).
+// Dave Adamy's "EW 101 -- ES vs. SIGINT -- Part 2" (JED, Feb 2011, p. 52,
+// Figure 3) provides graphical context.
 // ---------------------------------------------------------------------------
 
 void test_beamwidth_from_gain_0dbi() {
-    // At 0 dBi: θ = sqrt(30000) = 173.205 degrees
-    const double expected = std::sqrt(30000.0);
+    // At 0 dBi: θ = sqrt(29000) = 170.294 degrees
+    const double expected = std::sqrt(29000.0);
     ASSERT_NEAR(beamwidth_from_gain(0.0_dB).value, expected, 0.001);
 }
 
@@ -81,12 +82,12 @@ void test_beamwidth_from_gain_increases_with_lower_gain() {
 
 // ---------------------------------------------------------------------------
 // Gain from beamwidth
-// G ≈ 10*log10(30000 / (θ_az * θ_el))
-// Source: Kraus/Tai-Pereira-family rule of thumb, 30000 variant. DELTA:
-// Adamy EW103 uses 29000 (Sec 3.7, p.70) — see docs/formulas.md.
-// Qualitatively consistent with Dave Adamy's "EW 101 -- ES vs. SIGINT --
-// Part 2" (JED, Feb 2011, p. 52, Figure 3: gain vs. 3 dB beamwidth for a
-// 55%-efficient parabolic dish),
+// G ≈ 10*log10(29000 / (θ_az * θ_el))
+// Source: Adamy EW103 Sec 3.7, p.70 — his choice among the rule-of-thumb
+// constants (see beamwidth_from_gain above; adopted 2026-09-06 over the
+// former 30000 variant). Qualitatively consistent with Dave Adamy's
+// "EW 101 -- ES vs. SIGINT -- Part 2" (JED, Feb 2011, p. 52, Figure 3:
+// gain vs. 3 dB beamwidth for a 55%-efficient parabolic dish),
 // though that source is a graph rather than a closed-form equation. Same
 // family as the Kraus and Tai & Pereira two-plane beamwidth-directivity
 // approximations (D0 ~ K/(theta_az*theta_el)); the constant (commonly
@@ -95,15 +96,15 @@ void test_beamwidth_from_gain_increases_with_lower_gain() {
 // ---------------------------------------------------------------------------
 
 void test_gain_from_beamwidth_10x10() {
-    // θ_az = θ_el = 10°: G = 10*log10(30000 / 100) = 10*log10(300) = 24.77 dBi
+    // θ_az = θ_el = 10°: G = 10*log10(29000 / 100) = 10*log10(290) = 24.62 dBi
     ASSERT_NEAR(gain_from_beamwidth(10.0_deg, 10.0_deg).value,
-                10.0 * std::log10(300.0), 0.01);
+                10.0 * std::log10(290.0), 0.01);
 }
 
 void test_gain_from_beamwidth_1x1() {
-    // θ_az = θ_el = 1°: G = 10*log10(30000) = 44.77 dBi
+    // θ_az = θ_el = 1°: G = 10*log10(29000) = 44.62 dBi
     ASSERT_NEAR(gain_from_beamwidth(1.0_deg, 1.0_deg).value,
-                10.0 * std::log10(30000.0), 0.01);
+                10.0 * std::log10(29000.0), 0.01);
 }
 
 void test_beamwidth_gain_consistency() {

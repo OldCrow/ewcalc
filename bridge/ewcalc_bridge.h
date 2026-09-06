@@ -132,6 +132,7 @@ typedef struct EwpReceiverOutput {
     char sfdr2_str[EWP_STR_MAX];
     char sfdr3_str[EWP_STR_MAX];
     char digital_dr_str[EWP_STR_MAX];
+    char digital_sqnr_str[EWP_STR_MAX];
     char system_noise_temp_str[EWP_STR_MAX];
     char system_nf_str[EWP_STR_MAX];
     bool valid;

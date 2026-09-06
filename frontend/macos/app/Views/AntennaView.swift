@@ -61,7 +61,7 @@ struct AntennaView: View {
                 ResultRow("Beamwidth from gain", cStr(adapter.output.beamwidth_from_gain_str),
                           help: "Approximate 3 dB beamwidth derived from gain (Tai & Pereira approximation)")
                 ResultRow("Gain from beamwidth", cStr(adapter.output.gain_from_beamwidth_str),
-                          help: "Approximate gain from az × el beamwidth: 10·log₁₀(30000 / (θ_az · θ_el))")
+                          help: "Approximate gain from az × el beamwidth: 10·log₁₀(29000 / (θ_az · θ_el))")
                 ResultRow("Wavelength",          cStr(adapter.output.wavelength_str),
                           help: "Free-space wavelength at the given frequency")
             }

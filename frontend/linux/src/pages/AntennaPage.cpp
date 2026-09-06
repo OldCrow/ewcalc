@@ -49,7 +49,7 @@ AntennaPage::AntennaPage(QWidget* parent)
     beamwidth_from_gain_ = addResultRow(outForm, QStringLiteral("Beamwidth from gain"),
         QStringLiteral("Approximate 3 dB beamwidth derived from gain (Tai & Pereira approximation)"), &results);
     gain_from_beamwidth_ = addResultRow(outForm, QStringLiteral("Gain from beamwidth"),
-        QStringLiteral("Approximate gain from az \u00d7 el beamwidth: 10\u00b7log\u2081\u2080(30000 / (\u03b8_az \u00b7 \u03b8_el))"), &results);
+        QStringLiteral("Approximate gain from az \u00d7 el beamwidth: 10\u00b7log\u2081\u2080(29000 / (\u03b8_az \u00b7 \u03b8_el))"), &results);
     wavelength_ = addResultRow(outForm, QStringLiteral("Wavelength"),
         QStringLiteral("Free-space wavelength at the given frequency"), &results);
 

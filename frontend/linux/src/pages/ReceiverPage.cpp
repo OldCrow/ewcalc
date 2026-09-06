@@ -102,7 +102,9 @@ ReceiverPage::ReceiverPage(QWidget* parent)
     sfdr3_ = addResultRow(outForm, QStringLiteral("SFDR (3rd order)"),
         QStringLiteral("3rd-order spurious-free dynamic range: \u2154 \u00d7 (IIP3 \u2212 sensitivity) \u2014 usually the binding constraint"), &results);
     digital_dr_ = addResultRow(outForm, QStringLiteral("Digital DR"),
-        QStringLiteral("ADC quantisation dynamic range: 6.02\u00b7N + 1.76 dB"), &results);
+        QStringLiteral("ADC full-scale-to-LSB level ratio: 20\u00b7log\u2081\u2080(2\u1d3a) \u2248 6.02\u00b7N dB"), &results);
+    digital_sqnr_ = addResultRow(outForm, QStringLiteral("SQNR"),
+        QStringLiteral("Quantisation SNR of a full-scale sine: 6.02\u00b7N + 1.76 dB \u2014 the DR plus the sine's 1.76 dB"), &results);
 
     outForm->addRow(addCopyResultsButton(results));
 
@@ -284,4 +286,5 @@ void ReceiverPage::applyOutput(const ewpresenter::ReceiverPresenter::Output& o)
     sfdr2_->setText(QString::fromStdString(o.sfdr2_str));
     sfdr3_->setText(QString::fromStdString(o.sfdr3_str));
     digital_dr_->setText(QString::fromStdString(o.digital_dr_str));
+    digital_sqnr_->setText(QString::fromStdString(o.digital_sqnr_str));
 }

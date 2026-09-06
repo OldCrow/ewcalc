@@ -56,7 +56,14 @@ Db analog_sfdr_third_order(Dbm sensitivity, Dbm third_order_ip) noexcept {
 }
 
 Db digital_dynamic_range(int num_bits) noexcept {
-    // DR ≈ 6.02 * N + 1.76  (dB)
+    // DR = 20·log10(2^N) = N · 20·log10(2) ≈ 6.02·N (dB): the level ratio
+    // between full scale and one LSB. Per Adamy EW103 Sec 4.5.3 p.110.
+    return Db{static_cast<double>(num_bits) * 20.0 * std::log10(2.0)};
+}
+
+Db digital_sqnr(int num_bits) noexcept {
+    // SQNR ≈ 6.02·N + 1.76 (dB): quantization-noise SNR of a full-scale
+    // sinusoid — the DR above plus the sine's 1.76 dB (10·log10(1.5)).
     return Db{6.02 * static_cast<double>(num_bits) + 1.76};
 }
 

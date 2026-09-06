@@ -6,6 +6,20 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- Digital dynamic range (Receiver pane) now reports the full-scale-to-LSB
+  level ratio `20*log10(2^N)` ≈ 6.02·N dB per Adamy EW103 Sec 4.5.3
+  (previously it reported the SQNR 6.02·N + 1.76 dB under the DR label);
+  the SQNR is now shown as its own result row. Resolution of the 1.76 dB
+  provenance delta by offering both quantities.
+- Antenna gain <-> beamwidth rule-of-thumb constant changed from 30000 to
+  29000 per Adamy EW103 Sec 3.7 p.70 — his stated choice among the
+  Kraus/Tai-Pereira-family constants. Outputs shift by 0.15 dB (gain) /
+  ~1.7% (beamwidth); the rule's intrinsic accuracy is ±1-2 dB.
+- Radar/radio horizon keeps the exact k=4/3 constant 4.122 (Adamy rounds
+  to 4.11); documented as a deliberate difference, no change.
+
 ### Added
 
 - Static geometry diagrams (#72): ten hand-authored SVG masters with a

@@ -7,9 +7,9 @@
 /// match incl. the -114 dBm/MHz form). Cascaded NF — Friis (1944), sole
 /// formula source (Adamy implies the cascade via diagrams only). SFDR —
 /// standard IP2/IP3 definitions (Razavi/Pozar; Adamy's treatment is
-/// graphical). Digital dynamic range — Walden (1999) SQNR 6.02N + 1.76
-/// (Adamy EW103 Sec 4.5.3 p.110 gives the 6.02N level-ratio form; 1.76 dB
-/// documented delta). Noise temperature — IEEE Std 686 (not used by Adamy).
+/// graphical). Digital dynamic range — Adamy EW103 Sec 4.5.3 p.110 (the
+/// 6.02N level-ratio form); SQNR 6.02N + 1.76 — Walden (1999), offered
+/// alongside. Noise temperature — IEEE Std 686 (not used by Adamy).
 /// Full pins and deltas: docs/formulas.md.
 
 #include "libew/core/units.h"
@@ -72,11 +72,22 @@ struct Stage {
 /// @return Third-order SFDR (dB)
 [[nodiscard]] Db analog_sfdr_third_order(Dbm sensitivity, Dbm third_order_ip) noexcept;
 
-/// Digital receiver dynamic range from ADC quantizer word length.
-/// DR ≈ 6.02 * num_bits + 1.76   (dB)
+/// Digital receiver dynamic range from ADC quantizer word length — the
+/// level ratio between full scale and one LSB:
+///   DR = 20·log10(2^N) ≈ 6.02 · N   (dB)
+/// Source: Adamy EW103 Sec 4.5.3, p. 110.
 /// @param num_bits  ADC quantizer word length (bits)
 /// @return Dynamic range (dB)
 [[nodiscard]] Db digital_dynamic_range(int num_bits) noexcept;
+
+/// Quantization-noise SNR of a full-scale sinusoid:
+///   SQNR ≈ 6.02 · N + 1.76   (dB)
+/// The 1.76 dB is the sine's 10·log10(1.5) crest-factor term — this is a
+/// signal-to-noise figure, not a level ratio; see digital_dynamic_range().
+/// Source: standard SQNR relation (Walden 1999); not treated by Adamy.
+/// @param num_bits  ADC quantizer word length (bits)
+/// @return SQNR (dB)
+[[nodiscard]] Db digital_sqnr(int num_bits) noexcept;
 
 // ---------------------------------------------------------------------------
 // Noise temperature

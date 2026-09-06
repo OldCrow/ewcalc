@@ -101,34 +101,43 @@ void test_cascaded_nf_four_stage_chain() {
 }
 
 // ---------------------------------------------------------------------------
-// Digital dynamic range: DR = 6.02*N + 1.76 dB
-// Source: Walden (1999) ADC survey; standard full-scale-sinusoid SQNR
-// relation. DELTA: Adamy EW103 Sec 4.5.3, p.110 gives DR = 20*log10(2^n)
-// = 6.02*n (nomograph/table treatment) — the level-ratio form, omitting
-// the sinusoid's 1.76 dB term. Documented difference, see
-// docs/formulas.md and PLAN.md Provenance Framing.
+// Digital dynamic range and SQNR — two distinct quantities, both offered
+// (resolution of the 1.76 dB delta, 2026-09-06):
+//   DR   = 20*log10(2^N) ≈ 6.02*N  — full-scale-to-LSB level ratio.
+//          Source: Adamy EW103 Sec 4.5.3, p.110 (nomograph/table there).
+//   SQNR = 6.02*N + 1.76           — quantization SNR of a full-scale
+//          sine. Source: standard relation (Walden 1999); not in Adamy.
 // ---------------------------------------------------------------------------
 
 void test_digital_dr_1bit() {
-    // 1 bit: DR = 6.02 + 1.76 = 7.78 dB
-    ASSERT_NEAR(digital_dynamic_range(1).value, 7.78, 0.01);
+    // 1 bit: DR = 20*log10(2) = 6.0206 dB
+    ASSERT_NEAR(digital_dynamic_range(1).value, 6.0206, 0.001);
 }
 
 void test_digital_dr_8bit() {
-    // 8 bits: DR = 6.02*8 + 1.76 = 49.92 dB
-    ASSERT_NEAR(digital_dynamic_range(8).value, 49.92, 0.01);
+    // 8 bits: DR = 20*log10(256) = 48.165 dB
+    ASSERT_NEAR(digital_dynamic_range(8).value, 48.165, 0.001);
 }
 
 void test_digital_dr_12bit() {
-    // 12 bits: DR = 6.02*12 + 1.76 = 72.24 + 1.76 = 74.00 dB
-    ASSERT_NEAR(digital_dynamic_range(12).value, 74.00, 0.01);
+    // 12 bits: DR = 20*log10(4096) = 72.247 dB
+    ASSERT_NEAR(digital_dynamic_range(12).value, 72.247, 0.001);
 }
 
 void test_digital_dr_each_bit_adds_6db() {
-    // Each additional bit adds 6.02 dB
+    // Each additional bit adds exactly 20*log10(2) = 6.0206 dB
     const Db dr8  = digital_dynamic_range(8);
     const Db dr9  = digital_dynamic_range(9);
-    ASSERT_NEAR(dr9.value - dr8.value, 6.02, 0.001);
+    ASSERT_NEAR(dr9.value - dr8.value, 6.0206, 0.001);
+}
+
+void test_digital_sqnr() {
+    // SQNR = 6.02*N + 1.76: 12 bits -> 74.00 dB; sits 1.76-1.78 dB above
+    // the level-ratio DR (6.02 vs exact 6.0206 per-bit slopes differ
+    // slightly by construction of the two published forms).
+    ASSERT_NEAR(digital_sqnr(12).value, 74.00, 0.01);
+    ASSERT_NEAR(digital_sqnr(1).value, 7.78, 0.01);
+    ASSERT_TRUE(digital_sqnr(12).value > digital_dynamic_range(12).value);
 }
 
 // ---------------------------------------------------------------------------
@@ -237,6 +246,7 @@ int main() {
     RUN_TEST(test_digital_dr_8bit);
     RUN_TEST(test_digital_dr_12bit);
     RUN_TEST(test_digital_dr_each_bit_adds_6db);
+    RUN_TEST(test_digital_sqnr);
     RUN_TEST(test_sfdr_third_order_derivation);
     RUN_TEST(test_sfdr_second_order_derivation);
     RUN_TEST(test_sfdr_linearity_third_order);

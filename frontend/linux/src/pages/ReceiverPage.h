@@ -33,6 +33,7 @@ private:
     QLabel* sfdr2_;
     QLabel* sfdr3_;
     QLabel* digital_dr_;
+    QLabel* digital_sqnr_;
 
     void rebuildStageList();
     void pushStages();

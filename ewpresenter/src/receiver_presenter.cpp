@@ -68,6 +68,7 @@ void ReceiverPresenter::recompute() noexcept {
         output_.sfdr2_str             = kDash;
         output_.sfdr3_str             = kDash;
         output_.digital_dr_str        = kDash;
+        output_.digital_sqnr_str      = kDash;
         output_.system_noise_temp_str = kDash;
         output_.system_nf_str         = kDash;
         return;
@@ -100,7 +101,8 @@ void ReceiverPresenter::recompute() noexcept {
     output_.sfdr_third_order  = analog_sfdr_third_order(sens,  Dbm{third_order_ip_dbm_});
 
     // Digital DR
-    output_.digital_dr = digital_dynamic_range(adc_bits_);
+    output_.digital_dr   = digital_dynamic_range(adc_bits_);
+    output_.digital_sqnr = digital_sqnr(adc_bits_);
 
     // System noise temperature and equivalent NF derived from the cascaded Friis result,
     // not the raw input NF (which would be a trivial identity round-trip).
@@ -112,6 +114,7 @@ void ReceiverPresenter::recompute() noexcept {
     output_.sfdr2_str             = format_db(output_.sfdr_second_order);
     output_.sfdr3_str             = format_db(output_.sfdr_third_order);
     output_.digital_dr_str        = format_db(output_.digital_dr);
+    output_.digital_sqnr_str      = format_db(output_.digital_sqnr);
     output_.system_noise_temp_str = format_kelvin(output_.system_noise_temp);
     output_.system_nf_str         = format_db(output_.system_nf);
 }

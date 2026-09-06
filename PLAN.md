@@ -94,8 +94,8 @@ Open milestones are fully itemized here since they reflect actionable state.
     nomograph/context), and the convention that Adamy never numbers
     equations. Wegner R-722-PR itself was then obtained from rand.org
     and checked: all three location primaries resolved, zero [OPEN]
-    markers remain repo-wide. Fidelity docket now three items: DR
-    1.76 dB, beamwidth 30000/29000, horizon 4.122/4.11.
+    markers remain repo-wide. Fidelity docket subsequently cleared —
+    see Provenance Framing.
   - #69 OPEN — Radar detection statistics calculator: core + presenter +
     bridge + macOS and Linux panes shipped 2026-09-06 (Albersheim +
     Shnidman with Swerling 0–4, fluctuation loss, dwell/hits/FAR;
@@ -166,6 +166,16 @@ itemized since they're actionable.
   sinusoid SQNR 6.02·n + 1.76 (Walden). Both are standard; they differ by
   a constant 1.76 dB and answer slightly different questions. Left as-is
   for now — no code or doc change made.
+- DR delta RESOLVED 2026-09-06 by offering both quantities:
+  digital_dynamic_range() now returns the 20·log10(2^N) level ratio
+  (Adamy EW103 4.5.3) and a new digital_sqnr() returns 6.02N + 1.76
+  (Walden); the Receiver pane shows both rows. Semantic-identity issue,
+  not precision — the name promised the level ratio.
+- FIDELITY DOCKET CLEAR (2026-09-06): all five #68 deltas resolved —
+  DR (both offered), beamwidth (29000 adopted), horizon (4.122 kept),
+  both location CEP items (closed via Wegner: ours is Eq. 24a). The
+  full formula-fidelity sweep remains as future assurance work, but no
+  known deltas are pending decisions.
 - DECIDED 2026-09-06 (side chat): framing (b) — ewcalc implements the
   standard formulas, inspired by and audited against Adamy's EW 101
   series and other authoritative resources. Expressed as a citation
@@ -186,21 +196,19 @@ itemized since they're actionable.
   it because it equates LOS and two-ray attenuation). ewcalc implements
   this definition, correct for its regime-selection use. Do NOT
   "correct" the constant to EW101's. Recorded on #68.
-- Horizon-constant delta (found 2026-09-06, #68 sweep): libew uses the
-  exact k=4/3 value 4.122 (√(2·(4/3)·6371 km)); Adamy EW103 Sec 6.5
-  p.170 rounds to 4.11 (~0.3%). Documented difference; fidelity-sweep
-  docket alongside the 1.76 dB DR and 30000/29000 beamwidth deltas.
+- Horizon constant RESOLVED 2026-09-06: keep the exact k=4/3 value
+  4.122 — both parties cite the same model and 4.11 is Adamy's
+  rounding; fidelity to the shared model outranks the book's
+  arithmetic. Documented difference stands, no code change.
 - Nomograph method note (2026-09-06): Adamy EW103 Sec 5.7 (knife-edge)
   and nearly all of Sec 6.5 (bulge/horizon) work by nomograph, not
   closed form; libew implements Lee (1982) and the standard 4/3-earth
   algebra. Method difference documented at the definition sites.
-- Beamwidth-constant delta (found 2026-09-06, #68 sweep): libew's
-  gain↔beamwidth pair uses the 30000 rule-of-thumb constant; Adamy
-  EW103 uses 29000 (noting the exact solution is 28889). 0.15 dB apart.
-  Documented as a delta in formulas.md/test_antenna.cpp; whether to
-  adopt 29000 is deferred to the fidelity sweep. Also verified: Adamy
-  EW101–EW103 never define dBi↔dBd — that conversion now cites IEEE
-  Std 145 alone.
+- Beamwidth constant RESOLVED 2026-09-06: 29000 adopted (Adamy EW103
+  Sec 3.7 p.70 — his stated choice among rule-of-thumb constants; no
+  precision at stake, fidelity to the anchor text wins). 0.15 dB output
+  shift, CHANGELOG'd. Also verified: Adamy EW101–EW103 never define
+  dBi↔dBd — that conversion cites IEEE Std 145 alone.
 - Location primaries RESOLVED 2026-09-06 against Wegner, RAND R-722-PR
   (1971) itself (free PDF at rand.org/pubs/reports/R0722.html; OCR'd
   locally): the implemented 0.59·(σs+σl) IS Wegner Eq. (24a) p.14 (max
