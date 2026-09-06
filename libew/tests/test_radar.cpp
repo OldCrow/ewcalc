@@ -195,11 +195,15 @@ void test_scan_timing() {
 // ---------------------------------------------------------------------------
 // Doppler, PRF ambiguity, and resolution.
 // Sources: standard pulse-radar relations (Richards, Fundamentals of Radar
-// Signal Processing; Skolnik, Introduction to Radar Systems) — sole formula
-// sources. Verified 2026-09-06: EW102 Ch. 3 treats these topics
-// contextually without stating the formulas. (Skolnik is a primary
-// reference for Adamy, but Adamy does not use Skolnik's formulae
-// directly.)
+// Signal Processing; Skolnik, Introduction to Radar Systems). EW-series
+// anchors (verified 2026-09-06): Doppler shift — Adamy EW102 Sec 3.6.1
+// p.55; unambiguous range — stated in PRI terms (R_max < 0.5*PRI*c),
+// equivalent to c/(2*PRF); blind speed — not covered in Ch. 3; range
+// resolution — Sec 3.8.1's SAR form d = c*PW/2 is the uncompressed-pulse
+// equivalent of c/(2B); cross-range — Sec 3.8.2 gives only the SAR form
+// lambda*R/(2L), a different sensor model from the implemented real-beam
+// R*theta (method delta, see docs/formulas.md). Skolnik is a primary
+// reference for Adamy, but Adamy does not use Skolnik's formulae directly.
 // Expected values hand-derived with c = 299 792 458 m/s.
 // ---------------------------------------------------------------------------
 

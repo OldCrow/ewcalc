@@ -250,35 +250,35 @@ LOS: `d = 10^((margin - 32.44 - 20*log10(f))/20)`; 2-ray: `d = 10^((margin - 120
 ### Doppler shift (two-way)
 `f_d = 2 * v_r * f / c`
 
-- Source: standard radar Doppler relation (Richards, Fundamentals of Radar Signal Processing; Skolnik); no EW-series formula anchor — EW102 Ch. 3 treats the topic contextually without stating the formula (verified 2026-09-06).
+- Source: standard radar Doppler relation (Richards, Fundamentals of Radar Signal Processing; Skolnik); Adamy EW102 Sec. 3.6.1, p. 55.
 - Assumptions: monostatic radar, two-way path (twice the one-way shift); closing target positive.
 - Units: frequency in MHz, speed in m/s, shift in Hz.
 
 ### Unambiguous range
 `R_u = c / (2 * PRF)`
 
-- Source: standard pulse-radar relation (Richards; Skolnik); no EW-series formula anchor — EW102 Ch. 3 treats the topic contextually without stating the formula (verified 2026-09-06).
+- Source: standard pulse-radar relation (Richards; Skolnik); Adamy EW102 Sec. 3.6 area states it in PRI terms — `R_max < 0.5*PRI*c` — algebraically equivalent to the implemented `c/(2*PRF)`.
 - Units: PRF in Hz, range in km.
 
 ### Blind speed and unambiguous velocity
 `v_b = lambda * PRF / 2` (first blind speed; multiples n·v_b),
 `v_u = lambda * PRF / 4` (Doppler unambiguous within ±PRF/2)
 
-- Source: standard MTI/pulse-Doppler relations (Richards; Skolnik); no EW-series formula anchor — EW102 Ch. 3 treats the topic contextually without stating the formula (verified 2026-09-06).
+- Source: standard MTI/pulse-Doppler relations (Richards; Skolnik) — sole formula sources; blind speed is not covered in Adamy EW102 Ch. 3 (verified 2026-09-06).
 - Note: together with R_u these express the Doppler dilemma — R_u·v_u = c·lambda/8 is PRF-invariant (guarded by test_radar.cpp).
 - Units: frequency in MHz, PRF in Hz, speeds in m/s.
 
 ### Range resolution
 `dR = c / (2 * B)`
 
-- Source: standard waveform-bandwidth resolution relation (Richards; Skolnik); no EW-series formula anchor — EW102 Ch. 3 treats the topic contextually without stating the formula (verified 2026-09-06).
+- Source: standard waveform-bandwidth resolution relation (Richards; Skolnik). Related Adamy form: EW102 Sec. 3.8.1 gives `d = c*PW/2` in SAR context — the uncompressed-pulse equivalent (`B ≈ 1/PW`) of the implemented `c/(2B)`.
 - Assumptions: compressed bandwidth B; for an uncompressed pulse B ≈ 1/tau gives dR = c·tau/2.
 - Units: bandwidth in MHz, resolution in m.
 
 ### Cross-range resolution
 `dX = R * theta_3dB` (theta in radians)
 
-- Source: real-beam small-angle arc length (Richards; Skolnik); no EW-series formula anchor — EW102 Ch. 3 treats the topic contextually without stating the formula (verified 2026-09-06).
+- Source: real-beam small-angle arc length (Richards; Skolnik). METHOD DELTA vs. Adamy: EW102 Sec. 3.8.2 "Azimuth Resolution" is the only cross-range treatment and gives the synthetic-aperture form `d = lambda*R/(2L)` (array length L) — a different sensor model from the implemented real-beam `R*theta` (which equals `lambda*R/L` for `theta ≈ lambda/L`; SAR's two-way phase history buys the extra factor of 2).
 - Units: range in km, beamwidth in degrees, resolution in m. The az and el extents together with dR bound the resolution cell.
 
 ## Digital/DSSS
