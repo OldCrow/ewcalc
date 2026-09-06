@@ -2,6 +2,12 @@
 
 /// @file antenna.h
 /// @brief Antenna gain and ERP calculations.
+///
+/// Sources: ERP — Adamy EW103 Sec 5.2 p.120, Fig 5.4 p.121. dBi/dBd
+/// (2.15 dB = half-wave dipole directivity) — IEEE Std 145; not treated in
+/// Adamy EW101-EW103. Gain <-> beamwidth — Kraus/Tai-Pereira-family rule of
+/// thumb, 30000 variant (Adamy EW103 Sec 3.7 p.70 uses 29000; 0.15 dB
+/// documented delta). Full pins and deltas: docs/formulas.md.
 
 #include "libew/core/units.h"
 

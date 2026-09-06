@@ -2,6 +2,10 @@
 
 /// @file constants.h
 /// @brief Physical constants used throughout libew.
+///
+/// Sources: c and k are SI-defined exact values; 290 K reference
+/// temperature per IEEE Std 686 (kT = -174 dBm/Hz, hence the -114 dBm/MHz
+/// sensitivity baseline, matching Adamy EW103 Sec 4.4 p.97).
 
 namespace libew::constants {
 

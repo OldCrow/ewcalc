@@ -2,6 +2,10 @@
 
 /// @file link.h
 /// @brief One-way link budget and effective range calculations.
+///
+/// Sources: link-budget algebra and LOS/2-ray effective-range inversions per
+/// Adamy, "EW 101 -- ES vs. SIGINT -- Part 2", JED, Feb 2011, p.51; path
+/// loss models per propagation.h. Full pins: docs/formulas.md.
 
 #include "libew/core/units.h"
 

@@ -3,6 +3,12 @@
 /// @file digital.h
 /// @brief Digital link and spread-spectrum EW calculations.
 ///
+/// Sources: Eb/N0 <-> SNR — Adamy EW102 Sec 5.6.6/5.6.7 p.128 (standard
+/// digital-comms relation). DSSS process gain — Adamy EW102 Sec 5.7.3
+/// p.136. Jamming margin / required J/S — Adamy EW102 Sec 5.9.3
+/// pp.147-149; EW103 Ch. 9 for comms-jamming context. Full pins:
+/// docs/formulas.md.
+///
 /// Covers Eb/N₀ ↔ SNR conversion for digital links, and DSSS process gain
 /// and jamming margin analysis (EW102/103 scope).
 

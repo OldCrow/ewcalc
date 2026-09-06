@@ -2,6 +2,11 @@
 
 /// @file jamming.h
 /// @brief Jamming effectiveness analysis: J/S, burnthrough range, partial-band jamming.
+///
+/// Sources: comms J/S — Adamy EW102 Sec 5.8.1 p.138 / EW103 Sec 9.1 p.252.
+/// Burnthrough — Adamy EW101 Sec 9.3 pp.187-191 (fullest treatment) and
+/// EW102 Sec 5.8 pp.137-140. Partial-band — Adamy EW102 Sec 5.9.1.2
+/// pp.144-147 / EW103 Sec 9.3.1 pp.259-262. Full pins: docs/formulas.md.
 
 #include "libew/core/units.h"
 

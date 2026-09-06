@@ -2,6 +2,15 @@
 
 /// @file receiver.h
 /// @brief Receiver sensitivity, noise figure (Friis), and dynamic range.
+///
+/// Sources: sensitivity kTB + NF + RFSNR — Adamy EW103 Sec 4.4 p.97 (exact
+/// match incl. the -114 dBm/MHz form). Cascaded NF — Friis (1944), sole
+/// formula source (Adamy implies the cascade via diagrams only). SFDR —
+/// standard IP2/IP3 definitions (Razavi/Pozar; Adamy's treatment is
+/// graphical). Digital dynamic range — Walden (1999) SQNR 6.02N + 1.76
+/// (Adamy EW103 Sec 4.5.3 p.110 gives the 6.02N level-ratio form; 1.76 dB
+/// documented delta). Noise temperature — IEEE Std 686 (not used by Adamy).
+/// Full pins and deltas: docs/formulas.md.
 
 #include "libew/core/units.h"
 #include <span>

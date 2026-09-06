@@ -3,6 +3,15 @@
 /// @file propagation.h
 /// @brief RF propagation path loss models.
 ///
+/// Sources: FSPL and two-ray — standard forms (Adamy JED "ES vs. SIGINT"
+/// Part 2, Feb 2011). Fresnel crossover — Adamy EW103 Sec 5.6 p.135 (the
+/// 4*pi form, chosen there because it equates LOS and two-ray attenuation).
+/// Knife-edge — Lee (1982)/ITU-R P.526 (Adamy EW103 Sec 5.7 treats it by
+/// nomograph). Earth bulge/horizon — 4/3-earth geometry, Adamy EW103
+/// Sec 6.5 pp.170-174 as concept anchor; libew keeps the exact 4.122
+/// constant vs Adamy's 4.11 (documented delta). Full pins:
+/// docs/formulas.md.
+///
 /// Implements FSPL, 2-ray ground reflection, and knife-edge diffraction.
 /// Regime selection (LOS vs. 2-ray) is based on Fresnel zone crossover distance.
 

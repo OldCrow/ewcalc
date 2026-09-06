@@ -83,18 +83,17 @@ Open milestones are fully itemized here since they reflect actionable state.
     formulas.md were already corrected in the v1.0.0 release change — only the
     stale DISCREPANCY note in test_radar.cpp needed cleanup (fix in progress
     2026-09-05).
-  - #68 OPEN — Citation sweep: resolve all [OPEN: page/eq TBD] pins
-    (books: EW101, EW102, EW103 — no EW104 citations exist) and add
-    source attribution to the 7 uncited libew headers. UNPAUSED
-    2026-09-06 under the citation precedence rule (see Provenance
-    Framing below). Scope change: re-anchor the eight EW101-only pins
-    (4 antenna, 4 propagation) in EW102/EW103 where those books cover
-    them (EW103 propagation + antennas chapters, EW102 radar/location);
-    EW101 pins survive only where it is the sole Adamy treatment.
-    First verified pin: digital dynamic range → EW103 Ch. 4 Sec 4.5.3
-    p. 110 (EW102 was wrong), with a 1.76 dB formula delta recorded.
-    JED-column-level cross-referencing ruled out (too diffuse); cite
-    the books directly.
+  - #68 DONE 2026-09-06 — citation sweep completed against the physical
+    books under the precedence rule; all seven headers now carry source
+    attribution. Yield: firm pins (ERP, sensitivity, Fresnel, bulge,
+    jamming set, digital set), five fidelity-docket deltas (DR 1.76 dB,
+    beamwidth 30000/29000, horizon 4.122/4.11, both location CEP
+    formulations), several verified-absent anchors (dBi/dBd, Friis
+    closed form, SFDR, noise temp, coherent integration, dwell/FAR,
+    all five Doppler/Resolution formulas — Adamy teaches those by
+    nomograph/context), and the convention that Adamy never numbers
+    equations. Only deliberate [OPEN]s remain: three location primaries
+    pointing at Wegner (1971, RAND) — chase with the fidelity sweep.
   - #69 OPEN — Radar detection statistics calculator: core + presenter +
     bridge + macOS and Linux panes shipped 2026-09-06 (Albersheim +
     Shnidman with Swerling 0–4, fluctuation loss, dwell/hits/FAR;

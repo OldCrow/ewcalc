@@ -21,7 +21,10 @@ void test_pulse_compression_gain() {
 // Coherent integration gain: G_int = 10*log10(num_pulses). Standard
 // non-fluctuating-target coherent pulse integration gain (general radar
 // signal processing result, not Adamy-specific).
-// Source: Adamy EW102 [OPEN: page/eq TBD]
+// Source: Richards, Fundamentals of Radar Signal Processing (coherent
+// integration). Verified absent from Adamy (2026-09-06): EW102 Ch. 3
+// discusses coherence contextually (pulse radar, detection, LPI) but
+// states no formula.
 // ---------------------------------------------------------------------------
 
 void test_coherent_integration_gain() {
@@ -192,8 +195,11 @@ void test_scan_timing() {
 // ---------------------------------------------------------------------------
 // Doppler, PRF ambiguity, and resolution.
 // Sources: standard pulse-radar relations (Richards, Fundamentals of Radar
-// Signal Processing; Skolnik, Introduction to Radar Systems); Adamy EW102
-// radar chapter as EW-series anchor [OPEN: sec/page TBD — #68 sweep].
+// Signal Processing; Skolnik, Introduction to Radar Systems) — sole formula
+// sources. Verified 2026-09-06: EW102 Ch. 3 treats these topics
+// contextually without stating the formulas. (Skolnik is a primary
+// reference for Adamy, but Adamy does not use Skolnik's formulae
+// directly.)
 // Expected values hand-derived with c = 299 792 458 m/s.
 // ---------------------------------------------------------------------------
 
