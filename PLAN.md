@@ -180,9 +180,18 @@ itemized since they're actionable.
   layout instead. The stale packaged v1.0.2 install was removed from
   this machine in the process; installing the v1.1.0 release MSIX
   restores it.
-- OPTIONAL follow-up (Linux VM): visual smoke of the Qt6 panes
-  (Detection, Doppler, Geometry sections, SQNR row) — CI compiles and
-  ctests them but nobody has SEEN the Linux UI. [OPEN]
+- RELEASED 2026-09-06: after the user's review, a UX parity round landed
+  before tagging — help tooltips on every input/result across all panes
+  on all three platforms (WinUI first, then ported to macOS/Linux),
+  Propagation regime InfoBar → result row, Location "About CEP" InfoBar →
+  per-row tooltips, nav pane widened, and the error-bound tooltips'
+  blank-square fix (converter falls back to help text via
+  ConverterParameter). The user visually verified all three platform UIs.
+  An initial v1.1.0 tag (pre-fixes) was deleted via a temporary
+  "Protect release tags" ruleset adjustment by the user; the final tag
+  sits on the docs commit with README/frontend-README coverage of the
+  new panes. Tag CI fully green; Release published with all four
+  artifacts (signed+notarized .dmg, .msix, .AppImage, .deb).
 - NEXT: v1.2.0 Reference Library opens with #73 (data layer);
   full formula-fidelity sweep remains as future assurance work.
 
