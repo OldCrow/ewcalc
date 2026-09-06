@@ -60,7 +60,12 @@ void test_cep_aoa_zero_error() {
 // Formula: CEP_TDOA = c·σ_t·R / (2·B)
 //   c·σ_t = range-difference uncertainty
 //   R/B   = geometric dilution (position from range-difference)
-// Source: Adamy EW102 (2004) Sec 6.7.1 "TDOA System Accuracy", p.183.
+// Source: Adamy EW102 (2004) Sec 6.7.1 "TDOA System Accuracy", p.183 —
+// CONCEPT ANCHOR ONLY (verified 2026-09-06): Sec 6.7 derives TDOA/FDOA
+// accuracy from hyperbolic path intercepts off the baseline and states no
+// closed-form equation. The implemented c*sigma_t*R/(2B) rule of thumb is a
+// simplification of that geometry [OPEN: primary TBD — check Wegner (1971,
+// RAND), Adamy's cited source for the chapter's accuracy material].
 //
 //
 // Reference derivation (σ_t=10 ns, R=100 km, B=10 km):

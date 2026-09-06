@@ -206,8 +206,11 @@ itemized since they're actionable.
   the RMS-inscribed ellipse), no CEP-from-EEP formula at all. Both
   implemented forms (1.2·RMS rule, 0.59·(a+b)) now cite standard-
   approximation status with primaries [OPEN]; Adamy cites Wegner (1971,
-  RAND) — likely primary for the family, to be checked. Fidelity-sweep
-  docket: compare Adamy's 0.75·√(a²+b²) vs our forms and choose.
+  RAND) — likely primary for the family, to be checked. Same pattern
+  for TDOA: Sec 6.7 derives accuracy from hyperbolic intercepts, no
+  closed form — the implemented c·σt·R/(2B) is a simplification,
+  primary [OPEN] (Wegner again the lead). Fidelity-sweep docket:
+  compare Adamy's 0.75·√(a²+b²) vs our forms and choose.
 - Follow-up: full formula-fidelity sweep of all libew functions against
   the books (superset of #68's pins; sequence: fidelity sweep → pins).
 

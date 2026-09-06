@@ -165,7 +165,7 @@ LOS: `d = 10^((margin - 32.44 - 20*log10(f))/20)`; 2-ray: `d = 10^((margin - 120
 ### CEP from TDOA
 `CEP ≈ c * sigma_t * R / (2 * B)`
 
-- Source: Adamy EW102 Sec. 6.7.1 "TDOA System Accuracy", p. 183.
+- Source: Adamy EW102 Sec. 6.7.1 "TDOA System Accuracy", p. 183 — concept anchor only (verified 2026-09-06): Sec 6.7 derives TDOA/FDOA accuracy from hyperbolic path intercepts off the baseline, with no closed-form equation. The implemented rule of thumb simplifies that geometry [OPEN: primary TBD — check Wegner (1971, RAND)].
 - Assumptions: ideal perpendicular baseline-to-emitter geometry.
 - Units: timing error in nanoseconds, range/baseline in km, CEP in km.
 
