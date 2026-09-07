@@ -263,17 +263,27 @@ itemized since they're actionable.
 - None currently tracked here; gaps are filed as GitHub issues on sight
   (see milestones above). The former entries — WinUI3 colour-coding (#62)
   and the macOS `EWCALC_BUILD_FRONTEND` no-op (#66) — are both closed.
-- AGENTS.md context trim, partially done.
+- AGENTS.md context trim, complete.
   Raised by the 2026-09-07 fleet-wide AGENTS.md audit (durable vs
   on-demand context). AGENTS.md is imported eagerly by CLAUDE.md, so all
   of it is paid in every session in this repo; docs/ costs nothing until
   read. Sizes measured, line numbers current as of that date.
   - DONE 2026-09-07: the three per-frontend sections (5,265 B) moved to
     `docs/ARCHITECTURE.md`; AGENTS.md went 16,380 -> 11,410 bytes.
-  - Remaining: AGENTS.md:193-197, the GitHub-rulesets paragraph. Accurate and
-    worth keeping somewhere — it already records that `main` here carries
-    required status checks and a user bypass actor, unlike the five siblings —
-    but it is occasional reference, not per-turn steering -> `docs/`.
+  - [DECLINED 2026-09-07] AGENTS.md:193-200, the GitHub-rulesets paragraph.
+    Re-read: its last sentence is an operational rule — "Check a real CI run
+    after pushing; the push's own success is not evidence" — earned by this
+    repo being the only one of the six with required status checks and a
+    bypass actor set to `always`. Behind a link it would not fire at the
+    moment it matters. Proven the same day: three docs-only commits were
+    pushed here with `Bypassed rule violations` reported, and the check was
+    not made until afterwards.
+  - [DERIVED 2026-09-07] That check, once made, was clean and explains itself:
+    `ci.yml` and `codeql.yml` both carry
+    `paths-ignore: ['**.md', 'docs/**', 'LICENSE']`, so a documentation-only
+    push triggers no run at all. The three required checks could never have
+    run for those commits, which is exactly the case the bypass actor exists
+    for. Worth knowing before treating a missing run here as a failure.
 
 ## Build-Stack Standardization (2026-07-23) [DERIVED]
 Cross-repo effort tracked in the fleet standards repo
