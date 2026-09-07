@@ -8,6 +8,10 @@ This file provides project-scoped guidance to AI agents and contributors working
 
 ## Session Start
 
+Fleet-wide session-start steps (architecture check, build-path selection):
+[Session Start](https://github.com/OldCrow/standards/blob/main/SESSION-START.md).
+The steps below are ewcalc's own additions, not a replacement for it.
+
 **Requires CMake ≥ 3.25.** Before building, confirm the toolchain for this platform (see Platform-Specific Notes) is installed. On macOS, always unset Homebrew LLVM environment overrides first — Homebrew sets `CC`/`CXX`/`LDFLAGS` to Homebrew LLVM's libc++, which is ABI-incompatible with the macOS 13.0 deployment target used by the macOS frontend:
 
 ```bash
@@ -210,6 +214,8 @@ not evidence.
 - CI workflow conventions in depth → [CI House Style](https://github.com/OldCrow/standards/blob/main/CI-HOUSE-STYLE.md).
 - MSVC environment setup, Smart App Control, `vcvars64` activation →
   [WINDOWS-TOOLCHAIN.md](https://github.com/OldCrow/standards/blob/main/WINDOWS-TOOLCHAIN.md).
+- What each repo document is for, and how they cross-reference →
+  [DOC-CONVENTIONS.md](https://github.com/OldCrow/standards/blob/main/DOC-CONVENTIONS.md).
 - Session state, decisions, open questions → `PLAN.md`.
 
 ## Open Items
