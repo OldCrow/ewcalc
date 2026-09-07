@@ -263,6 +263,17 @@ itemized since they're actionable.
 - None currently tracked here; gaps are filed as GitHub issues on sight
   (see milestones above). The former entries — WinUI3 colour-coding (#62)
   and the macOS `EWCALC_BUILD_FRONTEND` no-op (#66) — are both closed.
+- AGENTS.md context trim, partially done.
+  Raised by the 2026-09-07 fleet-wide AGENTS.md audit (durable vs
+  on-demand context). AGENTS.md is imported eagerly by CLAUDE.md, so all
+  of it is paid in every session in this repo; docs/ costs nothing until
+  read. Sizes measured, line numbers current as of that date.
+  - DONE 2026-09-07: the three per-frontend sections (5,265 B) moved to
+    `docs/ARCHITECTURE.md`; AGENTS.md went 16,380 -> 11,410 bytes.
+  - Remaining: AGENTS.md:193-197, the GitHub-rulesets paragraph. Accurate and
+    worth keeping somewhere — it already records that `main` here carries
+    required status checks and a user bypass actor, unlike the five siblings —
+    but it is occasional reference, not per-turn steering -> `docs/`.
 
 ## Build-Stack Standardization (2026-07-23) [DERIVED]
 Cross-repo effort tracked in the fleet standards repo
