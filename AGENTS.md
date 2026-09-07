@@ -16,11 +16,6 @@ unset LDFLAGS CPPFLAGS CC CXX
 
 The `scripts/build-macos.sh` script does this automatically; only needed if invoking CMake directly.
 
-## Agent Workflow
-
-- When reviewing repository state or "what's changed" (e.g., syncing after time away, catching up on a branch), start with `git diff --stat` and `git log` rather than reading full file contents. Read complete files only for items you've determined are directly relevant to the task at hand.
-- For any subagent expected to run more than ~30 minutes, structure its brief to report interim progress at natural milestones (e.g., after each major deliverable) rather than running silently to a single final report.
-
 ## Build Commands
 
 The default CMake build produces `libew`, `ewpresenter`, and the test suite. To include a platform GUI target, set `EWCALC_BUILD_FRONTEND=ON` or use the platform build scripts instead (see Platform-Specific Notes).
@@ -97,33 +92,19 @@ in the fleet standards repo; this section is self-sufficient for this repo. ewca
 
 ### Windows toolchain setup
 
-> **Windows tool paths vary** by installation method (direct installer, `winget`, `chocolatey`, Microsoft Store, etc.) and VS version/edition. The paths below are common defaults — adjust for your installation. VS Build Tools and full VS editions use different default directories, and the version-number path segment (`2022`, `18`, ...) varies by release.
+The MSVC environment itself — one-time setup, Smart App Control, per-session
+`vcvars64` activation, and the CMake version floor — follows
+[WINDOWS-TOOLCHAIN.md](https://github.com/OldCrow/standards/blob/main/WINDOWS-TOOLCHAIN.md).
+ewcalc additionally needs the Windows App SDK workload for WinUI 3, noted under
+prerequisites above.
 
-`scripts/build-windows.ps1` and the CMake `EWCALC_BUILD_FRONTEND` target locate MSBuild automatically via `scripts/find-msbuild.ps1` (vswhere first, falling back to a filesystem scan of the standard VS install roots) — this is generic across VS versions/editions and isn't tied to any one machine's install. If `vswhere.exe` (`...\Installer\vswhere.exe`) is present but stale relative to an in-place VS upgrade, it can silently report no installations; `find-msbuild.ps1`'s fallback handles that automatically, but a Visual Studio Installer repair ("More" → "Repair") will also fix vswhere itself if you hit related issues outside this repo's scripts.
-
-Activate the MSVC toolchain once per PowerShell session before building:
-
-```powershell
-# Default path for VS 2022 Build Tools. For full VS (Community/Professional/Enterprise),
-# replace "BuildTools" with your edition under "C:\Program Files\Microsoft Visual Studio\2022\".
-$vcvars = "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-# Auto-detect any edition instead:
-# $vsPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -property installationPath
-# $vcvars = "$vsPath\VC\Auxiliary\Build\vcvars64.bat"
-$envVars = cmd /c "`"$vcvars`" > nul && set"
-foreach ($line in $envVars) {
-    if ($line -match "^([^=]+)=(.*)$") {
-        [System.Environment]::SetEnvironmentVariable($Matches[1], $Matches[2], 'Process')
-    }
-}
-```
-
-**One-time setup:**
-- Visual Studio 2022 Build Tools (not full IDE) is sufficient. Install from https://aka.ms/vs/17/release/vs_buildtools.exe, `winget install Microsoft.VisualStudio.2022.BuildTools`, or `choco install visualstudio2022buildtools`.
-  - Build Tools default path: `C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\`
-  - Full VS default path: `C:\Program Files\Microsoft Visual Studio\2022\{edition}\`
-- **Smart App Control must be Off** (Windows Security → App & Browser Control → SAC settings). SAC blocks locally compiled executables and cannot be re-enabled without a Windows reset.
-- CMake ≥ 3.25: https://cmake.org/download/, `winget install Kitware.CMake`, or `choco install cmake`.
+`scripts/build-windows.ps1` and the CMake `EWCALC_BUILD_FRONTEND` target locate
+MSBuild themselves via `scripts/find-msbuild.ps1` — vswhere first, falling back
+to a filesystem scan of the standard VS install roots — so they work across VS
+versions and editions with no per-machine configuration. A stale `vswhere.exe`
+can silently report no installations after an in-place VS upgrade; the fallback
+covers that here, and a Visual Studio Installer repair ("More" → "Repair") fixes
+vswhere itself for tools outside this repo.
 
 ## Architecture
 
