@@ -28,13 +28,15 @@ cmake --build build --parallel
 ```
 ```powershell
 # Windows (multi-config generator: build type set at build time).
-# Match -G to the installed VS: "Visual Studio 17 2022" or "Visual Studio 18 2026".
-# scripts/find-msbuild.ps1 locates MSBuild only; it does not pick the generator.
-cmake --preset release -G "Visual Studio 17 2022" -A x64
+# Do not pin -G: CMake auto-selects the newest installed Visual Studio.
+# scripts/build-windows.ps1 and CI both configure unpinned; a hard-coded
+# "Visual Studio 17 2022" survives an in-place upgrade to VS 2026 as an
+# empty husk and still resolves to it.
+cmake --preset release
 cmake --build build --config Release --parallel
 ```
 Manual alternative (no preset): `cmake -B build -DCMAKE_BUILD_TYPE=Release` (macOS/Linux) or
-`cmake -B build -G "Visual Studio 17 2022" -A x64` (Windows).
+`cmake -B build` (Windows).
 
 ### Run all tests
 ```
@@ -82,7 +84,11 @@ in the fleet standards repo; this section is self-sufficient for this repo. ewca
   `build-relwithdebinfo/`, plus the `frontend` extra → `build-frontend/`
   (Release + `EWCALC_BUILD_FRONTEND=ON`, own binaryDir so toggling the
   frontend never leaves a sticky cache variable in `build/`). No `generator`
-  field in any preset — pass `-G` explicitly on Windows.
+  field in any preset, and no local generator pin on Windows either — that is
+  the fleet rule, not an ewcalc deviation; see
+  [Windows Toolchain](https://github.com/OldCrow/standards/blob/main/WINDOWS-TOOLCHAIN.md)
+  §3. The WinUI 3 frontend is built by MSBuild against its own `.sln`, so it
+  never depends on which CMake generator is selected.
 
 ## Platform-Specific Notes
 
