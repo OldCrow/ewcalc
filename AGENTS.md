@@ -98,7 +98,10 @@ in the fleet standards repo; this section is self-sufficient for this repo. ewca
 
 - **macOS:** Xcode (with Swift and SwiftUI support) from the Mac App Store. Minimum deployment target: macOS 13.0. For the core libs and tests only (no GUI), Xcode Command Line Tools (`xcode-select --install`) are sufficient.
 - **Linux:** Qt6 base development libraries (`apt install qt6-base-dev` on Debian/Ubuntu, or equivalent). A C++20 compiler (GCC ≥ 12 or Clang ≥ 14) and CMake ≥ 3.25 are also required. The Qt6 frontend is feature-complete for the current calculator set.
-- **Windows:** Visual Studio 2022 or newer (e.g. VS 18 2026) with the C++ and Windows App SDK workloads (for WinUI 3 support). Install from https://aka.ms/vs/17/release/vs_buildtools.exe, `winget install Microsoft.VisualStudio.2022.Community`, or `choco install visualstudio2022`. CMake ≥ 3.25: `winget install Kitware.CMake` or `choco install cmake`.
+- **Windows:** toolchain floor, install routes, and the CMake version floor
+  are in [WINDOWS-TOOLCHAIN.md §1](https://github.com/OldCrow/standards/blob/main/WINDOWS-TOOLCHAIN.md#1-one-time-setup). ewcalc additionally
+  needs the **Windows App SDK workload** for WinUI 3, which the standard does
+  not cover.
 
 ### Windows toolchain setup
 
@@ -149,22 +152,13 @@ The conventions below are scoped per target — the frontends are Swift, C#, and
 - All quantity types from `libew::units` — never use bare `double` for RF quantities in these layers.
 - Static analysis: `scripts/lint-cpp.sh` runs clang-tidy (rules in `.clang-tidy`, repo root) and cppcheck against `libew/`, `ewpresenter/`, and `bridge/`. Mirrors the `static-analysis` CI job — run it locally before pushing.
 
-### macOS Frontend (Swift / SwiftUI)
-- One adapter class per presenter domain under `frontend/macos/app/Adapters/` (`PropagationAdapter`, `LinkAdapter`, `ReceiverAdapter`, `JammingAdapter`, `LocationAdapter`, `RadarAdapter`, `DetectionAdapter`, `DopplerAdapter`, `DigitalAdapter`, `AntennaAdapter`), each an `ObservableObject` wrapping the C bridge (`bridge/ewcalc_bridge.h`) — Swift cannot import C++ directly. Adapters are `let` properties of `EwCalcStore` (a `@StateObject` owned by the app), so `Unmanaged.passUnretained` in the C callback is safe only as long as adapters keep that lifetime; switch to `passRetained` and clear the callback in `deinit` before giving any adapter a shorter lifetime.
-- Views live under `frontend/macos/app/Views/`.
-- Static analysis: `scripts/lint-macos.sh` runs SwiftLint (`--strict`, rules in `.swiftlint.yml`, repo root) against `frontend/macos/app/`. `colon`/`comma`/`comment_spacing` are disabled and `identifier_name`/`type_name` carry an `excluded` list — see comments in `.swiftlint.yml` for why (the codebase's deliberate vertical-alignment style, Doxygen-style `///<` comments, and short unit-abbreviation parameter names like `km`/`db` are intentional, not lint debt). If SwiftLint isn't on `PATH`: on current macOS `brew install swiftlint` is bottled and fine; on macOS 13/Ventura only, Homebrew has no bottle for this formula — it would build the full Swift toolchain from source, which is impractically slow and can fail (see `fix-homebrew-source-build` skill) — so there, download the portable prebuilt binary from the official SwiftLint GitHub release (`portable_swiftlint.zip`) and place it on `PATH` instead.
+### Frontends
 
-### Windows Frontend (C# / WinUI 3)
-- Static analysis: `.editorconfig` (repo root) enables Roslyn analyzers via `EnableNETAnalyzers`/`AnalysisLevel=latest-recommended`/`EnforceCodeStyleInBuild` in `ewcalc-winui.csproj` — severities default to warnings, not build-breaking, matching the C++ core's mirror-CI-locally philosophy but not (yet) its `-Werror` strictness; tighten via `.editorconfig` severity overrides once the codebase is verified clean against a rule. CI/local verification runs only `dotnet format style <sln> --no-restore --verify-no-changes` (see `.github/workflows/ci.yml`) — never bare `dotnet format` / `dotnet format whitespace`, since this codebase's deliberate multi-space vertical alignment (same convention as `.swiftlint.yml`'s exclusions) would otherwise be collapsed; `dotnet format`'s `analyzers` subcommand and standalone-csproj invocation also cannot reliably resolve `ewpresenter.net`'s C++/CLI types outside a full solution build context. Roslyn analyzer diagnostics (CA rules) are gated by the normal build instead.
-- Interop with the native core goes through a C++/CLI adapter DLL, `ewpresenter.net` (`frontend/windows/ewcalc-winui/ewpresenter.net/`), with one adapter class per presenter domain (10 total: Antenna, Detection, Digital, Doppler, Jamming, Link, Location, Propagation, Radar, Receiver).
-- Pattern: `NativeCallbacks.h` is a purely-native header (zero managed types) defining one `Make*CB` factory per presenter domain; each factory returns a `std::function` wrapping a plain C function pointer + `void*` cookie. These lambdas capture only native types and are compiled under `#pragma managed(push, off)` / `(pop)`, since the callback wiring must stay outside managed code. Each adapter (e.g. `AntennaAdapter`) allocates a `GCHandle` to itself as the cookie, registers a static native dispatch function (e.g. `AntennaDispatch`) via `presenter_->set_on_change(...)`, and that dispatch function resolves the `GCHandle` back to the managed instance to fire a .NET event. `MarshalHelper.h` centralizes `FieldError` → `FieldValidationError` enum mapping and UTF-8 string marshaling (explicit byte-decode, since `marshal_as` uses the ANSI code page and garbles multi-byte UTF-8).
-- Read first: `NativeCallbacks.h` (the callback pattern itself), then `AntennaAdapter.h`/`.cpp` as the simplest concrete adapter, before touching any other adapter.
-- Field colour-coding is implemented via `IValueConverter` on `BorderBrush` (`Helpers/FieldErrorConverter.cs` + `{x:Bind ...Error, Mode=OneWay, Converter=...}` on every input control) — the classic-binding approach, after an earlier dependency-property attempt crashed at startup (#62, closed). Keep new inputs on this pattern.
-- The app must run packaged: the raw `ewcalc-winui.exe` crashes at startup in the WinAppSDK deployment auto-initializer (`REGDB_E_CLASSNOTREG`) because the project doesn't set `WindowsPackageType=None`. For a dev run, register the loose layout: `Add-AppxPackage -Register <bin>\AppxManifest.xml` (remove any installed MSIX of the app first), then launch via `shell:appsFolder\<PackageFamilyName>!App`.
-
-### Linux Frontend (Qt6 / C++)
-- One page class per presenter domain under `frontend/linux/src/pages/` (plus `ReferencePage`, a static help page with no presenter), hosted by `MainWindow` (sidebar `QListWidget` navigation + `QStackedWidget` page area).
-- Static analysis: `scripts/lint-linux.sh` runs cppcheck (`--error-exitcode=1`) against `frontend/linux/`. Qt's macro-heavy style (`Q_OBJECT`, signal/slot syntax) does not require suppressions or a Qt-aware ruleset — verified clean.
+Per-frontend implementation detail — the adapter class per presenter domain,
+the C++/CLI interop and native-callback wiring, packaging and startup quirks,
+and each frontend's lint script with its deliberate exclusions — lives in
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Read it when working on a
+frontend; it is not needed otherwise.
 
 ## CI / Validation
 
