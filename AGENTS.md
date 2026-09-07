@@ -120,46 +120,13 @@ ewpresenter                      ← presenter/viewmodel (platform-agnostic C++2
 libew                            ← pure calculation library (no UI, no external deps)
 ```
 
-`bridge` is optional: only the macOS Swift frontend consumes it today (Swift
-cannot import C++ directly). Linux and Windows frontends link `ewpresenter`
-directly.
+`bridge` is optional: only the macOS Swift frontend consumes it (Swift cannot
+import C++ directly) — Linux and Windows link `ewpresenter` directly. `libew`
+is header-only; both `libew` and `ewpresenter` compile to static libs
+(`build/lib/`) that platform frontends link against.
 
-Both `libew` and `ewpresenter` compile to static libs (`build/lib/`). Platform frontends link against them.
-
-### libew
-
-Header-only public API lives under `libew/include/libew/`. Each domain has its own subdirectory:
-
-- `core/units.h` — strong-type wrappers (`Dbm`, `Db`, `Km`, `Mhz`, …) with compile-enforced arithmetic rules (e.g. `Dbm + Dbm` is a compile error). User-defined literals (`30.0_dBm`, `100.0_MHz`, etc.) are in `libew::units::literals`. Always use these types in `libew` and `ewpresenter` code.
-- `core/constants.h` — physical constants.
-- One header per domain: `propagation/`, `antenna/`, `link/`, `receiver/`, `jamming/`, `location/`, `radar/`, `digital/`.
-- `libew.h` — umbrella include.
-
-### ewpresenter
-
-One presenter class per domain, each following the same pattern:
-
-1. Stores raw `double` inputs with sensible defaults.
-2. Each setter validates via `validation.h` helpers (`validate_bounds`, `validate_positive`, etc.) and records a `FieldError` per field.
-3. Calls `recompute()`, which runs libew and populates an `Output` struct containing both raw typed values and pre-formatted `std::string` fields (e.g. `fspl_str`).
-4. Fires an `std::function<void(const Output&)>` callback (`set_on_change`).
-5. `output().valid` is `false` whenever any input has a non-`none` FieldError. Exception: `LocationPresenter` has independent AOA, TDOA, and EEP sub-sections, so `valid` remains `true` when at least one sub-section can still produce output; invalid sub-sections dash only their own formatted strings.
-
-No platform types cross the ewpresenter boundary. Frontends bind to `set_on_change` and read from `Output`.
-
-`formatter.h` / `formatter.cpp` provide shared formatting helpers used by all presenters.
-
-### bridge
-
-A plain-C API (`bridge/ewcalc_bridge.h/.cpp`) over `ewpresenter`: opaque
-handles, value-type output structs with fixed-size string fields, and C
-function-pointer callbacks. Lives at the top level (sibling to `libew`,
-`ewpresenter`, `frontend`) since it's platform-agnostic and consumed by both
-`ewpresenter/tests/test_bridge.cpp` and the macOS Swift frontend.
-
-### Test framework
-
-Tests use a zero-dependency framework in `libew/tests/test_main.h`. Each test file is an independent executable. Key macros: `TEST_MAIN()`, `RUN_TEST(fn)`, `ASSERT_NEAR(actual, expected, tol)`, `ASSERT_TRUE(expr)`.
+Header layout, the per-presenter validate/recompute/callback pattern, why
+`bridge` exists, and the test framework's macros: `docs/ARCHITECTURE.md`.
 
 ## Coding Conventions
 
@@ -227,6 +194,17 @@ set to `always`, so a direct push reports `Bypassed rule violations ... 3 of
 3 required status checks are expected` and **lands without those checks
 having run**. Check a real CI run after pushing; the push's own success is
 not evidence.
+
+## Reading map — load on demand, not preemptively
+- Mapping a calculator output to its underlying equation, source, or unit
+  convention → `docs/formulas.md`.
+- Layer/component detail beyond the summary above (header layout, presenter
+  lifecycle, why `bridge` exists, test macros) → `docs/ARCHITECTURE.md`.
+- CMake conventions in depth → [CMake House Style](https://github.com/OldCrow/standards/blob/main/CMAKE-HOUSE-STYLE.md).
+- CI workflow conventions in depth → [CI House Style](https://github.com/OldCrow/standards/blob/main/CI-HOUSE-STYLE.md).
+- MSVC environment setup, Smart App Control, `vcvars64` activation →
+  [WINDOWS-TOOLCHAIN.md](https://github.com/OldCrow/standards/blob/main/WINDOWS-TOOLCHAIN.md).
+- Session state, decisions, open questions → `PLAN.md`.
 
 ## Open Items
 See PLAN.md for current status, in-progress work, and open questions.
