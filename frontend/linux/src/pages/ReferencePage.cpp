@@ -1,8 +1,14 @@
 // ReferencePage.cpp
+//
+// Renders ewpresenter::refdata content (#73): value rows and formula rows.
+// This page owns no reference data of its own — it is a pure view over
+// ewpresenter/include/ewpresenter/reference_data.h.
 #include "ReferencePage.h"
 #include "PageUtils.h"
 
-#include <initializer_list>
+#include <ewpresenter/reference_data.h>
+
+#include <cstddef>
 
 #include <QClipboard>
 #include <QFormLayout>
@@ -10,94 +16,26 @@
 #include <QGuiApplication>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QPixmap>
 #include <QPushButton>
 #include <QScrollArea>
+#include <QString>
 #include <QVBoxLayout>
 #include <QWidget>
 
-// ── Reference data ────────────────────────────────────────────────────────────
+namespace refdata = ewpresenter::refdata;
 
 namespace {
 
-struct RefEntry {
-    const char* label;
-    const char* value;
-    const char* copyValue; ///< nullptr = no copy button
-};
-
-struct RefSection {
-    const char* title = nullptr;
-    std::initializer_list<RefEntry> entries;
-};
-
-static const RefSection kSections[] = {
-    {
-        "Antenna Gain",
-        {
-            { "Isotropic (reference)",                "0.0 dBi",             "0.0"   },
-            { "Short whip / rubber duck",             "0 dBi  (typical)",    "0"     },
-            { "Quarter-wave whip, ground-plane mount","2 dBi  (typical)",    "2"     },
-            { "Half-wave dipole",                     "2.15 dBi  (0 dBd)",   "2.15"  },
-            { "2-element Yagi",                       "\u2248 7 dBi",         "7"     },
-            { "3-element Yagi",                       "\u2248 8.5 dBi",       "8.5"   },
-            { "5-element Yagi",                       "\u2248 10.5 dBi",      "10.5"  },
-            { "10-element Yagi",                      "\u2248 14 dBi",        "14"    },
-        }
-    },
-    {
-        "Antenna Sidelobe Levels (re main lobe)",
-        {
-            { "Uniform aperture \u2014 1st SLL",  "\u221213 dBc",            "-13"   },
-            { "Taylor weighted \u2014 1st SLL",   "\u221225 dBc",            "-25"   },
-            { "Low-sidelobe array \u2014 1st SLL","\u221235 dBc",            "-35"   },
-            { "Typical back lobe",                "\u221225 to \u221235 dBc", nullptr },
-        }
-    },
-    {
-        "Thermal Noise Floor  (kT, 290 K)",
-        {
-            { "1 Hz bandwidth",    "\u2212174.0 dBm", "-174.0" },
-            { "1 kHz bandwidth",   "\u2212144.0 dBm", "-144.0" },
-            { "1 MHz bandwidth",   "\u2212114.0 dBm", "-114.0" },
-            { "10 MHz bandwidth",  "\u2212104.0 dBm", "-104.0" },
-            { "100 MHz bandwidth", "\u221294.0 dBm",  "-94.0"  },
-            { "1 GHz bandwidth",   "\u221284.0 dBm",  "-84.0"  },
-        }
-    },
-    {
-        "Radar Cross Section (Typical)",
-        {
-            { "Large aircraft (broadside)",        "+15 dBsm  (rep.)",  "15"  },
-            { "Fighter (broadside)",               "+7 dBsm  (rep.)",   "7"   },
-            { "Fighter (nose-on, conventional)",   "0 dBsm  (\u2248 1 m\u00b2)", "0" },
-            { "LO fighter (nose-on)",              "\u221215 dBsm  (rep.)", "-15" },
-            { "Cruise missile",                    "\u22127 dBsm  (rep.)",  "-7"  },
-            { "Bird",                              "\u221215 dBsm  (rep.)", "-15" },
-            { "Ship (small, \u223c1\u202f000 t)",  "+25 dBsm  (rep.)",  "25"  },
-            { "Ship (large, >10\u202f000 t)",      "+45 dBsm  (rep.)",  "45"  },
-        }
-    },
-    {
-        "Eb/N\u2080 Requirements (AWGN)",
-        {
-            { "BPSK / QPSK,  BER 10\u207b\u00b3",      "6.8 dB",          "6.8"  },
-            { "BPSK / QPSK,  BER 10\u207b\u2075",      "9.6 dB",          "9.6"  },
-            { "BPSK / QPSK,  BER 10\u207b\u2076",      "10.5 dB",         "10.5" },
-            { "Non-coh. FSK, BER 10\u207b\u00b3",      "\u2248 13.5 dB",   "13.5" },
-            { "Non-coh. FSK, BER 10\u207b\u2075",      "\u2248 17.0 dB",   "17.0" },
-        }
-    },
-};
-
-/// Adds one reference row to @p form.
+/// Adds one "Value" reference row to @p form.
 /// Rows with a copy value get a small "⧉" button; others get a spacer.
 /// When @p registry is non-null, appends {label, valLbl} so a page-level
 /// "Copy Results" button can include this row.
-static void addRefRow(QFormLayout* form,
-                      const QString& label,
-                      const QString& value,
-                      const QString& copyValue,
-                      ResultRowRegistry* registry)
+void addRefRow(QFormLayout* form,
+               const QString& label,
+               const QString& value,
+               const QString& copyValue,
+               ResultRowRegistry* registry)
 {
     auto* valLbl = new QLabel(value);
     valLbl->setTextInteractionFlags(Qt::TextSelectableByMouse);
@@ -135,6 +73,66 @@ static void addRefRow(QFormLayout* form,
     form->addRow(label + ':', cell);
 }
 
+/// Creates a QLabel showing a typeset formula image. The PNG is a 2x render
+/// (see scripts/render-diagrams.sh); setDevicePixelRatio(2.0) on the pixmap
+/// makes Qt lay it out — and draw it — at half its pixel size, so it reads
+/// crisp on hi-DPI screens without upscaling blur. @p altText (the Unicode
+/// plain-text equivalent from the data layer) becomes the label's accessible
+/// name and tooltip, standing in for the image for screen readers and on
+/// hover.
+QLabel* makeFormulaImage(const QString& resourcePath, const QString& altText)
+{
+    auto* lbl = new QLabel;
+    QPixmap pix(resourcePath);
+    pix.setDevicePixelRatio(2.0);
+    lbl->setPixmap(pix);
+    lbl->setAccessibleName(altText);
+    lbl->setToolTip(altText);
+    return lbl;
+}
+
+/// Adds one "Formula" reference row to @p form: the standard and (if
+/// present) log forms rendered side by side as typeset images, followed by
+/// a "⧉" button that copies the Unicode plain-text form(s) to the
+/// clipboard — matching the copy-button style used by value rows.
+void addFormulaRow(QFormLayout* form, const refdata::Row& row)
+{
+    const QString label   = QString::fromUtf8(row.label);
+    const QString stdText = QString::fromUtf8(row.value);
+    const QString base    = QString::fromUtf8(row.svg_base);
+
+    auto* cell = new QWidget;
+    auto* hbox = new QHBoxLayout(cell);
+    hbox->setContentsMargins(0, 0, 0, 0);
+    hbox->setSpacing(12);
+
+    hbox->addWidget(
+        makeFormulaImage(QStringLiteral(":/formulas/%1-std.png").arg(base), stdText),
+        0);
+
+    QString copyText = stdText;
+    if (row.log_value) {
+        const QString logText = QString::fromUtf8(row.log_value);
+        hbox->addWidget(
+            makeFormulaImage(QStringLiteral(":/formulas/%1-log.png").arg(base), logText),
+            0);
+        copyText += QStringLiteral("   |   ") + logText;
+    }
+    hbox->addStretch(1);
+
+    auto* btn = new QPushButton(QStringLiteral("\u29c9"));
+    btn->setFixedWidth(26);
+    btn->setFlat(true);
+    btn->setToolTip(QStringLiteral("Copy ") + copyText);
+    btn->setAccessibleName(QStringLiteral("Copy ") + label);
+    QObject::connect(btn, &QPushButton::clicked, btn, [copyText](){
+        QGuiApplication::clipboard()->setText(copyText);
+    });
+    hbox->addWidget(btn, 0);
+
+    form->addRow(label + ':', cell);
+}
+
 } // namespace
 
 // ── ReferencePage ─────────────────────────────────────────────────────────────
@@ -146,19 +144,29 @@ ReferencePage::ReferencePage(QWidget* parent)
     auto* vbox    = new QVBoxLayout(content);
 
     ResultRowRegistry results;
-    for (const auto& section : kSections) {
-        QFormLayout* form = nullptr;
-        auto* box  = new QGroupBox(QString::fromUtf8(section.title));
-        form = new QFormLayout(box);
+    for (const auto& page : refdata::pages()) {
+        for (std::size_t s = 0; s < page.section_count; ++s) {
+            const auto& section = page.sections[s];
+            auto* box  = new QGroupBox(QString::fromUtf8(section.title));
+            auto* form = new QFormLayout(box);
 
-        for (const auto& e : section.entries) {
-            addRefRow(form,
-                      QString::fromUtf8(e.label),
-                      QString::fromUtf8(e.value),
-                      e.copyValue ? QString::fromUtf8(e.copyValue) : QString{},
-                      &results);
+            for (std::size_t r = 0; r < section.row_count; ++r) {
+                const auto& row = section.rows[r];
+                switch (row.kind) {
+                    case refdata::RowKind::Value:
+                        addRefRow(form,
+                                  QString::fromUtf8(row.label),
+                                  QString::fromUtf8(row.value),
+                                  row.copy_value ? QString::fromUtf8(row.copy_value) : QString{},
+                                  &results);
+                        break;
+                    case refdata::RowKind::Formula:
+                        addFormulaRow(form, row);
+                        break;
+                }
+            }
+            vbox->addWidget(box);
         }
-        vbox->addWidget(box);
     }
     vbox->addWidget(addCopyResultsButton(results));
     vbox->addStretch();
