@@ -281,9 +281,9 @@ itemized since they're actionable.
 - Gaps are otherwise filed as GitHub issues on sight (see milestones
   above). The former entries — WinUI3 colour-coding (#62) and the macOS
   `EWCALC_BUILD_FRONTEND` no-op (#66) — are both closed.
-- Linux sidebar icons need Qt's SVG plugin at runtime; not yet declared
-  anywhere. Found 2026-09-09 while testing the Qt6 frontend on Ubuntu
-  24.04.
+- Linux sidebar icons need Qt's SVG plugin at runtime. Now declared in
+  AGENTS.md and fixed for the AppImage; the `.deb`/`.rpm` path is still
+  open. Found 2026-09-09 while testing the Qt6 frontend on Ubuntu 24.04.
   - `MainWindow.cpp`'s `addPage` sources nav icons from
     `QIcon::fromTheme`, and current GNOME themes (Adwaita 46+, Yaru) ship
     most of those names *only* as SVG — several only in their `-symbolic`
@@ -291,17 +291,26 @@ itemized since they're actionable.
     imageformat) `fromTheme` fails silently and the sidebar renders just
     the handful of names the theme still carries as PNG. Nothing errors;
     the icons are simply absent.
-  - AGENTS.md's Linux prerequisite names only `qt6-base-dev`, which does
-    **not** pull in Qt SVG on Debian/Ubuntu (`libqt6svg6`). Same trap for
-    a minimal aqtinstall setup, where `qtsvg` is a separate *archive*
-    (`--archives qtsvg`; it is not a `-m` module).
-  - Packaging risk, unverified: `scripts/build-linux.sh` bundles the
-    AppImage via `linuxdeploy-plugin-qt`, which selects plugins from what
-    the binary links. `ewcalc` does not link Qt6Svg — the dependency is
-    purely a runtime theme-icon lookup — so the SVG iconengine may not be
-    bundled and shipped AppImages could hit this on users' machines.
-    Check an actual AppImage build before assuming it is covered; the
-    `.deb`/`.rpm` should instead declare the dependency.
+  - DONE 2026-09-09: AGENTS.md's Linux prerequisite named only
+    `qt6-base-dev`, which does **not** pull in Qt SVG on Debian/Ubuntu;
+    now reads `qt6-base-dev libqt6svg6` and explains the silent failure.
+    Same trap on a minimal aqtinstall setup, where `qtsvg` is a separate
+    *archive* (`--archives qtsvg`; it is not a `-m` module) — also noted.
+  - DONE 2026-09-09: the AppImage packaging gap was real, and worse than
+    predicted. `linuxdeploy-plugin-qt` selects plugins from what the
+    binary links, and `ewcalc` never links Qt6Svg (the dependency is a
+    pure runtime theme lookup), so the packaged sidebar rendered with
+    **no icons at all** — not merely the SVG ones. Two plugins were
+    missing: `iconengines/libqsvgicon.so` (themed SVG entries go through
+    the icon *engine*; the `libqsvg.so` imageformat the plugin does bundle
+    is not sufficient) and `platformthemes/libqgtk3.so`, without which
+    `QIcon::themeName()` is empty inside the AppImage and no theme icon
+    resolves, PNG included. Fixed in `scripts/build-linux.sh` with
+    `EXTRA_QT_MODULES="svg;gtk3"` + `DEPLOY_PLATFORM_THEMES=1`; verified
+    by building an AppImage and launching it — all 11 nav icons render.
+  - STILL OPEN: the `.deb`/`.rpm` path. CPack does not declare a Qt SVG
+    dependency, so an installed package on a machine without `libqt6svg6`
+    hits the same silent icon loss. Not yet reproduced or fixed.
 - AGENTS.md context trim, complete.
   Raised by the 2026-09-07 fleet-wide AGENTS.md audit (durable vs
   on-demand context). AGENTS.md is imported eagerly by CLAUDE.md, so all

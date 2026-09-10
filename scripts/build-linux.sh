@@ -104,6 +104,26 @@ if [[ -f "$LINUX_FRONTEND" ]]; then
                 # doesn't depend on the host's toolchain version at all.
                 LIBSTDCXX=$(ldconfig -p | awk '/libstdc\+\+\.so\.6/{print $NF}' | head -1)
                 LIBGCC_S=$(ldconfig -p | awk '/libgcc_s\.so\.1/{print $NF}' | head -1)
+                # linuxdeploy-plugin-qt selects Qt plugins from what the
+                # binary links, which misses two the sidebar needs at runtime:
+                #   svgicon  — nav icons come from QIcon::fromTheme, and modern
+                #              GNOME themes ship most of those names only as
+                #              SVG; Qt routes themed SVG entries through the
+                #              *icon engine*, so bundling the imageformat
+                #              (libqsvg.so, which the plugin does pick up) is
+                #              not enough on its own.
+                #   gtk3     — the platform theme that reads the desktop's
+                #              icon-theme setting. Without it QIcon::themeName()
+                #              is empty inside the AppImage and *no* theme icon
+                #              resolves, not even the PNG ones.
+                # Verified 2026-09-09: without these the packaged sidebar
+                # renders with no icons at all, while the same build run from
+                # the build tree renders all of them.
+                # (EXTRA_QT_MODULES is the current name of what older docs
+                # call EXTRA_QT_PLUGINS; DEPLOY_PLATFORM_THEMES gates the
+                # platformthemes directory, which is skipped by default.)
+                export EXTRA_QT_MODULES="svg;gtk3"
+                export DEPLOY_PLATFORM_THEMES=1
                 linuxdeploy --appdir "$APPDIR" \
                     --icon-file "$ICON" \
                     --desktop-file "$DESKTOP" \

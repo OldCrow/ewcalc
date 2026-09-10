@@ -97,7 +97,7 @@ in the fleet standards repo; this section is self-sufficient for this repo. ewca
 ## Platform-Specific Notes
 
 - **macOS:** Xcode (with Swift and SwiftUI support) from the Mac App Store. Minimum deployment target: macOS 13.0. For the core libs and tests only (no GUI), Xcode Command Line Tools (`xcode-select --install`) are sufficient.
-- **Linux:** Qt6 base development libraries (`apt install qt6-base-dev` on Debian/Ubuntu, or equivalent). A C++20 compiler (GCC ≥ 12 or Clang ≥ 14) and CMake ≥ 3.25 are also required. The Qt6 frontend is feature-complete for the current calculator set.
+- **Linux:** Qt6 base development libraries **plus Qt SVG** (`apt install qt6-base-dev libqt6svg6` on Debian/Ubuntu, or equivalent). Qt SVG is a separate package that `qt6-base-dev` does not pull in, and the sidebar needs it at *runtime*: nav icons come from `QIcon::fromTheme`, current GNOME themes (Adwaita 46+, Yaru) carry most of those names only as SVG, and without the SVG iconengine `fromTheme` fails silently — the icons are simply absent, with no error. On a minimal aqtinstall setup it is the separate `qtsvg` *archive* (`--archives qtsvg`), not a `-m` module. A C++20 compiler (GCC ≥ 12 or Clang ≥ 14) and CMake ≥ 3.25 are also required. The Qt6 frontend is feature-complete for the current calculator set.
 - **Windows:** toolchain floor, install routes, and the CMake version floor
   are in [WINDOWS-TOOLCHAIN.md §1](https://github.com/OldCrow/standards/blob/main/WINDOWS-TOOLCHAIN.md#1-one-time-setup). ewcalc additionally
   needs the **Windows App SDK workload** for WinUI 3, which the standard does
