@@ -38,10 +38,18 @@ MainWindow::MainWindow(QWidget* parent)
 {
     setWindowTitle(QStringLiteral("EW Calculator"));
     setMinimumSize(980, 640);
+    // The minimum is the floor at which every page is still usable, not a
+    // comfortable default: at exactly 980 the widest Reference rows overflow
+    // and the page opens with a horizontal scrollbar. Without an explicit
+    // resize() the window launches at its minimum, so set a roomier default.
+    resize(1180, 800);
 
     // ── Sidebar helpers ───────────────────────────────────────────────────
-    nav_->setMaximumWidth(170);
-    nav_->setMinimumWidth(145);
+    // Wide enough for the longest label ("Doppler & Resolution") *plus* a row
+    // icon; at the previous 170 the label clipped and the nav grew its own
+    // horizontal scrollbar on themes that supply icons for every row.
+    nav_->setMaximumWidth(210);
+    nav_->setMinimumWidth(185);
     nav_->setSpacing(1);
 
     // Adds a non-selectable section header row
@@ -69,7 +77,14 @@ MainWindow::MainWindow(QWidget* parent)
     // Adds a page item with optional XDG theme icon (graceful fallback)
     auto addPage = [this](const QString& label, const QString& iconName, QWidget* page) {
         auto* item = new QListWidgetItem(label);
-        const auto icon = QIcon::fromTheme(iconName);
+        // Current GNOME icon themes (Adwaita 46+, Yaru) ship most of these
+        // names only in their "-symbolic" form; the full-colour legacy names
+        // resolve to nothing, and QIcon::fromTheme fails silently, leaving
+        // the row icon-less. Try the plain name first (themes that still
+        // carry full-colour variants keep them) and fall back to symbolic.
+        auto icon = QIcon::fromTheme(iconName);
+        if (icon.isNull())
+            icon = QIcon::fromTheme(iconName + QStringLiteral("-symbolic"));
         if (!icon.isNull())
             item->setIcon(icon);
         nav_->addItem(item);

@@ -11,6 +11,7 @@
 #include <cstddef>
 
 #include <QClipboard>
+#include <QFont>
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QGuiApplication>
@@ -41,6 +42,13 @@ void addRefRow(QFormLayout* form,
     valLbl->setTextInteractionFlags(Qt::TextSelectableByMouse);
     valLbl->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     valLbl->setAccessibleName(label);
+    // Match PageUtils.h's addResultRow(): calculator result values are
+    // monospaced, and the Reference page's values sit in the same visual
+    // role, so they must use the same family or the two sections read as
+    // different typography.
+    QFont valFont = valLbl->font();
+    valFont.setFamily(QStringLiteral("monospace"));
+    valLbl->setFont(valFont);
     if (registry)
         registry->append({label, valLbl});
 

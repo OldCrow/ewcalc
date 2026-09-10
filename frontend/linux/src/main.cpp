@@ -2,6 +2,7 @@
 #include "MainWindow.h"
 #include "Settings.h"
 #include <QApplication>
+#include <QGuiApplication>
 #include <QIcon>
 
 int main(int argc, char* argv[])
@@ -10,6 +11,14 @@ int main(int argc, char* argv[])
     app.setApplicationName(QStringLiteral("ewcalc"));
     app.setApplicationDisplayName(QStringLiteral("EW Calculator"));
     app.setApplicationVersion(QStringLiteral("1.1.0"));
+
+    // Ties the running app to assets/linux/ewcalc.desktop: this sets the
+    // Wayland app_id and the X11 desktop-entry hint, which is what the shell
+    // matches on to pick the dock/taskbar icon. setWindowIcon() below only
+    // covers the in-window icon — GNOME ignores it for the dock — so without
+    // this the dock falls back to a generic icon even once the .desktop and
+    // hicolor PNGs are installed by the .deb/.rpm.
+    QGuiApplication::setDesktopFileName(QStringLiteral("ewcalc"));
 
     // Set the window/taskbar icon explicitly rather than relying on the
     // window manager to match WM_CLASS against the installed .desktop entry
