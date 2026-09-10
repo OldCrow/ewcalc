@@ -130,10 +130,25 @@ Open milestones are fully itemized here since they reflect actionable state.
   tables, thumbnails in the #72 style. Content compiled clean-room from
   multiple public sources under the citation precedence rule, never
   transcribed from the R&S eGuide that inspired it.
-  - #73 OPEN — Reference data layer in ewpresenter (single source of
-    truth; frontends render, not own). PREREQUISITE for all pages.
-    Carries the open design point: formula rendering (monospace text
-    vs. typeset SVG snippets).
+  - #73 IMPLEMENTED on dev/v1.2.0 (2026-09-09), awaiting cross-platform
+    verification before close. Data layer: ewpresenter::refdata
+    (pages → sections → rows; Value and Formula row kinds) + ewp_ref_*
+    bridge accessors + test_reference; all three Reference pages now
+    render from it (per-frontend content tables deleted). RESOLVED
+    design point: formulas render as typeset SVG snippets
+    (assets/formulas/, render-diagrams.sh renders 2x PNGs, mid-gray
+    for both themes) with Unicode plain-text equivalents from the data
+    layer as accessibility label, tooltip, and copy text — chosen by
+    the user over monospace text; all masters share font-size 15 and
+    frontends display at exact 1x so glyph size matches across
+    formulas. Proof row: FSPL standard (4πdf/c)² | log 32.44 form.
+    MSVC gets /utf-8 on the UTF-8-literal TUs. VERIFIED macOS (build,
+    14/14 ctest, SwiftLint, visual). PENDING: Linux VM compile+visual
+    (new formulas.qrc), Windows build of ewpresenter.net RefData
+    (C++/CLI) + rebuilt ReferencePage code-behind — the WinUI agent's
+    inspection caveats are listed in commit 6be6f6a's PR-side report:
+    ImageOpened sizing, possibly-removable C4679 pragma, UTF-8 across
+    the CLI boundary, formula-row visual spacing.
   - #74 OPEN — Propagation reference page (+ dB math unless split out).
   - #75 OPEN — Antenna types reference page (isotropic model, per-type
     specs, pattern thumbnails; band-letters table here or split).
@@ -192,8 +207,11 @@ itemized since they're actionable.
   sits on the docs commit with README/frontend-README coverage of the
   new panes. Tag CI fully green; Release published with all four
   artifacts (signed+notarized .dmg, .msix, .AppImage, .deb).
-- NEXT: v1.2.0 Reference Library opens with #73 (data layer);
-  full formula-fidelity sweep remains as future assurance work.
+- NEXT: verify #73 on Linux VM and Windows (see milestone entry), then
+  PR dev/v1.2.0 → main and start the page issues (#74–#78) on the now-
+  proven data layer; full formula-fidelity sweep remains as future
+  assurance work. Branch model for v1.2.0: work lands on dev/v1.2.0
+  (subagent worktree branches merge there); PR to main from dev.
 
 ## Provenance Framing & Formula Fidelity [OPEN]
 - Found 2026-09-06 while pinning #68's first citation: Adamy EW103
