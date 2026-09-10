@@ -278,9 +278,30 @@ itemized since they're actionable.
   the books (superset of #68's pins; sequence: fidelity sweep → pins).
 
 ## Known Gaps [OPEN]
-- None currently tracked here; gaps are filed as GitHub issues on sight
-  (see milestones above). The former entries — WinUI3 colour-coding (#62)
-  and the macOS `EWCALC_BUILD_FRONTEND` no-op (#66) — are both closed.
+- Gaps are otherwise filed as GitHub issues on sight (see milestones
+  above). The former entries — WinUI3 colour-coding (#62) and the macOS
+  `EWCALC_BUILD_FRONTEND` no-op (#66) — are both closed.
+- Linux sidebar icons need Qt's SVG plugin at runtime; not yet declared
+  anywhere. Found 2026-09-09 while testing the Qt6 frontend on Ubuntu
+  24.04.
+  - `MainWindow.cpp`'s `addPage` sources nav icons from
+    `QIcon::fromTheme`, and current GNOME themes (Adwaita 46+, Yaru) ship
+    most of those names *only* as SVG — several only in their `-symbolic`
+    form. Without Qt SVG (`libqsvgicon.so` iconengine + `libqsvg.so`
+    imageformat) `fromTheme` fails silently and the sidebar renders just
+    the handful of names the theme still carries as PNG. Nothing errors;
+    the icons are simply absent.
+  - AGENTS.md's Linux prerequisite names only `qt6-base-dev`, which does
+    **not** pull in Qt SVG on Debian/Ubuntu (`libqt6svg6`). Same trap for
+    a minimal aqtinstall setup, where `qtsvg` is a separate *archive*
+    (`--archives qtsvg`; it is not a `-m` module).
+  - Packaging risk, unverified: `scripts/build-linux.sh` bundles the
+    AppImage via `linuxdeploy-plugin-qt`, which selects plugins from what
+    the binary links. `ewcalc` does not link Qt6Svg — the dependency is
+    purely a runtime theme-icon lookup — so the SVG iconengine may not be
+    bundled and shipped AppImages could hit this on users' machines.
+    Check an actual AppImage build before assuming it is covered; the
+    `.deb`/`.rpm` should instead declare the dependency.
 - AGENTS.md context trim, complete.
   Raised by the 2026-09-07 fleet-wide AGENTS.md audit (durable vs
   on-demand context). AGENTS.md is imported eagerly by CLAUDE.md, so all
