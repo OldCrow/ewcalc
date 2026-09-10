@@ -1,10 +1,10 @@
 // Views/PageCodeBehinds.cs
-// Code-behind for Link, Jamming, Location, Radar, Detection, Doppler, Receiver, Home, Digital, Antenna, and Reference pages.
+// Code-behind for Link, Jamming, Location, Radar, Detection, Doppler, Receiver, Home, Digital, and Antenna pages.
+// (Reference has its own file — Views/ReferencePage.xaml.cs — see #73.)
 using EwCalc.Helpers;
 using EwCalc.ViewModels;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
-using Windows.ApplicationModel.DataTransfer;
 
 namespace EwCalc.Views;
 
@@ -323,53 +323,7 @@ public sealed partial class AntennaPage : Page
         => ClipboardHelper.CopyText(ViewModel.BuildResultsText());
 }
 
-public sealed partial class ReferencePage : Page
-{
-    public ReferencePage() { InitializeComponent(); }
-
-    private static void CopyText(string value) {
-        var pkg = new DataPackage();
-        pkg.SetText(value);
-        Clipboard.SetContent(pkg);
-    }
-
-    // Antenna Gain
-    private void CopyAntGain0_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("0.0"); }
-    private void CopyAntGain1_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("0"); }
-    private void CopyAntGain2_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("2"); }
-    private void CopyAntGain3_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("2.15"); }
-    private void CopyAntGain4_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("7"); }
-    private void CopyAntGain5_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("8.5"); }
-    private void CopyAntGain6_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("10.5"); }
-    private void CopyAntGain7_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("14"); }
-
-    // Antenna Sidelobe Levels
-    private void CopySll0_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("-13"); }
-    private void CopySll1_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("-25"); }
-    private void CopySll2_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("-35"); }
-
-    // Thermal Noise Floor
-    private void CopyNoise0_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("-174.0"); }
-    private void CopyNoise1_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("-144.0"); }
-    private void CopyNoise2_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("-114.0"); }
-    private void CopyNoise3_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("-104.0"); }
-    private void CopyNoise4_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("-94.0"); }
-    private void CopyNoise5_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("-84.0"); }
-
-    // Radar Cross Section
-    private void CopyRcs0_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("15"); }
-    private void CopyRcs1_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("7"); }
-    private void CopyRcs2_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("0"); }
-    private void CopyRcs3_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("-15"); }
-    private void CopyRcs4_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("-7"); }
-    private void CopyRcs5_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("-15"); }
-    private void CopyRcs6_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("25"); }
-    private void CopyRcs7_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("45"); }
-
-    // Eb/N₀ Requirements
-    private void CopyEbNo0_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("6.8"); }
-    private void CopyEbNo1_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("9.6"); }
-    private void CopyEbNo2_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("10.5"); }
-    private void CopyEbNo3_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("13.5"); }
-    private void CopyEbNo4_Click(object s, Microsoft.UI.Xaml.RoutedEventArgs e) { CopyText("17.0"); }
-}
+// ReferencePage moved to its own code-behind file (#73): Views/ReferencePage.xaml.cs.
+// It renders ewpresenter::refdata content via the RefData interop wrapper instead of
+// the ~240 lines of hand-unrolled rows and per-row CopyXxxN_Click handlers this file
+// used to carry.

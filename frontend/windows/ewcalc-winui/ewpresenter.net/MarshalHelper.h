@@ -39,5 +39,13 @@ inline System::String^ ToManaged(const std::string& s) {
     return System::Text::Encoding::UTF8->GetString(bytes);
 }
 
+/// Marshal a static-lifetime UTF-8 C string to a managed System::String^.
+/// nullptr maps to a managed null (ewpresenter::refdata's "field not present"
+/// convention) rather than System::String::Empty, so callers can distinguish
+/// an absent field from an empty one.
+inline System::String^ ToManaged(const char* s) {
+    if (s == nullptr) return nullptr;
+    return ToManaged(std::string(s));
+}
 
 } // namespace EwPresenterNet
