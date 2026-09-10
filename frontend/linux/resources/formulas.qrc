@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/formulas">
+        <file alias="fspl-std.png">../../../assets/formulas/png/fspl-std.png</file>
+        <file alias="fspl-log.png">../../../assets/formulas/png/fspl-log.png</file>
+    </qresource>
+</RCC>

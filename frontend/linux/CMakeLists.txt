@@ -67,6 +67,7 @@ set(SOURCES
     src/pages/ReferencePage.cpp
     resources/icons.qrc
     resources/diagrams.qrc
+    resources/formulas.qrc
 )
 
 add_executable(ewcalc ${SOURCES})
