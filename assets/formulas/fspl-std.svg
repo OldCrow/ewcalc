@@ -1,5 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 48" font-family="Georgia, 'Times New Roman', serif" font-size="15">
-  <!-- Free-space path loss, standard form: FSPL = (4·pi·d / lambda)^2.
+  <!-- Free-space path loss, standard form: FSPL = (4·pi·d·f / c)^2 —
+       frequency notation, consistent with the log form's f(MHz).
        Mid-gray (#808080) like the diagram masters so one asset serves
        light and dark themes. Alt text lives in the data layer
        (ewpresenter/src/reference_data.cpp), not here.
@@ -14,9 +15,9 @@
     <text x="65" y="33" font-size="33">(</text>
     <text x="131" y="33" font-size="33">)</text>
 
-    <!-- Fraction: 4πd over λ -->
-    <text x="82" y="21">4<tspan font-style="italic">&#960;d</tspan></text>
-    <text x="100" y="44" font-style="italic">&#955;</text>
+    <!-- Fraction: 4πdf over c -->
+    <text x="78" y="21">4<tspan font-style="italic">&#960;df</tspan></text>
+    <text x="100" y="44" font-style="italic">c</text>
 
     <!-- Exponent -->
     <text x="143" y="17" font-size="11">2</text>

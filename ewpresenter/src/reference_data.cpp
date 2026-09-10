@@ -77,7 +77,7 @@ constexpr Row kEbNo[] = {
 // alt text). Constant 32.44 matches libew::constants::fspl_constant_km_mhz.
 constexpr Row kKeyFormulas[] = {
     formula("Free-space path loss", "fspl",
-            "FSPL = (4πd/λ)²",
+            "FSPL = (4πdf/c)²",
             "L = 32.44 + 20 log₁₀ f(MHz) + 20 log₁₀ d(km)  dB"),
 };
 
