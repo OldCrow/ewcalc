@@ -233,11 +233,26 @@ itemized since they're actionable.
   sits on the docs commit with README/frontend-README coverage of the
   new panes. Tag CI fully green; Release published with all four
   artifacts (signed+notarized .dmg, .msix, .AppImage, .deb).
-- NEXT: verify #73 on Linux VM and Windows (see milestone entry), then
-  PR dev/v1.2.0 → main and start the page issues (#74–#78) on the now-
-  proven data layer; full formula-fidelity sweep remains as future
-  assurance work. Branch model for v1.2.0: work lands on dev/v1.2.0
-  (subagent worktree branches merge there); PR to main from dev.
+- #73 VERIFIED all three platforms 2026-09-09/10: Linux VM and Windows
+  passes done by the user (their fixes pulled: Linux sidebar-icon/
+  AppImage-plugin/monospace-font round, WinUI copy-text parity), then a
+  manual-dispatch CI run on dev/v1.2.0 went fully green at 640457c —
+  including the AppImage deploy, after adding libqt6svg6 +
+  qt6-gtk-platformtheme to the Linux job's apt line (cc933f6 updated
+  AGENTS.md prerequisites but not CI). Ready to close with the PR.
+- Branch/PR model for v1.2.0 (user-ratified 2026-09-10): ONE PR for the
+  whole milestone — the arc builds naturally off #73, and each PR costs
+  a cross-machine UI verification round, so splitting inflates work.
+  All issues land on dev/v1.2.0 (subagent worktree branches merge
+  there); validate at sensible checkpoints with manual CI dispatch
+  (`gh workflow run ci.yml --ref dev/v1.2.0` — CI does not trigger on
+  dev pushes; dispatch also exercises tag-gated-otherwise packaging)
+  plus Windows/Linux UI passes; the final PR should be a slam dunk.
+- NEXT: #74 Propagation reference page (first consumer of the formula
+  pipeline at scale; likely includes moving the FSPL proof row from
+  quick-values "Key Formulas" to its real home, and the first
+  multi-page navigation work in the frontends). Then #75–#78. Full
+  formula-fidelity sweep remains as future assurance work.
 
 ## Provenance Framing & Formula Fidelity [OPEN]
 - Found 2026-09-06 while pinning #68's first citation: Adamy EW103
