@@ -201,8 +201,13 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
+          # libqt6svg6 + qt6-gtk-platformtheme: the AppImage step deploys
+          # the SVG iconengine and gtk3 platform theme (EXTRA_QT_MODULES in
+          # scripts/build-linux.sh), and linuxdeploy-plugin-qt errors out if
+          # the plugin .so files are absent from the host Qt.
           sudo apt-get install -y build-essential cmake ninja-build \
-            qt6-base-dev libgl-dev libopengl0
+            qt6-base-dev libgl-dev libopengl0 \
+            libqt6svg6 qt6-gtk-platformtheme
 
       - name: Build (native libs + frontend)
         run: bash scripts/build-linux.sh --config Release
