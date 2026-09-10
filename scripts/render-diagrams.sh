@@ -28,3 +28,17 @@ for svg in "$SRC"/*.svg; do
     count=$((count + 1))
 done
 echo "rendered $count diagram(s) to $OUT"
+
+# Typeset formula snippets (assets/formulas/*.svg → assets/formulas/png/).
+# Formulas vary in aspect ratio, so render at a fixed 2x zoom rather than a
+# fixed width; frontends show them at half the pixel size (2x/retina).
+FSRC="$REPO_ROOT/assets/formulas"
+FOUT="$FSRC/png"
+mkdir -p "$FOUT"
+fcount=0
+for svg in "$FSRC"/*.svg; do
+    name="$(basename "${svg%.svg}")"
+    rsvg-convert --zoom 2 "$svg" -o "$FOUT/$name.png"
+    fcount=$((fcount + 1))
+done
+echo "rendered $fcount formula(s) to $FOUT"

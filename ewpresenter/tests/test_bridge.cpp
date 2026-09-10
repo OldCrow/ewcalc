@@ -10,6 +10,9 @@
 
 #include "test_main.h"
 #include "ewcalc_bridge.h"
+#include "ewpresenter/reference_data.h"
+
+#include <cstring>
 
 // ============================================================================
 // PropagationPresenter
@@ -347,6 +350,54 @@ void test_antenna_invalid_frequency() {
 }
 
 // ============================================================================
+// Reference library (#73)
+// ============================================================================
+
+void test_ref_shape_matches_refdata() {
+    // The bridge must mirror ewpresenter::refdata exactly.
+    const auto pages = ewpresenter::refdata::pages();
+    ASSERT_TRUE(ewp_ref_page_count() == pages.size());
+    for (std::size_t p = 0; p < pages.size(); ++p) {
+        ASSERT_TRUE(ewp_ref_page_id(p) == pages[p].id);
+        ASSERT_TRUE(ewp_ref_page_title(p) == pages[p].title);
+        ASSERT_TRUE(ewp_ref_section_count(p) == pages[p].section_count);
+        for (std::size_t s = 0; s < pages[p].section_count; ++s) {
+            const auto& sec = pages[p].sections[s];
+            ASSERT_TRUE(ewp_ref_section_title(p, s) == sec.title);
+            ASSERT_TRUE(ewp_ref_row_count(p, s) == sec.row_count);
+        }
+    }
+}
+
+void test_ref_row_fields() {
+    // Row 0/0/0 is a value row with a copy value.
+    ASSERT_TRUE(ewp_ref_row_kind(0, 0, 0) == EWP_REF_ROW_VALUE);
+    ASSERT_TRUE(std::strcmp(ewp_ref_row_label(0, 0, 0),
+                            "Isotropic (reference)") == 0);
+    ASSERT_TRUE(std::strcmp(ewp_ref_row_value(0, 0, 0), "0.0 dBi") == 0);
+    ASSERT_TRUE(std::strcmp(ewp_ref_row_copy_value(0, 0, 0), "0.0") == 0);
+    ASSERT_TRUE(ewp_ref_row_log_value(0, 0, 0) == nullptr);
+    ASSERT_TRUE(ewp_ref_row_svg_base(0, 0, 0) == nullptr);
+    // The Key Formulas section (last) holds the FSPL formula row.
+    const std::size_t last = ewp_ref_section_count(0) - 1;
+    ASSERT_TRUE(ewp_ref_row_kind(0, last, 0) == EWP_REF_ROW_FORMULA);
+    ASSERT_TRUE(std::strcmp(ewp_ref_row_svg_base(0, last, 0), "fspl") == 0);
+    ASSERT_TRUE(ewp_ref_row_value(0, last, 0) != nullptr);
+    ASSERT_TRUE(ewp_ref_row_log_value(0, last, 0) != nullptr);
+}
+
+void test_ref_out_of_range() {
+    const std::size_t big = 999;
+    ASSERT_TRUE(ewp_ref_page_id(big) == nullptr);
+    ASSERT_TRUE(ewp_ref_page_title(big) == nullptr);
+    ASSERT_TRUE(ewp_ref_section_count(big) == 0);
+    ASSERT_TRUE(ewp_ref_section_title(0, big) == nullptr);
+    ASSERT_TRUE(ewp_ref_row_count(0, big) == 0);
+    ASSERT_TRUE(ewp_ref_row_label(0, 0, big) == nullptr);
+    ASSERT_TRUE(ewp_ref_row_kind(0, 0, big) == EWP_REF_ROW_VALUE);
+}
+
+// ============================================================================
 // main
 // ============================================================================
 
@@ -384,6 +435,10 @@ int main() {
 
     RUN_TEST(test_antenna_defaults_valid);
     RUN_TEST(test_antenna_invalid_frequency);
+
+    RUN_TEST(test_ref_shape_matches_refdata);
+    RUN_TEST(test_ref_row_fields);
+    RUN_TEST(test_ref_out_of_range);
 
     return test::summary();
 }

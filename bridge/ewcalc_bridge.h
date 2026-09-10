@@ -503,6 +503,41 @@ EwpFieldError ewp_antenna_tx_power_error(EwpAntennaRef ref);
 EwpFieldError ewp_antenna_frequency_error(EwpAntennaRef ref);
 EwpAntennaOutput ewp_antenna_output(EwpAntennaRef ref);
 
+// ============================================================================
+// Reference library (#73) — read-only static content, no handles.
+// ============================================================================
+// Index-based accessors over ewpresenter::refdata. All returned strings are
+// pointers to static-lifetime UTF-8 data (never freed by the caller); a NULL
+// return means "field not present" or "index out of range". Counts return 0
+// for out-of-range parents.
+
+/// Kind of a reference row. Numeric values match refdata::RowKind exactly.
+typedef enum {
+    EWP_REF_ROW_VALUE   = 0, ///< label + display value (+ optional copy value)
+    EWP_REF_ROW_FORMULA = 1  ///< typeset formula with Unicode alt text
+} EwpRefRowKind;
+
+size_t      ewp_ref_page_count(void);
+const char* ewp_ref_page_id(size_t page);
+const char* ewp_ref_page_title(size_t page);
+const char* ewp_ref_page_subtitle(size_t page);
+
+size_t      ewp_ref_section_count(size_t page);
+const char* ewp_ref_section_title(size_t page, size_t section);
+
+size_t        ewp_ref_row_count(size_t page, size_t section);
+EwpRefRowKind ewp_ref_row_kind(size_t page, size_t section, size_t row);
+const char*   ewp_ref_row_label(size_t page, size_t section, size_t row);
+const char*   ewp_ref_row_value(size_t page, size_t section, size_t row);
+/// NULL when the row has no copy button (value rows with range values, and
+/// all formula rows — formula copy text is ewp_ref_row_value).
+const char*   ewp_ref_row_copy_value(size_t page, size_t section, size_t row);
+/// Formula rows: log-form Unicode text, NULL when no log form. Else NULL.
+const char*   ewp_ref_row_log_value(size_t page, size_t section, size_t row);
+/// Formula rows: base name of the typeset asset pair "<base>-std"/"<base>-log"
+/// bundled from assets/formulas/png/. Else NULL.
+const char*   ewp_ref_row_svg_base(size_t page, size_t section, size_t row);
+
 #ifdef __cplusplus
 }
 #endif
