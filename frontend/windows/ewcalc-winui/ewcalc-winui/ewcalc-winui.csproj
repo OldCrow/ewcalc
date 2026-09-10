@@ -75,6 +75,13 @@
       <Link>Assets\Diagrams\%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <!-- Reference-formula PNGs (#73) — same shared-asset wiring as the
+         geometry diagrams above; the ReferencePage renders these from
+         ewpresenter::refdata's svg_base, not from a per-frontend copy. -->
+    <Content Include="..\..\..\..\assets\formulas\png\*.png">
+      <Link>Assets\Formulas\%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

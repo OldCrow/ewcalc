@@ -98,11 +98,13 @@
     <ClCompile Include="AntennaAdapter.cpp" />
     <ClCompile Include="DetectionAdapter.cpp" />
     <ClCompile Include="DopplerAdapter.cpp" />
+    <ClCompile Include="RefData.cpp" />
   </ItemGroup>
 
   <ItemGroup>
     <ClInclude Include="NativeCallbacks.h" />
     <ClInclude Include="MarshalHelper.h" />
+    <ClInclude Include="RefData.h" />
     <ClInclude Include="PropagationAdapter.h" />
     <ClInclude Include="LinkAdapter.h" />
     <ClInclude Include="ReceiverAdapter.h" />
