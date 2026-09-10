@@ -123,7 +123,19 @@ set(DIAGRAM_PNGS
 set_source_files_properties(${DIAGRAM_PNGS} PROPERTIES
     MACOSX_PACKAGE_LOCATION Resources)
 
-add_executable(ewcalc MACOSX_BUNDLE ${SWIFT_SOURCES} ${ICON_FILE} ${DIAGRAM_PNGS})
+# Typeset formula PNGs (issue #73) — bundled into Contents/Resources;
+# FormulaImage (app/Views/ReferenceView.swift) loads them by base name
+# ("<svg_base>-std"/"-log" from the reference data layer). 2x renders,
+# shown at half their pixel size.
+set(FORMULA_PNG_DIR "${EWCALC_SRC_ROOT}/assets/formulas/png")
+set(FORMULA_PNGS
+    "${FORMULA_PNG_DIR}/fspl-std.png"
+    "${FORMULA_PNG_DIR}/fspl-log.png"
+)
+set_source_files_properties(${FORMULA_PNGS} PROPERTIES
+    MACOSX_PACKAGE_LOCATION Resources)
+
+add_executable(ewcalc MACOSX_BUNDLE ${SWIFT_SOURCES} ${ICON_FILE} ${DIAGRAM_PNGS} ${FORMULA_PNGS})
 
 # libc++ must be explicitly listed: the bridge is a pre-built IMPORTED
 # static library; Xcode's Swift target does not automatically add C++
