@@ -47,17 +47,22 @@ public sealed partial class ReferencePage : Page
             var card = new Border { Style = (Style)Application.Current.Resources["ResultCardStyle"] };
             var rows = new StackPanel { Spacing = 0 };
             foreach (var row in section.Rows)
-                rows.Children.Add(row.RowKind == RefRowKind.Formula ? BuildFormulaRow(row) : BuildValueRow(row));
+            {
+                // Branch rather than a ternary: the two builders return unrelated
+                // Panel/Grid types, so a ternary would need a common FrameworkElement
+                // return type and CA1859 flags that as an avoidable abstraction.
+                // Children.Add takes UIElement, so each concrete type binds directly.
+                if (row.RowKind == RefRowKind.Formula)
+                    rows.Children.Add(BuildFormulaRow(row));
+                else
+                    rows.Children.Add(BuildValueRow(row));
+            }
             card.Child = rows;
             ItemHost.Children.Add(card);
         }
     }
 
-    // Declared as FrameworkElement (rather than the concrete Grid/StackPanel each
-    // returns) so the row.RowKind ternary in BuildContent has a common type to
-    // resolve to — Grid and StackPanel are unrelated sibling Panel types with no
-    // direct implicit conversion between them.
-    private static FrameworkElement BuildValueRow(RefRow row)
+    private static Grid BuildValueRow(RefRow row)
     {
         var grid = new Grid { MinHeight = 36, Padding = new Thickness(0, 4, 0, 4) };
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -102,7 +107,7 @@ public sealed partial class ReferencePage : Page
         return grid;
     }
 
-    private static FrameworkElement BuildFormulaRow(RefRow row)
+    private static StackPanel BuildFormulaRow(RefRow row)
     {
         var container = new StackPanel { Spacing = 8, Margin = new Thickness(0, 4, 0, 4) };
 
@@ -119,10 +124,13 @@ public sealed partial class ReferencePage : Page
         Grid.SetColumn(name, 0);
         header.Children.Add(name);
 
-        // Formula rows never carry a copy_value of their own — the copy button
-        // always copies the standard-form Unicode text (row.Value), matching
-        // the C bridge's ewp_ref_row_copy_value contract for formula rows.
-        var copyButton = MakeCopyButton($"Copy {row.Label} formula", row.Value);
+        // Formula rows never carry a copy_value of their own (the C bridge's
+        // ewp_ref_row_copy_value returns null for them), so the copy text is
+        // composed here from the Unicode forms. Both other frontends join the
+        // standard and log forms with a three-space pipe — keep that verbatim
+        // so a copied formula is identical across platforms.
+        var copyText = row.LogValue is string log ? $"{row.Value}   |   {log}" : row.Value;
+        var copyButton = MakeCopyButton($"Copy {row.Label} formula", copyText);
         Grid.SetColumn(copyButton, 1);
         header.Children.Add(copyButton);
 

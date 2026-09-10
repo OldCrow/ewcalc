@@ -143,12 +143,38 @@ Open milestones are fully itemized here since they reflect actionable state.
     frontends display at exact 1x so glyph size matches across
     formulas. Proof row: FSPL standard (4πdf/c)² | log 32.44 form.
     MSVC gets /utf-8 on the UTF-8-literal TUs. VERIFIED macOS (build,
-    14/14 ctest, SwiftLint, visual). PENDING: Linux VM compile+visual
-    (new formulas.qrc), Windows build of ewpresenter.net RefData
-    (C++/CLI) + rebuilt ReferencePage code-behind — the WinUI agent's
-    inspection caveats are listed in commit 6be6f6a's PR-side report:
-    ImageOpened sizing, possibly-removable C4679 pragma, UTF-8 across
-    the CLI boundary, formula-row visual spacing.
+    14/14 ctest, SwiftLint, visual). VERIFIED Windows 2026-09-09: MSVC
+    Release core build warning-free, 14/14 ctest (incl. new
+    test_reference/test_bridge), full WinUI solution build warning-free,
+    `dotnet format style --verify-no-changes` clean, and a runtime check
+    of the packaged app — Reference page renders from refdata, both FSPL
+    formula images display, all four spot-checked calculator pages still
+    compute (no regression from the PageCodeBehinds.cs trim). The four
+    WinUI inspection caveats from commit 6be6f6a's PR-side report are
+    now all resolved:
+      - UTF-8 across the CLI boundary: CORRECT. ToManaged(const char*)
+        routes through the existing UTF-8 decoder and maps nullptr to
+        managed null (preserving refdata's "field absent" convention).
+        Verified live: ≈, π, ², ₁₀ all render and survive to the
+        clipboard intact.
+      - ImageOpened sizing: CORRECT and DPI-safe. Width is in DIPs, so
+        PixelWidth/2 on a 2x master keeps the formula matched to
+        surrounding text at any display scale.
+      - C4679 pragma: still needed. CI builds on windows-2022 (VS 17.x)
+        where it fires; confirmed VS 18 2026 (MSVC 19.51) no longer
+        emits it. Comment in RefData.cpp now says to drop the pragma
+        once CI moves off windows-2022.
+      - Formula-row spacing: acceptable for the single proof row, but
+        see the alignment item under Known Gaps before #74-#78 add
+        multi-row formula sections.
+    Two defects found and FIXED on this branch by running the app:
+      - Formula copy text was WinUI-only-divergent — it copied just the
+        standard form while macOS and Linux both copy
+        `std   |   log`. Now matches verbatim.
+      - Two CA1859 warnings (FrameworkElement return types) had broken
+        the repo's warning-free-build standard; concrete Grid/StackPanel
+        return types restored it.
+    PENDING: Linux VM compile+visual (new formulas.qrc).
   - #74 OPEN — Propagation reference page (+ dB math unless split out).
   - #75 OPEN — Antenna types reference page (isotropic model, per-type
     specs, pattern thumbnails; band-letters table here or split).
@@ -284,6 +310,37 @@ itemized since they're actionable.
 - Linux sidebar icons need Qt's SVG plugin at runtime. Now declared in
   AGENTS.md and fixed for the AppImage; the `.deb`/`.rpm` path is still
   open. Found 2026-09-09 while testing the Qt6 frontend on Ubuntu 24.04.
+- [OPEN 2026-09-09] Formula rows use a flow layout, not columns, on all
+  three frontends (WinUI `StackPanel` Horizontal Spacing=16, Linux
+  `QHBoxLayout` spacing 12 + stretch, macOS HStack). With one formula row
+  today this looks fine, but each row's log form starts wherever its own
+  standard form ends — so a multi-row section will have ragged, unaligned
+  log forms. The v1.2.0 vision text ("one equation per row") and #76
+  ("equation columns") both want columns. Decide before #74-#78 build on
+  it; a shared two-column grid per section is the obvious fix, and it has
+  to be made in all three frontends to stay in parity.
+- [RESOLVED 2026-09-09] The Windows box's VS 18 2026 install was damaged,
+  not merely stale — a strictly worse case than the vswhere lag AGENTS.md
+  records, and worth recognising if it recurs after an in-place upgrade.
+  Symptoms: `vswhere` reported the instance `isComplete: False`,
+  `isLaunchable: False` with **zero** workload packages and an empty
+  `%ProgramData%\Microsoft\VisualStudio\Packages\_Instances`, so CMake
+  refused to auto-select the generator ("the instance is not known to the
+  Visual Studio Installer"); separately, no .NET SDK was present at all
+  (runtime only, no `MSBuild\Sdks\Microsoft.NET.Sdk`), failing restore of
+  both `ewcalc-winui.csproj` and `ewpresenter.net.vcxproj` with MSB4236.
+  The MSVC C++ payload was intact throughout. Fix: VS Installer
+  `setup.exe repair --installPath <path> --passive --norestart`, which
+  restored the instance metadata and installed a .NET SDK; Windows
+  rebooted during it. Afterwards `cmake --preset release` configures
+  unpinned again, so the no-pin rule in AGENTS.md stands unchanged — the
+  `CMAKE_GENERATOR_INSTANCE` pin used mid-diagnosis was a temporary
+  crutch and is not in any committed file. Note the repair installed only
+  .NET SDK 10.0.401; the net8.0 target still builds under it, but CI
+  (windows-2022) uses the .NET 8 SDK, so this box and CI now differ. The
+  one local-only symptom of that divergence is a benign NETSDK1198
+  "publish profile 'win-x64' was not found" warning from SDK 10 — it does
+  not appear on CI and is unrelated to #73.
   - `MainWindow.cpp`'s `addPage` sources nav icons from
     `QIcon::fromTheme`, and current GNOME themes (Adwaita 46+, Yaru) ship
     most of those names *only* as SVG — several only in their `-symbolic`

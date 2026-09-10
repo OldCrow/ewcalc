@@ -1,6 +1,9 @@
 // RefData.cpp
 // C4679: static virtual interface members (IDivisionOperators etc. on System::IntPtr)
 // are not importable by C++/CLI; the affected interfaces are unused here.
+// Still required for CI, which builds on windows-2022 (VS 17.x). Verified
+// 2026-09-09 that VS 18 2026 (MSVC 19.51) no longer emits it — drop this
+// pragma once the CI runner moves off windows-2022.
 #pragma warning(disable: 4679)
 #include "RefData.h"
 
