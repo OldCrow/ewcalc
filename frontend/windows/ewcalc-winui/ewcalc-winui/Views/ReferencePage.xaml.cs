@@ -38,7 +38,9 @@ public sealed partial class ReferencePage : Page
         {
             ItemHost.Children.Add(new TextBlock
             {
-                Text = section.Title.ToUpperInvariant(),
+                // Uppercase headers to match the app's section-header look, but
+                // restore case-sensitive physics notation (Eb = energy per bit).
+                Text = section.Title.ToUpperInvariant().Replace("EB/N₀", "Eb/N₀"),
                 Style = (Style)Application.Current.Resources["SectionHeaderStyle"],
             });
 
