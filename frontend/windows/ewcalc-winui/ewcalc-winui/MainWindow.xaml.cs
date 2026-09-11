@@ -73,6 +73,7 @@ public sealed partial class MainWindow : Window
         "ref-propagation" => "", // Matches NavPropagation's FontIcon glyph
         "ref-antennas"    => "", // Matches NavAntenna's FontIcon glyph
         "ref-link"        => "", // Matches NavLink's FontIcon glyph
+        "ref-rcs"         => "", // Airplane — RCS target table
         "ref-bands"       => "", // Signal bars — frequency-band letters
         "ref-glossary"    => "", // Dictionary — term definitions
         "ref-db-units"    => "", // Calculator — dB/units arithmetic

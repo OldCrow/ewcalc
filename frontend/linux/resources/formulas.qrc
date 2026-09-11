@@ -22,5 +22,11 @@
         <file alias="erp-log.png">../../../assets/formulas/png/erp-log.png</file>
         <file alias="sensitivity-std.png">../../../assets/formulas/png/sensitivity-std.png</file>
         <file alias="sensitivity-log.png">../../../assets/formulas/png/sensitivity-log.png</file>
+        <file alias="rcs-sphere-std.png">../../../assets/formulas/png/rcs-sphere-std.png</file>
+        <file alias="rcs-plate-std.png">../../../assets/formulas/png/rcs-plate-std.png</file>
+        <file alias="rcs-cyl-std.png">../../../assets/formulas/png/rcs-cyl-std.png</file>
+        <file alias="rcs-dihedral-std.png">../../../assets/formulas/png/rcs-dihedral-std.png</file>
+        <file alias="rcs-trihedral-std.png">../../../assets/formulas/png/rcs-trihedral-std.png</file>
+        <file alias="rcs-dbsm-std.png">../../../assets/formulas/png/rcs-dbsm-std.png</file>
     </qresource>
 </RCC>

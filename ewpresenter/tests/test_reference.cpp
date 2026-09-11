@@ -20,12 +20,12 @@ bool eq(const char* a, std::string_view b) {
 
 void test_pages_shape() {
     const auto pages_span = pages();
-    ASSERT_TRUE(pages_span.size() == 7);
+    ASSERT_TRUE(pages_span.size() == 8);
 
     ASSERT_TRUE(eq(pages_span[0].id, "quick-values"));
     ASSERT_TRUE(eq(pages_span[0].title, "Quick Values"));
     ASSERT_TRUE(eq(pages_span[0].subtitle, "Common EW values for quick entry"));
-    ASSERT_TRUE(pages_span[0].section_count == 5);
+    ASSERT_TRUE(pages_span[0].section_count == 4);
     // Order (user-ratified 2026-09-10): general references first
     // (Glossary, dB & Units, Frequency Bands), then pages in calculator
     // order (Propagation, Antenna, Link, ...).
@@ -41,6 +41,9 @@ void test_pages_shape() {
     ASSERT_TRUE(pages_span[5].section_count == 11);
     ASSERT_TRUE(eq(pages_span[6].id, "ref-link"));
     ASSERT_TRUE(pages_span[6].section_count == 2);
+    ASSERT_TRUE(eq(pages_span[7].id, "ref-rcs"));
+    ASSERT_TRUE(eq(pages_span[7].title, "RCS"));
+    ASSERT_TRUE(pages_span[7].section_count == 2);
 }
 
 void test_antenna_types_page() {
@@ -58,6 +61,30 @@ void test_antenna_types_page() {
     // Type sections carry the five spec rows.
     for (std::size_t s = 1; s < page.section_count; ++s) {
         ASSERT_TRUE(page.sections[s].row_count == 5);
+    }
+}
+
+void test_rcs_page() {
+    const Page& page = pages()[7];
+    ASSERT_TRUE(eq(page.sections[0].title, "Simple Shapes"));
+    ASSERT_TRUE(eq(page.sections[0].diagram, "rcs-regions"));
+    // Six single-form shape formulas, then two value notes.
+    for (std::size_t r = 0; r < 6; ++r) {
+        ASSERT_TRUE(page.sections[0].rows[r].kind == RowKind::Formula);
+        ASSERT_TRUE(page.sections[0].rows[r].log_value == nullptr);
+    }
+    ASSERT_TRUE(page.sections[0].rows[6].kind == RowKind::Value);
+    // Targets carry both units; copy value is the dBsm number.
+    ASSERT_TRUE(page.sections[1].row_count == 11);
+    const Row& person = page.sections[1].rows[2];
+    ASSERT_TRUE(eq(person.label, "Person"));
+    ASSERT_TRUE(std::string_view{person.value}.find("m²")
+                != std::string_view::npos);
+    ASSERT_TRUE(eq(person.copy_value, "0"));
+    // Quick Values no longer carries an RCS section.
+    for (std::size_t s2 = 0; s2 < pages()[0].section_count; ++s2) {
+        ASSERT_TRUE(std::string_view{pages()[0].sections[s2].title}
+                        .find("Radar Cross") == std::string_view::npos);
     }
 }
 
@@ -117,8 +144,7 @@ void test_section_titles_and_counts() {
     ASSERT_TRUE(page.sections[1].row_count == 4);
     ASSERT_TRUE(eq(page.sections[2].title, "Thermal Noise Floor  (kT, 290 K)"));
     ASSERT_TRUE(page.sections[2].row_count == 6);
-    ASSERT_TRUE(page.sections[3].row_count == 8);
-    ASSERT_TRUE(page.sections[4].row_count == 5);
+    ASSERT_TRUE(page.sections[3].row_count == 5); // Eb/N0 (RCS moved to ref-rcs)
 }
 
 void test_propagation_page() {
@@ -232,6 +258,7 @@ TEST_MAIN()
     RUN_TEST(test_propagation_page);
     RUN_TEST(test_antenna_types_page);
     RUN_TEST(test_link_page);
+    RUN_TEST(test_rcs_page);
     RUN_TEST(test_glossary_page);
     RUN_TEST(test_bands_page);
     RUN_TEST(test_db_units_page);

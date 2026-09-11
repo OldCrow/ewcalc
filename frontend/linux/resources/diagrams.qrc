@@ -13,6 +13,7 @@
         <file alias="ant-parabolic.png">../../../assets/diagrams/png/ant-parabolic.png</file>
         <file alias="ant-array.png">../../../assets/diagrams/png/ant-array.png</file>
         <file alias="link-budget.png">../../../assets/diagrams/png/link-budget.png</file>
+        <file alias="rcs-regions.png">../../../assets/diagrams/png/rcs-regions.png</file>
         <file alias="jamming-self-protection.png">../../../assets/diagrams/png/jamming-self-protection.png</file>
         <file alias="jamming-stand-off.png">../../../assets/diagrams/png/jamming-stand-off.png</file>
         <file alias="loc-aoa-cep.png">../../../assets/diagrams/png/loc-aoa-cep.png</file>

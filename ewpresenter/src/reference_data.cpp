@@ -54,17 +54,6 @@ constexpr Row kNoiseFloor[] = {
     val("1 GHz bandwidth",   "−84.0 dBm",  "-84.0"),
 };
 
-constexpr Row kRcs[] = {
-    val("Large aircraft (broadside)",      "+15 dBsm  (rep.)",   "15"),
-    val("Fighter (broadside)",             "+7 dBsm  (rep.)",    "7"),
-    val("Fighter (nose-on, conventional)", "0 dBsm  (≈ 1 m²)",   "0"),
-    val("LO fighter (nose-on)",            "−15 dBsm  (rep.)",   "-15"),
-    val("Cruise missile",                  "−7 dBsm  (rep.)",    "-7"),
-    val("Bird",                            "−15 dBsm  (rep.)",   "-15"),
-    val("Ship (small, ∼1 000 t)",          "+25 dBsm  (rep.)",   "25"),
-    val("Ship (large, >10 000 t)",         "+45 dBsm  (rep.)",   "45"),
-};
-
 constexpr Row kEbNo[] = {
     val("BPSK / QPSK,  BER 10⁻³", "6.8 dB",     "6.8"),
     val("BPSK / QPSK,  BER 10⁻⁵", "9.6 dB",     "9.6"),
@@ -77,7 +66,6 @@ constexpr Section kQuickValueSections[] = {
     {"Antenna Gain",                        kAntennaGain, std::size(kAntennaGain)},
     {"Antenna Sidelobe Levels (re main lobe)", kSidelobes, std::size(kSidelobes)},
     {"Thermal Noise Floor  (kT, 290 K)",    kNoiseFloor,  std::size(kNoiseFloor)},
-    {"Radar Cross Section (Typical)",       kRcs,         std::size(kRcs)},
     {"Eb/N₀ Requirements (AWGN)",           kEbNo,        std::size(kEbNo)},
 };
 
@@ -372,6 +360,43 @@ constexpr Section kLinkSections[] = {
     {"Component Equations", kLinkComponents, std::size(kLinkComponents)},
 };
 
+// ── RCS page (#77) ───────────────────────────────────────────────────────────
+// Simple-shape maxima are optical-region (dimension ≫ λ) closed forms per
+// the standard radar literature (Skolnik, Knott); the regimes diagram is the
+// classic sphere-RCS sketch. Typical targets are clean-room representative
+// values in both m² and dBsm; copy values are dBsm, feeding the Radar
+// calculator's σ input. Supersedes the former Quick Values RCS table.
+
+constexpr Row kRcsShapes[] = {
+    formula("Sphere (optical)",            "rcs-sphere",    "σ = π r²"),
+    formula("Flat plate (normal, a×b)",    "rcs-plate",     "σ = 4π a² b² / λ²"),
+    formula("Cylinder (broadside)",        "rcs-cyl",       "σ = 2π r h² / λ"),
+    formula("Dihedral corner (max)",       "rcs-dihedral",  "σ = 8π a² b² / λ²"),
+    formula("Trihedral corner (max)",      "rcs-trihedral", "σ = 4π a⁴ / (3λ²)"),
+    formula("m² → dBsm",                   "rcs-dbsm",      "σ(dBsm) = 10 log₁₀ σ(m²)"),
+    val("Validity", "closed forms hold in the optical region (dimensions ≫ λ)"),
+    val("Range scaling", "detection range ∝ σ^¼ — every 12 dB of RCS reduction halves it"),
+};
+
+constexpr Row kRcsTargets[] = {
+    val("Insect",                          "≈ 0.0001 m²  (−40 dBsm)", "-40"),
+    val("Bird",                            "≈ 0.03 m²  (−15 dBsm)",   "-15"),
+    val("Person",                          "≈ 1 m²  (0 dBsm)",        "0"),
+    val("Automobile",                      "≈ 100 m²  (+20 dBsm)",    "20"),
+    val("Cruise missile",                  "≈ 0.2 m²  (−7 dBsm)",     "-7"),
+    val("LO fighter (nose-on)",            "≈ 0.03 m²  (−15 dBsm)",   "-15"),
+    val("Fighter (nose-on, conventional)", "≈ 1 m²  (0 dBsm)",        "0"),
+    val("Fighter (broadside)",             "≈ 5 m²  (+7 dBsm)",       "7"),
+    val("Airliner / large aircraft",       "≈ 30 m²  (+15 dBsm)",     "15"),
+    val("Ship (small, ∼1 000 t)",          "≈ 300 m²  (+25 dBsm)",    "25"),
+    val("Ship (large, >10 000 t)",         "≈ 30 000 m²  (+45 dBsm)", "45"),
+};
+
+constexpr Section kRcsSections[] = {
+    {"Simple Shapes",   kRcsShapes,  std::size(kRcsShapes),  "rcs-regions"},
+    {"Typical Targets", kRcsTargets, std::size(kRcsTargets)},
+};
+
 // ── Frequency Bands page (#75, split out — same call as dB & Units) ─────────
 // IEEE Std 521 radar-band letters; NATO/EU EW band letters; ITU radio bands.
 
@@ -439,6 +464,8 @@ constexpr Page kPages[] = {
      kAntennaSections, std::size(kAntennaSections)},
     {"ref-link", "Link Budget", "One-way budget, margin, and components",
      kLinkSections, std::size(kLinkSections)},
+    {"ref-rcs", "RCS", "Simple-shape formulas and typical targets",
+     kRcsSections, std::size(kRcsSections)},
 };
 
 } // namespace
