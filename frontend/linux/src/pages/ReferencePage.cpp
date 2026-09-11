@@ -1,6 +1,7 @@
 // ReferencePage.cpp
 //
-// Renders ewpresenter::refdata content (#73): value rows and formula rows.
+// Renders one ewpresenter::refdata page (#73 single page; #74 multi-page):
+// value rows, formula rows, and a section's optional #72 diagram thumbnail.
 // This page owns no reference data of its own — it is a pure view over
 // ewpresenter/include/ewpresenter/reference_data.h.
 #include "ReferencePage.h"
@@ -8,6 +9,7 @@
 
 #include <ewpresenter/reference_data.h>
 
+#include <algorithm>
 #include <cstddef>
 
 #include <QClipboard>
@@ -141,22 +143,60 @@ void addFormulaRow(QFormLayout* form, const refdata::Row& row)
     form->addRow(label + ':', cell);
 }
 
+/// Maximum logical width (px) for a section's diagram thumbnail — matches
+/// the macOS ReferenceView's `frame(maxWidth: 480)`.
+constexpr int kSectionDiagramMaxWidth = 480;
+
+/// Loads a section's optional #72 diagram (":/diagrams/<name>.png", a 2x
+/// render — see DiagramUtils.h) as a centered thumbnail capped at
+/// kSectionDiagramMaxWidth logical px, never upscaled past its natural size.
+/// This intentionally doesn't reuse DiagramUtils.h's DiagramLabel/
+/// makeDiagramGroup: those build a resizable, collapsible "Geometry" group
+/// for a page's own diagrams, where this is a small always-visible, fixed
+/// thumbnail inline in a reference section — same PNG source and DPR
+/// convention, different presentation.
+QLabel* makeSectionDiagram(const QString& name)
+{
+    QPixmap pix(QStringLiteral(":/diagrams/%1.png").arg(name));
+    constexpr qreal dpr = 2.0;
+    if (!pix.isNull()) {
+        const int naturalWidth = qRound(pix.width() / dpr);
+        const int targetWidth  = std::min(naturalWidth, kSectionDiagramMaxWidth);
+        if (targetWidth > 0 && targetWidth < naturalWidth)
+            pix = pix.scaledToWidth(qRound(targetWidth * dpr), Qt::SmoothTransformation);
+        pix.setDevicePixelRatio(dpr);
+    }
+
+    auto* lbl = new QLabel;
+    lbl->setPixmap(pix);
+    lbl->setAlignment(Qt::AlignHCenter);
+    const QString alt = QString(name).replace('-', ' ');
+    lbl->setAccessibleName(alt);
+    lbl->setToolTip(alt);
+    return lbl;
+}
+
 } // namespace
 
 // ── ReferencePage ─────────────────────────────────────────────────────────────
 
-ReferencePage::ReferencePage(QWidget* parent)
+ReferencePage::ReferencePage(std::size_t pageIndex, QWidget* parent)
     : QWidget(parent)
 {
     auto* content = new QWidget;
     auto* vbox    = new QVBoxLayout(content);
 
+    const auto pages = refdata::pages();
     ResultRowRegistry results;
-    for (const auto& page : refdata::pages()) {
+    if (pageIndex < pages.size()) {
+        const auto& page = pages[pageIndex];
         for (std::size_t s = 0; s < page.section_count; ++s) {
             const auto& section = page.sections[s];
             auto* box  = new QGroupBox(QString::fromUtf8(section.title));
             auto* form = new QFormLayout(box);
+
+            if (section.diagram)
+                form->addRow(makeSectionDiagram(QString::fromUtf8(section.diagram)));
 
             for (std::size_t r = 0; r < section.row_count; ++r) {
                 const auto& row = section.rows[r];

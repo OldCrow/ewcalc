@@ -2,5 +2,15 @@
     <qresource prefix="/formulas">
         <file alias="fspl-std.png">../../../assets/formulas/png/fspl-std.png</file>
         <file alias="fspl-log.png">../../../assets/formulas/png/fspl-log.png</file>
+        <file alias="tworay-std.png">../../../assets/formulas/png/tworay-std.png</file>
+        <file alias="tworay-log.png">../../../assets/formulas/png/tworay-log.png</file>
+        <file alias="fresnelxo-std.png">../../../assets/formulas/png/fresnelxo-std.png</file>
+        <file alias="fresnelxo-log.png">../../../assets/formulas/png/fresnelxo-log.png</file>
+        <file alias="knife-std.png">../../../assets/formulas/png/knife-std.png</file>
+        <file alias="knife-log.png">../../../assets/formulas/png/knife-log.png</file>
+        <file alias="bulge-std.png">../../../assets/formulas/png/bulge-std.png</file>
+        <file alias="bulge-log.png">../../../assets/formulas/png/bulge-log.png</file>
+        <file alias="horizon-std.png">../../../assets/formulas/png/horizon-std.png</file>
+        <file alias="horizon-log.png">../../../assets/formulas/png/horizon-log.png</file>
     </qresource>
 </RCC>
