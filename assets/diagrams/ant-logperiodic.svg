@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 260" font-family="system-ui, sans-serif" font-size="14">
+  <!-- Log-periodic dipole array: boom with dipole elements of geometrically
+       decreasing length, all driven with alternating phase. Directive lobe
+       toward the short-element (high-frequency) end; wideband gain roughly
+       constant with frequency. -->
+
+  <!-- Boom (gray) -->
+  <line x1="70" y1="150" x2="270" y2="150" stroke="#808080" stroke-width="2"/>
+
+  <!-- Elements (gray): 6, decreasing length toward the right -->
+  <g stroke="#808080" stroke-width="2.5">
+    <line x1="80" y1="108" x2="80" y2="192"/>
+    <line x1="115" y1="116" x2="115" y2="184"/>
+    <line x1="150" y1="124" x2="150" y2="176"/>
+    <line x1="185" y1="131" x2="185" y2="169"/>
+    <line x1="220" y1="137" x2="220" y2="163"/>
+    <line x1="252" y1="142" x2="252" y2="158"/>
+  </g>
+  <text x="80" y="96" text-anchor="middle" fill="#808080">long (low f)</text>
+  <text x="252" y="128" text-anchor="middle" fill="#808080">short (high f)</text>
+
+  <!-- Boresight axis -->
+  <line x1="252" y1="150" x2="580" y2="150" stroke="#808080" stroke-width="1" stroke-dasharray="6 4"/>
+
+  <!-- Radiation pattern (blue): directive lobe toward the short-element end -->
+  <path d="M252 150 C 340 105, 460 105, 560 148 C 566 150, 566 150, 560 152 C 460 195, 340 195, 252 150 Z"
+        stroke="#3b82c4" stroke-width="2.5" fill="none"/>
+  <text x="400" y="138" fill="#3b82c4">main lobe</text>
+
+  <!-- Bandwidth annotation (amber) -->
+  <text x="165" y="222" text-anchor="middle" fill="#c49a3b">element length sets the active band</text>
+
+  <!-- Takeaway -->
+  <text x="320" y="26" text-anchor="middle" fill="#808080">Only a small "active region" radiates at each frequency &#8212;</text>
+  <text x="320" y="44" text-anchor="middle" fill="#808080">gain and beam stay roughly constant over the band</text>
+</svg>

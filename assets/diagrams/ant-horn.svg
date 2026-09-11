@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 260" font-family="system-ui, sans-serif" font-size="14">
+  <!-- Pyramidal horn: waveguide feed flaring to a rectangular aperture,
+       side view. Moderately directive single lobe off the aperture with
+       small sidelobes; a wideband, high-purity gain standard. -->
+
+  <!-- Horn outline (gray) -->
+  <path d="M70 140 L70 120 L190 70 L190 210 L70 160 Z" fill="none" stroke="#808080" stroke-width="2.5"/>
+  <text x="120" y="235" text-anchor="middle" fill="#808080">waveguide feed &#8594; aperture</text>
+
+  <!-- Boresight -->
+  <line x1="190" y1="140" x2="560" y2="140" stroke="#808080" stroke-width="1" stroke-dasharray="6 4"/>
+
+  <!-- Radiation pattern (blue): moderately directive lobe -->
+  <path d="M190 140 C 300 75, 420 75, 510 135 C 518 140, 518 140, 510 145 C 420 205, 300 205, 190 140 Z"
+        stroke="#3b82c4" stroke-width="2.5" fill="none"/>
+  <text x="360" y="130" fill="#3b82c4">directive lobe</text>
+
+  <!-- Small sidelobes (gray) -->
+  <g stroke="#808080" stroke-width="1.5" fill="none">
+    <path d="M190 140 C 230 100, 260 96, 272 108 C 250 120, 220 128, 190 140"/>
+    <path d="M190 140 C 230 180, 260 184, 272 172 C 250 160, 220 152, 190 140"/>
+  </g>
+  <text x="238" y="88" fill="#808080">sidelobes</text>
+
+  <!-- Beamwidth annotation (amber) -->
+  <g stroke="#c49a3b" stroke-width="1.5" fill="none" stroke-dasharray="6 4">
+    <line x1="190" y1="140" x2="470" y2="98"/>
+    <line x1="190" y1="140" x2="470" y2="182"/>
+  </g>
+  <path d="M380 108 A 200 200 0 0 1 380 172" stroke="#c49a3b" stroke-width="1.5" fill="none"/>
+  <text x="392" y="145" fill="#c49a3b">&#952;<tspan font-size="10" dy="3">3dB</tspan><tspan dy="-3">&#8203;</tspan></text>
+
+  <!-- Takeaway -->
+  <text x="320" y="30" text-anchor="middle" fill="#808080">Wideband, low-sidelobe, well-characterized phase center &#8212; the standard gain-reference antenna</text>
+</svg>

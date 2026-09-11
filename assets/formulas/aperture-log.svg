@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Effective aperture, log form: A_e(dBsm) = G(dBi) + 20 log10 lambda(m) - 11.0.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see aperture-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20"><tspan font-style="italic">A<tspan font-size="10" dy="3" font-style="normal">e</tspan><tspan dy="-3" font-style="normal">&#8203;</tspan></tspan><tspan font-size="10">(dBsm)</tspan> = <tspan font-style="italic">G</tspan><tspan font-size="10">(dBi)</tspan> + 20 log<tspan font-size="10" dy="4">10</tspan><tspan dy="-4">&#8203;</tspan> <tspan font-style="italic">&#955;</tspan><tspan font-size="10">(m)</tspan> &#8722; 11.0</text>
+  </g>
+</svg>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 260" font-family="system-ui, sans-serif" font-size="14">
+  <!-- Archimedean spiral: flat two-arm spiral in a circular cavity,
+       face-on. Frequency-independent, multi-octave bandwidth; a single
+       broad lobe radiates out of the page (drawn here in side view,
+       to the right of the sketch), circularly polarized. -->
+
+  <!-- Cavity outline (gray) -->
+  <circle cx="130" cy="150" r="80" fill="none" stroke="#808080" stroke-width="2"/>
+
+  <!-- Two-arm Archimedean spiral (gray), face-on -->
+  <g fill="none" stroke="#808080" stroke-width="2" stroke-linejoin="round">
+    <path d="M134,150 L134.9,151.3 L135.3,153.1 L135.1,155.1 L134.1,157.2 L132.4,159 L130,160.4 L127,161.1 L123.7,160.9 L120.4,159.6 L117.3,157.3 L114.8,154.1 L113.2,150 L112.7,145.4 L113.6,140.5 L115.9,135.9 L119.5,131.8 L124.3,128.6 L130,126.8 L136.3,126.6 L142.7,128.1 L148.7,131.3 L153.8,136.3 L157.6,142.6 L159.6,150 L159.6,157.9 L157.5,165.9 L153.2,173.2 L146.9,179.3 L139,183.7 L130,186 L120.4,185.8 L110.9,183 L102.3,177.7 L95.1,170.1 L90.1,160.7 L87.6,150 L88,138.7 L91.4,127.7 L97.8,117.8 L106.7,109.6 L117.6,103.9 L130,101.2 L142.9,101.8 L155.5,105.9 L166.8,113.2 L176,123.5 L182.3,136 L185.2,150 L184.3,164.6 L179.7,178.7 L171.3,191.3 L159.7,201.5 L145.7,208.5 L130,211.6 L113.8,210.5 L98.1,205.2 L84.2,195.8 L73,182.9 L65.3,167.3 L62,150"/>
+    <path d="M126,150 L125.1,148.7 L124.7,146.9 L124.9,144.9 L125.9,142.8 L127.6,141 L130,139.6 L133,138.9 L136.3,139.1 L139.6,140.4 L142.7,142.7 L145.2,145.9 L146.8,150 L147.3,154.6 L146.4,159.5 L144.1,164.1 L140.5,168.2 L135.7,171.4 L130,173.2 L123.7,173.4 L117.3,171.9 L111.3,168.7 L106.2,163.7 L102.4,157.4 L100.4,150 L100.4,142.1 L102.5,134.1 L106.8,126.8 L113.1,120.7 L121,116.3 L130,114 L139.6,114.2 L149.1,117 L157.7,122.3 L164.9,129.9 L169.9,139.3 L172.4,150 L172,161.3 L168.6,172.3 L162.2,182.2 L153.3,190.4 L142.4,196.1 L130,198.8 L117.1,198.2 L104.5,194.1 L93.2,186.8 L84,176.5 L77.7,164 L74.8,150 L75.7,135.4 L80.3,121.3 L88.7,108.7 L100.3,98.5 L114.3,91.5 L130,88.4 L146.2,89.5 L161.9,94.8 L175.8,104.2 L187,117.1 L194.7,132.7 L198,150"/>
+  </g>
+  <text x="130" y="245" text-anchor="middle" fill="#808080">2-arm spiral in cavity</text>
+
+  <!-- Radiation pattern (blue): single broad lobe out of the page (side view) -->
+  <path d="M250 150 C 320 60, 460 60, 540 148 C 548 150, 548 150, 540 152 C 460 240, 320 240, 250 150 Z"
+        stroke="#3b82c4" stroke-width="2.5" fill="none"/>
+  <text x="420" y="130" fill="#3b82c4">broad lobe</text>
+  <text x="420" y="150" fill="#3b82c4">(out of the page)</text>
+
+  <!-- Circular pol / bandwidth annotation (amber) -->
+  <text x="400" y="240" text-anchor="middle" fill="#c49a3b">circular pol, multi-octave</text>
+
+  <!-- Takeaway -->
+  <text x="320" y="26" text-anchor="middle" fill="#808080">Self-similar geometry, frequency-independent &#8212;</text>
+  <text x="320" y="44" text-anchor="middle" fill="#808080">a decade or more of bandwidth from one flat element</text>
+</svg>

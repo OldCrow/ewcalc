@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 260" font-family="system-ui, sans-serif" font-size="14">
+  <!-- Axial-mode helix: wire wound in a multi-turn coil above a small
+       ground disc, side view. Directive pencil-beam lobe along the coil
+       axis, inherently circularly polarized. -->
+
+  <!-- Ground disc (gray) -->
+  <ellipse cx="130" cy="210" rx="55" ry="10" fill="none" stroke="#808080" stroke-width="2"/>
+
+  <!-- Helix (gray): 5 turns, drawn as stacked ellipses on a feed line -->
+  <line x1="130" y1="200" x2="130" y2="190" stroke="#808080" stroke-width="2"/>
+  <g fill="none" stroke="#808080" stroke-width="2">
+    <ellipse cx="130" cy="178" rx="26" ry="12"/>
+    <ellipse cx="130" cy="154" rx="26" ry="12"/>
+    <ellipse cx="130" cy="130" rx="26" ry="12"/>
+    <ellipse cx="130" cy="106" rx="26" ry="12"/>
+    <ellipse cx="130" cy="82" rx="26" ry="12"/>
+  </g>
+  <text x="130" y="65" text-anchor="middle" fill="#808080">5 turns</text>
+
+  <!-- Boresight axis -->
+  <line x1="130" y1="88" x2="560" y2="88" stroke="#808080" stroke-width="1" stroke-dasharray="6 4"/>
+
+  <!-- Radiation pattern (blue): directive pencil lobe along the axis -->
+  <path d="M130 88 C 260 60, 400 60, 540 86 C 550 88, 550 88, 540 90 C 400 116, 260 116, 130 88 Z"
+        stroke="#3b82c4" stroke-width="2.5" fill="none"/>
+  <text x="380" y="140" fill="#3b82c4">pencil beam</text>
+
+  <!-- Circular polarization annotation (amber) -->
+  <path d="M330 60 A 18 10 0 1 1 329 60" fill="none" stroke="#c49a3b" stroke-width="1.5"/>
+  <path d="M330 50 l6 4 l-8 3 Z" fill="#c49a3b"/>
+  <text x="360" y="55" fill="#c49a3b">circular pol</text>
+
+  <!-- Takeaway -->
+  <text x="320" y="30" text-anchor="middle" fill="#808080">Wideband circular polarization along the boresight &#8212; rejects the opposite sense of multipath</text>
+</svg>
