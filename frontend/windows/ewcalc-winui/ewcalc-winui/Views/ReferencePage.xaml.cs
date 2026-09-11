@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
+using System.Text.RegularExpressions;
 
 namespace EwCalc.Views;
 
@@ -68,9 +69,7 @@ public sealed partial class ReferencePage : Page
         {
             ItemHost.Children.Add(new TextBlock
             {
-                // Uppercase headers to match the app's section-header look, but
-                // restore case-sensitive physics notation (Eb = energy per bit).
-                Text = section.Title.ToUpperInvariant().Replace("EB/N₀", "Eb/N₀"),
+                Text = SectionHeaderText(section.Title),
                 Style = (Style)Application.Current.Resources["SectionHeaderStyle"],
             });
 
@@ -116,17 +115,52 @@ public sealed partial class ReferencePage : Page
         return image;
     }
 
+    // Case-sensitive notation that ToUpperInvariant would corrupt ("dB" -> "DB",
+    // "kT" -> "KT"). Section headers are uppercased to match the calculator
+    // pages' header look (macOS and Linux show titles as authored); these
+    // tokens keep their source spelling. Extend the list when a refdata
+    // section title gains other unit or symbol notation.
+    private static readonly string[] CaseSensitiveTokens =
+    [
+        "dB", "dBm", "dBW", "dBi", "dBd", "dBc", "dBsm",
+        "Hz", "kHz", "MHz", "GHz", "kT", "Eb/N₀",
+    ];
+
+    private static string SectionHeaderText(string title)
+    {
+        // ToUpperInvariant maps char-for-char, so a token's index in the source
+        // title is its index in the uppercased copy too.
+        var chars = title.ToUpperInvariant().ToCharArray();
+        foreach (var token in CaseSensitiveTokens)
+        {
+            // Letter lookarounds keep "dB" from matching inside "dBm" and the like.
+            foreach (Match m in Regex.Matches(title, $@"(?<!\p{{L}}){Regex.Escape(token)}(?!\p{{L}})"))
+                token.CopyTo(0, chars, m.Index, token.Length);
+        }
+        return new string(chars);
+    }
+
+    // Label column sized to the label, value column taking the rest and
+    // word-wrapping: Glossary definitions and other prose values would
+    // otherwise size an Auto column to their unwrapped width, crushing the
+    // label to nothing and clipping the value and its copy button at the
+    // default 860 px window. Matches Linux (word-wrapped value labels) and
+    // macOS (Text wraps by default).
     private static Grid BuildValueRow(RefRow row)
     {
         var grid = new Grid { MinHeight = 36, Padding = new Thickness(0, 4, 0, 4) };
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(32) });
 
         var label = new TextBlock
         {
             Text = row.Label,
             VerticalAlignment = VerticalAlignment.Center,
+            // Cap the label so a long one cannot starve the value column.
+            MaxWidth = 280,
+            TextWrapping = TextWrapping.Wrap,
+            Margin = new Thickness(0, 0, 16, 0),
         };
         // ResultLabelStyle/ResultValueStyle live in App.xaml; StaticResource isn't
         // available for elements built in code, so resolve them via Application.Resources.
@@ -138,6 +172,7 @@ public sealed partial class ReferencePage : Page
             Text = row.Value,
             VerticalAlignment = VerticalAlignment.Center,
             TextAlignment = TextAlignment.Right,
+            TextWrapping = TextWrapping.Wrap,
             Style = (Style)Application.Current.Resources["ResultValueStyle"],
         };
         Grid.SetColumn(value, 1);
