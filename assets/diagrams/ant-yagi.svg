@@ -24,7 +24,7 @@
   <!-- Radiation pattern (blue): directive forward lobe -->
   <path d="M155 150 C 260 95, 400 95, 540 148 C 548 150, 548 150, 540 152 C 400 205, 260 205, 155 150 Z"
         stroke="#3b82c4" stroke-width="2.5" fill="none"/>
-  <text x="400" y="138" fill="#3b82c4">main lobe (forward)</text>
+  <text x="330" y="136" fill="#3b82c4">main lobe (forward)</text>
 
   <!-- Small back lobe (gray) -->
   <path d="M155 150 C 128 130, 102 132, 92 150 C 102 168, 128 170, 155 150"
