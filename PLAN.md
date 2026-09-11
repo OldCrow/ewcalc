@@ -195,8 +195,28 @@ Open milestones are fully itemized here since they reflect actionable state.
     all IMPLEMENTED on dev/v1.2.0 and green through manual-dispatch CI;
     awaiting the user's batched cross-machine UI pass. Reference nav is
     data-driven on all three frontends (a new refdata page = one icon-
-    map entry per platform). Remaining: #77, #78, then the single
-    milestone PR.
+    map entry per platform). Later same day: #77 IMPLEMENTED (RCS page —
+    scattering-regimes diagram, six optical-region shape maxima,
+    insect→ship target table in m² and dBsm with dBsm copy values) and
+    #79 IMPLEMENTED (see its entry). All verified in the user's Linux
+    and Windows UI passes (fixes at 7fadf97/24693cc/0250405).
+  - DECIDED 2026-09-10 — page order: Quick Values first (provisional),
+    then general references (Glossary, dB & Units, Frequency Bands),
+    then pages in calculator order (Propagation, Antenna Types, Link
+    Budget, RCS, ...). New pages insert by calculator position.
+  - DECIDED 2026-09-10 — Quick Values rule: QV stays a deliberately
+    small "most-reached-for" front page; duplication with domain pages
+    is free (shared static row arrays), so per table: when a domain
+    page ships the richer version, QV drops the table (RCS did this at
+    #77) or keeps a trimmed high-frequency subset. Still on QV:
+    Antenna Gain + Sidelobes (quick-entry density), Noise Floor
+    (cross-domain), Eb/N₀ (until a Digital page exists). Re-evaluate
+    QV's residence at milestone close.
+  - Remaining: #78 (umbrella — decide which of Receiver / Jamming /
+    Location / Radar-Detection / Doppler / Digital earn v1.2.0 pages
+    vs deferral; QV dispositions for Eb/N₀ and Noise Floor ride on
+    that), the WinUI formula-pair wrap gap noted in the Windows pass,
+    then the single milestone PR.
   - WINDOWS UI PASS 2026-09-10 (#74-#77, #79 on dev/v1.2.0 at 7fadf97):
     core 14/14, WinUI solution warning-free, dotnet format clean; all 8
     reference pages driven via UIA with every formula/diagram image
@@ -292,11 +312,13 @@ itemized since they're actionable.
   (`gh workflow run ci.yml --ref dev/v1.2.0` — CI does not trigger on
   dev pushes; dispatch also exercises tag-gated-otherwise packaging)
   plus Windows/Linux UI passes; the final PR should be a slam dunk.
-- NEXT: #74 Propagation reference page (first consumer of the formula
-  pipeline at scale; likely includes moving the FSPL proof row from
-  quick-values "Key Formulas" to its real home, and the first
-  multi-page navigation work in the frontends). Then #75–#78. Full
-  formula-fidelity sweep remains as future assurance work.
+- NEXT (session of 2026-09-10 ended here): scope #78 — split the
+  umbrella into per-domain page issues or close-as-deferred, settle
+  the Eb/N₀/Noise-Floor QV dispositions with it, consider the WinUI
+  formula-wrap gap, then the single dev/v1.2.0 → main milestone PR
+  (validated by manual-dispatch CI + both machines' UI passes; should
+  be a slam dunk). Full formula-fidelity sweep remains future
+  assurance work.
 
 ## Provenance Framing & Formula Fidelity [OPEN]
 - Found 2026-09-06 while pinning #68's first citation: Adamy EW103
