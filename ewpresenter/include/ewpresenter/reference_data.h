@@ -49,9 +49,9 @@ struct Row {
 
 /// A titled group of rows.
 struct Section {
-    const char* title;
-    const Row*  rows;
-    std::size_t row_count;
+    const char* title     = nullptr;
+    const Row*  rows      = nullptr;
+    std::size_t row_count = 0;
     const char* diagram = nullptr; ///< Optional geometry thumbnail: base name
                                    ///  of a #72 diagram under
                                    ///  assets/diagrams/png (e.g.
