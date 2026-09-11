@@ -21,8 +21,8 @@
   <!-- Radiation pattern (blue): single broad forward lobe (side view) -->
   <path d="M252 150 C 320 60, 460 60, 540 148 C 548 150, 548 150, 540 152 C 460 240, 320 240, 252 150 Z"
         stroke="#3b82c4" stroke-width="2.5" fill="none"/>
-  <text x="420" y="130" fill="#3b82c4">broad forward lobe</text>
-  <text x="420" y="150" fill="#3b82c4">(normal to spiral face)</text>
+  <text x="340" y="130" fill="#3b82c4">broad forward lobe</text>
+  <text x="340" y="150" fill="#3b82c4">(normal to spiral face)</text>
 
   <!-- Circular pol / bandwidth annotation (amber) -->
   <text x="400" y="240" text-anchor="middle" fill="#c49a3b">circular pol, multi-octave</text>
