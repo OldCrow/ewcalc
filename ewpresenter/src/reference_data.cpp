@@ -147,8 +147,8 @@ constexpr Row kGlossAntenna[] = {
 };
 
 constexpr Row kGlossFrequency[] = {
-    val("Octave",  "2:1 frequency span"),
-    val("Decade",  "10:1 frequency span"),
+    val("Octave",  "2:1 frequency span — the upper frequency is twice the lower (e.g. 2–4 GHz)"),
+    val("Decade",  "10:1 frequency span — the upper frequency is ten times the lower (e.g. 2–20 GHz)"),
     val("Percent bandwidth", "bandwidth ÷ center frequency × 100"),
     val("Instantaneous bandwidth", "band processed at one moment, vs the wider tunable range"),
 };
