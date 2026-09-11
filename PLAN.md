@@ -197,6 +197,37 @@ Open milestones are fully itemized here since they reflect actionable state.
     data-driven on all three frontends (a new refdata page = one icon-
     map entry per platform). Remaining: #77, #78, then the single
     milestone PR.
+  - WINDOWS UI PASS 2026-09-10 (#74-#77, #79 on dev/v1.2.0 at 7fadf97):
+    core 14/14, WinUI solution warning-free, dotnet format clean; all 8
+    reference pages driven via UIA with every formula/diagram image
+    verified loaded (46/46) and each page reviewed visually; calculator
+    outputs unchanged. Four WinUI defects found and fixed:
+      - Section headers: the WinUI-only uppercase mangled notation
+        ("RATIO → DB", "ABSOLUTE DB UNITS", "(KT, 290 K)"). Replaced the
+        one-off Eb/N₀ patch with a token list (dB family, Hz family, kT,
+        Eb/N₀) restored at source positions — extend it when a title
+        gains new notation.
+      - Value rows at the 860 px default window: Glossary prose sized the
+        Auto value column to its unwrapped width, crushing labels to
+        nothing and clipping values and copy buttons. Label column Auto
+        (capped 280), value column star + word-wrap — the Linux 7fadf97
+        and macOS behaviour.
+      - Nav grouping (user-reported): PROPAGATION / ANALYSIS / REFERENCE
+        headers replaced by the "Calculators" / "Reference" pair macOS
+        and Linux use.
+      - Compact-mode group boundary (user-reported): the stock separator
+        brush is near-invisible on the dark pane, and the reference items
+        reuse calculator icons, so collapsed they read as repeats. The
+        Reference separator now overrides NavigationViewItemSeparator-
+        Foreground on that element only (the key also draws the pane
+        border), with literal per-theme ControlStrongStroke colours — a
+        StaticResource alias from the element-local theme dictionary
+        resolved to nothing and hid the line entirely.
+    Not fixed, noted: formula pairs don't wrap on WinUI — the widest
+    (knife-edge) fits the 860 px default with ~60 px to spare but would
+    clip in a narrower window (Linux solved its equivalent with
+    WrapLongRows). The flow-layout column alignment (Known Gaps) is now
+    visibly ragged on Propagation.
 
 ## GitHub Issues Without Milestone [DERIVED]
 Same leaner convention as milestones above: closed items are a count only
