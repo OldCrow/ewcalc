@@ -53,6 +53,7 @@ struct ReferencePageItem: Identifiable, Hashable {
         case "quick-values":    return "book"
         case "ref-propagation": return AppSection.propagation.icon
         case "ref-antennas":    return AppSection.antenna.icon
+        case "ref-link":        return AppSection.link.icon
         case "ref-bands":       return "textformat.abc"
         case "ref-db-units":    return "plusminus.circle"
         default:                return "book.closed"

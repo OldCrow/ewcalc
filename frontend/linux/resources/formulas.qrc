@@ -14,5 +14,13 @@
         <file alias="horizon-log.png">../../../assets/formulas/png/horizon-log.png</file>
         <file alias="aperture-std.png">../../../assets/formulas/png/aperture-std.png</file>
         <file alias="aperture-log.png">../../../assets/formulas/png/aperture-log.png</file>
+        <file alias="friis-std.png">../../../assets/formulas/png/friis-std.png</file>
+        <file alias="friis-log.png">../../../assets/formulas/png/friis-log.png</file>
+        <file alias="margin-std.png">../../../assets/formulas/png/margin-std.png</file>
+        <file alias="linkrange-std.png">../../../assets/formulas/png/linkrange-std.png</file>
+        <file alias="erp-std.png">../../../assets/formulas/png/erp-std.png</file>
+        <file alias="erp-log.png">../../../assets/formulas/png/erp-log.png</file>
+        <file alias="sensitivity-std.png">../../../assets/formulas/png/sensitivity-std.png</file>
+        <file alias="sensitivity-log.png">../../../assets/formulas/png/sensitivity-log.png</file>
     </qresource>
 </RCC>

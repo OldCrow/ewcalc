@@ -53,6 +53,8 @@ QString referencePageIcon(const QString& pageId)
         return QStringLiteral("network-wireless");
     if (pageId == QStringLiteral("ref-antennas"))
         return QStringLiteral("network-wireless"); // matches the Antenna row
+    if (pageId == QStringLiteral("ref-link"))
+        return QStringLiteral("network-transmit-receive"); // matches the Link Budget row
     if (pageId == QStringLiteral("ref-bands"))
         return QStringLiteral("accessories-character-map");
     if (pageId == QStringLiteral("ref-db-units"))

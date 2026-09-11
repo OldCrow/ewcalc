@@ -72,6 +72,7 @@ public sealed partial class MainWindow : Window
         "quick-values"    => "", // Book — unchanged from the pre-#74 Reference item
         "ref-propagation" => "", // Matches NavPropagation's FontIcon glyph
         "ref-antennas"    => "", // Matches NavAntenna's FontIcon glyph
+        "ref-link"        => "", // Matches NavLink's FontIcon glyph
         "ref-bands"       => "", // Signal bars — frequency-band letters
         "ref-db-units"    => "", // Calculator — dB/units arithmetic
         _                 => "",

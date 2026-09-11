@@ -121,6 +121,7 @@ set(DIAGRAM_PNGS
     "${DIAGRAM_PNG_DIR}/ant-spiral.png"
     "${DIAGRAM_PNG_DIR}/ant-parabolic.png"
     "${DIAGRAM_PNG_DIR}/ant-array.png"
+    "${DIAGRAM_PNG_DIR}/link-budget.png"
     "${DIAGRAM_PNG_DIR}/jamming-self-protection.png"
     "${DIAGRAM_PNG_DIR}/jamming-stand-off.png"
     "${DIAGRAM_PNG_DIR}/loc-aoa-cep.png"
@@ -154,6 +155,14 @@ set(FORMULA_PNGS
     "${FORMULA_PNG_DIR}/horizon-log.png"
     "${FORMULA_PNG_DIR}/aperture-std.png"
     "${FORMULA_PNG_DIR}/aperture-log.png"
+    "${FORMULA_PNG_DIR}/friis-std.png"
+    "${FORMULA_PNG_DIR}/friis-log.png"
+    "${FORMULA_PNG_DIR}/margin-std.png"
+    "${FORMULA_PNG_DIR}/linkrange-std.png"
+    "${FORMULA_PNG_DIR}/erp-std.png"
+    "${FORMULA_PNG_DIR}/erp-log.png"
+    "${FORMULA_PNG_DIR}/sensitivity-std.png"
+    "${FORMULA_PNG_DIR}/sensitivity-log.png"
 )
 set_source_files_properties(${FORMULA_PNGS} PROPERTIES
     MACOSX_PACKAGE_LOCATION Resources)

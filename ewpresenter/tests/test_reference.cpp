@@ -20,7 +20,7 @@ bool eq(const char* a, std::string_view b) {
 
 void test_pages_shape() {
     const auto pages_span = pages();
-    ASSERT_TRUE(pages_span.size() == 5);
+    ASSERT_TRUE(pages_span.size() == 6);
 
     ASSERT_TRUE(eq(pages_span[0].id, "quick-values"));
     ASSERT_TRUE(eq(pages_span[0].title, "Quick Values"));
@@ -32,12 +32,15 @@ void test_pages_shape() {
     ASSERT_TRUE(eq(pages_span[2].id, "ref-antennas"));
     ASSERT_TRUE(eq(pages_span[2].title, "Antenna Types"));
     ASSERT_TRUE(pages_span[2].section_count == 11);
-    ASSERT_TRUE(eq(pages_span[3].id, "ref-bands"));
-    ASSERT_TRUE(eq(pages_span[3].title, "Frequency Bands"));
-    ASSERT_TRUE(pages_span[3].section_count == 3);
-    ASSERT_TRUE(eq(pages_span[4].id, "ref-db-units"));
-    ASSERT_TRUE(eq(pages_span[4].title, "dB & Units"));
-    ASSERT_TRUE(pages_span[4].section_count == 2);
+    ASSERT_TRUE(eq(pages_span[3].id, "ref-link"));
+    ASSERT_TRUE(eq(pages_span[3].title, "Link Budget"));
+    ASSERT_TRUE(pages_span[3].section_count == 2);
+    ASSERT_TRUE(eq(pages_span[4].id, "ref-bands"));
+    ASSERT_TRUE(eq(pages_span[4].title, "Frequency Bands"));
+    ASSERT_TRUE(pages_span[4].section_count == 3);
+    ASSERT_TRUE(eq(pages_span[5].id, "ref-db-units"));
+    ASSERT_TRUE(eq(pages_span[5].title, "dB & Units"));
+    ASSERT_TRUE(pages_span[5].section_count == 2);
 }
 
 void test_antenna_types_page() {
@@ -58,8 +61,28 @@ void test_antenna_types_page() {
     }
 }
 
-void test_bands_page() {
+void test_link_page() {
     const Page& page = pages()[3];
+    ASSERT_TRUE(eq(page.sections[0].title, "One-Way Link"));
+    ASSERT_TRUE(eq(page.sections[0].diagram, "link-budget"));
+    ASSERT_TRUE(page.sections[1].diagram == nullptr);
+    ASSERT_TRUE(page.sections[0].row_count == 3);
+    ASSERT_TRUE(page.sections[1].row_count == 3);
+    // Margin and effective range are single-form (no log column/asset).
+    ASSERT_TRUE(page.sections[0].rows[1].log_value == nullptr);
+    ASSERT_TRUE(page.sections[0].rows[2].log_value == nullptr);
+    // FSPL row reuses the shared asset pair and quotes the same constant.
+    const Row& fspl = page.sections[1].rows[2];
+    ASSERT_TRUE(eq(fspl.svg_base, "fspl"));
+    ASSERT_TRUE(std::string_view{fspl.log_value}.find("32.44")
+                != std::string_view::npos);
+    // Sensitivity log form carries the -114 dBm/MHz anchor.
+    ASSERT_TRUE(std::string_view{page.sections[1].rows[1].log_value}
+                    .find("114") != std::string_view::npos);
+}
+
+void test_bands_page() {
+    const Page& page = pages()[4];
     ASSERT_TRUE(page.sections[0].row_count == 13); // IEEE incl. mm(G)
     ASSERT_TRUE(page.sections[1].row_count == 13); // NATO A–M
     ASSERT_TRUE(page.sections[2].row_count == 8);  // ITU bands 4–11
@@ -109,7 +132,7 @@ void test_propagation_page() {
 }
 
 void test_db_units_page() {
-    const Page& page = pages()[4];
+    const Page& page = pages()[5];
     ASSERT_TRUE(eq(page.sections[0].title, "Ratio → dB"));
     ASSERT_TRUE(page.sections[0].row_count == 8);
     ASSERT_TRUE(page.sections[1].row_count == 6);
@@ -190,6 +213,7 @@ TEST_MAIN()
     RUN_TEST(test_section_titles_and_counts);
     RUN_TEST(test_propagation_page);
     RUN_TEST(test_antenna_types_page);
+    RUN_TEST(test_link_page);
     RUN_TEST(test_bands_page);
     RUN_TEST(test_db_units_page);
     RUN_TEST(test_value_row_fields);

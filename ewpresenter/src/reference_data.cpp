@@ -260,6 +260,41 @@ constexpr Section kAntennaSections[] = {
     {"Phased Array",              kArray,       std::size(kArray),       "ant-array"},
 };
 
+// ── Link Budget page (#76) ───────────────────────────────────────────────────
+// Forms follow libew/docs/formulas.md: one-way budget and the LOS
+// effective-range inversion per Adamy JED Feb 2011 p. 51 (our 32.44 where
+// Adamy rounds to 32); sensitivity kTB + NF + SNR per Adamy EW103 Sec 4.4
+// p. 97 (−114 dBm = kTB at 290 K in 1 MHz); ERP per EW103 Sec 5.2 p. 120.
+// The FSPL row reuses the Propagation page's asset pair — one master, two
+// pages.
+
+constexpr Row kOneWayLink[] = {
+    formula("Received power (Friis)", "friis",
+            "P_r = P_t G_t G_r (λ/4πd)²",
+            "P_rx = P_tx + G_tx + G_rx − L_FSPL  dBm"),
+    formula("Link margin", "margin",
+            "M = P_rx − S  dB"),
+    formula("Effective range (LOS)", "linkrange",
+            "R = 10^((ERP + G_r − S − 32.44 − 20 log₁₀ f(MHz))/20)  km"),
+};
+
+constexpr Row kLinkComponents[] = {
+    formula("ERP", "erp",
+            "ERP = P_t G_t",
+            "ERP = P_tx(dBm) + G_tx(dB)"),
+    formula("Receiver sensitivity", "sensitivity",
+            "S = k T B F · SNRᵣ",
+            "S = −114 + 10 log₁₀ B(MHz) + NF + SNRᵣ  dBm"),
+    formula("Free-space path loss", "fspl",
+            "FSPL = (4πdf/c)²",
+            "L = 32.44 + 20 log₁₀ f(MHz) + 20 log₁₀ d(km)  dB"),
+};
+
+constexpr Section kLinkSections[] = {
+    {"One-Way Link",        kOneWayLink,     std::size(kOneWayLink), "link-budget"},
+    {"Component Equations", kLinkComponents, std::size(kLinkComponents)},
+};
+
 // ── Frequency Bands page (#75, split out — same call as dB & Units) ─────────
 // IEEE Std 521 radar-band letters; NATO/EU EW band letters; ITU radio bands.
 
@@ -319,6 +354,8 @@ constexpr Page kPages[] = {
      kPropagationSections, std::size(kPropagationSections)},
     {"ref-antennas", "Antenna Types", "Per-type patterns, gain, and specs",
      kAntennaSections, std::size(kAntennaSections)},
+    {"ref-link", "Link Budget", "One-way budget, margin, and components",
+     kLinkSections, std::size(kLinkSections)},
     {"ref-bands", "Frequency Bands", "IEEE, NATO/EU, and ITU band letters",
      kBandSections, std::size(kBandSections)},
     {"ref-db-units", "dB & Units", "Decibel arithmetic and absolute dB units",
