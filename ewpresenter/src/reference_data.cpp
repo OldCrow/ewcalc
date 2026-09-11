@@ -149,11 +149,178 @@ constexpr Section kDbSections[] = {
     {"Absolute dB Units", kDbUnits,  std::size(kDbUnits)},
 };
 
+// ── Antenna Types page (#75) ─────────────────────────────────────────────────
+// One section per antenna type: the section diagram is its pattern thumbnail
+// (assets/diagrams/ant-*.svg) and value rows carry the specs. Values are
+// clean-room engineering typicals compiled from standard antenna references
+// (Balanis, "Antenna Theory"; ARRL Antenna Book; IEEE Std 145 terminology);
+// gain copy values feed the Antenna calculator directly. Frequency ranges
+// use IEEE Std 521 band letters (see the Frequency Bands page).
+
+constexpr Row kIsotropic[] = {
+    formula("Effective aperture", "aperture",
+            "Aₑ = G λ² / (4π)",
+            "Aₑ(dBsm) = G(dBi) + 20 log₁₀ λ(m) − 11.0"),
+    val("Directivity", "0 dBi  (G = 1)",          "0"),
+    val("Pattern",     "uniform over 4π sr"),
+    val("Purpose",     "gain reference for dBi"),
+};
+
+constexpr Row kDipole[] = {
+    val("Polarization",    "linear"),
+    val("Typical gain",    "2.15 dBi  (0 dBd)", "2.15"),
+    val("3-dB beamwidth",  "≈ 78° (E-plane), omni (H-plane)"),
+    val("Bandwidth",       "≈ 10 %"),
+    val("Frequency range", "HF – UHF"),
+};
+
+constexpr Row kMonopole[] = {
+    val("Polarization",    "linear (vertical)"),
+    val("Typical gain",    "5.15 dBi over ideal ground plane", "5.15"),
+    val("3-dB beamwidth",  "omni (azimuth)"),
+    val("Bandwidth",       "≈ 10 %"),
+    val("Frequency range", "HF – UHF"),
+};
+
+constexpr Row kPatch[] = {
+    val("Polarization",    "linear (circular with dual feed)"),
+    val("Typical gain",    "6–9 dBi",           "7"),
+    val("3-dB beamwidth",  "60–90°"),
+    val("Bandwidth",       "1–5 %"),
+    val("Frequency range", "UHF – Ka"),
+};
+
+constexpr Row kHorn[] = {
+    val("Polarization",    "linear"),
+    val("Typical gain",    "10–20 dBi",         "15"),
+    val("3-dB beamwidth",  "10–60°"),
+    val("Bandwidth",       "full waveguide band (≈ 40 %)"),
+    val("Frequency range", "L – W"),
+};
+
+constexpr Row kHelix[] = {
+    val("Polarization",    "circular"),
+    val("Typical gain",    "10–15 dBi",         "12"),
+    val("3-dB beamwidth",  "30–50°"),
+    val("Bandwidth",       "≈ 70 %"),
+    val("Frequency range", "VHF – S"),
+};
+
+constexpr Row kYagi[] = {
+    val("Polarization",    "linear"),
+    val("Typical gain",    "7–15 dBi (grows with boom length)", "10"),
+    val("3-dB beamwidth",  "30–60°"),
+    val("Bandwidth",       "≈ 5 %"),
+    val("Frequency range", "HF – UHF"),
+};
+
+constexpr Row kLogPeriodic[] = {
+    val("Polarization",    "linear"),
+    val("Typical gain",    "6–8 dBi",           "7"),
+    val("3-dB beamwidth",  "60–80°"),
+    val("Bandwidth",       "10:1 (multi-decade)"),
+    val("Frequency range", "HF – SHF"),
+};
+
+constexpr Row kSpiral[] = {
+    val("Polarization",    "circular"),
+    val("Typical gain",    "−5 to +3 dBi",      "0"),
+    val("3-dB beamwidth",  "70–90°"),
+    val("Bandwidth",       "9:1 (e.g. 2–18 GHz RWR)"),
+    val("Frequency range", "S – Ka"),
+};
+
+constexpr Row kParabolic[] = {
+    val("Polarization",    "set by feed (linear or circular)"),
+    val("Typical gain",    "20–50 dBi (aperture-set)", "30"),
+    val("3-dB beamwidth",  "0.5–5°"),
+    val("Bandwidth",       "feed-limited"),
+    val("Frequency range", "L – W"),
+};
+
+constexpr Row kArray[] = {
+    val("Polarization",    "set by elements"),
+    val("Typical gain",    "20–40 dBi",         "30"),
+    val("3-dB beamwidth",  "1–10° (electronically steered)"),
+    val("Bandwidth",       "module-limited (≈ octave)"),
+    val("Frequency range", "L – Ka"),
+};
+
+constexpr Section kAntennaSections[] = {
+    {"Isotropic Reference",       kIsotropic,   std::size(kIsotropic),   "ant-isotropic"},
+    {"Half-Wave Dipole",          kDipole,      std::size(kDipole),      "ant-dipole"},
+    {"Quarter-Wave Monopole",     kMonopole,    std::size(kMonopole),    "ant-monopole"},
+    {"Microstrip Patch",          kPatch,       std::size(kPatch),       "ant-patch"},
+    {"Pyramidal Horn",            kHorn,        std::size(kHorn),        "ant-horn"},
+    {"Axial-Mode Helix",          kHelix,       std::size(kHelix),       "ant-helix"},
+    {"Yagi–Uda",                  kYagi,        std::size(kYagi),        "ant-yagi"},
+    {"Log-Periodic Dipole Array", kLogPeriodic, std::size(kLogPeriodic), "ant-logperiodic"},
+    {"Cavity-Backed Spiral",      kSpiral,      std::size(kSpiral),      "ant-spiral"},
+    {"Parabolic Reflector",       kParabolic,   std::size(kParabolic),   "ant-parabolic"},
+    {"Phased Array",              kArray,       std::size(kArray),       "ant-array"},
+};
+
+// ── Frequency Bands page (#75, split out — same call as dB & Units) ─────────
+// IEEE Std 521 radar-band letters; NATO/EU EW band letters; ITU radio bands.
+
+constexpr Row kIeeeBands[] = {
+    val("HF",  "3–30 MHz"),
+    val("VHF", "30–300 MHz"),
+    val("UHF", "300 MHz–1 GHz"),
+    val("L",   "1–2 GHz"),
+    val("S",   "2–4 GHz"),
+    val("C",   "4–8 GHz"),
+    val("X",   "8–12 GHz"),
+    val("Ku",  "12–18 GHz"),
+    val("K",   "18–27 GHz"),
+    val("Ka",  "27–40 GHz"),
+    val("V",   "40–75 GHz"),
+    val("W",   "75–110 GHz"),
+    val("mm (G)", "110–300 GHz"),
+};
+
+constexpr Row kNatoBands[] = {
+    val("A", "< 250 MHz"),
+    val("B", "250–500 MHz"),
+    val("C", "500 MHz–1 GHz"),
+    val("D", "1–2 GHz"),
+    val("E", "2–3 GHz"),
+    val("F", "3–4 GHz"),
+    val("G", "4–6 GHz"),
+    val("H", "6–8 GHz"),
+    val("I", "8–10 GHz"),
+    val("J", "10–20 GHz"),
+    val("K", "20–40 GHz"),
+    val("L", "40–60 GHz"),
+    val("M", "60–100 GHz"),
+};
+
+constexpr Row kItuBands[] = {
+    val("VLF (band 4)",  "3–30 kHz"),
+    val("LF (band 5)",   "30–300 kHz"),
+    val("MF (band 6)",   "300 kHz–3 MHz"),
+    val("HF (band 7)",   "3–30 MHz"),
+    val("VHF (band 8)",  "30–300 MHz"),
+    val("UHF (band 9)",  "300 MHz–3 GHz"),
+    val("SHF (band 10)", "3–30 GHz"),
+    val("EHF (band 11)", "30–300 GHz"),
+};
+
+constexpr Section kBandSections[] = {
+    {"IEEE Radar Bands (IEEE Std 521)", kIeeeBands, std::size(kIeeeBands)},
+    {"NATO / EU EW Bands",              kNatoBands, std::size(kNatoBands)},
+    {"ITU Radio Bands",                 kItuBands,  std::size(kItuBands)},
+};
+
 constexpr Page kPages[] = {
     {"quick-values", "Quick Values", "Common EW values for quick entry",
      kQuickValueSections, std::size(kQuickValueSections)},
     {"ref-propagation", "Propagation", "Path-loss, diffraction, and earth geometry",
      kPropagationSections, std::size(kPropagationSections)},
+    {"ref-antennas", "Antenna Types", "Per-type patterns, gain, and specs",
+     kAntennaSections, std::size(kAntennaSections)},
+    {"ref-bands", "Frequency Bands", "IEEE, NATO/EU, and ITU band letters",
+     kBandSections, std::size(kBandSections)},
     {"ref-db-units", "dB & Units", "Decibel arithmetic and absolute dB units",
      kDbSections, std::size(kDbSections)},
 };

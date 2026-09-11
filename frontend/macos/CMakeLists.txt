@@ -110,6 +110,17 @@ set_source_files_properties(${ICON_FILE} PROPERTIES
 set(DIAGRAM_PNG_DIR "${EWCALC_SRC_ROOT}/assets/diagrams/png")
 set(DIAGRAM_PNGS
     "${DIAGRAM_PNG_DIR}/antenna-beamwidth.png"
+    "${DIAGRAM_PNG_DIR}/ant-isotropic.png"
+    "${DIAGRAM_PNG_DIR}/ant-dipole.png"
+    "${DIAGRAM_PNG_DIR}/ant-monopole.png"
+    "${DIAGRAM_PNG_DIR}/ant-patch.png"
+    "${DIAGRAM_PNG_DIR}/ant-horn.png"
+    "${DIAGRAM_PNG_DIR}/ant-helix.png"
+    "${DIAGRAM_PNG_DIR}/ant-yagi.png"
+    "${DIAGRAM_PNG_DIR}/ant-logperiodic.png"
+    "${DIAGRAM_PNG_DIR}/ant-spiral.png"
+    "${DIAGRAM_PNG_DIR}/ant-parabolic.png"
+    "${DIAGRAM_PNG_DIR}/ant-array.png"
     "${DIAGRAM_PNG_DIR}/jamming-self-protection.png"
     "${DIAGRAM_PNG_DIR}/jamming-stand-off.png"
     "${DIAGRAM_PNG_DIR}/loc-aoa-cep.png"
@@ -141,6 +152,8 @@ set(FORMULA_PNGS
     "${FORMULA_PNG_DIR}/bulge-log.png"
     "${FORMULA_PNG_DIR}/horizon-std.png"
     "${FORMULA_PNG_DIR}/horizon-log.png"
+    "${FORMULA_PNG_DIR}/aperture-std.png"
+    "${FORMULA_PNG_DIR}/aperture-log.png"
 )
 set_source_files_properties(${FORMULA_PNGS} PROPERTIES
     MACOSX_PACKAGE_LOCATION Resources)

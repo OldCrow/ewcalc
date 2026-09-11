@@ -12,5 +12,7 @@
         <file alias="bulge-log.png">../../../assets/formulas/png/bulge-log.png</file>
         <file alias="horizon-std.png">../../../assets/formulas/png/horizon-std.png</file>
         <file alias="horizon-log.png">../../../assets/formulas/png/horizon-log.png</file>
+        <file alias="aperture-std.png">../../../assets/formulas/png/aperture-std.png</file>
+        <file alias="aperture-log.png">../../../assets/formulas/png/aperture-log.png</file>
     </qresource>
 </RCC>

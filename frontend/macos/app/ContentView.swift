@@ -52,6 +52,8 @@ struct ReferencePageItem: Identifiable, Hashable {
         switch id {
         case "quick-values":    return "book"
         case "ref-propagation": return AppSection.propagation.icon
+        case "ref-antennas":    return AppSection.antenna.icon
+        case "ref-bands":       return "textformat.abc"
         case "ref-db-units":    return "plusminus.circle"
         default:                return "book.closed"
         }

@@ -1,6 +1,17 @@
 <RCC>
     <qresource prefix="/diagrams">
         <file alias="antenna-beamwidth.png">../../../assets/diagrams/png/antenna-beamwidth.png</file>
+        <file alias="ant-isotropic.png">../../../assets/diagrams/png/ant-isotropic.png</file>
+        <file alias="ant-dipole.png">../../../assets/diagrams/png/ant-dipole.png</file>
+        <file alias="ant-monopole.png">../../../assets/diagrams/png/ant-monopole.png</file>
+        <file alias="ant-patch.png">../../../assets/diagrams/png/ant-patch.png</file>
+        <file alias="ant-horn.png">../../../assets/diagrams/png/ant-horn.png</file>
+        <file alias="ant-helix.png">../../../assets/diagrams/png/ant-helix.png</file>
+        <file alias="ant-yagi.png">../../../assets/diagrams/png/ant-yagi.png</file>
+        <file alias="ant-logperiodic.png">../../../assets/diagrams/png/ant-logperiodic.png</file>
+        <file alias="ant-spiral.png">../../../assets/diagrams/png/ant-spiral.png</file>
+        <file alias="ant-parabolic.png">../../../assets/diagrams/png/ant-parabolic.png</file>
+        <file alias="ant-array.png">../../../assets/diagrams/png/ant-array.png</file>
         <file alias="jamming-self-protection.png">../../../assets/diagrams/png/jamming-self-protection.png</file>
         <file alias="jamming-stand-off.png">../../../assets/diagrams/png/jamming-stand-off.png</file>
         <file alias="loc-aoa-cep.png">../../../assets/diagrams/png/loc-aoa-cep.png</file>
