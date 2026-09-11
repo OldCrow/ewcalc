@@ -13,6 +13,10 @@
 #include "pages/AntennaPage.h"
 #include "pages/ReferencePage.h"
 
+#include <ewpresenter/reference_data.h>
+
+#include <cstddef>
+
 #include <QAction>
 #include <QApplication>
 #include <QBrush>
@@ -28,8 +32,31 @@
 #include <QProcess>
 #include <QPushButton>
 #include <QStackedWidget>
+#include <QString>
 #include <QVBoxLayout>
 #include <QWidget>
+
+namespace {
+
+/// Sidebar icon per stable refdata page id (#74). A reference page whose
+/// domain mirrors a calculator reuses that calculator's exact icon name —
+/// "network-wireless", matching the Propagation row below — so the two read
+/// as the same concept; quick-values keeps the pre-#74 Reference icon;
+/// ref-db-units gets its own distinct icon; an unknown future id falls back
+/// to the Reference icon. addPage() applies the plain-then-"-symbolic"
+/// theme fallback uniformly, so only the plain name is chosen here.
+QString referencePageIcon(const QString& pageId)
+{
+    if (pageId == QStringLiteral("quick-values"))
+        return QStringLiteral("help-contents");
+    if (pageId == QStringLiteral("ref-propagation"))
+        return QStringLiteral("network-wireless");
+    if (pageId == QStringLiteral("ref-db-units"))
+        return QStringLiteral("accessories-calculator");
+    return QStringLiteral("help-contents");
+}
+
+} // namespace
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -108,9 +135,18 @@ MainWindow::MainWindow(QWidget* parent)
     addPage(QStringLiteral("Digital / DSSS"),QStringLiteral("media-playback-start"),    new DigitalPage);
 
     // ── Reference section ───────────────────────────────────────────────
+    // One sidebar row per refdata page (#74): the sidebar renders whatever
+    // ewpresenter::refdata publishes, so a new data-layer page becomes a nav
+    // entry with no MainWindow change.
     addSpacer();
     addHeader(QStringLiteral("Reference"));
-    addPage(QStringLiteral("Reference"),     QStringLiteral("help-contents"),           new ReferencePage);
+    const auto refPages = ewpresenter::refdata::pages();
+    for (std::size_t i = 0; i < refPages.size(); ++i) {
+        const auto& page = refPages[i];
+        addPage(QString::fromUtf8(page.title),
+                referencePageIcon(QString::fromUtf8(page.id)),
+                new ReferencePage(i));
+    }
 
     // Select first real page (index 1 — after the "Calculators" header)
     nav_->setCurrentRow(1);
