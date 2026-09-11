@@ -37,17 +37,15 @@ public sealed partial class MainWindow : Window
     }
 
     // Reference nav items (#74): one per ewpresenter::refdata page, enumerated
-    // at startup so a new data-layer page becomes a nav entry automatically,
-    // under the same REFERENCE separator/header the single static item used
-    // to sit under. Tag is the page's index into RefData.GetPages() (an int,
-    // distinct from the calculator items' string tags) — NavView_SelectionChanged
-    // branches on the tag's runtime type to route either to a fixed
-    // calculator page or to ReferencePage with that index as parameter.
+    // at startup so a new data-layer page becomes a nav entry automatically.
+    // They append after the Reference separator/header declared last in
+    // MainWindow.xaml. Tag is the page's index into RefData.GetPages() (an
+    // int, distinct from the calculator items' string tags) —
+    // NavView_SelectionChanged branches on the tag's runtime type to route
+    // either to a fixed calculator page or to ReferencePage with that index
+    // as parameter.
     private void BuildReferenceNavItems()
     {
-        NavView.MenuItems.Add(new NavigationViewItemSeparator());
-        NavView.MenuItems.Add(new NavigationViewItemHeader { Content = "REFERENCE" });
-
         var pages = RefData.GetPages();
         for (var i = 0; i < pages.Length; i++)
         {

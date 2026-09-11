@@ -19,7 +19,11 @@
 
             <NavigationView.MenuItems>
 
-                <NavigationViewItemHeader Content="PROPAGATION" />
+                <!--
+                    Two groups, Calculators and Reference, matching the macOS
+                    and Linux sidebars (ContentView.swift, MainWindow.cpp).
+                -->
+                <NavigationViewItemHeader Content="Calculators" />
 
                 <NavigationViewItem
                     x:Name="NavPropagation"
@@ -47,9 +51,6 @@
                         <FontIcon Glyph="&#xE71B;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-
-                <NavigationViewItemSeparator />
-                <NavigationViewItemHeader Content="ANALYSIS" />
 
                 <NavigationViewItem
                     x:Name="NavReceiver"
@@ -115,12 +116,44 @@
                 </NavigationViewItem>
 
                 <!--
-                    The REFERENCE separator/header and one item per refdata
-                    page (#74) are built in code (MainWindow.xaml.cs,
-                    BuildReferenceNavItems) — the page list is enumerated
-                    from ewpresenter::refdata::pages() at startup via the
-                    RefData interop wrapper, so a new data-layer page becomes
-                    a nav entry with no XAML change.
+                    Group boundary. Headers collapse in compact mode, so this
+                    line is the only thing separating the groups there — and
+                    the reference pages reuse their calculators' icons, so
+                    without it the Reference items read as repeats. The stock
+                    DividerStrokeColorDefaultBrush is near-invisible on the
+                    dark pane; override the separator's brush on this element
+                    only (lightweight styling), since the NavView reuses the
+                    same key for its pane border.
+                -->
+                <NavigationViewItemSeparator>
+                    <NavigationViewItemSeparator.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.ThemeDictionaries>
+                                <!-- ControlStrongStrokeColorDefault's per-theme values, as
+                                     literals: a StaticResource alias to the app-level brush
+                                     does not resolve from an element-local dictionary. -->
+                                <ResourceDictionary x:Key="Default">
+                                    <SolidColorBrush x:Key="NavigationViewItemSeparatorForeground" Color="#8BFFFFFF" />
+                                </ResourceDictionary>
+                                <ResourceDictionary x:Key="Light">
+                                    <SolidColorBrush x:Key="NavigationViewItemSeparatorForeground" Color="#72000000" />
+                                </ResourceDictionary>
+                                <ResourceDictionary x:Key="HighContrast">
+                                    <SolidColorBrush x:Key="NavigationViewItemSeparatorForeground" Color="{ThemeResource SystemColorWindowTextColor}" />
+                                </ResourceDictionary>
+                            </ResourceDictionary.ThemeDictionaries>
+                        </ResourceDictionary>
+                    </NavigationViewItemSeparator.Resources>
+                </NavigationViewItemSeparator>
+                <NavigationViewItemHeader Content="Reference" />
+
+                <!--
+                    One item per refdata page (#74) is appended after this
+                    header in code (MainWindow.xaml.cs, BuildReferenceNavItems)
+                    — the page list is enumerated from
+                    ewpresenter::refdata::pages() at startup via the RefData
+                    interop wrapper, so a new data-layer page becomes a nav
+                    entry with no XAML change.
                 -->
 
             </NavigationView.MenuItems>
