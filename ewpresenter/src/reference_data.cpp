@@ -427,18 +427,18 @@ constexpr Section kBandSections[] = {
 constexpr Page kPages[] = {
     {"quick-values", "Quick Values", "Common EW values for quick entry",
      kQuickValueSections, std::size(kQuickValueSections)},
+    {"ref-glossary", "Glossary", "Definitions of common EW terms",
+     kGlossarySections, std::size(kGlossarySections)},
+    {"ref-db-units", "dB & Units", "Decibel arithmetic and absolute dB units",
+     kDbSections, std::size(kDbSections)},
+    {"ref-bands", "Frequency Bands", "IEEE, NATO/EU, and ITU band letters",
+     kBandSections, std::size(kBandSections)},
     {"ref-propagation", "Propagation", "Path-loss, diffraction, and earth geometry",
      kPropagationSections, std::size(kPropagationSections)},
     {"ref-antennas", "Antenna Types", "Per-type patterns, gain, and specs",
      kAntennaSections, std::size(kAntennaSections)},
     {"ref-link", "Link Budget", "One-way budget, margin, and components",
      kLinkSections, std::size(kLinkSections)},
-    {"ref-bands", "Frequency Bands", "IEEE, NATO/EU, and ITU band letters",
-     kBandSections, std::size(kBandSections)},
-    {"ref-glossary", "Glossary", "Definitions of common EW terms",
-     kGlossarySections, std::size(kGlossarySections)},
-    {"ref-db-units", "dB & Units", "Decibel arithmetic and absolute dB units",
-     kDbSections, std::size(kDbSections)},
 };
 
 } // namespace

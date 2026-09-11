@@ -378,13 +378,13 @@ void test_ref_row_fields() {
     ASSERT_TRUE(std::strcmp(ewp_ref_row_copy_value(0, 0, 0), "0.0") == 0);
     ASSERT_TRUE(ewp_ref_row_log_value(0, 0, 0) == nullptr);
     ASSERT_TRUE(ewp_ref_row_svg_base(0, 0, 0) == nullptr);
-    // Page 1 (Propagation) / section 0 (Path Loss) starts with FSPL.
-    ASSERT_TRUE(ewp_ref_row_kind(1, 0, 0) == EWP_REF_ROW_FORMULA);
-    ASSERT_TRUE(std::strcmp(ewp_ref_row_svg_base(1, 0, 0), "fspl") == 0);
-    ASSERT_TRUE(ewp_ref_row_value(1, 0, 0) != nullptr);
-    ASSERT_TRUE(ewp_ref_row_log_value(1, 0, 0) != nullptr);
+    // Page 4 (Propagation) / section 0 (Path Loss) starts with FSPL.
+    ASSERT_TRUE(ewp_ref_row_kind(4, 0, 0) == EWP_REF_ROW_FORMULA);
+    ASSERT_TRUE(std::strcmp(ewp_ref_row_svg_base(4, 0, 0), "fspl") == 0);
+    ASSERT_TRUE(ewp_ref_row_value(4, 0, 0) != nullptr);
+    ASSERT_TRUE(ewp_ref_row_log_value(4, 0, 0) != nullptr);
     // Section diagrams surface through the bridge; NULL where absent.
-    ASSERT_TRUE(std::strcmp(ewp_ref_section_diagram(1, 0), "prop-two-ray") == 0);
+    ASSERT_TRUE(std::strcmp(ewp_ref_section_diagram(4, 0), "prop-two-ray") == 0);
     ASSERT_TRUE(ewp_ref_section_diagram(0, 0) == nullptr);
     ASSERT_TRUE(ewp_ref_section_diagram(0, 999) == nullptr);
 }

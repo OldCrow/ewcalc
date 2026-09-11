@@ -26,28 +26,25 @@ void test_pages_shape() {
     ASSERT_TRUE(eq(pages_span[0].title, "Quick Values"));
     ASSERT_TRUE(eq(pages_span[0].subtitle, "Common EW values for quick entry"));
     ASSERT_TRUE(pages_span[0].section_count == 5);
-    ASSERT_TRUE(eq(pages_span[1].id, "ref-propagation"));
-    ASSERT_TRUE(eq(pages_span[1].title, "Propagation"));
-    ASSERT_TRUE(pages_span[1].section_count == 3);
-    ASSERT_TRUE(eq(pages_span[2].id, "ref-antennas"));
-    ASSERT_TRUE(eq(pages_span[2].title, "Antenna Types"));
-    ASSERT_TRUE(pages_span[2].section_count == 11);
-    ASSERT_TRUE(eq(pages_span[3].id, "ref-link"));
-    ASSERT_TRUE(eq(pages_span[3].title, "Link Budget"));
-    ASSERT_TRUE(pages_span[3].section_count == 2);
-    ASSERT_TRUE(eq(pages_span[4].id, "ref-bands"));
-    ASSERT_TRUE(eq(pages_span[4].title, "Frequency Bands"));
+    // Order (user-ratified 2026-09-10): general references first
+    // (Glossary, dB & Units, Frequency Bands), then pages in calculator
+    // order (Propagation, Antenna, Link, ...).
+    ASSERT_TRUE(eq(pages_span[1].id, "ref-glossary"));
+    ASSERT_TRUE(pages_span[1].section_count == 7);
+    ASSERT_TRUE(eq(pages_span[2].id, "ref-db-units"));
+    ASSERT_TRUE(pages_span[2].section_count == 2);
+    ASSERT_TRUE(eq(pages_span[3].id, "ref-bands"));
+    ASSERT_TRUE(pages_span[3].section_count == 3);
+    ASSERT_TRUE(eq(pages_span[4].id, "ref-propagation"));
     ASSERT_TRUE(pages_span[4].section_count == 3);
-    ASSERT_TRUE(eq(pages_span[5].id, "ref-glossary"));
-    ASSERT_TRUE(eq(pages_span[5].title, "Glossary"));
-    ASSERT_TRUE(pages_span[5].section_count == 7);
-    ASSERT_TRUE(eq(pages_span[6].id, "ref-db-units"));
-    ASSERT_TRUE(eq(pages_span[6].title, "dB & Units"));
+    ASSERT_TRUE(eq(pages_span[5].id, "ref-antennas"));
+    ASSERT_TRUE(pages_span[5].section_count == 11);
+    ASSERT_TRUE(eq(pages_span[6].id, "ref-link"));
     ASSERT_TRUE(pages_span[6].section_count == 2);
 }
 
 void test_antenna_types_page() {
-    const Page& page = pages()[2];
+    const Page& page = pages()[5];
     // Every antenna-type section carries its pattern thumbnail.
     for (std::size_t s = 0; s < page.section_count; ++s) {
         ASSERT_TRUE(page.sections[s].diagram != nullptr);
@@ -65,7 +62,7 @@ void test_antenna_types_page() {
 }
 
 void test_link_page() {
-    const Page& page = pages()[3];
+    const Page& page = pages()[6];
     ASSERT_TRUE(eq(page.sections[0].title, "One-Way Link"));
     ASSERT_TRUE(eq(page.sections[0].diagram, "link-budget"));
     ASSERT_TRUE(page.sections[1].diagram == nullptr);
@@ -85,7 +82,7 @@ void test_link_page() {
 }
 
 void test_glossary_page() {
-    const Page& page = pages()[5];
+    const Page& page = pages()[1];
     // Pure value rows, no diagrams, no copy buttons — definitions only.
     for (std::size_t s = 0; s < page.section_count; ++s) {
         ASSERT_TRUE(page.sections[s].diagram == nullptr);
@@ -103,7 +100,7 @@ void test_glossary_page() {
 }
 
 void test_bands_page() {
-    const Page& page = pages()[4];
+    const Page& page = pages()[3];
     ASSERT_TRUE(page.sections[0].row_count == 13); // IEEE incl. mm(G)
     ASSERT_TRUE(page.sections[1].row_count == 13); // NATO A–M
     ASSERT_TRUE(page.sections[2].row_count == 8);  // ITU bands 4–11
@@ -125,7 +122,7 @@ void test_section_titles_and_counts() {
 }
 
 void test_propagation_page() {
-    const Page& page = pages()[1];
+    const Page& page = pages()[4];
     // Every section carries a #72 diagram thumbnail; quick-values has none.
     ASSERT_TRUE(eq(page.sections[0].title, "Path Loss"));
     ASSERT_TRUE(eq(page.sections[0].diagram, "prop-two-ray"));
@@ -153,7 +150,7 @@ void test_propagation_page() {
 }
 
 void test_db_units_page() {
-    const Page& page = pages()[6];
+    const Page& page = pages()[2];
     ASSERT_TRUE(eq(page.sections[0].title, "Ratio → dB"));
     ASSERT_TRUE(page.sections[0].row_count == 8);
     ASSERT_TRUE(page.sections[1].row_count == 6);
@@ -191,7 +188,7 @@ void test_noise_floor_values_ascii_free() {
 }
 
 void test_formula_row_fields() {
-    const Section& formulas = pages()[1].sections[0]; // Propagation / Path Loss
+    const Section& formulas = pages()[4].sections[0]; // Propagation / Path Loss
     const Row& fspl = formulas.rows[0];
     ASSERT_TRUE(fspl.kind == RowKind::Formula);
     ASSERT_TRUE(eq(fspl.label, "Free-space path loss"));
