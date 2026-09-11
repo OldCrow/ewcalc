@@ -122,6 +122,83 @@ constexpr Section kPropagationSections[] = {
     {"Earth Geometry", kEarthGeometry, std::size(kEarthGeometry), "prop-horizon-bulge"},
 };
 
+// ── Glossary page (#79) ──────────────────────────────────────────────────────
+// One-line clean-room definitions of terms the calculators and reference
+// pages use without explanation. Unit definitions (dBm, dBi, …) stay on the
+// dB & Units page. The ERP/EIRP pair records the app's convention: Adamy's
+// EW usage pairs "ERP" with dBi gains (strictly EIRP); libew follows the
+// primary source's term (EW103 Sec 5.2).
+
+constexpr Row kGlossPower[] = {
+    val("ERP",  "Tx power × antenna gain, referenced to a half-wave dipole (dBd)"),
+    val("EIRP", "Tx power × antenna gain, referenced to isotropic (dBi); EIRP = ERP + 2.15 dB"),
+    val("Convention here", "\"ERP\" with dBi gains, following Adamy's EW usage (strictly EIRP)"),
+    val("Antenna gain", "directivity × efficiency, relative to isotropic (dBi)"),
+    val("Effective aperture", "equivalent collecting area of an antenna; Aₑ = Gλ²/4π"),
+};
+
+constexpr Row kGlossAntenna[] = {
+    val("3-dB beamwidth", "angular width where the pattern stays within 3 dB (half power) of the peak"),
+    val("Boresight",      "direction of the main-lobe maximum"),
+    val("Sidelobe",       "secondary pattern maximum outside the main lobe (quoted in dBc below peak)"),
+    val("Back lobe",      "sidelobe opposite boresight"),
+    val("Polarization",   "E-field orientation: linear (V/H/slant) or circular (RH/LH)"),
+    val("Cross-pol mismatch", "orthogonal polarizations couple poorly: ≈20 dB linear–linear, ≈3 dB linear–circular"),
+};
+
+constexpr Row kGlossFrequency[] = {
+    val("Octave",  "2:1 frequency span"),
+    val("Decade",  "10:1 frequency span"),
+    val("Percent bandwidth", "bandwidth ÷ center frequency × 100"),
+    val("Instantaneous bandwidth", "band processed at one moment, vs the wider tunable range"),
+};
+
+constexpr Row kGlossReceiver[] = {
+    val("SNR",  "signal-to-noise power ratio (dB)"),
+    val("Eb/N₀", "energy per bit over noise density — SNR normalized by data rate"),
+    val("Noise figure", "SNR degradation added by a receiver, referenced to 290 K (dB)"),
+    val("Noise temperature", "noise figure expressed as an equivalent source temperature (K)"),
+    val("Sensitivity (MDS)", "minimum detectable signal: kTB + NF + required SNR"),
+    val("Dynamic range", "span between sensitivity and overload/compression"),
+    val("Processing gain", "SNR improvement from spreading or integration (e.g. chip rate ÷ data rate)"),
+};
+
+constexpr Row kGlossRadar[] = {
+    val("RCS (σ)", "target's equivalent reflecting area (m² or dBsm)"),
+    val("Swerling cases", "statistical RCS fluctuation models 0–4 (steady; slow/fast scan-to-scan or pulse-to-pulse)"),
+    val("Pd",  "probability a real target crosses the detection threshold"),
+    val("Pfa", "probability noise alone crosses the threshold"),
+    val("Unambiguous range", "max range before echoes fold into the next pulse interval; c/(2·PRF)"),
+    val("Blind speed", "radial speed whose Doppler aliases to zero; multiples of λ·PRF/2"),
+    val("Duty cycle", "pulse width ÷ PRI; average power = peak power × duty cycle"),
+};
+
+constexpr Row kGlossJamming[] = {
+    val("J/S", "jammer-to-signal power ratio at the victim receiver (dB)"),
+    val("Burnthrough range", "range where the signal overcomes jamming (J/S drops below the effective threshold)"),
+    val("Self-protection jamming", "jammer on the protected platform itself"),
+    val("Stand-off jamming", "jammer on a separate platform outside the threat's range"),
+    val("Partial-band jamming", "jammer power concentrated on part of a hopped or spread band"),
+};
+
+constexpr Row kGlossLocation[] = {
+    val("AOA",  "angle of arrival — bearing-based direction finding"),
+    val("TDOA", "time difference of arrival — hyperbolic location from a receiver baseline"),
+    val("FDOA", "frequency difference of arrival — location from differential Doppler"),
+    val("CEP",  "circular error probable — circle around the estimate holding 50 % of fixes"),
+    val("EEP",  "elliptical error probable — the 50 % error ellipse; CEP ≈ 0.75·√(a²+b²)"),
+};
+
+constexpr Section kGlossarySections[] = {
+    {"Power & Gain",          kGlossPower,     std::size(kGlossPower)},
+    {"Antenna Terms",         kGlossAntenna,   std::size(kGlossAntenna)},
+    {"Frequency & Bandwidth", kGlossFrequency, std::size(kGlossFrequency)},
+    {"Receiver & Signal",     kGlossReceiver,  std::size(kGlossReceiver)},
+    {"Radar & Detection",     kGlossRadar,     std::size(kGlossRadar)},
+    {"Jamming & EW",          kGlossJamming,   std::size(kGlossJamming)},
+    {"Emitter Location",      kGlossLocation,  std::size(kGlossLocation)},
+};
+
 // ── dB & Units page (#74, split out per user decision 2026-09-10) ────────────
 
 constexpr Row kDbRatios[] = {
@@ -358,6 +435,8 @@ constexpr Page kPages[] = {
      kLinkSections, std::size(kLinkSections)},
     {"ref-bands", "Frequency Bands", "IEEE, NATO/EU, and ITU band letters",
      kBandSections, std::size(kBandSections)},
+    {"ref-glossary", "Glossary", "Definitions of common EW terms",
+     kGlossarySections, std::size(kGlossarySections)},
     {"ref-db-units", "dB & Units", "Decibel arithmetic and absolute dB units",
      kDbSections, std::size(kDbSections)},
 };

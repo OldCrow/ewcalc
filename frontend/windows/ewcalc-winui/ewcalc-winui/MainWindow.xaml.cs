@@ -74,6 +74,7 @@ public sealed partial class MainWindow : Window
         "ref-antennas"    => "", // Matches NavAntenna's FontIcon glyph
         "ref-link"        => "", // Matches NavLink's FontIcon glyph
         "ref-bands"       => "", // Signal bars — frequency-band letters
+        "ref-glossary"    => "", // Dictionary — term definitions
         "ref-db-units"    => "", // Calculator — dB/units arithmetic
         _                 => "",
     };

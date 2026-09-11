@@ -55,6 +55,7 @@ struct ReferencePageItem: Identifiable, Hashable {
         case "ref-antennas":    return AppSection.antenna.icon
         case "ref-link":        return AppSection.link.icon
         case "ref-bands":       return "textformat.abc"
+        case "ref-glossary":    return "character.book.closed"
         case "ref-db-units":    return "plusminus.circle"
         default:                return "book.closed"
         }

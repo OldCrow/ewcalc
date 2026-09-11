@@ -20,7 +20,7 @@ bool eq(const char* a, std::string_view b) {
 
 void test_pages_shape() {
     const auto pages_span = pages();
-    ASSERT_TRUE(pages_span.size() == 6);
+    ASSERT_TRUE(pages_span.size() == 7);
 
     ASSERT_TRUE(eq(pages_span[0].id, "quick-values"));
     ASSERT_TRUE(eq(pages_span[0].title, "Quick Values"));
@@ -38,9 +38,12 @@ void test_pages_shape() {
     ASSERT_TRUE(eq(pages_span[4].id, "ref-bands"));
     ASSERT_TRUE(eq(pages_span[4].title, "Frequency Bands"));
     ASSERT_TRUE(pages_span[4].section_count == 3);
-    ASSERT_TRUE(eq(pages_span[5].id, "ref-db-units"));
-    ASSERT_TRUE(eq(pages_span[5].title, "dB & Units"));
-    ASSERT_TRUE(pages_span[5].section_count == 2);
+    ASSERT_TRUE(eq(pages_span[5].id, "ref-glossary"));
+    ASSERT_TRUE(eq(pages_span[5].title, "Glossary"));
+    ASSERT_TRUE(pages_span[5].section_count == 7);
+    ASSERT_TRUE(eq(pages_span[6].id, "ref-db-units"));
+    ASSERT_TRUE(eq(pages_span[6].title, "dB & Units"));
+    ASSERT_TRUE(pages_span[6].section_count == 2);
 }
 
 void test_antenna_types_page() {
@@ -79,6 +82,24 @@ void test_link_page() {
     // Sensitivity log form carries the -114 dBm/MHz anchor.
     ASSERT_TRUE(std::string_view{page.sections[1].rows[1].log_value}
                     .find("114") != std::string_view::npos);
+}
+
+void test_glossary_page() {
+    const Page& page = pages()[5];
+    // Pure value rows, no diagrams, no copy buttons — definitions only.
+    for (std::size_t s = 0; s < page.section_count; ++s) {
+        ASSERT_TRUE(page.sections[s].diagram == nullptr);
+        for (std::size_t r = 0; r < page.sections[s].row_count; ++r) {
+            const Row& row = page.sections[s].rows[r];
+            ASSERT_TRUE(row.kind == RowKind::Value);
+            ASSERT_TRUE(row.copy_value == nullptr);
+        }
+    }
+    // The ERP/EIRP pair records the 2.15 dB offset and the convention note.
+    ASSERT_TRUE(eq(page.sections[0].rows[0].label, "ERP"));
+    ASSERT_TRUE(std::string_view{page.sections[0].rows[1].value}.find("2.15")
+                != std::string_view::npos);
+    ASSERT_TRUE(eq(page.sections[0].rows[2].label, "Convention here"));
 }
 
 void test_bands_page() {
@@ -132,7 +153,7 @@ void test_propagation_page() {
 }
 
 void test_db_units_page() {
-    const Page& page = pages()[5];
+    const Page& page = pages()[6];
     ASSERT_TRUE(eq(page.sections[0].title, "Ratio → dB"));
     ASSERT_TRUE(page.sections[0].row_count == 8);
     ASSERT_TRUE(page.sections[1].row_count == 6);
@@ -214,6 +235,7 @@ TEST_MAIN()
     RUN_TEST(test_propagation_page);
     RUN_TEST(test_antenna_types_page);
     RUN_TEST(test_link_page);
+    RUN_TEST(test_glossary_page);
     RUN_TEST(test_bands_page);
     RUN_TEST(test_db_units_page);
     RUN_TEST(test_value_row_fields);

@@ -57,6 +57,8 @@ QString referencePageIcon(const QString& pageId)
         return QStringLiteral("network-transmit-receive"); // matches the Link Budget row
     if (pageId == QStringLiteral("ref-bands"))
         return QStringLiteral("accessories-character-map");
+    if (pageId == QStringLiteral("ref-glossary"))
+        return QStringLiteral("accessories-dictionary");
     if (pageId == QStringLiteral("ref-db-units"))
         return QStringLiteral("accessories-calculator");
     return QStringLiteral("help-contents");
