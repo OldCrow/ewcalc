@@ -378,12 +378,15 @@ void test_ref_row_fields() {
     ASSERT_TRUE(std::strcmp(ewp_ref_row_copy_value(0, 0, 0), "0.0") == 0);
     ASSERT_TRUE(ewp_ref_row_log_value(0, 0, 0) == nullptr);
     ASSERT_TRUE(ewp_ref_row_svg_base(0, 0, 0) == nullptr);
-    // The Key Formulas section (last) holds the FSPL formula row.
-    const std::size_t last = ewp_ref_section_count(0) - 1;
-    ASSERT_TRUE(ewp_ref_row_kind(0, last, 0) == EWP_REF_ROW_FORMULA);
-    ASSERT_TRUE(std::strcmp(ewp_ref_row_svg_base(0, last, 0), "fspl") == 0);
-    ASSERT_TRUE(ewp_ref_row_value(0, last, 0) != nullptr);
-    ASSERT_TRUE(ewp_ref_row_log_value(0, last, 0) != nullptr);
+    // Page 1 (Propagation) / section 0 (Path Loss) starts with FSPL.
+    ASSERT_TRUE(ewp_ref_row_kind(1, 0, 0) == EWP_REF_ROW_FORMULA);
+    ASSERT_TRUE(std::strcmp(ewp_ref_row_svg_base(1, 0, 0), "fspl") == 0);
+    ASSERT_TRUE(ewp_ref_row_value(1, 0, 0) != nullptr);
+    ASSERT_TRUE(ewp_ref_row_log_value(1, 0, 0) != nullptr);
+    // Section diagrams surface through the bridge; NULL where absent.
+    ASSERT_TRUE(std::strcmp(ewp_ref_section_diagram(1, 0), "prop-two-ray") == 0);
+    ASSERT_TRUE(ewp_ref_section_diagram(0, 0) == nullptr);
+    ASSERT_TRUE(ewp_ref_section_diagram(0, 999) == nullptr);
 }
 
 void test_ref_out_of_range() {

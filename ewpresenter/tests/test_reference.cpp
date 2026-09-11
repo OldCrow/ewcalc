@@ -20,14 +20,18 @@ bool eq(const char* a, std::string_view b) {
 
 void test_pages_shape() {
     const auto pages_span = pages();
-    ASSERT_TRUE(pages_span.size() == 1);
+    ASSERT_TRUE(pages_span.size() == 3);
 
-    const Page& page = pages_span[0];
-    ASSERT_TRUE(eq(page.id, "quick-values"));
-    ASSERT_TRUE(eq(page.title, "Reference"));
-    ASSERT_TRUE(eq(page.subtitle, "Common EW values for quick entry"));
-    ASSERT_TRUE(page.section_count == 6);
-    ASSERT_TRUE(page.sections != nullptr);
+    ASSERT_TRUE(eq(pages_span[0].id, "quick-values"));
+    ASSERT_TRUE(eq(pages_span[0].title, "Quick Values"));
+    ASSERT_TRUE(eq(pages_span[0].subtitle, "Common EW values for quick entry"));
+    ASSERT_TRUE(pages_span[0].section_count == 5);
+    ASSERT_TRUE(eq(pages_span[1].id, "ref-propagation"));
+    ASSERT_TRUE(eq(pages_span[1].title, "Propagation"));
+    ASSERT_TRUE(pages_span[1].section_count == 3);
+    ASSERT_TRUE(eq(pages_span[2].id, "ref-db-units"));
+    ASSERT_TRUE(eq(pages_span[2].title, "dB & Units"));
+    ASSERT_TRUE(pages_span[2].section_count == 2);
 }
 
 void test_section_titles_and_counts() {
@@ -39,8 +43,45 @@ void test_section_titles_and_counts() {
     ASSERT_TRUE(page.sections[2].row_count == 6);
     ASSERT_TRUE(page.sections[3].row_count == 8);
     ASSERT_TRUE(page.sections[4].row_count == 5);
-    ASSERT_TRUE(eq(page.sections[5].title, "Key Formulas"));
-    ASSERT_TRUE(page.sections[5].row_count == 1);
+}
+
+void test_propagation_page() {
+    const Page& page = pages()[1];
+    // Every section carries a #72 diagram thumbnail; quick-values has none.
+    ASSERT_TRUE(eq(page.sections[0].title, "Path Loss"));
+    ASSERT_TRUE(eq(page.sections[0].diagram, "prop-two-ray"));
+    ASSERT_TRUE(page.sections[0].row_count == 3);
+    ASSERT_TRUE(eq(page.sections[1].diagram, "prop-knife-edge"));
+    ASSERT_TRUE(eq(page.sections[2].diagram, "prop-horizon-bulge"));
+    ASSERT_TRUE(pages()[0].sections[0].diagram == nullptr);
+
+    // All propagation rows are formulas with both forms and an asset base.
+    for (std::size_t s = 0; s < page.section_count; ++s) {
+        for (std::size_t r = 0; r < page.sections[s].row_count; ++r) {
+            const Row& row = page.sections[s].rows[r];
+            ASSERT_TRUE(row.kind == RowKind::Formula);
+            ASSERT_TRUE(row.svg_base != nullptr);
+            ASSERT_TRUE(row.log_value != nullptr);
+        }
+    }
+    // Constants must match libew: FSPL 32.44, Fresnel /24 000, horizon 4.122.
+    ASSERT_TRUE(std::string_view{page.sections[0].rows[0].log_value}
+                    .find("32.44") != std::string_view::npos);
+    ASSERT_TRUE(std::string_view{page.sections[0].rows[2].log_value}
+                    .find("24 000") != std::string_view::npos);
+    ASSERT_TRUE(std::string_view{page.sections[2].rows[1].log_value}
+                    .find("4.122") != std::string_view::npos);
+}
+
+void test_db_units_page() {
+    const Page& page = pages()[2];
+    ASSERT_TRUE(eq(page.sections[0].title, "Ratio → dB"));
+    ASSERT_TRUE(page.sections[0].row_count == 8);
+    ASSERT_TRUE(page.sections[1].row_count == 6);
+    // Conversion-constant rows carry copy values; prose rows do not.
+    ASSERT_TRUE(eq(page.sections[1].rows[1].copy_value, "30"));   // dBW
+    ASSERT_TRUE(eq(page.sections[1].rows[3].copy_value, "2.15")); // dBd
+    ASSERT_TRUE(page.sections[1].rows[0].copy_value == nullptr);  // dBm
 }
 
 void test_value_row_fields() {
@@ -71,7 +112,7 @@ void test_noise_floor_values_ascii_free() {
 }
 
 void test_formula_row_fields() {
-    const Section& formulas = pages()[0].sections[5];
+    const Section& formulas = pages()[1].sections[0]; // Propagation / Path Loss
     const Row& fspl = formulas.rows[0];
     ASSERT_TRUE(fspl.kind == RowKind::Formula);
     ASSERT_TRUE(eq(fspl.label, "Free-space path loss"));
@@ -112,6 +153,8 @@ void test_all_rows_have_label_and_value() {
 TEST_MAIN()
     RUN_TEST(test_pages_shape);
     RUN_TEST(test_section_titles_and_counts);
+    RUN_TEST(test_propagation_page);
+    RUN_TEST(test_db_units_page);
     RUN_TEST(test_value_row_fields);
     RUN_TEST(test_value_row_without_copy);
     RUN_TEST(test_noise_floor_values_ascii_free);

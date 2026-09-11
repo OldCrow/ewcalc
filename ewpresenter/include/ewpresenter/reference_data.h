@@ -52,6 +52,10 @@ struct Section {
     const char* title;
     const Row*  rows;
     std::size_t row_count;
+    const char* diagram = nullptr; ///< Optional geometry thumbnail: base name
+                                   ///  of a #72 diagram under
+                                   ///  assets/diagrams/png (e.g.
+                                   ///  "prop-two-ray"); nullptr = none.
 };
 
 /// One reference page. `id` is a stable machine key (navigation, settings

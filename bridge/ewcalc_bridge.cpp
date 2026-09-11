@@ -768,6 +768,10 @@ const char* ewp_ref_section_title(size_t page, size_t section) {
     const auto* s = ewp_ref::section(page, section);
     return s ? s->title : nullptr;
 }
+const char* ewp_ref_section_diagram(size_t page, size_t section) {
+    const auto* s = ewp_ref::section(page, section);
+    return s ? s->diagram : nullptr;
+}
 size_t ewp_ref_row_count(size_t page, size_t section) {
     const auto* s = ewp_ref::section(page, section);
     return s ? s->row_count : 0;

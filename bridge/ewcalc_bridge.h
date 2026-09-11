@@ -524,6 +524,9 @@ const char* ewp_ref_page_subtitle(size_t page);
 
 size_t      ewp_ref_section_count(size_t page);
 const char* ewp_ref_section_title(size_t page, size_t section);
+/// Base name of the section's optional geometry thumbnail (a #72 diagram
+/// PNG bundled from assets/diagrams/png); NULL when the section has none.
+const char* ewp_ref_section_diagram(size_t page, size_t section);
 
 size_t        ewp_ref_row_count(size_t page, size_t section);
 EwpRefRowKind ewp_ref_row_kind(size_t page, size_t section, size_t row);
