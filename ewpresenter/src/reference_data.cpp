@@ -162,7 +162,7 @@ constexpr Row kIsotropic[] = {
             "Aₑ = G λ² / (4π)",
             "Aₑ(dBsm) = G(dBi) + 20 log₁₀ λ(m) − 11.0"),
     val("Directivity", "0 dBi  (G = 1)",          "0"),
-    val("Pattern",     "uniform over 4π sr"),
+    val("Pattern",     "uniform over a sphere"),
     val("Purpose",     "gain reference for dBi"),
 };
 

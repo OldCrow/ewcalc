@@ -4,15 +4,15 @@
        aperture area, beamwidth ~ lambda/D. -->
 
   <!-- Dish profile (gray): parabola opening right -->
-  <path d="M110 60 Q 190 150, 110 240" fill="none" stroke="#808080" stroke-width="2.5"/>
-  <text x="90" y="150" text-anchor="middle" fill="#808080">dish</text>
+  <path d="M190 60 Q 110 150, 190 240" fill="none" stroke="#808080" stroke-width="2.5"/>
+  <text x="118" y="150" text-anchor="middle" fill="#808080">dish</text>
 
   <!-- Feed at focus (gray) -->
   <circle cx="175" cy="150" r="5" fill="#808080"/>
   <text x="175" y="132" text-anchor="middle" fill="#808080">feed</text>
 
   <!-- Boresight -->
-  <line x1="110" y1="150" x2="580" y2="150" stroke="#808080" stroke-width="1" stroke-dasharray="6 4"/>
+  <line x1="150" y1="150" x2="580" y2="150" stroke="#808080" stroke-width="1" stroke-dasharray="6 4"/>
 
   <!-- Radiation pattern (blue): very narrow pencil beam -->
   <path d="M175 150 C 300 138, 470 138, 560 149 C 564 150, 564 150, 560 151 C 470 162, 300 162, 175 150 Z"

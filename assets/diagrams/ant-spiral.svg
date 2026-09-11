@@ -14,11 +14,15 @@
   </g>
   <text x="130" y="245" text-anchor="middle" fill="#808080">2-arm spiral in cavity</text>
 
-  <!-- Radiation pattern (blue): single broad lobe out of the page (side view) -->
-  <path d="M250 150 C 320 60, 460 60, 540 148 C 548 150, 548 150, 540 152 C 460 240, 320 240, 250 150 Z"
+  <!-- Edge-on cavity (gray) the side-view lobe emanates from -->
+  <rect x="242" y="105" width="10" height="90" rx="4" fill="none" stroke="#808080" stroke-width="2"/>
+  <text x="247" y="218" text-anchor="middle" fill="#808080">edge-on</text>
+
+  <!-- Radiation pattern (blue): single broad forward lobe (side view) -->
+  <path d="M252 150 C 320 60, 460 60, 540 148 C 548 150, 548 150, 540 152 C 460 240, 320 240, 252 150 Z"
         stroke="#3b82c4" stroke-width="2.5" fill="none"/>
-  <text x="420" y="130" fill="#3b82c4">broad lobe</text>
-  <text x="420" y="150" fill="#3b82c4">(out of the page)</text>
+  <text x="420" y="130" fill="#3b82c4">broad forward lobe</text>
+  <text x="420" y="150" fill="#3b82c4">(normal to spiral face)</text>
 
   <!-- Circular pol / bandwidth annotation (amber) -->
   <text x="400" y="240" text-anchor="middle" fill="#c49a3b">circular pol, multi-octave</text>

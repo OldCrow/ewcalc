@@ -37,5 +37,6 @@
   <text x="345" y="140" fill="#c49a3b">low-angle max</text>
 
   <!-- Takeaway -->
-  <text x="320" y="30" text-anchor="middle" fill="#808080">Ground plane images the missing half &#8212; ~3 dB more gain than a dipole for the same power</text>
+  <text x="320" y="26" text-anchor="middle" fill="#808080">The ground-plane reflection supplies the dipole&#8217;s missing half &#8212;</text>
+  <text x="320" y="44" text-anchor="middle" fill="#808080">~3 dB more gain than a dipole for the same power</text>
 </svg>
