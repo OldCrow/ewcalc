@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 234 32" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Radio-horizon distance, log form:
+       R(km) = 4.122 (sqrt(h_t(m)) + sqrt(h_r(m))).
+       Overline covers just h_t / h_r, with (m) outside the overline.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="22"><tspan font-style="italic">R</tspan><tspan font-size="10">(km)</tspan></text>
+    <text x="46" y="22">=</text>
+    <text x="62" y="22">4.122</text>
+    <text x="108" y="22">(</text>
+    <text x="116" y="22">&#8730;</text>
+    <text x="128" y="20"><tspan font-style="italic">h</tspan><tspan font-size="10" dy="4">t</tspan><tspan dy="-4">&#8203;</tspan><tspan font-size="10">(m)</tspan></text>
+    <text x="167" y="22">+</text>
+    <text x="183" y="22">&#8730;</text>
+    <text x="195" y="20"><tspan font-style="italic">h</tspan><tspan font-size="10" dy="4">r</tspan><tspan dy="-4">&#8203;</tspan><tspan font-size="10">(m)</tspan></text>
+    <text x="223" y="22">)</text>
+  </g>
+  <!-- Radical overlines (cover h_t / h_r only; the (m) sits outside) -->
+  <line x1="128" y1="7" x2="146" y2="7" stroke="#808080" stroke-width="1"/>
+  <line x1="195" y1="7" x2="213" y2="7" stroke="#808080" stroke-width="1"/>
+</svg>
