@@ -30,6 +30,17 @@ namespace refdata = ewpresenter::refdata;
 
 namespace {
 
+/// Escapes '&' for display in a QGroupBox title or a QFormLayout row label.
+/// Both treat '&' as a mnemonic marker (addRow(QString, ...) creates a buddy
+/// QLabel, which does the same), so refdata text such as "Receiver & Signal"
+/// rendered as "Receiver _Signal" — the '&' swallowed and the following space
+/// underlined. The data layer is shared with frontends that have no such
+/// convention, so the escaping belongs here, at the Qt display boundary.
+QString displayText(QString text)
+{
+    return text.replace(QLatin1Char('&'), QStringLiteral("&&"));
+}
+
 /// Adds one "Value" reference row to @p form.
 /// Rows with a copy value get a small "⧉" button; others get a spacer.
 /// When @p registry is non-null, appends {label, valLbl} so a page-level
@@ -43,6 +54,13 @@ void addRefRow(QFormLayout* form,
     auto* valLbl = new QLabel(value);
     valLbl->setTextInteractionFlags(Qt::TextSelectableByMouse);
     valLbl->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    // Values range from short numbers to full prose (Glossary definitions,
+    // RCS validity notes). Unwrapped, the longest line sets the page's
+    // minimum width — at the default window size the Glossary clipped on the
+    // right behind a horizontal scrollbar. Wrapping lets every page fit any
+    // width down to the window minimum; short values are unaffected. Matches
+    // macOS, where Text wraps by default.
+    valLbl->setWordWrap(true);
     valLbl->setAccessibleName(label);
     // Match PageUtils.h's addResultRow(): calculator result values are
     // monospaced, and the Reference page's values sit in the same visual
@@ -80,7 +98,7 @@ void addRefRow(QFormLayout* form,
         spacer->setFixedWidth(26);
         hbox->addWidget(spacer, 0);
     }
-    form->addRow(label + ':', cell);
+    form->addRow(displayText(label) + ':', cell);
 }
 
 /// Creates a QLabel showing a typeset formula image. The PNG is a 2x render
@@ -140,7 +158,7 @@ void addFormulaRow(QFormLayout* form, const refdata::Row& row)
     });
     hbox->addWidget(btn, 0);
 
-    form->addRow(label + ':', cell);
+    form->addRow(displayText(label) + ':', cell);
 }
 
 /// Maximum logical width (px) for a section's diagram thumbnail — matches
@@ -192,8 +210,16 @@ ReferencePage::ReferencePage(std::size_t pageIndex, QWidget* parent)
         const auto& page = pages[pageIndex];
         for (std::size_t s = 0; s < page.section_count; ++s) {
             const auto& section = page.sections[s];
-            auto* box  = new QGroupBox(QString::fromUtf8(section.title));
+            auto* box  = new QGroupBox(displayText(QString::fromUtf8(section.title)));
             auto* form = new QFormLayout(box);
+            // Formula rows are fixed-width images that cannot wrap; label +
+            // standard + log form side by side (Two-ray ground reflection is
+            // the widest) overflows the content area near the 980 px window
+            // minimum, pushing the copy buttons off-screen behind a horizontal
+            // scrollbar. WrapLongRows keeps rows side by side when they fit
+            // and drops only an over-wide field under its label. Word-wrapped
+            // value rows have a small minimum width, so they never trigger it.
+            form->setRowWrapPolicy(QFormLayout::WrapLongRows);
 
             if (section.diagram)
                 form->addRow(makeSectionDiagram(QString::fromUtf8(section.diagram)));

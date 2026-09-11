@@ -29,10 +29,13 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QPainter>
+#include <QPixmap>
 #include <QProcess>
 #include <QPushButton>
 #include <QStackedWidget>
 #include <QString>
+#include <QStyle>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -89,6 +92,16 @@ MainWindow::MainWindow(QWidget* parent)
     nav_->setMinimumWidth(185);
     nav_->setSpacing(1);
 
+    // Every row's label must start at the same x. The item delegate sizes a
+    // row's decoration from the icon's actualSize(), so an icon the theme
+    // ships only at a smaller *fixed* size (Yaru's "system-search" exists
+    // solely as a 16 px legacy entry, against the 24 px list-icon size) gets a
+    // narrower slot and shifts that row's label left. Pin the view's icon size
+    // so addPage() can pad such icons up to it.
+    const int navIconPx = nav_->style()->pixelMetric(QStyle::PM_ListViewIconSize, nullptr, nav_);
+    const QSize navIconSize(navIconPx, navIconPx);
+    nav_->setIconSize(navIconSize);
+
     // Adds a non-selectable section header row
     auto addHeader = [this](const QString& text) {
         auto* item = new QListWidgetItem(text.toUpper());
@@ -112,7 +125,7 @@ MainWindow::MainWindow(QWidget* parent)
     };
 
     // Adds a page item with optional XDG theme icon (graceful fallback)
-    auto addPage = [this](const QString& label, const QString& iconName, QWidget* page) {
+    auto addPage = [this, navIconSize](const QString& label, const QString& iconName, QWidget* page) {
         auto* item = new QListWidgetItem(label);
         // Current GNOME icon themes (Adwaita 46+, Yaru) ship most of these
         // names only in their "-symbolic" form; the full-colour legacy names
@@ -122,6 +135,19 @@ MainWindow::MainWindow(QWidget* parent)
         auto icon = QIcon::fromTheme(iconName);
         if (icon.isNull())
             icon = QIcon::fromTheme(iconName + QStringLiteral("-symbolic"));
+        // Pad a smaller-than-slot icon onto a transparent canvas of the pinned
+        // size, centred (QIcon::paint's default alignment) — the row keeps a
+        // full-width decoration without upscaling the icon into a blur.
+        if (!icon.isNull() && icon.actualSize(navIconSize) != navIconSize) {
+            const qreal dpr = nav_->devicePixelRatioF();
+            QPixmap canvas(navIconSize * dpr);
+            canvas.setDevicePixelRatio(dpr);
+            canvas.fill(Qt::transparent);
+            QPainter painter(&canvas);
+            icon.paint(&painter, QRect(QPoint(0, 0), navIconSize));
+            painter.end();
+            icon = QIcon(canvas);
+        }
         if (!icon.isNull())
             item->setIcon(icon);
         nav_->addItem(item);
