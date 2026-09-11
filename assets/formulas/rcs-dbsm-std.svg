@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- RCS in decibels relative to one square meter, standard form:
+       sigma(dBsm) = 10 log10 sigma(m^2).
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20"><tspan font-style="italic">&#963;</tspan><tspan font-size="10">(dBsm)</tspan> = 10 log<tspan font-size="10" dy="4">10</tspan><tspan dy="-4">&#8203;</tspan> <tspan font-style="italic">&#963;</tspan><tspan font-size="10">(m</tspan><tspan font-size="7" dy="-4">2</tspan><tspan dy="4">&#8203;</tspan><tspan font-size="10">)</tspan></text>
+  </g>
+</svg>

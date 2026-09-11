@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 260" font-family="system-ui, sans-serif" font-size="14">
+  <!-- Sphere RCS scattering regimes: Rayleigh (sigma ~ f^4) rises steeply,
+       Mie/resonance oscillates with decaying ripples around circumference
+       ~ lambda, optical settles flat at sigma = pi r^2. Qualitative sketch,
+       not numerically exact. -->
+
+  <!-- Region separators (dashed) -->
+  <line x1="220" y1="50" x2="220" y2="220" stroke="#808080" stroke-width="1" stroke-dasharray="4 4"/>
+  <line x1="420" y1="50" x2="420" y2="220" stroke="#808080" stroke-width="1" stroke-dasharray="4 4"/>
+
+  <!-- Region labels across the top -->
+  <text x="140" y="46" text-anchor="middle" fill="#808080">Rayleigh</text>
+  <text x="320" y="46" text-anchor="middle" fill="#808080">Mie (resonance)</text>
+  <text x="510" y="46" text-anchor="middle" fill="#808080">optical</text>
+
+  <!-- Axes -->
+  <line x1="60" y1="220" x2="600" y2="220" stroke="#808080" stroke-width="1"/>
+  <line x1="60" y1="50" x2="60" y2="220" stroke="#808080" stroke-width="1"/>
+
+  <!-- X ticks -->
+  <line x1="140" y1="220" x2="140" y2="225" stroke="#808080" stroke-width="1"/>
+  <line x1="320" y1="220" x2="320" y2="225" stroke="#808080" stroke-width="1"/>
+  <line x1="500" y1="220" x2="500" y2="225" stroke="#808080" stroke-width="1"/>
+  <text x="140" y="238" text-anchor="middle" fill="#808080">0.1</text>
+  <text x="320" y="238" text-anchor="middle" fill="#808080">1</text>
+  <text x="500" y="238" text-anchor="middle" fill="#808080">10</text>
+
+  <!-- Axis titles -->
+  <text x="330" y="256" text-anchor="middle" fill="#808080">sphere circumference / &#955;</text>
+  <text x="26" y="135" text-anchor="middle" fill="#808080" transform="rotate(-90 26 135)">&#963; / &#960;r<tspan font-size="10" dy="-4">2</tspan><tspan dy="4">&#8203;</tspan></text>
+
+  <!-- Optical asymptote (dashed) -->
+  <line x1="60" y1="110" x2="600" y2="110" stroke="#808080" stroke-width="1.2" stroke-dasharray="6 4"/>
+  <text x="520" y="102" fill="#808080">&#963; = &#960;r<tspan font-size="10" dy="-4">2</tspan><tspan dy="4">&#8203;</tspan></text>
+
+  <!-- RCS curve (blue): Rayleigh rise, Mie ripples, optical flat -->
+  <path d="M65 214
+           C 110 212, 150 200, 190 165
+           C 210 145, 215 132, 226 116
+           C 236 100, 248 82, 262 80
+           C 278 78, 284 104, 300 126
+           C 312 142, 324 138, 336 118
+           C 346 102, 354 96, 366 100
+           C 378 104, 384 116, 394 112
+           C 404 108, 410 110, 420 110
+           L 600 110"
+        fill="none" stroke="#3b82c4" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+
+  <!-- Rayleigh annotation -->
+  <text x="118" y="182" fill="#c49a3b">&#8733; f<tspan font-size="10" dy="-4">4</tspan><tspan dy="4">&#8203;</tspan></text>
+</svg>
