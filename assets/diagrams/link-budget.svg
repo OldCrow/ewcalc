@@ -7,21 +7,21 @@
   <line x1="30" y1="250" x2="610" y2="250" stroke="#808080" stroke-width="1"/>
 
   <!-- Tx antenna glyph -->
-  <line x1="70" y1="250" x2="70" y2="205" stroke="#808080" stroke-width="2"/>
-  <path d="M70 205 l-10 10 M70 205 l10 10 M70 205 l0 -10" stroke="#808080" stroke-width="2" fill="none"/>
-  <text x="70" y="270" text-anchor="middle" fill="#808080">Tx</text>
+  <line x1="130" y1="250" x2="130" y2="205" stroke="#808080" stroke-width="2"/>
+  <path d="M130 205 l-10 10 M130 205 l10 10 M130 205 l0 -10" stroke="#808080" stroke-width="2" fill="none"/>
+  <text x="130" y="270" text-anchor="middle" fill="#808080">Tx</text>
 
   <!-- Rx antenna glyph -->
-  <line x1="570" y1="250" x2="570" y2="205" stroke="#808080" stroke-width="2"/>
-  <path d="M570 205 l-10 10 M570 205 l10 10 M570 205 l0 -10" stroke="#808080" stroke-width="2" fill="none"/>
-  <text x="570" y="270" text-anchor="middle" fill="#808080">Rx</text>
+  <line x1="460" y1="250" x2="460" y2="205" stroke="#808080" stroke-width="2"/>
+  <path d="M460 205 l-10 10 M460 205 l10 10 M460 205 l0 -10" stroke="#808080" stroke-width="2" fill="none"/>
+  <text x="460" y="270" text-anchor="middle" fill="#808080">Rx</text>
 
   <!-- Sensitivity floor (dashed) -->
   <line x1="30" y1="222" x2="610" y2="222" stroke="#808080" stroke-width="1.5" stroke-dasharray="6 4"/>
   <text x="220" y="215" fill="#808080">sensitivity S</text>
 
   <!-- Signal-level waterfall (blue): P_tx -> +G_tx step -> path loss slope -> +G_rx step -> P_rx -->
-  <polyline points="70,120 130,120 130,72 460,196 520,196 520,158"
+  <polyline points="70,120 130,120 130,72 460,196 460,158 520,158"
             fill="none" stroke="#3b82c4" stroke-width="2.5" stroke-linejoin="round"/>
 
   <!-- P_tx label -->
@@ -35,7 +35,7 @@
   <text x="295" y="118" text-anchor="middle" fill="#c49a3b">path loss</text>
 
   <!-- +G_rx step label -->
-  <text x="514" y="178" text-anchor="end" fill="#c49a3b">+G<tspan font-size="10" dy="3">rx</tspan><tspan dy="-3">&#8203;</tspan></text>
+  <text x="454" y="178" text-anchor="end" fill="#c49a3b">+G<tspan font-size="10" dy="3">rx</tspan><tspan dy="-3">&#8203;</tspan></text>
 
   <!-- P_rx label -->
   <circle cx="520" cy="158" r="3" fill="#3b82c4"/>
