@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Earth-bulge obstruction height, log form:
+       h(m) = d1(km) d2(km) / 17.0  (k = 4/3).
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20"><tspan font-style="italic">h</tspan><tspan font-size="10">(m)</tspan> = <tspan font-style="italic">d</tspan><tspan font-size="10" dy="4">1</tspan><tspan dy="-4">&#8203;</tspan><tspan font-size="10">(km)</tspan> <tspan font-style="italic">d</tspan><tspan font-size="10" dy="4">2</tspan><tspan dy="-4">&#8203;</tspan><tspan font-size="10">(km)</tspan> / 17.0  <tspan font-size="10">(</tspan><tspan font-style="italic" font-size="10">k</tspan><tspan xml:space="preserve" font-size="10"> = 4/3)</tspan></text>
+  </g>
+</svg>

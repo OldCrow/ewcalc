@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 225 32" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Fresnel-Kirchhoff diffraction parameter, standard form:
+       nu = h * sqrt( 2(d1+d2) / (lambda*d1*d2) ).
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="22" font-style="italic">&#957;</text>
+    <text x="24" y="22">=</text>
+    <text x="40" y="22" font-style="italic">h</text>
+    <text x="56" y="22">&#8730;</text>
+    <text x="68" y="20">2(<tspan font-style="italic">d</tspan><tspan font-size="10" dy="4">1</tspan><tspan dy="-4">&#8203;</tspan>+<tspan font-style="italic">d</tspan><tspan font-size="10" dy="4">2</tspan><tspan dy="-4">&#8203;</tspan>) / (<tspan font-style="italic">&#955;d</tspan><tspan font-size="10" dy="4">1</tspan><tspan dy="-4">&#8203;</tspan><tspan font-style="italic">d</tspan><tspan font-size="10" dy="4">2</tspan><tspan dy="-4">&#8203;</tspan>)</text>
+  </g>
+  <!-- Radical overline -->
+  <line x1="68" y1="7" x2="213" y2="7" stroke="#808080" stroke-width="1"/>
+</svg>

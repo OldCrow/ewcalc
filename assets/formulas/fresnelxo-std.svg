@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 190 48" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- First-Fresnel-zone crossover distance, standard form:
+       d_FZ = 4*pi*h_t*h_r / lambda.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <!-- Left side: d_FZ -->
+    <text x="8" y="29"><tspan font-style="italic">d</tspan><tspan font-size="10" dy="4">FZ</tspan><tspan dy="-4">&#8203;</tspan></text>
+    <text x="38" y="29">=</text>
+
+    <!-- Fraction: 4*pi*h_t*h_r over lambda -->
+    <text x="105" y="21" text-anchor="middle">4<tspan font-style="italic">&#960;h</tspan><tspan font-size="10" dy="4">t</tspan><tspan dy="-4">&#8203;</tspan> <tspan font-style="italic">h</tspan><tspan font-size="10" dy="4">r</tspan><tspan dy="-4">&#8203;</tspan></text>
+    <text x="105" y="44" text-anchor="middle" font-style="italic">&#955;</text>
+  </g>
+  <!-- Fraction bar -->
+  <line x1="55" y1="25.5" x2="155" y2="25.5" stroke="#808080" stroke-width="1.2"/>
+</svg>
