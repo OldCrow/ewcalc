@@ -131,6 +131,16 @@ set(FORMULA_PNG_DIR "${EWCALC_SRC_ROOT}/assets/formulas/png")
 set(FORMULA_PNGS
     "${FORMULA_PNG_DIR}/fspl-std.png"
     "${FORMULA_PNG_DIR}/fspl-log.png"
+    "${FORMULA_PNG_DIR}/tworay-std.png"
+    "${FORMULA_PNG_DIR}/tworay-log.png"
+    "${FORMULA_PNG_DIR}/fresnelxo-std.png"
+    "${FORMULA_PNG_DIR}/fresnelxo-log.png"
+    "${FORMULA_PNG_DIR}/knife-std.png"
+    "${FORMULA_PNG_DIR}/knife-log.png"
+    "${FORMULA_PNG_DIR}/bulge-std.png"
+    "${FORMULA_PNG_DIR}/bulge-log.png"
+    "${FORMULA_PNG_DIR}/horizon-std.png"
+    "${FORMULA_PNG_DIR}/horizon-log.png"
 )
 set_source_files_properties(${FORMULA_PNGS} PROPERTIES
     MACOSX_PACKAGE_LOCATION Resources)

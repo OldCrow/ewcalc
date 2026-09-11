@@ -12,7 +12,6 @@ enum AppSection: String, CaseIterable, Identifiable {
     case doppler     = "Doppler & Resolution"
     case digital     = "Digital / DSSS"
     case antenna     = "Antenna"
-    case reference   = "Reference"
 
     var id: String { rawValue }
 
@@ -28,7 +27,6 @@ enum AppSection: String, CaseIterable, Identifiable {
         case .doppler:     return "waveform"
         case .digital:     return "waveform.badge.plus"
         case .antenna:     return "antenna.radiowaves.left.and.right.circle"
-        case .reference:   return "book"
         }
     }
 
@@ -38,9 +36,44 @@ enum AppSection: String, CaseIterable, Identifiable {
     ]
 }
 
+/// One reference page as listed in the sidebar. Pages are enumerated from
+/// the data layer (#73): the sidebar renders whatever ewpresenter::refdata
+/// publishes, so adding a page there adds a nav entry with no view change.
+struct ReferencePageItem: Identifiable, Hashable {
+    let index: Int
+    let id: String
+    let title: String
+
+    /// Sidebar icon per stable page id. A reference page that mirrors a
+    /// calculator's domain reuses that calculator's icon so the two read
+    /// as the same concept; pages with no calculator counterpart get
+    /// their own, and new pages fall back to a book.
+    var icon: String {
+        switch id {
+        case "quick-values":    return "book"
+        case "ref-propagation": return AppSection.propagation.icon
+        case "ref-db-units":    return "plusminus.circle"
+        default:                return "book.closed"
+        }
+    }
+
+    static let all: [ReferencePageItem] = (0..<ewp_ref_page_count()).compactMap { i in
+        guard let id = ewp_ref_page_id(i).map({ String(cString: $0) }),
+              let title = ewp_ref_page_title(i).map({ String(cString: $0) })
+        else { return nil }
+        return ReferencePageItem(index: i, id: id, title: title)
+    }
+}
+
+/// Sidebar selection: a calculator or one reference page.
+enum SidebarItem: Hashable {
+    case calculator(AppSection)
+    case reference(ReferencePageItem)
+}
+
 struct ContentView: View {
     @EnvironmentObject var store: EwCalcStore
-    @State private var selection: AppSection? = .propagation
+    @State private var selection: SidebarItem? = .calculator(.propagation)
     @State private var showResetConfirmation = false
 
     var body: some View {
@@ -49,12 +82,14 @@ struct ContentView: View {
                 Section("Calculators") {
                     ForEach(AppSection.calculators) { section in
                         Label(section.rawValue, systemImage: section.icon)
-                            .tag(section)
+                            .tag(SidebarItem.calculator(section))
                     }
                 }
                 Section("Reference") {
-                    Label(AppSection.reference.rawValue, systemImage: AppSection.reference.icon)
-                        .tag(AppSection.reference)
+                    ForEach(ReferencePageItem.all) { page in
+                        Label(page.title, systemImage: page.icon)
+                            .tag(SidebarItem.reference(page))
+                    }
                 }
             }
             .listStyle(.sidebar)
@@ -88,17 +123,21 @@ struct ContentView: View {
     @ViewBuilder
     private var detailView: some View {
         switch selection {
-        case .propagation: PropagationView(adapter: store.propagation)
-        case .link:        LinkView(adapter: store.link)
-        case .receiver:    ReceiverView(adapter: store.receiver)
-        case .jamming:     JammingView(adapter: store.jamming)
-        case .location:    LocationView(adapter: store.location)
-        case .radar:       RadarView(adapter: store.radar)
-        case .detection:   DetectionView(adapter: store.detection)
-        case .doppler:     DopplerView(adapter: store.doppler)
-        case .digital:     DigitalView(adapter: store.digital)
-        case .antenna:     AntennaView(adapter: store.antenna)
-        case .reference:   ReferenceView()
+        case .calculator(let section):
+            switch section {
+            case .propagation: PropagationView(adapter: store.propagation)
+            case .link:        LinkView(adapter: store.link)
+            case .receiver:    ReceiverView(adapter: store.receiver)
+            case .jamming:     JammingView(adapter: store.jamming)
+            case .location:    LocationView(adapter: store.location)
+            case .radar:       RadarView(adapter: store.radar)
+            case .detection:   DetectionView(adapter: store.detection)
+            case .doppler:     DopplerView(adapter: store.doppler)
+            case .digital:     DigitalView(adapter: store.digital)
+            case .antenna:     AntennaView(adapter: store.antenna)
+            }
+        case .reference(let page):
+            ReferenceView(pageIndex: page.index)
         case .none:
             Text("Select a calculator")
                 .foregroundStyle(.secondary)

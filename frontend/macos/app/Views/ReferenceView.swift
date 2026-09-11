@@ -16,6 +16,7 @@ private enum RefRow {
 
 private struct RefSection {
     let title: String
+    let diagram: String?   ///< Optional #72 diagram base name (bundled PNG).
     let rows: [RefRow]
 }
 
@@ -44,6 +45,7 @@ private func loadSections(page: Int) -> [RefSection] {
             }
         }
         sections.append(RefSection(title: str(ewp_ref_section_title(page, sec)) ?? "",
+                                   diagram: str(ewp_ref_section_diagram(page, sec)),
                                    rows: rows))
     }
     return sections
@@ -173,12 +175,21 @@ private struct FormulaRow: View {
 // ── ReferenceView ─────────────────────────────────────────────────────────────
 
 struct ReferenceView: View {
-    private let sections = loadSections(page: 0)
+    private let title: String
+    private let sections: [RefSection]
+
+    init(pageIndex: Int) {
+        title = ewp_ref_page_title(pageIndex).map { String(cString: $0) } ?? "Reference"
+        sections = loadSections(page: pageIndex)
+    }
 
     var body: some View {
         Form {
             ForEach(sections, id: \.title) { section in
                 Section(section.title) {
+                    if let diagram = section.diagram {
+                        SectionDiagram(name: diagram)
+                    }
                     ForEach(Array(section.rows.enumerated()), id: \.offset) { _, row in
                         switch row {
                         case let .value(label, value, copyValue):
@@ -192,6 +203,24 @@ struct ReferenceView: View {
             }
         }
         .formStyle(.grouped)
-        .navigationTitle("Reference")
+        .navigationTitle(title)
+    }
+}
+
+/// A section's geometry thumbnail: a #72 diagram PNG (2x render, bundled
+/// for the calculator panes) shown inline at reduced size.
+private struct SectionDiagram: View {
+    let name: String
+
+    var body: some View {
+        if let path = Bundle.main.path(forResource: name, ofType: "png"),
+           let nsImage = NSImage(byReferencingFile: path) {
+            Image(nsImage: nsImage)
+                .resizable()
+                .scaledToFit()
+                .frame(maxWidth: 480)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .accessibilityLabel(name.replacingOccurrences(of: "-", with: " "))
+        }
     }
 }
