@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 260" font-family="system-ui, sans-serif" font-size="14">
+  <!-- Microstrip patch: thin radiating patch over a ground-plane substrate,
+       side view. Broad single lobe normal to the patch face, low profile,
+       moderate gain (~6-9 dBi typical). -->
+
+  <!-- Ground plane / substrate (gray) -->
+  <rect x="150" y="184" width="140" height="10" fill="none" stroke="#808080" stroke-width="2"/>
+  <line x1="150" y1="200" x2="290" y2="200" stroke="#808080" stroke-width="2"/>
+  <g stroke="#808080" stroke-width="1.5">
+    <line x1="156" y1="200" x2="146" y2="212"/>
+    <line x1="180" y1="200" x2="170" y2="212"/>
+    <line x1="204" y1="200" x2="194" y2="212"/>
+    <line x1="228" y1="200" x2="218" y2="212"/>
+    <line x1="252" y1="200" x2="242" y2="212"/>
+    <line x1="276" y1="200" x2="266" y2="212"/>
+  </g>
+  <text x="220" y="228" text-anchor="middle" fill="#808080">substrate + ground</text>
+
+  <!-- Patch element -->
+  <rect x="160" y="176" width="120" height="8" fill="#808080"/>
+  <text x="220" y="168" text-anchor="middle" fill="#808080">patch</text>
+
+  <!-- Radiation pattern (blue): single broad hemispherical lobe normal to patch -->
+  <path d="M20 180 C 40 70, 400 70, 420 180"
+        stroke="#3b82c4" stroke-width="2.5" fill="none"/>
+  <text x="430" y="145" fill="#3b82c4">broad broadside lobe</text>
+
+  <!-- Boresight -->
+  <line x1="220" y1="180" x2="220" y2="90" stroke="#808080" stroke-width="1" stroke-dasharray="6 4"/>
+
+  <!-- Beamwidth annotation (amber) -->
+  <g stroke="#c49a3b" stroke-width="1.5" fill="none" stroke-dasharray="6 4">
+    <line x1="220" y1="180" x2="350" y2="112"/>
+  </g>
+  <text x="330" y="108" fill="#c49a3b">~70&#8211;90&#176; wide</text>
+
+  <!-- Takeaway -->
+  <text x="320" y="30" text-anchor="middle" fill="#808080">Low profile, broad broadside beam &#8212; the standard element for conformal and array-fed apertures</text>
+</svg>

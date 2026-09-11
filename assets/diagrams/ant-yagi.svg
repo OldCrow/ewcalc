@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 260" font-family="system-ui, sans-serif" font-size="14">
+  <!-- Yagi-Uda: boom with a reflector, driven element, and directors,
+       side view (elements seen edge-on). Parasitic elements shape a
+       directive forward lobe with a small back lobe. -->
+
+  <!-- Boom (gray) -->
+  <line x1="110" y1="150" x2="270" y2="150" stroke="#808080" stroke-width="2"/>
+
+  <!-- Elements (gray), perpendicular to boom, decreasing length toward front -->
+  <g stroke="#808080" stroke-width="2.5">
+    <line x1="120" y1="122" x2="120" y2="178"/>
+    <line x1="155" y1="128" x2="155" y2="172"/>
+    <line x1="190" y1="134" x2="190" y2="166"/>
+    <line x1="220" y1="137" x2="220" y2="163"/>
+    <line x1="248" y1="139" x2="248" y2="161"/>
+  </g>
+  <text x="120" y="110" text-anchor="middle" fill="#808080">reflector</text>
+  <text x="155" y="192" text-anchor="middle" fill="#808080">driven</text>
+  <text x="234" y="110" text-anchor="middle" fill="#808080">directors</text>
+
+  <!-- Boresight axis -->
+  <line x1="155" y1="150" x2="580" y2="150" stroke="#808080" stroke-width="1" stroke-dasharray="6 4"/>
+
+  <!-- Radiation pattern (blue): directive forward lobe -->
+  <path d="M155 150 C 260 95, 400 95, 540 148 C 548 150, 548 150, 540 152 C 400 205, 260 205, 155 150 Z"
+        stroke="#3b82c4" stroke-width="2.5" fill="none"/>
+  <text x="400" y="138" fill="#3b82c4">main lobe (forward)</text>
+
+  <!-- Small back lobe (gray) -->
+  <path d="M120 150 C 100 132, 80 134, 72 150 C 80 166, 100 168, 120 150"
+        stroke="#808080" stroke-width="1.5" fill="none"/>
+  <text x="76" y="192" text-anchor="middle" fill="#808080">back lobe</text>
+
+  <!-- Takeaway -->
+  <text x="320" y="26" text-anchor="middle" fill="#808080">More directors, more gain and a narrower beam &#8212;</text>
+  <text x="320" y="44" text-anchor="middle" fill="#808080">parasitic elements shape it, only the driven element is fed</text>
+</svg>
