@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 430 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Friis transmission equation, log form:
+       P_rx = P_tx + G_tx + G_rx - L_FSPL   dBm.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20"><tspan font-style="italic">P</tspan><tspan font-size="10" dy="4">rx</tspan><tspan dy="-4">&#8203;</tspan> = <tspan font-style="italic">P</tspan><tspan font-size="10" dy="4">tx</tspan><tspan dy="-4">&#8203;</tspan> + <tspan font-style="italic">G</tspan><tspan font-size="10" dy="4">tx</tspan><tspan dy="-4">&#8203;</tspan> + <tspan font-style="italic">G</tspan><tspan font-size="10" dy="4">rx</tspan><tspan dy="-4">&#8203;</tspan> &#8722; <tspan font-style="italic">L</tspan><tspan font-size="10" dy="4">FSPL</tspan><tspan dy="-4">&#8203;</tspan>  <tspan font-size="10">dBm</tspan></text>
+  </g>
+</svg>

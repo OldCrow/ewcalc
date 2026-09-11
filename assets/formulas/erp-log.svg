@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Effective radiated power, log form: ERP = P_tx(dBm) + G_tx(dB).
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20">ERP = <tspan font-style="italic">P</tspan><tspan font-size="10" dy="4">tx</tspan><tspan dy="-4">&#8203;</tspan><tspan font-size="10">(dBm)</tspan> + <tspan font-style="italic">G</tspan><tspan font-size="10" dy="4">tx</tspan><tspan dy="-4">&#8203;</tspan><tspan font-size="10">(dB)</tspan></text>
+  </g>
+</svg>
