@@ -27,6 +27,7 @@ static RefSection ToManagedSection(const ewpresenter::refdata::Section& s) {
     for (std::size_t i = 0; i < s.row_count; ++i)
         rows[static_cast<int>(i)] = ToManagedRow(s.rows[i]);
     section.Rows = rows;
+    section.Diagram = ToManaged(s.diagram);
     return section;
 }
 

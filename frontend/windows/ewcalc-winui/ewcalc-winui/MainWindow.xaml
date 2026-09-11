@@ -114,17 +114,14 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-                <NavigationViewItemSeparator />
-                <NavigationViewItemHeader Content="REFERENCE" />
-
-                <NavigationViewItem
-                    x:Name="NavReference"
-                    Tag="Reference"
-                    Content="Reference">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE736;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
+                <!--
+                    The REFERENCE separator/header and one item per refdata
+                    page (#74) are built in code (MainWindow.xaml.cs,
+                    BuildReferenceNavItems) — the page list is enumerated
+                    from ewpresenter::refdata::pages() at startup via the
+                    RefData interop wrapper, so a new data-layer page becomes
+                    a nav entry with no XAML change.
+                -->
 
             </NavigationView.MenuItems>
 

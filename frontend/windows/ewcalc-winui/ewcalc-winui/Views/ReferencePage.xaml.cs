@@ -1,36 +1,66 @@
 // Views/ReferencePage.xaml.cs
 //
-// Renders ewpresenter::refdata content (#73) via the RefData interop
+// Renders ewpresenter::refdata content (#73/#74) via the RefData interop
 // wrapper. Row counts and shapes vary per section (and a page can mix Value
 // and Formula rows), so the tree is built once, in code, at construction
 // time rather than templated in XAML — mirrors the "chrome in XAML, content
 // in code-behind" split the goal for #73 calls for.
+//
+// Which refdata::Page to render is a navigation parameter (#74: refdata now
+// publishes multiple pages, one per Reference nav item — see MainWindow's
+// dynamically built nav items and NavView_SelectionChanged), not a
+// hardcoded index.
 using EwCalc.Helpers;
 using EwPresenterNet;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Navigation;
 
 namespace EwCalc.Views;
 
 public sealed partial class ReferencePage : Page
 {
-    // The Reference tab currently shows a single refdata::Page ("quick-values");
-    // additional pages would need navigation, out of scope for #73.
-    private const int PageIndex = 0;
+    // Frame.Navigate(sourcePageType, parameter) is a no-op (per WinUI's Frame,
+    // it skips navigating and OnNavigatedTo never fires) when both the target
+    // page type and parameter already match the current navigation entry.
+    // MainWindow's reset-inputs handler needs to force a reload of the
+    // currently displayed reference page, so it wraps the page index in a
+    // fresh instance of this reference-equality-only token instead of passing
+    // the raw int back.
+    internal sealed class ReloadToken
+    {
+        public required int PageIndex { get; init; }
+    }
 
     public ReferencePage()
     {
         InitializeComponent();
-        BuildContent();
     }
 
-    private void BuildContent()
+    // Frame.Navigate(typeof(ReferencePage), pageIndex) delivers the selected
+    // refdata page index here; content is built on arrival rather than in the
+    // constructor since the navigation parameter isn't known until then.
+    protected override void OnNavigatedTo(NavigationEventArgs e)
     {
-        var pages = RefData.GetPages();
-        if (pages.Length <= PageIndex) return;
+        base.OnNavigatedTo(e);
+        var pageIndex = e.Parameter switch
+        {
+            int index => index,
+            ReloadToken token => token.PageIndex,
+            _ => 0,
+        };
+        BuildContent(pageIndex);
+    }
 
-        var page = pages[PageIndex];
+    private void BuildContent(int pageIndex)
+    {
+        ItemHost.Children.Clear();
+
+        var pages = RefData.GetPages();
+        if (pages.Length <= pageIndex) return;
+
+        var page = pages[pageIndex];
         PageTitleBlock.Text = page.Title;
         PageSubtitleBlock.Text = page.Subtitle;
 
@@ -46,6 +76,10 @@ public sealed partial class ReferencePage : Page
 
             var card = new Border { Style = (Style)Application.Current.Resources["ResultCardStyle"] };
             var rows = new StackPanel { Spacing = 0 };
+
+            if (section.Diagram is string diagram)
+                rows.Children.Add(BuildSectionDiagram(diagram));
+
             foreach (var row in section.Rows)
             {
                 // Branch rather than a ternary: the two builders return unrelated
@@ -60,6 +94,26 @@ public sealed partial class ReferencePage : Page
             card.Child = rows;
             ItemHost.Children.Add(card);
         }
+    }
+
+    // Section geometry thumbnail (#72 diagram PNG, packaged the same way the
+    // calculator pages' Expander sections reference them — see
+    // PropagationPage.xaml's Assets/Diagrams images), reduced to a ~480
+    // logical-pixel max width and centered above the section's rows.
+    private static Image BuildSectionDiagram(string diagram)
+    {
+        var image = new Image
+        {
+            Source = new BitmapImage(new System.Uri($"ms-appx:///Assets/Diagrams/{diagram}.png")),
+            MaxWidth = 480,
+            Stretch = Microsoft.UI.Xaml.Media.Stretch.Uniform,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            Margin = new Thickness(0, 4, 0, 8),
+        };
+        var altText = diagram.Replace("-", " ");
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(image, altText);
+        ToolTipService.SetToolTip(image, altText);
+        return image;
     }
 
     private static Grid BuildValueRow(RefRow row)

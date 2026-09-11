@@ -35,6 +35,8 @@ public value struct RefRow {
 public value struct RefSection {
     System::String^ Title;
     array<RefRow>^  Rows;
+    System::String^ Diagram; ///< Optional #72 diagram base name (assets/diagrams/png);
+                             ///  null when the section has no diagram.
 };
 
 public value struct RefPage {
