@@ -184,6 +184,19 @@ Open milestones are fully itemized here since they reflect actionable state.
     target table, m² and dBsm).
   - #78 OPEN — Umbrella for remaining per-calculator reference pages;
     split as designs firm up.
+  - #79 IMPLEMENTED on dev/v1.2.0 (2026-09-10, filed and built same
+    day at user request, before #77): Glossary reference page — seven
+    sections of one-line definitions incl. the ERP-vs-EIRP convention
+    record (Adamy's EW usage: "ERP" with dBi gains, strictly EIRP,
+    2.15 dB offset documented). Pure data-layer page, no assets.
+  - PROGRESS 2026-09-10: #74 (Propagation + dB & Units pages, split per
+    user), #75 (Antenna Types + Frequency Bands pages; antenna-diagram
+    review round applied), #76 (Link Budget page + waterfall diagram)
+    all IMPLEMENTED on dev/v1.2.0 and green through manual-dispatch CI;
+    awaiting the user's batched cross-machine UI pass. Reference nav is
+    data-driven on all three frontends (a new refdata page = one icon-
+    map entry per platform). Remaining: #77, #78, then the single
+    milestone PR.
 
 ## GitHub Issues Without Milestone [DERIVED]
 Same leaner convention as milestones above: closed items are a count only
