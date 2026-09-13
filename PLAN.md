@@ -508,15 +508,34 @@ Pre-PR / release items, none of them Linux-specific:
   without it, hence Recommends. Its RPM equivalent is deliberately not
   listed: the package name varies by distro and was not verified on a real
   Fedora/openSUSE box.
-- [OPEN 2026-09-09] Formula rows use a flow layout, not columns, on all
-  three frontends (WinUI `StackPanel` Horizontal Spacing=16, Linux
-  `QHBoxLayout` spacing 12 + stretch, macOS HStack). With one formula row
-  today this looks fine, but each row's log form starts wherever its own
-  standard form ends — so a multi-row section will have ragged, unaligned
-  log forms. The v1.2.0 vision text ("one equation per row") and #76
-  ("equation columns") both want columns. Decide before #74-#78 build on
-  it; a shared two-column grid per section is the obvious fix, and it has
-  to be made in all three frontends to stay in parity.
+- [OPEN 2026-09-12 — macOS and Linux only] Formula rows used a flow
+  layout, not columns, on all three frontends (WinUI `StackPanel`
+  Horizontal, Linux `QHBoxLayout` + stretch, macOS HStack): each row's log
+  form started wherever its own standard form ended, so a multi-row
+  section had ragged log forms — measured at a ~330 px spread on
+  Propagation, 287 on Link Budget. The v1.2.0 vision ("one equation per
+  row") and #76 ("equation columns") both want columns.
+  FIXED ON WINUI 2026-09-12 (user-sequenced: fix where it can be
+  verified, leave the frontends this machine cannot build): one Grid per
+  section, standard forms in a shared Auto column (capped 400 px) and log
+  forms in the star column beside them, so the Auto column sizes to the
+  section's widest standard form and every log form in that section lands
+  on one left edge. Diagrams, value rows and formula headers span both
+  columns, so interleaving order is unaffected. Each form sits in its own
+  DownOnly Viewbox — a Grid cell hands its child a finite width, so a form
+  scales down only when its column is too narrow and natural size stays
+  the ceiling. Verified: Propagation's log edges collapsed from six to one
+  per section, no clipping or horizontal scrollbar on any of the thirteen
+  pages at 860 px or 700 px, copy buttons intact on both row kinds.
+  Note the trade-off the column model accepts: at widths where a log form
+  must shrink, it no longer matches its standard form's glyph size — the
+  pair-scaled-as-a-unit behaviour only held while the forms were ragged.
+  At any width that fits, both render at natural size and still match.
+  REMAINING: the same restructure on Linux (`ReferencePage.cpp`,
+  QFormLayout → per-section QGridLayout) and macOS (`ReferenceView.swift`,
+  HStack → Grid/LazyVGrid) — neither builds on the Windows box, so they
+  belong to a session on those machines, each with its own UI pass. Until
+  then the three frontends differ on this detail.
 - [RESOLVED 2026-09-09] The Windows box's VS 18 2026 install was damaged,
   not merely stale — a strictly worse case than the vswhere lag AGENTS.md
   records, and worth recognising if it recurs after an in-place upgrade.
