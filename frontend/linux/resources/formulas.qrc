@@ -40,5 +40,11 @@
         <file alias="burn2ray-std.png">../../../assets/formulas/png/burn2ray-std.png</file>
         <file alias="pbopt-std.png">../../../assets/formulas/png/pbopt-std.png</file>
         <file alias="pbduty-std.png">../../../assets/formulas/png/pbduty-std.png</file>
+        <file alias="cepaoa-std.png">../../../assets/formulas/png/cepaoa-std.png</file>
+        <file alias="ceptdoa-std.png">../../../assets/formulas/png/ceptdoa-std.png</file>
+        <file alias="cepeep-std.png">../../../assets/formulas/png/cepeep-std.png</file>
+        <file alias="cepadamy-std.png">../../../assets/formulas/png/cepadamy-std.png</file>
+        <file alias="jsspj-std.png">../../../assets/formulas/png/jsspj-std.png</file>
+        <file alias="jssoj-std.png">../../../assets/formulas/png/jssoj-std.png</file>
     </qresource>
 </RCC>

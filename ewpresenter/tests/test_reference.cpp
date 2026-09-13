@@ -20,7 +20,7 @@ bool eq(const char* a, std::string_view b) {
 
 void test_pages_shape() {
     const auto pages_span = pages();
-    ASSERT_TRUE(pages_span.size() == 10);
+    ASSERT_TRUE(pages_span.size() == 11);
 
     ASSERT_TRUE(eq(pages_span[0].id, "quick-values"));
     ASSERT_TRUE(eq(pages_span[0].title, "Quick Values"));
@@ -46,10 +46,13 @@ void test_pages_shape() {
     ASSERT_TRUE(pages_span[7].section_count == 3);
     ASSERT_TRUE(eq(pages_span[8].id, "ref-jamming"));
     ASSERT_TRUE(eq(pages_span[8].title, "Jamming"));
-    ASSERT_TRUE(pages_span[8].section_count == 3);
-    ASSERT_TRUE(eq(pages_span[9].id, "ref-rcs"));
-    ASSERT_TRUE(eq(pages_span[9].title, "RCS"));
-    ASSERT_TRUE(pages_span[9].section_count == 2);
+    ASSERT_TRUE(pages_span[8].section_count == 5);
+    ASSERT_TRUE(eq(pages_span[9].id, "ref-location"));
+    ASSERT_TRUE(eq(pages_span[9].title, "Location"));
+    ASSERT_TRUE(pages_span[9].section_count == 3);
+    ASSERT_TRUE(eq(pages_span[10].id, "ref-rcs"));
+    ASSERT_TRUE(eq(pages_span[10].title, "RCS"));
+    ASSERT_TRUE(pages_span[10].section_count == 2);
 }
 
 void test_antenna_types_page() {
@@ -89,20 +92,40 @@ void test_receiver_page() {
 
 void test_jamming_page() {
     const Page& page = pages()[8];
-    // Both #72 jamming geometry diagrams are reused.
+    ASSERT_TRUE(page.section_count == 5);
+    // The #72 radar-jamming geometry diagrams pair with the RADAR J/S
+    // sections (user correction 2026-09-12); comms has its own section.
     ASSERT_TRUE(eq(page.sections[0].diagram, "jamming-self-protection"));
     ASSERT_TRUE(eq(page.sections[1].diagram, "jamming-stand-off"));
     ASSERT_TRUE(page.sections[2].diagram == nullptr);
+    // Radar forms carry the 71 dB constant and the R4-vs-R2 contrast note.
+    ASSERT_TRUE(std::string_view{page.sections[0].rows[0].value}.find("71")
+                != std::string_view::npos);
+    ASSERT_TRUE(std::string_view{page.sections[1].rows[0].value}
+                    .find("40 log") != std::string_view::npos);
+    ASSERT_TRUE(eq(page.sections[2].rows[0].svg_base, "js"));
     // All jamming formulas are single-form; burnthrough quotes 32.44.
     for (std::size_t s2 = 0; s2 < page.section_count; ++s2)
         for (std::size_t r = 0; r < page.sections[s2].row_count; ++r)
             ASSERT_TRUE(page.sections[s2].rows[r].log_value == nullptr);
-    ASSERT_TRUE(std::string_view{page.sections[1].rows[0].value}.find("32.44")
+    ASSERT_TRUE(std::string_view{page.sections[3].rows[0].value}.find("32.44")
                 != std::string_view::npos);
 }
 
-void test_rcs_page() {
+void test_location_page() {
     const Page& page = pages()[9];
+    ASSERT_TRUE(eq(page.sections[0].diagram, "loc-aoa-cep"));
+    ASSERT_TRUE(eq(page.sections[2].diagram, "loc-eep-cep"));
+    // Both Wegner EEP->CEP forms are shown, ours first (Eq 24a with 0.59).
+    ASSERT_TRUE(std::string_view{page.sections[2].rows[0].value}.find("0.59")
+                != std::string_view::npos);
+    ASSERT_TRUE(std::string_view{page.sections[2].rows[1].value}.find("0.75")
+                != std::string_view::npos);
+    ASSERT_TRUE(page.sections[2].rows[1].kind == RowKind::Formula);
+}
+
+void test_rcs_page() {
+    const Page& page = pages()[10];
     ASSERT_TRUE(eq(page.sections[0].title, "Simple Shapes"));
     ASSERT_TRUE(eq(page.sections[0].diagram, "rcs-regions"));
     // Six single-form shape formulas, then two value notes.
@@ -297,6 +320,7 @@ TEST_MAIN()
     RUN_TEST(test_link_page);
     RUN_TEST(test_receiver_page);
     RUN_TEST(test_jamming_page);
+    RUN_TEST(test_location_page);
     RUN_TEST(test_rcs_page);
     RUN_TEST(test_glossary_page);
     RUN_TEST(test_bands_page);

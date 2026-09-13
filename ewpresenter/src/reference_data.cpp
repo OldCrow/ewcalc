@@ -409,11 +409,31 @@ constexpr Section kReceiverSections[] = {
 // EW103 Sec 9.1 p. 252; burnthrough inversions per Adamy EW101 Sec 9.3
 // pp. 187-191 (our 32.44 where Adamy rounds); partial-band optimum per
 // Adamy EW102 Sec 5.9.1.2 / EW103 Sec 9.3.1 (the corrected v0.7.0
-// surplus-power behavior). Both #72 jamming geometry diagrams reused.
+// surplus-power behavior). Radar J/S forms (self-protection and
+// stand-off; the 71 dB constant = 11 dB for 4π + 60 dB for the km/m²
+// unit choices) are the standard Adamy radar-jamming equations
+// (EW101 ch 9 / EW102 ch 5 family — exact page pin pending a book
+// check), matching the geometries the two #72 diagrams depict; the
+// comms form keeps its own section with the R⁴-vs-R² contrast noted.
 
-constexpr Row kJsRatio[] = {
+constexpr Row kSpjRadar[] = {
+    formula("Self-protection J/S", "jsspj",
+            "J/S = ERP_J − ERP_S + 71 + 20 log₁₀ R(km) − 10 log₁₀ σ(m²)  dB"),
+    val("R⁴ vs R²", "the skin return falls off as R⁴ (two-way) but jamming only as R² (one-way) — J/S improves 20 dB per range decade, so burnthrough happens close-in"),
+    val("Constant 71", "collects 4π (11 dB) and the km / m² unit choices (60 dB)"),
+};
+
+constexpr Row kSojRadar[] = {
+    formula("Stand-off J/S", "jssoj",
+            "J/S = ERP_J − ERP_S + G_S − G_M + 71 + 40 log₁₀ R_T(km) − 20 log₁₀ R_J(km) − 10 log₁₀ σ(m²)  dB"),
+    val("G_S vs G_M", "stand-off jamming usually enters the radar's sidelobes (G_S) while the target sits in the mainbeam (G_M)"),
+    val("Ranges", "R_T is radar–target (two-way, 40 log); R_J is radar–jammer (one-way, 20 log)"),
+};
+
+constexpr Row kJsComms[] = {
     formula("Communications J/S", "js",
             "J/S = (ERP_J + G_rj − L_j) − (ERP_S + G_rs − L_s)  dB"),
+    val("One-way symmetry", "both paths are one-way (R²), so the terms mirror — unlike radar jamming's R⁴ vs R²"),
     val("Sign convention", "positive J/S favors the jammer"),
     val("Path regimes", "signal and jammer paths may use different LOS / two-ray models"),
 };
@@ -435,9 +455,47 @@ constexpr Row kPartialBand[] = {
 };
 
 constexpr Section kJammingSections[] = {
-    {"J/S Ratio",            kJsRatio,      std::size(kJsRatio),      "jamming-self-protection"},
-    {"Burnthrough",          kBurnthrough,  std::size(kBurnthrough),  "jamming-stand-off"},
-    {"Partial-Band Jamming", kPartialBand,  std::size(kPartialBand)},
+    {"Radar Jamming — Self-Protection", kSpjRadar,    std::size(kSpjRadar),    "jamming-self-protection"},
+    {"Radar Jamming — Stand-Off",       kSojRadar,    std::size(kSojRadar),    "jamming-stand-off"},
+    {"Comms Jamming",                   kJsComms,     std::size(kJsComms)},
+    {"Burnthrough (one-way link)",      kBurnthrough, std::size(kBurnthrough)},
+    {"Partial-Band Jamming",            kPartialBand, std::size(kPartialBand)},
+};
+
+// ── Location page (#84) ──────────────────────────────────────────────────────
+// Pins per docs/formulas.md: all three CEP forms trace to Wegner R-722-PR
+// (1971), obtained and verified 2026-09-06. CEP-from-EEP is Wegner Eq (24a)
+// 0.59(a+b), ≤1 % for a/b ≤ 2; Adamy's 0.75·√(a²+b²) (EW102 Sec 6.6.2) is
+// Wegner Eq (30), the rotation-free ≤10 % shortcut — both shown, per the
+// citation rule. AOA/TDOA closed forms are standard rules of thumb; Wegner
+// treats both rigorously by Cramér-Rao covariance and isocontour.
+
+constexpr Row kCepAoa[] = {
+    formula("CEP from AOA", "cepaoa",
+            "CEP ≈ 1.2 R tan σ_θ"),
+    val("Basis", "CEP = 1.1774·σ for circular 2-D Gaussian error, rounded to 1.2"),
+    val("Geometry", "two receivers, ideal 90° crossing; R·tan σ_θ is RMS cross-range error"),
+};
+
+constexpr Row kCepTdoa[] = {
+    formula("CEP from TDOA", "ceptdoa",
+            "CEP ≈ c σ_t R / (2B)"),
+    val("Geometry", "ideal baseline perpendicular to the emitter; Wegner Sec IV maps real geometries by isocontour"),
+};
+
+constexpr Row kCepEep[] = {
+    formula("CEP from EEP (Wegner Eq 24a)", "cepeep",
+            "CEP ≈ 0.59 (a + b)"),
+    formula("Adamy's shortcut (Wegner Eq 30)", "cepadamy",
+            "CEP ≈ 0.75 √(a² + b²)"),
+    val("Which to use", "Eq 24a is ≤1 % for a/b ≤ 2 (libew's choice); Eq 30 is rotation-free but ≤10 %"),
+    val("Axes", "a, b are 1-σ semi-major/semi-minor axes of the error ellipse"),
+};
+
+constexpr Section kLocationSections[] = {
+    {"CEP from Angle of Arrival", kCepAoa,  std::size(kCepAoa),  "loc-aoa-cep"},
+    {"CEP from TDOA",             kCepTdoa, std::size(kCepTdoa)},
+    {"Error Ellipse → CEP",       kCepEep,  std::size(kCepEep),  "loc-eep-cep"},
 };
 
 // ── RCS page (#77) ───────────────────────────────────────────────────────────
@@ -548,6 +606,8 @@ constexpr Page kPages[] = {
      kReceiverSections, std::size(kReceiverSections)},
     {"ref-jamming", "Jamming", "J/S, burnthrough, and partial-band forms",
      kJammingSections, std::size(kJammingSections)},
+    {"ref-location", "Location", "CEP from AOA, TDOA, and the error ellipse",
+     kLocationSections, std::size(kLocationSections)},
     {"ref-rcs", "RCS", "Simple-shape formulas and typical targets",
      kRcsSections, std::size(kRcsSections)},
 };

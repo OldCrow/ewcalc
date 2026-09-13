@@ -182,6 +182,12 @@ set(FORMULA_PNGS
     "${FORMULA_PNG_DIR}/burn2ray-std.png"
     "${FORMULA_PNG_DIR}/pbopt-std.png"
     "${FORMULA_PNG_DIR}/pbduty-std.png"
+    "${FORMULA_PNG_DIR}/cepaoa-std.png"
+    "${FORMULA_PNG_DIR}/ceptdoa-std.png"
+    "${FORMULA_PNG_DIR}/cepeep-std.png"
+    "${FORMULA_PNG_DIR}/cepadamy-std.png"
+    "${FORMULA_PNG_DIR}/jsspj-std.png"
+    "${FORMULA_PNG_DIR}/jssoj-std.png"
 )
 set_source_files_properties(${FORMULA_PNGS} PROPERTIES
     MACOSX_PACKAGE_LOCATION Resources)
