@@ -404,8 +404,8 @@ constexpr Row kSpjRadar[] = {
 constexpr Row kSojRadar[] = {
     formula("Stand-off J/S", "jssoj",
             "J/S = ERP_J − ERP_S + G_S − G_M + 71 + 40 log₁₀ R_T(km) − 20 log₁₀ R_J(km) − 10 log₁₀ σ(m²)  dB"),
-    val("G_S vs G_M", "stand-off jamming usually enters the radar's sidelobes (G_S) while the target sits in the mainbeam (G_M)"),
-    val("Ranges", "R_T is radar–target (two-way, 40 log); R_J is radar–jammer (one-way, 20 log)"),
+    val("Gₛ vs Gₘ", "stand-off jamming usually enters the radar's sidelobes (Gₛ) while the target sits in the mainbeam (Gₘ)"),
+    val("Ranges", "Rₜ is radar–target (two-way, 40 log); Rⱼ is radar–jammer (one-way, 20 log)"),
 };
 
 constexpr Row kJsComms[] = {
@@ -452,7 +452,7 @@ constexpr Row kCepAoa[] = {
     formula("CEP from AOA", "cepaoa",
             "CEP ≈ 1.2 R tan σ_θ"),
     val("Basis", "CEP = 1.1774·σ for circular 2-D Gaussian error, rounded to 1.2"),
-    val("Geometry", "two receivers, ideal 90° crossing; R·tan σ_θ is RMS cross-range error"),
+    val("Geometry", "two receivers, ideal 90° crossing; R·tan σ(θ) is RMS cross-range error"),
 };
 
 constexpr Row kCepTdoa[] = {
@@ -540,7 +540,7 @@ constexpr Row kDopplerRows[] = {
             "f_d ≈ 6.67 v_r(m/s) f(GHz)  Hz"),
     formula("Unambiguous range", "unambrange",
             "R_u = c / (2 PRF)"),
-    val("Adamy's form", "stated as R_max < 0.5·PRI·c — algebraically the same"),
+    val("Adamy's form", "stated as Rₘₐₓ < 0.5·PRI·c — algebraically the same"),
     formula("First blind speed", "blindspeed",
             "v_b = λ PRF / 2  (multiples n·v_b)"),
     formula("Unambiguous velocity", "unambvel",
@@ -557,7 +557,7 @@ constexpr Row kResolutionRows[] = {
     formula("Cross-range resolution", "crossres",
             "ΔX = R θ_3dB  (θ in radians)"),
     val("SAR azimuth (method delta)", "Adamy EW102 3.8.2 gives d = λR/(2L) — SAR's two-way phase history halves the real-beam λR/L"),
-    val("Resolution cell", "ΔR × R·θ_az × R·θ_el bounds the cell — see the diagram"),
+    val("Resolution cell", "ΔR × R·θ(az) × R·θ(el) bounds the cell — see the diagram"),
 };
 
 constexpr Section kDopplerSections[] = {
@@ -576,7 +576,7 @@ constexpr Row kEbnoRows[] = {
     formula("Eb/N₀ ↔ SNR", "ebno",
             "Eb/N₀ = SNR + 10 log₁₀(BW/R_b)",
             "SNR = Eb/N₀ − 10 log₁₀(BW/R_b)"),
-    val("BW vs R_b", "BW is the receiver noise bandwidth; R_b the bit rate — the ratio normalizes SNR per bit"),
+    val("BW vs R(bit)", "BW is the receiver noise bandwidth; R(bit) the bit rate — the ratio normalizes SNR per bit"),
 };
 
 constexpr Row kModulation[] = {
@@ -617,7 +617,7 @@ constexpr Row kRcsShapes[] = {
     formula("Trihedral corner (max)",      "rcs-trihedral", "σ = 4π a⁴ / (3λ²)"),
     formula("m² → dBsm",                   "rcs-dbsm",      "σ(dBsm) = 10 log₁₀ σ(m²)"),
     val("Validity", "closed forms hold in the optical region (dimensions ≫ λ)"),
-    val("Range scaling", "detection range ∝ σ^¼ — every 12 dB of RCS reduction halves it"),
+    val("Range scaling", "detection range ∝ ⁴√σ — every 12 dB of RCS reduction halves it"),
 };
 
 constexpr Row kRcsTargets[] = {
