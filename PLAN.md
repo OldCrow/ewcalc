@@ -231,7 +231,10 @@ Open milestones are fully itemized here since they reflect actionable state.
     and the 71 constant (EW101 ch 9 / EW102 ch 5 family).
   - GATE (user, 2026-09-12): NO milestone PR until the user completes
     Linux and Windows UI passes over #82–#87. #82–#87 stay open on
-    GitHub for the PR to close.
+    GitHub for the PR to close. BOTH PASSES ARE NOW DONE — Linux
+    (close-out below) and Windows (2026-09-12, below) — so the gate is
+    satisfied for #82–#87; what remains before the PR is the macOS and
+    Linux half of the formula-column restructure (Known Gaps).
   - WINDOWS UI PASS 2026-09-12 (#82–#87 on dev/v1.2.0 at c4882db): core
     14/14, WinUI solution warning-free, dotnet format clean. All 13
     reference pages driven via UIA — 93/93 formula and diagram images
@@ -248,13 +251,22 @@ Open milestones are fully itemized here since they reflect actionable state.
     never shrinks, so at the 860 px default the radar-range log form
     clipped mid-equation at the card edge. Wrapping the pair in a
     Viewbox (Uniform, StretchDirection=DownOnly) gives it a finite width
-    and scales the pair as a unit — natural size stays the ceiling, and
-    scaling both forms together preserves the shared-glyph-size rule
-    that shrinking one form alone would break. Verified clean on all 13
-    pages at 860 px and again at 700 px: no horizontal scrollbar, no
-    image past the viewport edge.
-    Still open: the flow-layout column alignment (Known Gaps) — each
-    row scales independently, so log forms remain ragged across rows.
+    and scales it down; natural size stays the ceiling. Verified clean on
+    all 13 pages at 860 px and again at 700 px: no horizontal scrollbar,
+    no image past the viewport edge. (The one Viewbox around the pair was
+    superseded later the same day by one per form — see the column fix
+    below — once the forms became column-bound.)
+    THEN, at the user's direction, the flow-layout column alignment
+    (Known Gaps) was closed on WinUI too: one Grid per section, standard
+    forms in a shared Auto column and log forms in the star column, so
+    every log form in a section shares a left edge. Propagation's six
+    distinct log-form left edges collapsed to one per section; all 13
+    pages re-verified clean at 860 px and 700 px, copy buttons intact on
+    both row kinds. Accepted trade-off: a log form that must shrink no
+    longer matches its standard form's glyph size — unavoidable once the
+    two are column-bound, and only visible below ~900 px. macOS and Linux
+    keep the flow layout until a session on those machines can verify the
+    same restructure.
   - WINDOWS UI PASS 2026-09-10 (#74-#77, #79 on dev/v1.2.0 at 7fadf97):
     core 14/14, WinUI solution warning-free, dotnet format clean; all 8
     reference pages driven via UIA with every formula/diagram image
@@ -357,13 +369,14 @@ itemized since they're actionable.
   (`gh workflow run ci.yml --ref dev/v1.2.0` — CI does not trigger on
   dev pushes; dispatch also exercises tag-gated-otherwise packaging)
   plus Windows/Linux UI passes; the final PR should be a slam dunk.
-- NEXT (session of 2026-09-10 ended here): scope #78 — split the
-  umbrella into per-domain page issues or close-as-deferred, settle
-  the Eb/N₀/Noise-Floor QV dispositions with it, consider the WinUI
-  formula-wrap gap, then the single dev/v1.2.0 → main milestone PR
-  (validated by manual-dispatch CI + both machines' UI passes; should
-  be a slam dunk). Full formula-fidelity sweep remains future
-  assurance work.
+- NEXT (session of 2026-09-12 (Windows) ended here): the formula-column
+  restructure on Linux and macOS (Known Gaps) — the only known parity
+  divergence left — each on a machine that can build and UI-pass it.
+  Then the single dev/v1.2.0 → main milestone PR, validated by
+  manual-dispatch CI plus the UI passes already recorded, closing
+  #82–#87. Also carried: the PENDING PINS for the next book session
+  (radar SPJ/SOJ J/S forms and the 71 constant). Full formula-fidelity
+  sweep remains future assurance work.
 
 ## Session Close-out 2026-09-12 (Linux UI pass) [DERIVED]
 
@@ -426,6 +439,51 @@ Pre-PR / release items, none of them Linux-specific:
 - Both lint scripts now run on the Linux box and pass clean
   (`lint-linux.sh`, `lint-cpp.sh`); cppcheck and clang-tidy are installed
   user-space there, not system-wide.
+
+## Session Close-out 2026-09-12 (Windows UI pass) [DERIVED]
+
+Final Windows pass over the thirteen-page reference library, closing the
+UI-pass gate for #82–#87. Core build warning-free with 14/14 tests, WinUI
+solution warning-free, `dotnet format style --verify-no-changes` clean. All
+thirteen pages driven through UIA: 93/93 formula and diagram images load,
+all 67 formula PNGs and 23 diagrams staged into the package, every page
+reviewed visually, every page re-checked at 860 px and 700 px. Calculator
+outputs unchanged, the "Comms Jamming" relabel is live, and formula copy
+still yields `std   |   log`.
+
+Fixed this session (all pushed to `dev/v1.2.0`):
+- `0661674` — formula pairs shrink to fit, completing 1e983c1 on WinUI.
+  The audit gave WinUI `MaxWidth` + `Stretch="Uniform"` believing it
+  responsive, but the pair sat in a horizontal `StackPanel`, which measures
+  children with unbounded width: `MaxWidth` only caps upscaling, so nothing
+  ever shrank and at the 860 px default the radar-range log form clipped
+  mid-equation. Same class of mistake as Qt's fixed 560-logical cap — a
+  sizing rule that cannot actually respond to the width on offer.
+- `848ad92` — formula columns aligned per section, closing the WinUI half
+  of the flow-layout gap. See Known Gaps for the design and the
+  glyph-size trade-off it accepts.
+
+Carried items from the Linux close-out, all three resolved:
+- **Font coverage — CLEAN.** `Rⱼ` (U+2C7C) and the U+2090 subscripts
+  (`Gₛ Gₘ Rₜ Rₘₐₓ`) render correctly in both Segoe UI and the monospace
+  face; no tofu. Checked by pixel-cropping the named rows: Jamming
+  (`Gₛ vs Gₘ`, `Ranges`), RCS (`Range scaling`, now `⁴√σ`), Doppler &
+  Resolution (`Resolution cell`), plus the Location/Digital prose seen in
+  the page review.
+- **Narrow-window check on Radar & Detection — this is where the clipping
+  bug surfaced**, found and fixed as `0661674` above. The prediction that
+  WinUI's `MaxWidth`/`Uniform` "should shrink correctly" was wrong, for the
+  StackPanel reason above.
+- **Uppercase-subscript caveat — not jarring in practice.** The typeset
+  masters keep uppercase subscripts while the prose uses lowercase glyphs
+  and the parenthetical forms; side by side in a row the difference reads
+  as ordinary typographic variation, not as an error. Left as-is; reopen if
+  the user disagrees on sight.
+
+Carried into the next session:
+- The formula-column restructure on **Linux and macOS** — the only known
+  parity divergence left, and the last thing before the milestone PR.
+  Details and the accepted trade-off are in the Known Gaps entry.
 
 ## Provenance Framing & Formula Fidelity [OPEN]
 - Found 2026-09-06 while pinning #68's first citation: Adamy EW103
