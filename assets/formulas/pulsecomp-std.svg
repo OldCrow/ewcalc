@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 142 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Pulse-compression gain, standard (and only) form:
+       G_pc = 10 log10 (T·B).
+       G italic with small upright pc subscript; T·B italic with a
+       midline dot for the product.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20"><tspan font-style="italic">G</tspan><tspan font-size="10" dy="4">pc</tspan><tspan dy="-4">&#8203;</tspan> = 10 log<tspan font-size="10" dy="4">10</tspan><tspan dy="-4">&#8203;</tspan> (<tspan font-style="italic">T&#183;B</tspan>)</text>
+  </g>
+</svg>

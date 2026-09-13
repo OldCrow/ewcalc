@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 236 48" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Radar range equation, standard form:
+       R_max^4 = P_t G^2 lambda^2 sigma / ((4 pi)^3 k T B F SNR_r L).
+       R italic with small upright "max" subscript and superscript 4;
+       numerator all italic (P_t, G^2, lambda^2, sigma); denominator
+       italic variables ((4pi)^3, k T B F, L) with upright SNR and its
+       small upright r subscript (a coherent detection-threshold ratio,
+       not an index).
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <!-- Left side: R_max^4 = -->
+    <text x="8" y="29"><tspan font-style="italic">R</tspan><tspan font-size="10" dy="4">max</tspan><tspan dy="-4">&#8203;</tspan><tspan font-size="11" dy="-5">4</tspan><tspan dy="5">&#8203;</tspan> =</text>
+
+    <!-- Fraction: P_t G^2 lambda^2 sigma over (4pi)^3 k T B F SNR_r L -->
+    <text x="148" y="21" text-anchor="middle"><tspan font-style="italic">P</tspan><tspan font-size="10" dy="4">t</tspan><tspan dy="-4">&#8203;</tspan> <tspan font-style="italic">G</tspan><tspan font-size="11" dy="-5">2</tspan><tspan dy="5">&#8203;</tspan> <tspan font-style="italic">&#955;</tspan><tspan font-size="11" dy="-5">2</tspan><tspan dy="5">&#8203;</tspan> <tspan font-style="italic">&#963;</tspan></text>
+    <text x="148" y="44" text-anchor="middle">(4<tspan font-style="italic">&#960;</tspan>)<tspan font-size="11" dy="-5">3</tspan><tspan dy="5">&#8203;</tspan> &#183; <tspan font-style="italic">k T B F</tspan> &#183; SNR<tspan font-size="10" dy="4">r</tspan><tspan dy="-4">&#8203;</tspan> &#183; <tspan font-style="italic">L</tspan></text>
+  </g>
+  <!-- Fraction bar, sized to the wider of numerator/denominator -->
+  <line x1="78" y1="25.5" x2="218" y2="25.5" stroke="#808080" stroke-width="1.2"/>
+</svg>

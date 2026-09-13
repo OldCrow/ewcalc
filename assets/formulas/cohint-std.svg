@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 123 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Coherent-integration gain, standard (and only) form:
+       G_int = 10 log10 N.
+       G italic with small upright int subscript; N italic (pulse count).
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20"><tspan font-style="italic">G</tspan><tspan font-size="10" dy="4">int</tspan><tspan dy="-4">&#8203;</tspan> = 10 log<tspan font-size="10" dy="4">10</tspan><tspan dy="-4">&#8203;</tspan> <tspan font-style="italic">N</tspan></text>
+  </g>
+</svg>
