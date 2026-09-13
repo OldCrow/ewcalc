@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Pulse-jamming duty factor, standard (and only) form:
+       delta = min(BW_opt, BW_hop) / BW_hop.
+       delta italic; "min" upright (a function name); BW upright with
+       small upright subscripts opt/hop; solidus form.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20"><tspan font-style="italic">&#948;</tspan> = min(BW<tspan font-size="10" dy="4">opt</tspan><tspan dy="-4">&#8203;</tspan>, BW<tspan font-size="10" dy="4">hop</tspan><tspan dy="-4">&#8203;</tspan>) / BW<tspan font-size="10" dy="4">hop</tspan><tspan dy="-4">&#8203;</tspan></text>
+  </g>
+</svg>
