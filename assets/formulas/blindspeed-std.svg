@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 183 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Blind speed, standard (and only) form: v_b = lambda PRF / 2, blind at
+       multiples n*v_b.
+       v italic with small upright b subscript; lambda italic; PRF upright;
+       solidus form; trailing small upright annotation with italic n, v_b.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20"><tspan font-style="italic">v</tspan><tspan font-size="10" dy="4">b</tspan><tspan dy="-4">&#8203;</tspan> = <tspan font-style="italic">&#955;</tspan> PRF / 2  <tspan font-size="10">(multiples <tspan font-style="italic">n</tspan>&#183;<tspan font-style="italic">v</tspan><tspan dy="3">b</tspan><tspan dy="-3">&#8203;</tspan>)</tspan></text>
+  </g>
+</svg>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 112 48" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Doppler shift, standard form: f_d = 2 v_r f / c.
+       f/v/c italic, d/r subscripts small upright.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="29"><tspan font-style="italic">f</tspan><tspan font-size="10" dy="4">d</tspan><tspan dy="-4">&#8203;</tspan></text>
+    <text x="34" y="29">=</text>
+
+    <!-- Fraction: 2 v_r f over c -->
+    <text x="80" y="21" text-anchor="middle">2 <tspan font-style="italic">v</tspan><tspan font-size="10" dy="4">r</tspan><tspan dy="-4">&#8203;</tspan> <tspan font-style="italic">f</tspan></text>
+    <text x="80" y="44" text-anchor="middle" font-style="italic">c</text>
+  </g>
+  <!-- Fraction bar, sized to the wider of numerator/denominator -->
+  <line x1="56" y1="25.5" x2="104" y2="25.5" stroke="#808080" stroke-width="1.2"/>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 115 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Doppler dilemma, standard (and only) form: R_u * v_u = c lambda / 8.
+       R/v italic with small upright u subscripts; c/lambda italic;
+       solidus form.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20"><tspan font-style="italic">R</tspan><tspan font-size="10" dy="4">u</tspan><tspan dy="-4">&#8203;</tspan> &#183; <tspan font-style="italic">v</tspan><tspan font-size="10" dy="4">u</tspan><tspan dy="-4">&#8203;</tspan> = <tspan font-style="italic">c &#955;</tspan> / 8</text>
+  </g>
+</svg>

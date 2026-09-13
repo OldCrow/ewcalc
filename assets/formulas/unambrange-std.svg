@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 48" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Unambiguous range, standard form: R_u = c / (2 PRF).
+       R italic with small upright u subscript; PRF upright.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="29"><tspan font-style="italic">R</tspan><tspan font-size="10" dy="4">u</tspan><tspan dy="-4">&#8203;</tspan></text>
+    <text x="34" y="29">=</text>
+
+    <!-- Fraction: c over 2 PRF -->
+    <text x="76" y="21" text-anchor="middle" font-style="italic">c</text>
+    <text x="76" y="44" text-anchor="middle">2 PRF</text>
+  </g>
+  <!-- Fraction bar, sized to the wider of numerator/denominator -->
+  <line x1="52" y1="25.5" x2="100" y2="25.5" stroke="#808080" stroke-width="1.2"/>
+</svg>
