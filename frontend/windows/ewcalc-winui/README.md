@@ -142,11 +142,14 @@ notarization (see `frontend/macos/CMakeLists.txt` and the `build-macos` job in
 `.github/workflows/ci.yml`). There is no Store-specific step here — Microsoft
 Store submission re-signs the package with its own certificate at ingestion.
 
-## Current state (v1.1.0)
+## Current state (v1.2.0)
 
-This frontend covers all eleven pages (Propagation, Antenna, Link Budget,
-Receiver, Jamming, Location, Radar, Detection, Doppler & Resolution,
-Digital/DSSS, Reference) at full parity with macOS and Linux.
+Ten calculator pages plus the thirteen-page reference library at full
+parity with macOS and Linux: `RefData` (C++/CLI) snapshots
+`ewpresenter::refdata`, `ReferencePage` renders any page by navigation
+parameter, and `MainWindow` enumerates the pages into the nav pane.
+Formula images sit in per-section Grid columns inside DownOnly Viewboxes;
+section headers preserve case-sensitive notation when uppercased.
 
 ## Completed in v1.1.0
 

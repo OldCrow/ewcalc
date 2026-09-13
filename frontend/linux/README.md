@@ -98,11 +98,16 @@ per-field validation UI (#41). Cross-field checks that clamping can't express
 chain's aggregate stage-NF error — are surfaced the same way on the affected
 field(s).
 
-## Current state (v1.1.0)
+## Current state (v1.2.0)
 
-Eleven pages: Propagation, Antenna, Link Budget, Receiver, Jamming,
-Location, Radar, Detection, Doppler & Resolution, Digital/DSSS, and
-Reference.
+Ten calculator pages plus the thirteen-page reference library, all
+rendered from `ewpresenter::refdata` (`ReferencePage` takes a page index;
+`MainWindow` enumerates the pages into the sidebar).
+
+v1.2.0 (reference library, #73–#87): data-driven `ReferencePage` with
+typeset formula images (`formulas.qrc`), per-section QGridLayout formula
+columns, section diagrams, and the sidebar enumeration; Quick Values
+retired into the domain pages; packaging declares the Qt SVG dependency.
 
 v1.1.0 (coverage & illustration, #69–#72): new `DetectionPage` (required
 SNR via Albersheim/Shnidman with Swerling 0–4, fluctuation loss, scan

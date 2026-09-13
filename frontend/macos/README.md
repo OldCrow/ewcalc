@@ -117,11 +117,16 @@ Each Swift adapter class wraps the C bridge for one presenter. It:
 adding a new Swift file, add it to the `SWIFT_SOURCES` list in
 `frontend/macos/CMakeLists.txt`.
 
-## Current state (v1.1.0)
+## Current state (v1.2.0)
 
-Eleven pages: Propagation, Antenna, Link Budget, Receiver, Jamming,
-Location, Radar, Detection, Doppler & Resolution, Digital/DSSS, and
-Reference.
+Ten calculator pages plus the thirteen-page reference library, all
+rendered from the data layer via the `ewp_ref_*` bridge (`ReferenceView`
+takes a page index; `ContentView` enumerates pages into the sidebar).
+
+v1.2.0 (reference library, #73–#87): bridge-driven `ReferenceView` with
+typeset formula images at shared per-section column widths, section
+diagrams, the data-driven Reference sidebar, and the widened default
+window/sidebar; Quick Values retired into the domain pages.
 
 v1.1.0 (coverage & illustration, #69–#72): new `DetectionView` and
 `DopplerView` with their adapters and bridge functions (required SNR via

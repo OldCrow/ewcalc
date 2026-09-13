@@ -4,6 +4,53 @@ All notable changes to this project are documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v1.2.0] — 2026-09-13
+
+Reference Library release: thirteen data-driven reference pages on all
+three frontends, backed by a single content layer in `ewpresenter`.
+
+### Added
+
+- Reference data layer (`ewpresenter::refdata` + `ewp_ref_*` bridge API):
+  pages → sections → rows (value and typeset-formula row kinds, optional
+  per-section diagrams). Frontends render the data; content lives once.
+- Thirteen reference pages: Glossary (incl. the ERP-vs-EIRP convention
+  record), dB & Units, Frequency Bands (IEEE Std 521 / NATO / ITU),
+  Propagation, Antenna Types (eleven pattern-diagrammed types + sidelobe
+  levels), Link Budget (waterfall diagram), Receiver (incl. the thermal
+  noise-floor ladder), Jamming (radar SPJ/SOJ and comms forms with the
+  R⁴-vs-R² contrast), Location (both Wegner EEP→CEP forms), RCS
+  (scattering-regimes diagram, simple-shape maxima, insect→ship target
+  table in m² and dBsm), Radar & Detection, Doppler & Resolution,
+  Digital/DSSS.
+- 67 typeset formula masters and 14 new diagrams in the established SVG
+  style, each formula paired with Unicode text used as accessibility
+  label, tooltip, and copy text.
+- Reference navigation is data-driven on every frontend: a new data-layer
+  page becomes a sidebar entry with one icon-map line per platform.
+
+### Changed
+
+- The comms-only jamming calculator is relabeled "Comms Jamming" in the
+  sidebar (a radar-jamming calculator is filed for v1.3.0 as #88).
+- The former Quick Values page is retired: its tables moved to their
+  domain pages (gains and sidelobes → Antenna Types, noise floor →
+  Receiver, RCS and Eb/N₀ superseded by the richer domain tables).
+- macOS default window and sidebar widened to fit the longest labels.
+- Linux `.deb`/`.rpm` packages now declare the Qt SVG dependency, and
+  the AppImage bundles the SVG iconengine and gtk3 platform theme.
+
+### Fixed
+
+- Radar range-equation documentation in `radar.h`/`docs/formulas.md`
+  stated a wrong rearrangement (`20·log₁₀R = (…)/4`); the implementation
+  was always the correct `40·log₁₀R` form. Prose corrected, code and
+  tests unchanged.
+- Formula rendering parity across frontends: per-section column
+  alignment (standard and log forms on shared edges), shrink-to-fit for
+  wide formulas, value-row word-wrap, and case-preserving section
+  headers on WinUI.
+
 ## [v1.1.0] — 2026-09-06
 
 Coverage & Illustration release: two new calculators (Detection statistics,

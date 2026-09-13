@@ -129,8 +129,10 @@ for how to report it privately.
 
 All three platform frontends — Windows (WinUI 3), macOS (SwiftUI), and Linux
 (Qt6 Widgets) — are feature-complete across all ten calculators plus a
-Reference page, with collapsible geometry-diagram sections on six of the
-panes. See [`CHANGELOG.md`](CHANGELOG.md) for release history.
+thirteen-page reference library (glossary, units, frequency bands, and a
+formulas-and-tables page per calculator domain), with collapsible
+geometry-diagram sections on six of the calculator panes. See
+[`CHANGELOG.md`](CHANGELOG.md) for release history.
 
 ## License
 
