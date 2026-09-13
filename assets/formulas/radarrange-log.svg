@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 481 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Radar range equation, log form:
+       40 log10 R(m) = P_t + 2G + 20 log10 lambda(m) + sigma
+                       - 30 log10 4pi - N - SNR_r - L.
+       (m) small upright; N is noise power (plain italic N, not an index);
+       SNR upright with small upright r subscript, per radarrange-std.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20">40 log<tspan font-size="10" dy="4">10</tspan><tspan dy="-4">&#8203;</tspan> <tspan font-style="italic">R</tspan><tspan font-size="10">(m)</tspan> = <tspan font-style="italic">P</tspan><tspan font-size="10" dy="4">t</tspan><tspan dy="-4">&#8203;</tspan> + 2<tspan font-style="italic">G</tspan> + 20 log<tspan font-size="10" dy="4">10</tspan><tspan dy="-4">&#8203;</tspan> <tspan font-style="italic">&#955;</tspan><tspan font-size="10">(m)</tspan> + <tspan font-style="italic">&#963;</tspan> &#8722; 30 log<tspan font-size="10" dy="4">10</tspan><tspan dy="-4">&#8203;</tspan> 4<tspan font-style="italic">&#960;</tspan> &#8722; <tspan font-style="italic">N</tspan> &#8722; SNR<tspan font-size="10" dy="4">r</tspan><tspan dy="-4">&#8203;</tspan> &#8722; <tspan font-style="italic">L</tspan></text>
+  </g>
+</svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 190 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Fluctuation loss, standard (and only) form:
+       L_f = SNR_r(Sw n) - SNR_r(Sw 0).
+       L italic with small upright f subscript; SNR upright with small
+       upright r subscript, per radarrange-std; "(Sw n)"/"(Sw 0)" small
+       upright with the target-model index n italic (Swerling case n,
+       vs. the non-fluctuating case 0).
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20"><tspan font-style="italic">L</tspan><tspan font-size="10" dy="4">f</tspan><tspan dy="-4">&#8203;</tspan> = SNR<tspan font-size="10" dy="4">r</tspan><tspan dy="-4">&#8203;</tspan><tspan font-size="10">(Sw</tspan> <tspan font-size="10" font-style="italic">n</tspan><tspan font-size="10">)</tspan> &#8722; SNR<tspan font-size="10" dy="4">r</tspan><tspan dy="-4">&#8203;</tspan><tspan font-size="10">(Sw 0)</tspan></text>
+  </g>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 101 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- False-alarm rate, standard (and only) form:
+       FAR = P_fa · B.
+       FAR upright (a named rate, not a product of variables); P italic
+       with small upright fa subscript (false-alarm probability); B
+       italic (detector bandwidth).
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20">FAR = <tspan font-style="italic">P</tspan><tspan font-size="10" dy="4">fa</tspan><tspan dy="-4">&#8203;</tspan> &#183; <tspan font-style="italic">B</tspan></text>
+  </g>
+</svg>
