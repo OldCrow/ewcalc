@@ -343,6 +343,68 @@ itemized since they're actionable.
   be a slam dunk). Full formula-fidelity sweep remains future
   assurance work.
 
+## Session Close-out 2026-09-12 (Linux UI pass) [DERIVED]
+
+Final Linux pass over the thirteen-page reference library. Every reference
+page walked at both the 1180 px default and the 980 px window minimum; build
+clean under `-Werror`, 14/14 tests.
+
+Fixed this session (all pushed to `dev/v1.2.0`):
+- `ac7b433` — formula images now shrink to fit, completing the 1e983c1
+  sizing audit. The audit gave macOS `maxWidth + scaledToFit` and WinUI
+  `MaxWidth + Stretch="Uniform"`, both genuinely responsive, but Qt got a
+  fixed 560-logical cap, which is a different thing: a QLabel pixmap is a
+  fixed size, so the widest masters still set the page's minimum width and a
+  static cap only moves the overflow threshold. At 980 px Radar & Detection
+  clipped its text behind a horizontal scrollbar with the copy buttons off
+  the right edge. Replaced with a `FormulaImage` QLabel that rescales to the
+  width it is given (aspect-preserving, never past natural size,
+  `heightForWidth` + small `minimumSizeHint`). Linux now matches the other
+  two rather than being the one frontend that cannot adapt.
+- `1d44219` — proper subscript glyphs in the reference prose (shared
+  refdata, so macOS and WinUI inherit it with no code change). See the
+  entry below for what the Windows pass should look at.
+- `.deb`/`.rpm` Qt SVG dependency — see the resolved Known Gaps entry.
+
+Carried into the Windows session:
+- **Font coverage for the new glyphs.** `Rⱼ` is U+2C7C (Latin Extended-C),
+  rarer than the rest; `Gₛ Gₘ Rₜ Rₘₐₓ` are U+2090 block. All render in
+  Yaru's UI and monospace fonts — unverified in Segoe UI / Consolas, where
+  a gap shows as tofu. Affected rows: Jamming (`Gₛ vs Gₘ`, `Ranges`),
+  Location (`Geometry`), Doppler & Resolution (`Adamy's form`,
+  `Resolution cell`), Digital / DSSS (`BW vs R(bit)`), RCS
+  (`Range scaling`, now `⁴√σ`).
+- **Narrow-window check on Radar & Detection**, the page that broke here.
+  WinUI's `MaxWidth`/`Uniform` should shrink correctly, but it is the one
+  worth resizing by hand.
+- **Uppercase-subscript caveat.** The typeset masters render G_S/G_M/R_T/R_J
+  with uppercase subscripts; the prose now shows lowercase glyphs, because
+  Unicode has no uppercase subscripts (nor b/z/θ — those three cases took
+  the parenthetical form `σ(θ)`, `θ(az)`, `θ(el)`, `R(bit)` instead). A
+  deliberate deviation from the images, not an oversight; revisit if the
+  Windows pass finds it jarring.
+- **Formula alt text keeps ASCII underscores** (`h_t`, `ERP_J`, `L_FSPL`,
+  `d_FZ`, `T_D` ...) by decision, not omission: it is a plain-text
+  transcription that also feeds the clipboard, and most of those subscripts
+  have no glyph at all, so a partial conversion would read worse.
+
+Pre-PR / release items, none of them Linux-specific:
+- **Version is still 1.1.0** in five places — `CMakeLists.txt:2`,
+  `frontend/linux/CMakeLists.txt:5`, `frontend/linux/src/main.cpp:13`,
+  `frontend/macos/CMakeLists.txt:234` (`MACOSX_BUNDLE_SHORT_VERSION_STRING`)
+  and `frontend/windows/.../Package.appxmanifest:19` (`1.1.0.0`). The built
+  `.deb` is therefore `ewcalc_1.1.0_amd64.deb`. Bump with the changelog at
+  release time, as in the v1.1.0 close-out.
+- **No CI has run on `dev/v1.2.0` at any point.** `ci.yml` triggers on push
+  only for `main` and `v*` tags, plus PRs targeting `main`, so every commit
+  on this branch is verified locally only. Opening the PR is the first real
+  CI signal, and packaging steps stay tag-gated even then —
+  `workflow_dispatch` is the escape hatch if the AppImage/deb changes want
+  exercising before a tag.
+- Both lint scripts now run on the Linux box and pass clean
+  (`lint-linux.sh`, `lint-cpp.sh`); cppcheck and clang-tidy are installed
+  user-space there, not system-wide.
+
 ## Provenance Framing & Formula Fidelity [OPEN]
 - Found 2026-09-06 while pinning #68's first citation: Adamy EW103
   Sec 4.5.3 p. 110 gives digital dynamic range as DR = 20·log10(2^n)
@@ -411,9 +473,19 @@ itemized since they're actionable.
 - Gaps are otherwise filed as GitHub issues on sight (see milestones
   above). The former entries — WinUI3 colour-coding (#62) and the macOS
   `EWCALC_BUILD_FRONTEND` no-op (#66) — are both closed.
-- Linux sidebar icons need Qt's SVG plugin at runtime. Now declared in
-  AGENTS.md and fixed for the AppImage; the `.deb`/`.rpm` path is still
-  open. Found 2026-09-09 while testing the Qt6 frontend on Ubuntu 24.04.
+- [RESOLVED 2026-09-12] Linux sidebar icons need Qt's SVG plugin at
+  runtime. Found 2026-09-09 on Ubuntu 24.04; declared in AGENTS.md, fixed
+  for the AppImage (cc933f6), and the `.deb`/`.rpm` path now closed —
+  `CPACK_DEBIAN_PACKAGE_DEPENDS` gains `libqt6svg6` (verified to carry both
+  `iconengines/libqsvgicon.so` and `imageformats/libqsvg.so`) and
+  `CPACK_RPM_PACKAGE_REQUIRES` gains `qt6-qtsvg`. A built `.deb` was
+  inspected to confirm the control file carries them. Also added
+  `CPACK_DEBIAN_PACKAGE_RECOMMENDS=qt6-gtk-platformtheme`: without
+  `platformthemes/libqgtk3.so` Qt never learns the desktop's icon theme and
+  *no* theme icon resolves, SVG or not — but the app is fully usable
+  without it, hence Recommends. Its RPM equivalent is deliberately not
+  listed: the package name varies by distro and was not verified on a real
+  Fedora/openSUSE box.
 - [OPEN 2026-09-09] Formula rows use a flow layout, not columns, on all
   three frontends (WinUI `StackPanel` Horizontal Spacing=16, Linux
   `QHBoxLayout` spacing 12 + stretch, macOS HStack). With one formula row

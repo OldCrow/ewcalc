@@ -119,15 +119,32 @@ set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Gary Wolfman <noreply@example.com>")
 set(CPACK_DEBIAN_PACKAGE_SECTION "science")
 # Qt6 runtime package names vary by distro release; verify on the target
 # distro and adjust (e.g. Debian/Ubuntu commonly ship libqt6widgets6).
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libqt6widgets6")
+#
+# libqt6svg6 is NOT optional despite ewcalc never linking Qt6Svg: the sidebar
+# sources its icons from QIcon::fromTheme, and current GNOME themes (Adwaita
+# 46+, Yaru) ship most of those names only as SVG. That package carries both
+# plugins the lookup needs — iconengines/libqsvgicon.so (themed SVG entries go
+# through the icon *engine*) and imageformats/libqsvg.so. Without it
+# fromTheme fails silently: no error, just an icon-less sidebar. Same gap the
+# AppImage had (fixed in cc933f6 via EXTRA_QT_MODULES).
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libqt6widgets6, libqt6svg6")
+# platformthemes/libqgtk3.so is what tells Qt which icon theme the desktop is
+# using; without it QIcon::themeName() is empty on GNOME and *no* theme icon
+# resolves, SVG or not. The app is fully usable without it — only the icons
+# are missing — so this is a Recommends, not a Depends.
+set(CPACK_DEBIAN_PACKAGE_RECOMMENDS "qt6-gtk-platformtheme")
 set(CPACK_DEBIAN_FILE_NAME "DEB-DEFAULT")
 
 # Fedora/openSUSE
 set(CPACK_RPM_PACKAGE_LICENSE "MIT")
 set(CPACK_RPM_PACKAGE_GROUP "Applications/Engineering")
 # As above, verify the Qt6 runtime package name on the target distro
-# (e.g. Fedora ships qt6-qtbase-gui).
-set(CPACK_RPM_PACKAGE_REQUIRES "qt6-qtbase-gui")
+# (e.g. Fedora ships qt6-qtbase-gui). qt6-qtsvg is the RPM equivalent of
+# libqt6svg6 and is required for the same reason — see the Debian note above.
+# The gtk platform theme's RPM home varies by distro and has not been verified
+# on a real Fedora/openSUSE box, so it is deliberately not listed here; a
+# desktop that already runs GNOME will normally have it.
+set(CPACK_RPM_PACKAGE_REQUIRES "qt6-qtbase-gui, qt6-qtsvg")
 set(CPACK_RPM_FILE_NAME "RPM-DEFAULT")
 
 include(CPack)
