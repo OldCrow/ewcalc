@@ -70,6 +70,8 @@ QString referencePageIcon(const QString& pageId)
         return QStringLiteral("system-search"); // matches the Radar row
     if (pageId == QStringLiteral("ref-doppler"))
         return QStringLiteral("media-playlist-shuffle"); // matches the Doppler & Resolution row
+    if (pageId == QStringLiteral("ref-digital"))
+        return QStringLiteral("media-playback-start"); // matches the Digital / DSSS row
     if (pageId == QStringLiteral("ref-rcs"))
         return QStringLiteral("airplane-mode");
     if (pageId == QStringLiteral("ref-glossary"))

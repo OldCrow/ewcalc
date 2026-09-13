@@ -54,19 +54,10 @@ constexpr Row kNoiseFloor[] = {
     val("1 GHz bandwidth",   "−84.0 dBm",  "-84.0"),
 };
 
-constexpr Row kEbNo[] = {
-    val("BPSK / QPSK,  BER 10⁻³", "6.8 dB",     "6.8"),
-    val("BPSK / QPSK,  BER 10⁻⁵", "9.6 dB",     "9.6"),
-    val("BPSK / QPSK,  BER 10⁻⁶", "10.5 dB",    "10.5"),
-    val("Non-coh. FSK, BER 10⁻³", "≈ 13.5 dB",  "13.5"),
-    val("Non-coh. FSK, BER 10⁻⁵", "≈ 17.0 dB",  "17.0"),
-};
-
 constexpr Section kQuickValueSections[] = {
     {"Antenna Gain",                        kAntennaGain, std::size(kAntennaGain)},
     {"Antenna Sidelobe Levels (re main lobe)", kSidelobes, std::size(kSidelobes)},
     {"Thermal Noise Floor  (kT, 290 K)",    kNoiseFloor,  std::size(kNoiseFloor)},
-    {"Eb/N₀ Requirements (AWGN)",           kEbNo,        std::size(kEbNo)},
 };
 
 // ── Propagation page (#74) ───────────────────────────────────────────────────
@@ -587,6 +578,43 @@ constexpr Section kDopplerSections[] = {
     {"Resolution", kResolutionRows, std::size(kResolutionRows), "resolution-cell"},
 };
 
+// ── Digital / DSSS page (#87) ────────────────────────────────────────────────
+// Pins per docs/formulas.md: Eb/N0 ↔ SNR per Adamy EW102 Sec 5.6.6/5.6.7
+// p. 128; process gain per EW102 Sec 5.7.3 p. 136; jamming margin and
+// required J/S per EW102 Sec 5.9.3 pp. 147-149. The modulation table
+// supersedes Quick Values' Eb/N0 table per the ratified QV rule — same
+// audited five rows plus the Shannon-limit anchor (−1.6 dB, ln 2).
+
+constexpr Row kEbnoRows[] = {
+    formula("Eb/N₀ ↔ SNR", "ebno",
+            "Eb/N₀ = SNR + 10 log₁₀(BW/R_b)",
+            "SNR = Eb/N₀ − 10 log₁₀(BW/R_b)"),
+    val("BW vs R_b", "BW is the receiver noise bandwidth; R_b the bit rate — the ratio normalizes SNR per bit"),
+};
+
+constexpr Row kModulation[] = {
+    val("BPSK / QPSK,  BER 10⁻³", "6.8 dB",     "6.8"),
+    val("BPSK / QPSK,  BER 10⁻⁵", "9.6 dB",     "9.6"),
+    val("BPSK / QPSK,  BER 10⁻⁶", "10.5 dB",    "10.5"),
+    val("Non-coh. FSK, BER 10⁻³", "≈ 13.5 dB",  "13.5"),
+    val("Non-coh. FSK, BER 10⁻⁵", "≈ 17.0 dB",  "17.0"),
+    val("Shannon limit",          "−1.6 dB — the ultimate coding bound (ln 2)", "-1.6"),
+};
+
+constexpr Row kSpreadSpectrum[] = {
+    formula("DSSS process gain", "procgain",
+            "PG = 10 log₁₀(R_c/R_b)"),
+    formula("Jamming margin", "jammargin",
+            "JM = PG − (Eb/N₀)ᵣ − L_impl;  (J/S)ᵣ = −JM"),
+    val("Sign conventions", "positive JM: spreading gain exceeds the jammer's advantage; positive (J/S)ᵣ: the jammer must overpower the signal at the receiver"),
+};
+
+constexpr Section kDigitalSections[] = {
+    {"Eb/N₀ & SNR",                      kEbnoRows,       std::size(kEbnoRows)},
+    {"Eb/N₀ Requirements (AWGN, uncoded)", kModulation,   std::size(kModulation)},
+    {"Spread Spectrum",                  kSpreadSpectrum, std::size(kSpreadSpectrum)},
+};
+
 // ── RCS page (#77) ───────────────────────────────────────────────────────────
 // Simple-shape maxima are optical-region (dimension ≫ λ) closed forms per
 // the standard radar literature (Skolnik, Knott); the regimes diagram is the
@@ -701,6 +729,8 @@ constexpr Page kPages[] = {
      kRadarDetSections, std::size(kRadarDetSections)},
     {"ref-doppler", "Doppler & Resolution", "Doppler relations and the resolution cell",
      kDopplerSections, std::size(kDopplerSections)},
+    {"ref-digital", "Digital / DSSS", "Eb/N₀ relations and spread-spectrum forms",
+     kDigitalSections, std::size(kDigitalSections)},
     {"ref-rcs", "RCS", "Simple-shape formulas and typical targets",
      kRcsSections, std::size(kRcsSections)},
 };

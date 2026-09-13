@@ -76,6 +76,7 @@ public sealed partial class MainWindow : Window
         "ref-location"    => "", // Matches NavLocation's FontIcon glyph
         "ref-radar-det"   => "", // Matches NavRadar's FontIcon glyph
         "ref-doppler"     => "", // Matches NavDoppler's FontIcon glyph
+        "ref-digital"     => "", // Matches NavDigital's FontIcon glyph
         "ref-rcs"         => "", // Airplane — RCS target table
         "ref-bands"       => "", // Signal bars — frequency-band letters
         "ref-glossary"    => "", // Dictionary — term definitions

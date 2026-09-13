@@ -20,12 +20,12 @@ bool eq(const char* a, std::string_view b) {
 
 void test_pages_shape() {
     const auto pages_span = pages();
-    ASSERT_TRUE(pages_span.size() == 13);
+    ASSERT_TRUE(pages_span.size() == 14);
 
     ASSERT_TRUE(eq(pages_span[0].id, "quick-values"));
     ASSERT_TRUE(eq(pages_span[0].title, "Quick Values"));
     ASSERT_TRUE(eq(pages_span[0].subtitle, "Common EW values for quick entry"));
-    ASSERT_TRUE(pages_span[0].section_count == 4);
+    ASSERT_TRUE(pages_span[0].section_count == 3);
     // Order (user-ratified 2026-09-10): general references first
     // (Glossary, dB & Units, Frequency Bands), then pages in calculator
     // order (Propagation, Antenna, Link, ...).
@@ -56,9 +56,12 @@ void test_pages_shape() {
     ASSERT_TRUE(eq(pages_span[11].id, "ref-doppler"));
     ASSERT_TRUE(eq(pages_span[11].title, "Doppler & Resolution"));
     ASSERT_TRUE(pages_span[11].section_count == 2);
-    ASSERT_TRUE(eq(pages_span[12].id, "ref-rcs"));
-    ASSERT_TRUE(eq(pages_span[12].title, "RCS"));
-    ASSERT_TRUE(pages_span[12].section_count == 2);
+    ASSERT_TRUE(eq(pages_span[12].id, "ref-digital"));
+    ASSERT_TRUE(eq(pages_span[12].title, "Digital / DSSS"));
+    ASSERT_TRUE(pages_span[12].section_count == 3);
+    ASSERT_TRUE(eq(pages_span[13].id, "ref-rcs"));
+    ASSERT_TRUE(eq(pages_span[13].title, "RCS"));
+    ASSERT_TRUE(pages_span[13].section_count == 2);
 }
 
 void test_antenna_types_page() {
@@ -162,8 +165,24 @@ void test_doppler_page() {
     ASSERT_TRUE(page.sections[1].rows[0].log_value != nullptr);
 }
 
-void test_rcs_page() {
+void test_digital_page() {
     const Page& page = pages()[12];
+    // The Eb/N0 pair carries forward and inverse forms.
+    ASSERT_TRUE(eq(page.sections[0].rows[0].svg_base, "ebno"));
+    ASSERT_TRUE(page.sections[0].rows[0].log_value != nullptr);
+    // The modulation table supersedes QV's (five audited rows + Shannon).
+    ASSERT_TRUE(page.sections[1].row_count == 6);
+    ASSERT_TRUE(eq(page.sections[1].rows[1].copy_value, "9.6"));
+    ASSERT_TRUE(eq(page.sections[1].rows[5].copy_value, "-1.6"));
+    // Quick Values no longer carries an Eb/N0 section.
+    for (std::size_t s2 = 0; s2 < pages()[0].section_count; ++s2) {
+        ASSERT_TRUE(std::string_view{pages()[0].sections[s2].title}
+                        .find("Eb/N") == std::string_view::npos);
+    }
+}
+
+void test_rcs_page() {
+    const Page& page = pages()[13];
     ASSERT_TRUE(eq(page.sections[0].title, "Simple Shapes"));
     ASSERT_TRUE(eq(page.sections[0].diagram, "rcs-regions"));
     // Six single-form shape formulas, then two value notes.
@@ -241,8 +260,7 @@ void test_section_titles_and_counts() {
     ASSERT_TRUE(page.sections[0].row_count == 8);
     ASSERT_TRUE(page.sections[1].row_count == 4);
     ASSERT_TRUE(eq(page.sections[2].title, "Thermal Noise Floor  (kT, 290 K)"));
-    ASSERT_TRUE(page.sections[2].row_count == 6);
-    ASSERT_TRUE(page.sections[3].row_count == 5); // Eb/N0 (RCS moved to ref-rcs)
+    ASSERT_TRUE(page.sections[2].row_count == 6); // Eb/N0 moved to ref-digital
 }
 
 void test_propagation_page() {
@@ -361,6 +379,7 @@ TEST_MAIN()
     RUN_TEST(test_location_page);
     RUN_TEST(test_radar_det_page);
     RUN_TEST(test_doppler_page);
+    RUN_TEST(test_digital_page);
     RUN_TEST(test_rcs_page);
     RUN_TEST(test_glossary_page);
     RUN_TEST(test_bands_page);

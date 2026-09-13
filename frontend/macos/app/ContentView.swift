@@ -59,6 +59,7 @@ struct ReferencePageItem: Identifiable, Hashable {
         case "ref-location":    return AppSection.location.icon
         case "ref-radar-det":   return AppSection.radar.icon
         case "ref-doppler":     return AppSection.doppler.icon
+        case "ref-digital":     return AppSection.digital.icon
         case "ref-rcs":         return "airplane"
         case "ref-bands":       return "textformat.abc"
         case "ref-glossary":    return "character.book.closed"

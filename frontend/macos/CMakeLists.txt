@@ -205,6 +205,10 @@ set(FORMULA_PNGS
     "${FORMULA_PNG_DIR}/flucloss-std.png"
     "${FORMULA_PNG_DIR}/dwell-std.png"
     "${FORMULA_PNG_DIR}/far-std.png"
+    "${FORMULA_PNG_DIR}/ebno-std.png"
+    "${FORMULA_PNG_DIR}/ebno-log.png"
+    "${FORMULA_PNG_DIR}/procgain-std.png"
+    "${FORMULA_PNG_DIR}/jammargin-std.png"
 )
 set_source_files_properties(${FORMULA_PNGS} PROPERTIES
     MACOSX_PACKAGE_LOCATION Resources)

@@ -63,5 +63,9 @@
         <file alias="flucloss-std.png">../../../assets/formulas/png/flucloss-std.png</file>
         <file alias="dwell-std.png">../../../assets/formulas/png/dwell-std.png</file>
         <file alias="far-std.png">../../../assets/formulas/png/far-std.png</file>
+        <file alias="ebno-std.png">../../../assets/formulas/png/ebno-std.png</file>
+        <file alias="ebno-log.png">../../../assets/formulas/png/ebno-log.png</file>
+        <file alias="procgain-std.png">../../../assets/formulas/png/procgain-std.png</file>
+        <file alias="jammargin-std.png">../../../assets/formulas/png/jammargin-std.png</file>
     </qresource>
 </RCC>
