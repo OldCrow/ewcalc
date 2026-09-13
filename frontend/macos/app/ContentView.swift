@@ -5,7 +5,7 @@ enum AppSection: String, CaseIterable, Identifiable {
     case propagation = "Propagation"
     case link        = "Link Budget"
     case receiver    = "Receiver"
-    case jamming     = "Jamming"
+    case jamming     = "Comms Jamming"
     case location    = "Location"
     case radar       = "Radar"
     case detection   = "Detection"

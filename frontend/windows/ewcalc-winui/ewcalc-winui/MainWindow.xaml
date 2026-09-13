@@ -64,7 +64,7 @@
                 <NavigationViewItem
                     x:Name="NavJamming"
                     Tag="Jamming"
-                    Content="Jamming">
+                    Content="Comms Jamming">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE7BA;" />
                     </NavigationViewItem.Icon>

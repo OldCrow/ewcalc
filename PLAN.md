@@ -249,6 +249,13 @@ Open milestones are fully itemized here since they reflect actionable state.
     WrapLongRows). The flow-layout column alignment (Known Gaps) is now
     visibly ragged on Propagation.
 
+- v1.3.0 — Calculator Growth (open, #7), created 2026-09-12.
+  - #88 OPEN — Radar jamming calculator (SPJ/SOJ): separate sidebar
+    tab (ratified); the comms-only calculator was relabeled "Comms
+    Jamming" on dev/v1.2.0 the same day. Radar J/S forms + 71 dB
+    constant need physical-book pins (also owed on their v1.2.0
+    reference-page copies).
+
 ## GitHub Issues Without Milestone [DERIVED]
 Same leaner convention as milestones above: closed items are a count only
 (fetch via `gh issue list --state closed --json number,title,milestone -q

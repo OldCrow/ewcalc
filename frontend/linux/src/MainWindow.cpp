@@ -167,7 +167,7 @@ MainWindow::MainWindow(QWidget* parent)
     addPage(QStringLiteral("Antenna"),       QStringLiteral("network-wireless"),         new AntennaPage);
     addPage(QStringLiteral("Link Budget"),   QStringLiteral("network-transmit-receive"), new LinkPage);
     addPage(QStringLiteral("Receiver"),      QStringLiteral("audio-card"),              new ReceiverPage);
-    addPage(QStringLiteral("Jamming"),       QStringLiteral("emblem-important"),        new JammingPage);
+    addPage(QStringLiteral("Comms Jamming"), QStringLiteral("emblem-important"),        new JammingPage);
     // "find-location" isn't a standard XDG icon name and resolves to nothing
     // on most icon themes; "mark-location" is the widely-shipped equivalent.
     addPage(QStringLiteral("Location"),      QStringLiteral("mark-location"),           new LocationPage);
