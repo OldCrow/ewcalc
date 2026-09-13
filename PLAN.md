@@ -376,19 +376,26 @@ itemized since they're actionable.
   (`gh workflow run ci.yml --ref dev/v1.2.0` — CI does not trigger on
   dev pushes; dispatch also exercises tag-gated-otherwise packaging)
   plus Windows/Linux UI passes; the final PR should be a slam dunk.
-- MERGED 2026-09-13: PR #89 squash-merged to main (4c1fc19) by the
-  user after the "Protect main" ruleset was found requiring STALE
-  check contexts ("… — Phase 4/5", pre-#66 names) that no job can
-  ever report — every PR would block. Ruleset fixed to the current
-  job names (macOS (SwiftUI) / Windows (WinUI 3) / Linux (Qt6)).
-  Dependabot #80/#81 merged; all twelve milestone issues auto-closed;
-  milestone #6 closed. Version bumps for v1.2.0 landed on main
-  (project VERSION, macOS bundle 1.2.0/4, appxmanifest 1.2.0.0,
-  CHANGELOG dated 2026-09-13, READMEs' Current state). NEXT: push the
-  v1.2.0 tag (tag CI runs the full signed packaging) once the user
-  gives the word; verify the tag run and the published Release.
+- RELEASED 2026-09-13: v1.2.0 published —
+  https://github.com/OldCrow/ewcalc/releases/tag/v1.2.0 — with all
+  four artifacts (signed+notarized .dmg, .msix, .AppImage,
+  ewcalc_1.2.0_amd64.deb) and provenance attestations; tag CI fully
+  green. Path there: PR #89 squash-merged by the user (4c1fc19) after
+  the "Protect main" ruleset was found requiring stale pre-#66
+  "— Phase N" check contexts (fixed to the real job names — first PR
+  ever surfaced it); Dependabot #80/#81 merged; milestone #6 closed
+  (twelve issues). The first v1.2.0 tag (1acf234) was deleted and
+  re-cut on e60c42b: frontend/linux/CMakeLists.txt carries its OWN
+  project VERSION (its comment says so) and had stamped the .deb as
+  1.1.0 — a dpkg-upgrade breaker, caught on the draft before publish.
+  RELEASE-CHECKLIST ADDITION: version bumps live in FOUR places —
+  root CMakeLists project VERSION, frontend/macos (SHORT_VERSION +
+  BUNDLE_VERSION int), Package.appxmanifest, AND
+  frontend/linux/CMakeLists.txt project VERSION. The user disabled
+  "Protect release tags" for the re-cut — confirm it is re-enabled.
   Carried: PENDING PINS (radar SPJ/SOJ + 71, also on the reference
-  page); v1.3.0 #88; full formula-fidelity sweep.
+  page); v1.3.0 #88 radar jamming calculator; full formula-fidelity
+  sweep as future assurance work.
 
 ## Session Close-out 2026-09-12 (Linux UI pass) [DERIVED]
 
