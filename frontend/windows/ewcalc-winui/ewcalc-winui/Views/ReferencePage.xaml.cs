@@ -74,23 +74,37 @@ public sealed partial class ReferencePage : Page
             });
 
             var card = new Border { Style = (Style)Application.Current.Resources["ResultCardStyle"] };
-            var rows = new StackPanel { Spacing = 0 };
+
+            // One Grid per section so every formula row shares its standard-form
+            // column: an Auto column sizes to the widest standard form in the
+            // section, which puts all of that section's log forms on a common
+            // left edge. Laying each row out on its own let every log form start
+            // wherever its own standard form happened to end — a ~330 px spread
+            // on Propagation. Everything that is not a formula pair (diagram,
+            // value row, formula header) spans both columns, so interleaving
+            // order is preserved and only the pairs are column-bound.
+            var grid = new Grid();
+            grid.ColumnDefinitions.Add(new ColumnDefinition
+            {
+                Width = GridLength.Auto,
+                // Cap the shared column so one very wide standard form cannot
+                // squeeze the log column away on a narrow window; past the cap
+                // the Viewbox in the cell scales that form down.
+                MaxWidth = 400,
+            });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
             if (section.Diagram is string diagram)
-                rows.Children.Add(BuildSectionDiagram(diagram));
+                AddFullWidth(grid, BuildSectionDiagram(diagram));
 
             foreach (var row in section.Rows)
             {
-                // Branch rather than a ternary: the two builders return unrelated
-                // Panel/Grid types, so a ternary would need a common FrameworkElement
-                // return type and CA1859 flags that as an avoidable abstraction.
-                // Children.Add takes UIElement, so each concrete type binds directly.
                 if (row.RowKind == RefRowKind.Formula)
-                    rows.Children.Add(BuildFormulaRow(row));
+                    AddFormulaRow(grid, row);
                 else
-                    rows.Children.Add(BuildValueRow(row));
+                    AddFullWidth(grid, BuildValueRow(row));
             }
-            card.Child = rows;
+            card.Child = grid;
             ItemHost.Children.Add(card);
         }
     }
@@ -196,11 +210,21 @@ public sealed partial class ReferencePage : Page
         return grid;
     }
 
-    private static StackPanel BuildFormulaRow(RefRow row)
+    // Appends an element as its own Grid row spanning both columns.
+    private static void AddFullWidth(Grid grid, FrameworkElement element)
     {
-        var container = new StackPanel { Spacing = 8, Margin = new Thickness(0, 4, 0, 4) };
+        grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        Grid.SetRow(element, grid.RowDefinitions.Count - 1);
+        Grid.SetColumnSpan(element, 2);
+        grid.Children.Add(element);
+    }
 
-        var header = new Grid();
+    // A formula row occupies two Grid rows: the label and copy button spanning
+    // both columns, then the standard form in the shared Auto column with the
+    // log form beside it in the star column.
+    private static void AddFormulaRow(Grid grid, RefRow row)
+    {
+        var header = new Grid { Margin = new Thickness(0, 4, 0, 8) };
         header.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
         header.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(32) });
 
@@ -223,31 +247,40 @@ public sealed partial class ReferencePage : Page
         Grid.SetColumn(copyButton, 1);
         header.Children.Add(copyButton);
 
-        container.Children.Add(header);
+        AddFullWidth(grid, header);
 
-        var forms = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 16 };
-        forms.Children.Add(MakeFormulaImage(row.SvgBase, "std", row.Value));
+        grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        var formsRow = grid.RowDefinitions.Count - 1;
+
+        // Each form sits in a Viewbox because a cell hands its child a finite
+        // width: DownOnly keeps natural size the ceiling and scales a form down
+        // only when its column is too narrow, which is the frontends' shared
+        // shrink-never-upscale rule. At any width that fits, both forms render
+        // at natural size and so still match glyph for glyph.
+        var std = ShrinkToFit(MakeFormulaImage(row.SvgBase, "std", row.Value));
+        std.Margin = new Thickness(0, 0, 16, 12);
+        Grid.SetRow(std, formsRow);
+        Grid.SetColumn(std, 0);
+        grid.Children.Add(std);
+
         if (row.LogValue is string logValue)
-            forms.Children.Add(MakeFormulaImage(row.SvgBase, "log", logValue));
-
-        // A horizontal StackPanel measures its children with unbounded width, so
-        // the per-image MaxWidth can never shrink them and a wide pair — the
-        // radar-range log line, the stand-off J/S line — clips at the card edge
-        // on a narrow window. The Viewbox gives the pair a finite width and
-        // scales it down to fit; DownOnly keeps natural size the ceiling, so
-        // this is the frontends' shared shrink-never-upscale rule. Scaling the
-        // pair as a unit (rather than letting one form shrink alone) preserves
-        // the design invariant that both forms render at the same glyph size.
-        container.Children.Add(new Viewbox
         {
-            Child = forms,
-            Stretch = Microsoft.UI.Xaml.Media.Stretch.Uniform,
-            StretchDirection = StretchDirection.DownOnly,
-            HorizontalAlignment = HorizontalAlignment.Left,
-        });
-
-        return container;
+            var logForm = ShrinkToFit(MakeFormulaImage(row.SvgBase, "log", logValue));
+            logForm.Margin = new Thickness(0, 0, 0, 12);
+            Grid.SetRow(logForm, formsRow);
+            Grid.SetColumn(logForm, 1);
+            grid.Children.Add(logForm);
+        }
     }
+
+    private static Viewbox ShrinkToFit(Image image) => new()
+    {
+        Child = image,
+        Stretch = Microsoft.UI.Xaml.Media.Stretch.Uniform,
+        StretchDirection = StretchDirection.DownOnly,
+        HorizontalAlignment = HorizontalAlignment.Left,
+        VerticalAlignment = VerticalAlignment.Center,
+    };
 
     private static Button MakeCopyButton(string automationName, string copyText)
     {
