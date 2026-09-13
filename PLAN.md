@@ -212,11 +212,27 @@ Open milestones are fully itemized here since they reflect actionable state.
     Antenna Gain + Sidelobes (quick-entry density), Noise Floor
     (cross-domain), Eb/N₀ (until a Digital page exists). Re-evaluate
     QV's residence at milestone close.
-  - Remaining: #78 (umbrella — decide which of Receiver / Jamming /
-    Location / Radar-Detection / Doppler / Digital earn v1.2.0 pages
-    vs deferral; QV dispositions for Eb/N₀ and Noise Floor ride on
-    that), the WinUI formula-pair wrap gap noted in the Windows pass,
-    then the single milestone PR.
+  - #78 CLOSED 2026-09-12: split (user-ratified: combined Radar &
+    Detection page; all domains in v1.2.0) into #82 Receiver, #83
+    Jamming, #84 Location, #85 Radar & Detection, #86 Doppler &
+    Resolution, #87 Digital/DSSS — ALL IMPLEMENTED on dev/v1.2.0 the
+    same day (through 7f2223d). Fourteen reference pages total; every
+    calculator pane has its page. Highlights: #83 restructured after
+    user review (the #72 diagrams depict RADAR jamming — radar SPJ/SOJ
+    J/S forms added with the 71 dB constant and the R⁴-vs-R² note;
+    comms J/S its own section; jamming calculator relabeled "Comms
+    Jamming", #88/v1.3.0 filed for the radar calculator); #84 shows
+    both Wegner EEP→CEP forms; #85 fixed a doc typo (radar.h +
+    formulas.md said 20·log₁₀(R)=(…)/4; the implementation was always
+    40·log₁₀ — prose corrected, code untouched); #86 carries the
+    dilemma product; #87 completed the QV shrink (RCS and Eb/N₀ tables
+    superseded by domain pages; QV = 3 cross-domain sections).
+    PENDING PINS for the next book session: radar SPJ/SOJ J/S forms
+    and the 71 constant (EW101 ch 9 / EW102 ch 5 family).
+  - GATE (user, 2026-09-12): NO milestone PR until the user completes
+    Linux and Windows UI passes over #82–#87. #82–#87 stay open on
+    GitHub for the PR to close. Also still noted: the WinUI
+    formula-pair wrap gap from the earlier Windows pass.
   - WINDOWS UI PASS 2026-09-10 (#74-#77, #79 on dev/v1.2.0 at 7fadf97):
     core 14/14, WinUI solution warning-free, dotnet format clean; all 8
     reference pages driven via UIA with every formula/diagram image
