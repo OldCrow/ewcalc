@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 268 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Noise figure from equivalent noise temperature, log form:
+       NF = 10 log10 (1 + T_e / 290)  dB.
+       NF upright; log10 per the fspl-log pattern; solidus fraction inside
+       the parens; T italic with small upright e subscript.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20">NF = 10 log<tspan font-size="10" dy="4">10</tspan><tspan dy="-4">&#8203;</tspan> (1 + <tspan font-style="italic">T</tspan><tspan font-size="10" dy="4">e</tspan><tspan dy="-4">&#8203;</tspan>/290)  <tspan font-size="10">dB</tspan></text>
+  </g>
+</svg>

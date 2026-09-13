@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 206 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- ADC dynamic range from bit depth, standard form:
+       DR = 20 log10 2^N ~= 6.02 N  dB.
+       DR upright; N italic (the superscript N on the 2 is italic too).
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20">DR = 20 log<tspan font-size="10" dy="4">10</tspan><tspan dy="-4">&#8203;</tspan> 2<tspan font-size="11" dy="-5" font-style="italic">N</tspan><tspan dy="5">&#8203;</tspan> &#8776; 6.02 <tspan font-style="italic">N</tspan>  <tspan font-size="10">dB</tspan></text>
+  </g>
+</svg>
