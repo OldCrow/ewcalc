@@ -1,5 +1,6 @@
 set(EWPRESENTER_SOURCES
     src/formatter.cpp
+    src/reference_data.cpp
     src/propagation_presenter.cpp
     src/link_presenter.cpp
     src/receiver_presenter.cpp
@@ -22,7 +23,10 @@ target_link_libraries(ewpresenter PUBLIC libew)
 target_compile_features(ewpresenter PUBLIC cxx_std_20)
 
 if(MSVC)
-    target_compile_options(ewpresenter PRIVATE /W4 /WX /permissive-)
+    # /utf-8: reference_data.cpp carries non-ASCII UTF-8 string literals
+    # (−, ≈, sub/superscripts); without it MSVC decodes source as the
+    # active codepage and silently mangles them.
+    target_compile_options(ewpresenter PRIVATE /W4 /WX /permissive- /utf-8)
 else()
     target_compile_options(ewpresenter PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif()

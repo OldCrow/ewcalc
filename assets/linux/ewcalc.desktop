@@ -9,3 +9,7 @@ Categories=Science;Engineering;Education;
 Keywords=EW;Electronic Warfare;RF;radar;propagation;link budget;
 Terminal=false
 StartupNotify=true
+# The Qt binary sets WM_CLASS to "ewcalc"; naming it explicitly lets the
+# shell match the window to this entry (dock icon, window grouping) instead
+# of relying on the filename-vs-WM_CLASS heuristic.
+StartupWMClass=ewcalc

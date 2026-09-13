@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 231 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Range resolution, uncompressed-pulse form: Delta-R = c*tau / 2,
+       with B ~= 1/tau.
+       Delta upright, R italic; c/tau italic; solidus form; trailing
+       small upright annotation with italic B, tau.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20">&#916;<tspan font-style="italic">R</tspan> = <tspan font-style="italic">c &#964;</tspan> / 2  <tspan font-size="10">(uncompressed pulse, <tspan font-style="italic">B</tspan> &#8776; 1/<tspan font-style="italic">&#964;</tspan>)</tspan></text>
+  </g>
+</svg>

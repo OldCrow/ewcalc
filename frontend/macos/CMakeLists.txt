@@ -110,6 +110,19 @@ set_source_files_properties(${ICON_FILE} PROPERTIES
 set(DIAGRAM_PNG_DIR "${EWCALC_SRC_ROOT}/assets/diagrams/png")
 set(DIAGRAM_PNGS
     "${DIAGRAM_PNG_DIR}/antenna-beamwidth.png"
+    "${DIAGRAM_PNG_DIR}/ant-isotropic.png"
+    "${DIAGRAM_PNG_DIR}/ant-dipole.png"
+    "${DIAGRAM_PNG_DIR}/ant-monopole.png"
+    "${DIAGRAM_PNG_DIR}/ant-patch.png"
+    "${DIAGRAM_PNG_DIR}/ant-horn.png"
+    "${DIAGRAM_PNG_DIR}/ant-helix.png"
+    "${DIAGRAM_PNG_DIR}/ant-yagi.png"
+    "${DIAGRAM_PNG_DIR}/ant-logperiodic.png"
+    "${DIAGRAM_PNG_DIR}/ant-spiral.png"
+    "${DIAGRAM_PNG_DIR}/ant-parabolic.png"
+    "${DIAGRAM_PNG_DIR}/ant-array.png"
+    "${DIAGRAM_PNG_DIR}/link-budget.png"
+    "${DIAGRAM_PNG_DIR}/rcs-regions.png"
     "${DIAGRAM_PNG_DIR}/jamming-self-protection.png"
     "${DIAGRAM_PNG_DIR}/jamming-stand-off.png"
     "${DIAGRAM_PNG_DIR}/loc-aoa-cep.png"
@@ -123,7 +136,84 @@ set(DIAGRAM_PNGS
 set_source_files_properties(${DIAGRAM_PNGS} PROPERTIES
     MACOSX_PACKAGE_LOCATION Resources)
 
-add_executable(ewcalc MACOSX_BUNDLE ${SWIFT_SOURCES} ${ICON_FILE} ${DIAGRAM_PNGS})
+# Typeset formula PNGs (issue #73) — bundled into Contents/Resources;
+# FormulaImage (app/Views/ReferenceView.swift) loads them by base name
+# ("<svg_base>-std"/"-log" from the reference data layer). 2x renders,
+# shown at half their pixel size.
+set(FORMULA_PNG_DIR "${EWCALC_SRC_ROOT}/assets/formulas/png")
+set(FORMULA_PNGS
+    "${FORMULA_PNG_DIR}/fspl-std.png"
+    "${FORMULA_PNG_DIR}/fspl-log.png"
+    "${FORMULA_PNG_DIR}/tworay-std.png"
+    "${FORMULA_PNG_DIR}/tworay-log.png"
+    "${FORMULA_PNG_DIR}/fresnelxo-std.png"
+    "${FORMULA_PNG_DIR}/fresnelxo-log.png"
+    "${FORMULA_PNG_DIR}/knife-std.png"
+    "${FORMULA_PNG_DIR}/knife-log.png"
+    "${FORMULA_PNG_DIR}/bulge-std.png"
+    "${FORMULA_PNG_DIR}/bulge-log.png"
+    "${FORMULA_PNG_DIR}/horizon-std.png"
+    "${FORMULA_PNG_DIR}/horizon-log.png"
+    "${FORMULA_PNG_DIR}/aperture-std.png"
+    "${FORMULA_PNG_DIR}/aperture-log.png"
+    "${FORMULA_PNG_DIR}/friis-std.png"
+    "${FORMULA_PNG_DIR}/friis-log.png"
+    "${FORMULA_PNG_DIR}/margin-std.png"
+    "${FORMULA_PNG_DIR}/linkrange-std.png"
+    "${FORMULA_PNG_DIR}/erp-std.png"
+    "${FORMULA_PNG_DIR}/erp-log.png"
+    "${FORMULA_PNG_DIR}/sensitivity-std.png"
+    "${FORMULA_PNG_DIR}/sensitivity-log.png"
+    "${FORMULA_PNG_DIR}/rcs-sphere-std.png"
+    "${FORMULA_PNG_DIR}/rcs-plate-std.png"
+    "${FORMULA_PNG_DIR}/rcs-cyl-std.png"
+    "${FORMULA_PNG_DIR}/rcs-dihedral-std.png"
+    "${FORMULA_PNG_DIR}/rcs-trihedral-std.png"
+    "${FORMULA_PNG_DIR}/rcs-dbsm-std.png"
+    "${FORMULA_PNG_DIR}/noisetemp-std.png"
+    "${FORMULA_PNG_DIR}/noisetemp-log.png"
+    "${FORMULA_PNG_DIR}/cascade-std.png"
+    "${FORMULA_PNG_DIR}/ddr-std.png"
+    "${FORMULA_PNG_DIR}/sqnr-std.png"
+    "${FORMULA_PNG_DIR}/sfdr2-std.png"
+    "${FORMULA_PNG_DIR}/sfdr3-std.png"
+    "${FORMULA_PNG_DIR}/js-std.png"
+    "${FORMULA_PNG_DIR}/burnlos-std.png"
+    "${FORMULA_PNG_DIR}/burn2ray-std.png"
+    "${FORMULA_PNG_DIR}/pbopt-std.png"
+    "${FORMULA_PNG_DIR}/pbduty-std.png"
+    "${FORMULA_PNG_DIR}/cepaoa-std.png"
+    "${FORMULA_PNG_DIR}/ceptdoa-std.png"
+    "${FORMULA_PNG_DIR}/cepeep-std.png"
+    "${FORMULA_PNG_DIR}/cepadamy-std.png"
+    "${FORMULA_PNG_DIR}/jsspj-std.png"
+    "${FORMULA_PNG_DIR}/jssoj-std.png"
+    "${FORMULA_PNG_DIR}/doppler-std.png"
+    "${FORMULA_PNG_DIR}/doppler-log.png"
+    "${FORMULA_PNG_DIR}/unambrange-std.png"
+    "${FORMULA_PNG_DIR}/blindspeed-std.png"
+    "${FORMULA_PNG_DIR}/unambvel-std.png"
+    "${FORMULA_PNG_DIR}/dilemma-std.png"
+    "${FORMULA_PNG_DIR}/rangeres-std.png"
+    "${FORMULA_PNG_DIR}/rangeres-log.png"
+    "${FORMULA_PNG_DIR}/crossres-std.png"
+    "${FORMULA_PNG_DIR}/radarrange-std.png"
+    "${FORMULA_PNG_DIR}/radarrange-log.png"
+    "${FORMULA_PNG_DIR}/pulsecomp-std.png"
+    "${FORMULA_PNG_DIR}/cohint-std.png"
+    "${FORMULA_PNG_DIR}/lpi-std.png"
+    "${FORMULA_PNG_DIR}/flucloss-std.png"
+    "${FORMULA_PNG_DIR}/dwell-std.png"
+    "${FORMULA_PNG_DIR}/far-std.png"
+    "${FORMULA_PNG_DIR}/ebno-std.png"
+    "${FORMULA_PNG_DIR}/ebno-log.png"
+    "${FORMULA_PNG_DIR}/procgain-std.png"
+    "${FORMULA_PNG_DIR}/jammargin-std.png"
+)
+set_source_files_properties(${FORMULA_PNGS} PROPERTIES
+    MACOSX_PACKAGE_LOCATION Resources)
+
+add_executable(ewcalc MACOSX_BUNDLE ${SWIFT_SOURCES} ${ICON_FILE} ${DIAGRAM_PNGS} ${FORMULA_PNGS})
 
 # libc++ must be explicitly listed: the bridge is a pre-built IMPORTED
 # static library; Xcode's Swift target does not automatically add C++

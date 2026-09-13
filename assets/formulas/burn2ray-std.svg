@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 316 40" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Burn-through range, two-ray form, standard (and only) form:
+       d = 10^((M - 120 + 20 log10 h_t(m) + 20 log10 h_r(m)) / 40)   km.
+       Same inline-exponent treatment as linkrange-std/burnlos-std: the
+       bracketed exponent is set small (font-size 11) rather than as a
+       nested fraction, with real subscripts on the log base and on the
+       two antenna-height terms.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="30"><tspan font-style="italic">d</tspan> = 10<tspan font-size="11" dy="-10">(<tspan font-style="italic">M</tspan> &#8722; 120 + 20 log<tspan font-size="8" dy="3">10</tspan><tspan dy="-3">&#8203;</tspan> <tspan font-style="italic">h</tspan><tspan font-size="8" dy="3">t</tspan><tspan dy="-3">&#8203;</tspan>(m) + 20 log<tspan font-size="8" dy="3">10</tspan><tspan dy="-3">&#8203;</tspan> <tspan font-style="italic">h</tspan><tspan font-size="8" dy="3">r</tspan><tspan dy="-3">&#8203;</tspan>(m)) / 40</tspan><tspan dy="10">&#8203;</tspan>  km</text>
+  </g>
+</svg>

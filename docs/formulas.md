@@ -179,7 +179,7 @@ LOS: `d = 10^((margin - 32.44 - 20*log10(f))/20)`; 2-ray: `d = 10^((margin - 120
 ## Radar
 
 ### Radar range equation
-`20*log10(R_max) = (P_t + 2G + 20*log10(lambda) + sigma - 30*log10(4*pi) - noise_power - SNR - L_sys) / 4`
+`40*log10(R_max_m) = P_t + 2G + 20*log10(lambda_m) + sigma - 30*log10(4*pi) - noise_power - SNR - L_sys` (R in metres, converted to km)
 
 - Source: Adamy EW102 Sec. 3.2 "Radar Range Equation", p. 36; Sec. 3.2.2 "Radar Detection Range", p. 40.
 - Assumptions: monostatic radar with the same antenna gain for transmit and receive; `noise_power = sensitivity - SNR`.

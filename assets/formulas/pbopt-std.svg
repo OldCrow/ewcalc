@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 186 40" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Optimum jamming bandwidth, standard (and only) form:
+       BW_opt = BW_sig * 10^((J/S)_1 / 10).
+       BW upright (an abbreviation, not a variable) with small upright
+       subscripts opt/sig; J/S italic (the jam-to-signal ratio) with a
+       real subscript 1 meaning the single-channel J/S. Same inline
+       -exponent treatment as linkrange-std.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="30">BW<tspan font-size="10" dy="4">opt</tspan><tspan dy="-4">&#8203;</tspan> = BW<tspan font-size="10" dy="4">sig</tspan><tspan dy="-4">&#8203;</tspan> &#183; 10<tspan font-size="11" dy="-10">(<tspan font-style="italic">J</tspan>/<tspan font-style="italic">S</tspan><tspan font-size="8" dy="3">1</tspan><tspan dy="-3">&#8203;</tspan> / 10)</tspan><tspan dy="10">&#8203;</tspan></text>
+  </g>
+</svg>

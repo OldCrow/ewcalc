@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 288 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Jamming margin, standard (and only) form, two-clause per knife-log:
+       JM = PG - (Eb/N0)_r - L_impl ;  (J/S)_r = -JM.
+       JM/PG upright (abbreviations, not variables); (Eb/N0)_r and (J/S)_r
+       carry a small upright trailing subscript r (required ratio); L
+       italic with small upright subscript impl; J/S italic with an
+       upright solidus, per js-std's J/S treatment.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20">JM = PG &#8722; (<tspan font-style="italic">E</tspan><tspan font-size="10" dy="4">b</tspan><tspan dy="-4">&#8203;</tspan>/<tspan font-style="italic">N</tspan><tspan font-size="10" dy="4">0</tspan><tspan dy="-4">&#8203;</tspan>)<tspan font-size="10" dy="4">r</tspan><tspan dy="-4">&#8203;</tspan> &#8722; <tspan font-style="italic">L</tspan><tspan font-size="10" dy="4">impl</tspan><tspan dy="-4">&#8203;</tspan>;  (<tspan font-style="italic">J</tspan>/<tspan font-style="italic">S</tspan>)<tspan font-size="10" dy="4">r</tspan><tspan dy="-4">&#8203;</tspan> = &#8722;JM</text>
+  </g>
+</svg>

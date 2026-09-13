@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Knife-edge diffraction loss, log form:
+       L(0) = 6.02 dB; L ~= 12.95 + 20 log10 nu (nu >= 2.4).
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20"><tspan font-style="italic">L</tspan>(0) = 6.02 <tspan font-size="10">dB</tspan>;  <tspan font-style="italic">L</tspan> &#8776; 12.95 + 20 log<tspan font-size="10" dy="4">10</tspan><tspan dy="-4">&#8203;</tspan> <tspan font-style="italic">&#957;</tspan>  <tspan font-size="10">(&#957; &#8805; 2.4)</tspan></text>
+  </g>
+</svg>

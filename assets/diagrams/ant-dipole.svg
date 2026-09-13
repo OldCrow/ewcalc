@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 260" font-family="system-ui, sans-serif" font-size="14">
+  <!-- Half-wave dipole: vertical radiating element, classic figure-eight
+       (doughnut in 3-D) E-plane pattern with two broadside lobes and
+       nulls off the element ends. -->
+
+  <!-- Antenna element (gray), vertical, fed at center -->
+  <g stroke="#808080" stroke-width="2.5">
+    <line x1="230" y1="78" x2="230" y2="130"/>
+    <line x1="230" y1="150" x2="230" y2="202"/>
+  </g>
+  <circle cx="230" cy="140" r="4" fill="#808080"/>
+  <text x="230" y="63" text-anchor="middle" fill="#808080">&#955;/2</text>
+
+  <!-- Radiation pattern (blue): figure-eight, two broadside lobes -->
+  <path d="M230 140 C 355 60, 445 60, 230 140 C 355 220, 445 220, 230 140 Z"
+        stroke="#3b82c4" stroke-width="2.5" fill="none"/>
+  <path d="M230 140 C 105 60, 15 60, 230 140 C 105 220, 15 220, 230 140 Z"
+        stroke="#3b82c4" stroke-width="2.5" fill="none"/>
+  <text x="470" y="145" fill="#3b82c4">broadside lobe</text>
+
+  <!-- Beamwidth annotation (amber) on the right lobe -->
+  <g stroke="#c49a3b" stroke-width="1.5" fill="none" stroke-dasharray="6 4">
+    <line x1="230" y1="140" x2="380" y2="88"/>
+    <line x1="230" y1="140" x2="380" y2="192"/>
+  </g>
+  <path d="M320 100 A 95 95 0 0 1 320 180" stroke="#c49a3b" stroke-width="1.5" fill="none"/>
+  <text x="335" y="145" fill="#c49a3b">~78&#176;</text>
+
+  <!-- Takeaway -->
+  <text x="320" y="30" text-anchor="middle" fill="#808080">Doughnut-shaped in 3-D &#8212; omnidirectional around the element axis, nulls off each end</text>
+</svg>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 246 48" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Friis noise-figure cascade, standard form:
+       F = F1 + (F2 - 1)/G1 + (F3 - 1)/(G1 G2) + ...
+       All F/G italic with small subscript digits. Second and third terms
+       are stacked fractions; the fraction bar hugs the wider of its
+       numerator/denominator. Trailing midline ellipsis.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="29"><tspan font-style="italic">F</tspan></text>
+    <text x="22" y="29">=</text>
+    <text x="36" y="29"><tspan font-style="italic">F</tspan><tspan font-size="10" dy="4">1</tspan><tspan dy="-4">&#8203;</tspan></text>
+    <text x="60" y="29">+</text>
+
+    <!-- Fraction 1: (F2 - 1) over G1 -->
+    <text x="97" y="21" text-anchor="middle"><tspan font-style="italic">F</tspan><tspan font-size="10" dy="4">2</tspan><tspan dy="-4">&#8203;</tspan> &#8722; 1</text>
+    <text x="97" y="44" text-anchor="middle"><tspan font-style="italic">G</tspan><tspan font-size="10" dy="4">1</tspan><tspan dy="-4">&#8203;</tspan></text>
+
+    <text x="132" y="29">+</text>
+
+    <!-- Fraction 2: (F3 - 1) over G1 G2 -->
+    <text x="169" y="21" text-anchor="middle"><tspan font-style="italic">F</tspan><tspan font-size="10" dy="4">3</tspan><tspan dy="-4">&#8203;</tspan> &#8722; 1</text>
+    <text x="169" y="44" text-anchor="middle"><tspan font-style="italic">G</tspan><tspan font-size="10" dy="4">1</tspan><tspan dy="-4">&#8203;</tspan><tspan font-style="italic">G</tspan><tspan font-size="10" dy="4">2</tspan><tspan dy="-4">&#8203;</tspan></text>
+
+    <text x="204" y="29">+</text>
+    <text x="222" y="29">&#8943;</text>
+  </g>
+  <!-- Fraction bars, each sized to the wider of its numerator/denominator -->
+  <line x1="76" y1="25.5" x2="118" y2="25.5" stroke="#808080" stroke-width="1.2"/>
+  <line x1="146" y1="25.5" x2="192" y2="25.5" stroke="#808080" stroke-width="1.2"/>
+</svg>

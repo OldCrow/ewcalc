@@ -15,6 +15,7 @@
 #include <ewpresenter/doppler_presenter.h>
 #include <ewpresenter/digital_presenter.h>
 #include <ewpresenter/antenna_presenter.h>
+#include <ewpresenter/reference_data.h>
 
 #include <cstring>
 #include <vector>
@@ -252,6 +253,33 @@ static EwpFieldError to_c(ewpresenter::FieldError e) noexcept {
 // ============================================================================
 // Propagation implementation
 // ============================================================================
+
+// ── Reference library lookup helpers (#73) ──────────────────────────────────
+// Bounds-checked navigation into refdata's static tables; nullptr for any
+// out-of-range index. Used only by the ewp_ref_* functions below.
+namespace {
+namespace ewp_ref {
+
+inline std::size_t page_count() noexcept {
+    return ewpresenter::refdata::pages().size();
+}
+inline const ewpresenter::refdata::Page* page(std::size_t i) noexcept {
+    const auto all = ewpresenter::refdata::pages();
+    return i < all.size() ? &all[i] : nullptr;
+}
+inline const ewpresenter::refdata::Section* section(std::size_t p,
+                                                    std::size_t s) noexcept {
+    const auto* pg = page(p);
+    return (pg && s < pg->section_count) ? &pg->sections[s] : nullptr;
+}
+inline const ewpresenter::refdata::Row* row(std::size_t p, std::size_t s,
+                                            std::size_t r) noexcept {
+    const auto* sec = section(p, s);
+    return (sec && r < sec->row_count) ? &sec->rows[r] : nullptr;
+}
+
+} // namespace ewp_ref
+} // namespace
 
 extern "C" {
 
@@ -711,5 +739,67 @@ EwpFieldError ewp_antenna_az_beamwidth_error(EwpAntennaRef ref) { return to_c(ca
 EwpFieldError ewp_antenna_el_beamwidth_error(EwpAntennaRef ref) { return to_c(cast<AntennaWrapper>(ref)->presenter.el_beamwidth_error()); }
 EwpFieldError ewp_antenna_tx_power_error(EwpAntennaRef ref)     { return to_c(cast<AntennaWrapper>(ref)->presenter.tx_power_error()); }
 EwpFieldError ewp_antenna_frequency_error(EwpAntennaRef ref)    { return to_c(cast<AntennaWrapper>(ref)->presenter.frequency_error()); }
+
+// ============================================================================
+// Reference library (#73)
+// ============================================================================
+// Bounds-checked lookups into ewpresenter::refdata's static tables; helper
+// functions live outside extern "C" (see below) and return nullptr for any
+// out-of-range index so Swift optional-binding maps directly onto them.
+
+size_t ewp_ref_page_count(void) { return ewp_ref::page_count(); }
+const char* ewp_ref_page_id(size_t page) {
+    const auto* p = ewp_ref::page(page);
+    return p ? p->id : nullptr;
+}
+const char* ewp_ref_page_title(size_t page) {
+    const auto* p = ewp_ref::page(page);
+    return p ? p->title : nullptr;
+}
+const char* ewp_ref_page_subtitle(size_t page) {
+    const auto* p = ewp_ref::page(page);
+    return p ? p->subtitle : nullptr;
+}
+size_t ewp_ref_section_count(size_t page) {
+    const auto* p = ewp_ref::page(page);
+    return p ? p->section_count : 0;
+}
+const char* ewp_ref_section_title(size_t page, size_t section) {
+    const auto* s = ewp_ref::section(page, section);
+    return s ? s->title : nullptr;
+}
+const char* ewp_ref_section_diagram(size_t page, size_t section) {
+    const auto* s = ewp_ref::section(page, section);
+    return s ? s->diagram : nullptr;
+}
+size_t ewp_ref_row_count(size_t page, size_t section) {
+    const auto* s = ewp_ref::section(page, section);
+    return s ? s->row_count : 0;
+}
+EwpRefRowKind ewp_ref_row_kind(size_t page, size_t section, size_t row) {
+    const auto* r = ewp_ref::row(page, section, row);
+    return (r && r->kind == ewpresenter::refdata::RowKind::Formula)
+        ? EWP_REF_ROW_FORMULA : EWP_REF_ROW_VALUE;
+}
+const char* ewp_ref_row_label(size_t page, size_t section, size_t row) {
+    const auto* r = ewp_ref::row(page, section, row);
+    return r ? r->label : nullptr;
+}
+const char* ewp_ref_row_value(size_t page, size_t section, size_t row) {
+    const auto* r = ewp_ref::row(page, section, row);
+    return r ? r->value : nullptr;
+}
+const char* ewp_ref_row_copy_value(size_t page, size_t section, size_t row) {
+    const auto* r = ewp_ref::row(page, section, row);
+    return r ? r->copy_value : nullptr;
+}
+const char* ewp_ref_row_log_value(size_t page, size_t section, size_t row) {
+    const auto* r = ewp_ref::row(page, section, row);
+    return r ? r->log_value : nullptr;
+}
+const char* ewp_ref_row_svg_base(size_t page, size_t section, size_t row) {
+    const auto* r = ewp_ref::row(page, section, row);
+    return r ? r->svg_base : nullptr;
+}
 
 } // extern "C"

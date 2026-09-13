@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Free-space path loss, log form: L = 32.44 + 20 log10 f(MHz) + 20 log10 d(km).
+       Constant 32.44 matches libew::constants::fspl_constant_km_mhz.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20"><tspan font-style="italic">L</tspan> = 32.44 + 20 log<tspan font-size="10" dy="4">10</tspan><tspan dy="-4">&#8203;</tspan> <tspan font-style="italic">f</tspan><tspan font-size="10">(MHz)</tspan> + 20 log<tspan font-size="10" dy="4">10</tspan><tspan dy="-4">&#8203;</tspan> <tspan font-style="italic">d</tspan><tspan font-size="10">(km)</tspan>  <tspan font-size="10">dB</tspan></text>
+  </g>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 165 48" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Effective aperture, standard form: A_e = G*lambda^2 / (4*pi).
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer
+       (ewpresenter/src/reference_data.cpp), not here.
+       NOTE: all formula masters use font-size 15 so glyphs match in size
+       across formulas when frontends show the 2x PNGs at half pixel size. -->
+  <g fill="#808080">
+    <!-- Left side: A_e italic with upright subscript, '=' -->
+    <text x="8" y="29" font-style="italic">A<tspan font-size="10" dy="3" font-style="normal">e</tspan><tspan dy="-3" font-style="normal">&#8203;</tspan></text>
+    <text x="42" y="29">=</text>
+
+    <!-- Fraction: G*lambda^2 over 4*pi -->
+    <text x="58" y="21"><tspan font-style="italic">G&#955;</tspan><tspan font-size="11" dy="-5">2</tspan><tspan dy="5">&#8203;</tspan></text>
+    <text x="60" y="44">4<tspan font-style="italic">&#960;</tspan></text>
+  </g>
+  <!-- Fraction bar, sized to the wider of numerator/denominator -->
+  <line x1="57" y1="25.5" x2="96" y2="25.5" stroke="#808080" stroke-width="1.2"/>
+</svg>

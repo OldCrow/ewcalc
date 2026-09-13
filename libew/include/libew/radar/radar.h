@@ -25,9 +25,9 @@ struct RadarRangeResult {
 /// The radar range equation in log domain:
 ///   R_max^4 = P_t * G^2 * λ^2 * σ / ((4π)^3 * k*T*B*NF*SNR_min * L_sys)
 ///
-/// Rearranged as a link budget:
-///   20*log10(R_max) = (P_t_dBm + 2*G_dBi + 20*log10(λ) + σ_dBsm
-///                      - 30*log10(4π) - noise_power_dBm - SNR_dB - L_sys_dB) / 4
+/// Rearranged as a link budget (R in metres, converted to km at the end):
+///   40*log10(R_max) = P_t_dBm + 2*G_dBi + 20*log10(λ) + σ_dBsm
+///                     - 30*log10(4π) - noise_power_dBm - SNR_dB - L_sys_dB
 /// where λ = c / f_MHz / 1e6 (meters) and noise_power = sensitivity - SNR
 ///
 /// @param tx_power     Transmitter power (dBm)

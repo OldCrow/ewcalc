@@ -13,6 +13,10 @@
 #include "pages/AntennaPage.h"
 #include "pages/ReferencePage.h"
 
+#include <ewpresenter/reference_data.h>
+
+#include <cstddef>
+
 #include <QAction>
 #include <QApplication>
 #include <QBrush>
@@ -25,11 +29,57 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QPainter>
+#include <QPixmap>
 #include <QProcess>
 #include <QPushButton>
 #include <QStackedWidget>
+#include <QString>
+#include <QStyle>
 #include <QVBoxLayout>
 #include <QWidget>
+
+namespace {
+
+/// Sidebar icon per stable refdata page id (#74). A reference page whose
+/// domain mirrors a calculator reuses that calculator's exact icon name —
+/// "network-wireless", matching the Propagation row below — so the two read
+/// as the same concept; quick-values keeps the pre-#74 Reference icon;
+/// ref-db-units gets its own distinct icon; an unknown future id falls back
+/// to the Reference icon. addPage() applies the plain-then-"-symbolic"
+/// theme fallback uniformly, so only the plain name is chosen here.
+QString referencePageIcon(const QString& pageId)
+{
+    if (pageId == QStringLiteral("ref-propagation"))
+        return QStringLiteral("network-wireless");
+    if (pageId == QStringLiteral("ref-antennas"))
+        return QStringLiteral("network-wireless"); // matches the Antenna row
+    if (pageId == QStringLiteral("ref-link"))
+        return QStringLiteral("network-transmit-receive"); // matches the Link Budget row
+    if (pageId == QStringLiteral("ref-bands"))
+        return QStringLiteral("accessories-character-map");
+    if (pageId == QStringLiteral("ref-receiver"))
+        return QStringLiteral("audio-card"); // matches the Receiver row
+    if (pageId == QStringLiteral("ref-jamming"))
+        return QStringLiteral("emblem-important"); // matches the Jamming row
+    if (pageId == QStringLiteral("ref-location"))
+        return QStringLiteral("mark-location"); // matches the Location row
+    if (pageId == QStringLiteral("ref-radar-det"))
+        return QStringLiteral("system-search"); // matches the Radar row
+    if (pageId == QStringLiteral("ref-doppler"))
+        return QStringLiteral("media-playlist-shuffle"); // matches the Doppler & Resolution row
+    if (pageId == QStringLiteral("ref-digital"))
+        return QStringLiteral("media-playback-start"); // matches the Digital / DSSS row
+    if (pageId == QStringLiteral("ref-rcs"))
+        return QStringLiteral("airplane-mode");
+    if (pageId == QStringLiteral("ref-glossary"))
+        return QStringLiteral("accessories-dictionary");
+    if (pageId == QStringLiteral("ref-db-units"))
+        return QStringLiteral("accessories-calculator");
+    return QStringLiteral("help-contents");
+}
+
+} // namespace
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -38,11 +88,29 @@ MainWindow::MainWindow(QWidget* parent)
 {
     setWindowTitle(QStringLiteral("EW Calculator"));
     setMinimumSize(980, 640);
+    // The minimum is the floor at which every page is still usable, not a
+    // comfortable default: at exactly 980 the widest Reference rows overflow
+    // and the page opens with a horizontal scrollbar. Without an explicit
+    // resize() the window launches at its minimum, so set a roomier default.
+    resize(1180, 800);
 
     // ── Sidebar helpers ───────────────────────────────────────────────────
-    nav_->setMaximumWidth(170);
-    nav_->setMinimumWidth(145);
+    // Wide enough for the longest label ("Doppler & Resolution") *plus* a row
+    // icon; at the previous 170 the label clipped and the nav grew its own
+    // horizontal scrollbar on themes that supply icons for every row.
+    nav_->setMaximumWidth(210);
+    nav_->setMinimumWidth(185);
     nav_->setSpacing(1);
+
+    // Every row's label must start at the same x. The item delegate sizes a
+    // row's decoration from the icon's actualSize(), so an icon the theme
+    // ships only at a smaller *fixed* size (Yaru's "system-search" exists
+    // solely as a 16 px legacy entry, against the 24 px list-icon size) gets a
+    // narrower slot and shifts that row's label left. Pin the view's icon size
+    // so addPage() can pad such icons up to it.
+    const int navIconPx = nav_->style()->pixelMetric(QStyle::PM_ListViewIconSize, nullptr, nav_);
+    const QSize navIconSize(navIconPx, navIconPx);
+    nav_->setIconSize(navIconSize);
 
     // Adds a non-selectable section header row
     auto addHeader = [this](const QString& text) {
@@ -67,9 +135,29 @@ MainWindow::MainWindow(QWidget* parent)
     };
 
     // Adds a page item with optional XDG theme icon (graceful fallback)
-    auto addPage = [this](const QString& label, const QString& iconName, QWidget* page) {
+    auto addPage = [this, navIconSize](const QString& label, const QString& iconName, QWidget* page) {
         auto* item = new QListWidgetItem(label);
-        const auto icon = QIcon::fromTheme(iconName);
+        // Current GNOME icon themes (Adwaita 46+, Yaru) ship most of these
+        // names only in their "-symbolic" form; the full-colour legacy names
+        // resolve to nothing, and QIcon::fromTheme fails silently, leaving
+        // the row icon-less. Try the plain name first (themes that still
+        // carry full-colour variants keep them) and fall back to symbolic.
+        auto icon = QIcon::fromTheme(iconName);
+        if (icon.isNull())
+            icon = QIcon::fromTheme(iconName + QStringLiteral("-symbolic"));
+        // Pad a smaller-than-slot icon onto a transparent canvas of the pinned
+        // size, centred (QIcon::paint's default alignment) — the row keeps a
+        // full-width decoration without upscaling the icon into a blur.
+        if (!icon.isNull() && icon.actualSize(navIconSize) != navIconSize) {
+            const qreal dpr = nav_->devicePixelRatioF();
+            QPixmap canvas(navIconSize * dpr);
+            canvas.setDevicePixelRatio(dpr);
+            canvas.fill(Qt::transparent);
+            QPainter painter(&canvas);
+            icon.paint(&painter, QRect(QPoint(0, 0), navIconSize));
+            painter.end();
+            icon = QIcon(canvas);
+        }
         if (!icon.isNull())
             item->setIcon(icon);
         nav_->addItem(item);
@@ -83,7 +171,7 @@ MainWindow::MainWindow(QWidget* parent)
     addPage(QStringLiteral("Antenna"),       QStringLiteral("network-wireless"),         new AntennaPage);
     addPage(QStringLiteral("Link Budget"),   QStringLiteral("network-transmit-receive"), new LinkPage);
     addPage(QStringLiteral("Receiver"),      QStringLiteral("audio-card"),              new ReceiverPage);
-    addPage(QStringLiteral("Jamming"),       QStringLiteral("emblem-important"),        new JammingPage);
+    addPage(QStringLiteral("Comms Jamming"), QStringLiteral("emblem-important"),        new JammingPage);
     // "find-location" isn't a standard XDG icon name and resolves to nothing
     // on most icon themes; "mark-location" is the widely-shipped equivalent.
     addPage(QStringLiteral("Location"),      QStringLiteral("mark-location"),           new LocationPage);
@@ -93,9 +181,18 @@ MainWindow::MainWindow(QWidget* parent)
     addPage(QStringLiteral("Digital / DSSS"),QStringLiteral("media-playback-start"),    new DigitalPage);
 
     // ── Reference section ───────────────────────────────────────────────
+    // One sidebar row per refdata page (#74): the sidebar renders whatever
+    // ewpresenter::refdata publishes, so a new data-layer page becomes a nav
+    // entry with no MainWindow change.
     addSpacer();
     addHeader(QStringLiteral("Reference"));
-    addPage(QStringLiteral("Reference"),     QStringLiteral("help-contents"),           new ReferencePage);
+    const auto refPages = ewpresenter::refdata::pages();
+    for (std::size_t i = 0; i < refPages.size(); ++i) {
+        const auto& page = refPages[i];
+        addPage(QString::fromUtf8(page.title),
+                referencePageIcon(QString::fromUtf8(page.id)),
+                new ReferencePage(i));
+    }
 
     // Select first real page (index 1 — after the "Calculators" header)
     nav_->setCurrentRow(1);

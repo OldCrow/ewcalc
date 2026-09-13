@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 239 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Eb/N0 required, standard form:
+       Eb/N0 = SNR + 10 log10 (BW / R_b).
+       Eb/N0 italic (E, N) with small upright subscripts b/0; SNR/BW
+       upright (abbreviations, not variables); R italic with small
+       upright subscript b; solidus inside the parens upright.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20"><tspan font-style="italic">E</tspan><tspan font-size="10" dy="4">b</tspan><tspan dy="-4">&#8203;</tspan>/<tspan font-style="italic">N</tspan><tspan font-size="10" dy="4">0</tspan><tspan dy="-4">&#8203;</tspan> = SNR + 10 log<tspan font-size="10" dy="4">10</tspan><tspan dy="-4">&#8203;</tspan> (BW / <tspan font-style="italic">R</tspan><tspan font-size="10" dy="4">b</tspan><tspan dy="-4">&#8203;</tspan>)</text>
+  </g>
+</svg>

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 282" font-family="system-ui, sans-serif" font-size="14">
+  <!-- Link-budget waterfall: signal level steps up at each antenna gain,
+       slopes down across the path loss, and lands above (or below) the
+       receiver sensitivity floor by the margin. -->
+
+  <!-- Baseline axis -->
+  <line x1="30" y1="250" x2="610" y2="250" stroke="#808080" stroke-width="1"/>
+
+  <!-- Tx antenna glyph -->
+  <line x1="130" y1="250" x2="130" y2="205" stroke="#808080" stroke-width="2"/>
+  <path d="M130 205 l-10 10 M130 205 l10 10 M130 205 l0 -10" stroke="#808080" stroke-width="2" fill="none"/>
+  <text x="130" y="270" text-anchor="middle" fill="#808080">Tx</text>
+
+  <!-- Rx antenna glyph -->
+  <line x1="460" y1="250" x2="460" y2="205" stroke="#808080" stroke-width="2"/>
+  <path d="M460 205 l-10 10 M460 205 l10 10 M460 205 l0 -10" stroke="#808080" stroke-width="2" fill="none"/>
+  <text x="460" y="270" text-anchor="middle" fill="#808080">Rx</text>
+
+  <!-- Sensitivity floor (dashed) -->
+  <line x1="30" y1="222" x2="610" y2="222" stroke="#808080" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="220" y="215" fill="#808080">sensitivity S</text>
+
+  <!-- Signal-level waterfall (blue): P_tx -> +G_tx step -> path loss slope -> +G_rx step -> P_rx -->
+  <polyline points="70,120 130,120 130,72 460,196 460,158 520,158"
+            fill="none" stroke="#3b82c4" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- P_tx label -->
+  <text x="50" y="112" text-anchor="end" fill="#3b82c4">P<tspan font-size="10" dy="3">tx</tspan><tspan dy="-3">&#8203;</tspan></text>
+  <circle cx="70" cy="120" r="3" fill="#3b82c4"/>
+
+  <!-- +G_tx step label -->
+  <text x="136" y="94" fill="#c49a3b">+G<tspan font-size="10" dy="3">tx</tspan><tspan dy="-3">&#8203;</tspan></text>
+
+  <!-- Path loss label -->
+  <text x="295" y="118" text-anchor="middle" fill="#c49a3b">path loss</text>
+
+  <!-- +G_rx step label -->
+  <text x="454" y="178" text-anchor="end" fill="#c49a3b">+G<tspan font-size="10" dy="3">rx</tspan><tspan dy="-3">&#8203;</tspan></text>
+
+  <!-- P_rx label -->
+  <circle cx="520" cy="158" r="3" fill="#3b82c4"/>
+  <text x="530" y="154" fill="#3b82c4">P<tspan font-size="10" dy="3">rx</tspan><tspan dy="-3">&#8203;</tspan></text>
+
+  <!-- Margin brace between P_rx and sensitivity S -->
+  <line x1="546" y1="158" x2="546" y2="222" stroke="#c49a3b" stroke-width="1.5"/>
+  <path d="M546 158 l-4 8 M546 158 l4 8" stroke="#c49a3b" stroke-width="1.5" fill="none"/>
+  <path d="M546 222 l-4 -8 M546 222 l4 -8" stroke="#c49a3b" stroke-width="1.5" fill="none"/>
+  <text x="554" y="194" fill="#c49a3b">margin</text>
+
+  <!-- Takeaway -->
+  <text x="320" y="26" text-anchor="middle" fill="#808080">Antenna gain lifts the level at each end; path loss drains it in between &#8212;</text>
+  <text x="320" y="44" text-anchor="middle" fill="#808080">what survives above sensitivity S is the margin</text>
+</svg>

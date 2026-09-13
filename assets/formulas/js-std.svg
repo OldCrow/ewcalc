@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 311 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Jam-to-signal ratio, standard (and only) form:
+       J/S = (ERP_J + G_rj - L_j) - (ERP_S + G_rs - L_s)   dB.
+       ERP upright with italic-capital subscripts J/S (they name the
+       jammer/signal channel, not an index); G/L italic with small
+       upright subscripts rj/j/rs/s (site labels, not variables).
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20"><tspan font-style="italic">J</tspan>/<tspan font-style="italic">S</tspan> = (ERP<tspan font-style="italic" font-size="10" dy="4">J</tspan><tspan dy="-4">&#8203;</tspan> + <tspan font-style="italic">G</tspan><tspan font-size="10" dy="4">rj</tspan><tspan dy="-4">&#8203;</tspan> &#8722; <tspan font-style="italic">L</tspan><tspan font-size="10" dy="4">j</tspan><tspan dy="-4">&#8203;</tspan>) &#8722; (ERP<tspan font-style="italic" font-size="10" dy="4">S</tspan><tspan dy="-4">&#8203;</tspan> + <tspan font-style="italic">G</tspan><tspan font-size="10" dy="4">rs</tspan><tspan dy="-4">&#8203;</tspan> &#8722; <tspan font-style="italic">L</tspan><tspan font-size="10" dy="4">s</tspan><tspan dy="-4">&#8203;</tspan>)  <tspan font-size="10">dB</tspan></text>
+  </g>
+</svg>

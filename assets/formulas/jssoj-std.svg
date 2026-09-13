@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 579 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Jam-to-signal ratio, stand-off jamming (SOJ), standard (and only)
+       form: J/S = ERP_J - ERP_S + G_S - G_M + 71 + 40 log10 R_T(km)
+       - 20 log10 R_J(km) - 10 log10 sigma(m^2).
+       J/S both italic with upright solidus (per js-std.svg); ERP upright
+       with italic-capital subscripts J/S; G italic with small upright S/M
+       subscripts (sidelobe/mainlobe gain terms, not indices); R italic
+       with small upright T/J subscripts (target/jammer range terms);
+       sigma italic; (km)/(m^2)/dB small upright.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20"><tspan font-style="italic">J</tspan>/<tspan font-style="italic">S</tspan> = ERP<tspan font-style="italic" font-size="10" dy="4">J</tspan><tspan dy="-4">&#8203;</tspan> &#8722; ERP<tspan font-style="italic" font-size="10" dy="4">S</tspan><tspan dy="-4">&#8203;</tspan> + <tspan font-style="italic">G</tspan><tspan font-size="10" dy="4">S</tspan><tspan dy="-4">&#8203;</tspan> &#8722; <tspan font-style="italic">G</tspan><tspan font-size="10" dy="4">M</tspan><tspan dy="-4">&#8203;</tspan> + 71 + 40 log<tspan font-size="10" dy="4">10</tspan><tspan dy="-4">&#8203;</tspan> <tspan font-style="italic">R</tspan><tspan font-size="10" dy="4">T</tspan><tspan dy="-4">&#8203;</tspan><tspan font-size="10">(km)</tspan> &#8722; 20 log<tspan font-size="10" dy="4">10</tspan><tspan dy="-4">&#8203;</tspan> <tspan font-style="italic">R</tspan><tspan font-size="10" dy="4">J</tspan><tspan dy="-4">&#8203;</tspan><tspan font-size="10">(km)</tspan> &#8722; 10 log<tspan font-size="10" dy="4">10</tspan><tspan dy="-4">&#8203;</tspan> <tspan font-style="italic">&#963;</tspan><tspan font-size="10">(m</tspan><tspan font-size="7" dy="-4">2</tspan><tspan dy="4">&#8203;</tspan><tspan font-size="10">)</tspan>  <tspan font-size="10">dB</tspan></text>
+  </g>
+</svg>

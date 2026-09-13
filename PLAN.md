@@ -130,10 +130,51 @@ Open milestones are fully itemized here since they reflect actionable state.
   tables, thumbnails in the #72 style. Content compiled clean-room from
   multiple public sources under the citation precedence rule, never
   transcribed from the R&S eGuide that inspired it.
-  - #73 OPEN — Reference data layer in ewpresenter (single source of
-    truth; frontends render, not own). PREREQUISITE for all pages.
-    Carries the open design point: formula rendering (monospace text
-    vs. typeset SVG snippets).
+  - #73 IMPLEMENTED on dev/v1.2.0 (2026-09-09), awaiting cross-platform
+    verification before close. Data layer: ewpresenter::refdata
+    (pages → sections → rows; Value and Formula row kinds) + ewp_ref_*
+    bridge accessors + test_reference; all three Reference pages now
+    render from it (per-frontend content tables deleted). RESOLVED
+    design point: formulas render as typeset SVG snippets
+    (assets/formulas/, render-diagrams.sh renders 2x PNGs, mid-gray
+    for both themes) with Unicode plain-text equivalents from the data
+    layer as accessibility label, tooltip, and copy text — chosen by
+    the user over monospace text; all masters share font-size 15 and
+    frontends display at exact 1x so glyph size matches across
+    formulas. Proof row: FSPL standard (4πdf/c)² | log 32.44 form.
+    MSVC gets /utf-8 on the UTF-8-literal TUs. VERIFIED macOS (build,
+    14/14 ctest, SwiftLint, visual). VERIFIED Windows 2026-09-09: MSVC
+    Release core build warning-free, 14/14 ctest (incl. new
+    test_reference/test_bridge), full WinUI solution build warning-free,
+    `dotnet format style --verify-no-changes` clean, and a runtime check
+    of the packaged app — Reference page renders from refdata, both FSPL
+    formula images display, all four spot-checked calculator pages still
+    compute (no regression from the PageCodeBehinds.cs trim). The four
+    WinUI inspection caveats from commit 6be6f6a's PR-side report are
+    now all resolved:
+      - UTF-8 across the CLI boundary: CORRECT. ToManaged(const char*)
+        routes through the existing UTF-8 decoder and maps nullptr to
+        managed null (preserving refdata's "field absent" convention).
+        Verified live: ≈, π, ², ₁₀ all render and survive to the
+        clipboard intact.
+      - ImageOpened sizing: CORRECT and DPI-safe. Width is in DIPs, so
+        PixelWidth/2 on a 2x master keeps the formula matched to
+        surrounding text at any display scale.
+      - C4679 pragma: still needed. CI builds on windows-2022 (VS 17.x)
+        where it fires; confirmed VS 18 2026 (MSVC 19.51) no longer
+        emits it. Comment in RefData.cpp now says to drop the pragma
+        once CI moves off windows-2022.
+      - Formula-row spacing: acceptable for the single proof row, but
+        see the alignment item under Known Gaps before #74-#78 add
+        multi-row formula sections.
+    Two defects found and FIXED on this branch by running the app:
+      - Formula copy text was WinUI-only-divergent — it copied just the
+        standard form while macOS and Linux both copy
+        `std   |   log`. Now matches verbatim.
+      - Two CA1859 warnings (FrameworkElement return types) had broken
+        the repo's warning-free-build standard; concrete Grid/StackPanel
+        return types restored it.
+    PENDING: Linux VM compile+visual (new formulas.qrc).
   - #74 OPEN — Propagation reference page (+ dB math unless split out).
   - #75 OPEN — Antenna types reference page (isotropic model, per-type
     specs, pattern thumbnails; band-letters table here or split).
@@ -143,6 +184,134 @@ Open milestones are fully itemized here since they reflect actionable state.
     target table, m² and dBsm).
   - #78 OPEN — Umbrella for remaining per-calculator reference pages;
     split as designs firm up.
+  - #79 IMPLEMENTED on dev/v1.2.0 (2026-09-10, filed and built same
+    day at user request, before #77): Glossary reference page — seven
+    sections of one-line definitions incl. the ERP-vs-EIRP convention
+    record (Adamy's EW usage: "ERP" with dBi gains, strictly EIRP,
+    2.15 dB offset documented). Pure data-layer page, no assets.
+  - PROGRESS 2026-09-10: #74 (Propagation + dB & Units pages, split per
+    user), #75 (Antenna Types + Frequency Bands pages; antenna-diagram
+    review round applied), #76 (Link Budget page + waterfall diagram)
+    all IMPLEMENTED on dev/v1.2.0 and green through manual-dispatch CI;
+    awaiting the user's batched cross-machine UI pass. Reference nav is
+    data-driven on all three frontends (a new refdata page = one icon-
+    map entry per platform). Later same day: #77 IMPLEMENTED (RCS page —
+    scattering-regimes diagram, six optical-region shape maxima,
+    insect→ship target table in m² and dBsm with dBsm copy values) and
+    #79 IMPLEMENTED (see its entry). All verified in the user's Linux
+    and Windows UI passes (fixes at 7fadf97/24693cc/0250405).
+  - DECIDED 2026-09-10 — page order: Quick Values first (provisional),
+    then general references (Glossary, dB & Units, Frequency Bands),
+    then pages in calculator order (Propagation, Antenna Types, Link
+    Budget, RCS, ...). New pages insert by calculator position.
+  - DECIDED 2026-09-10 — Quick Values rule: QV stays a deliberately
+    small "most-reached-for" front page; duplication with domain pages
+    is free (shared static row arrays), so per table: when a domain
+    page ships the richer version, QV drops the table (RCS did this at
+    #77) or keeps a trimmed high-frequency subset. Still on QV:
+    Antenna Gain + Sidelobes (quick-entry density), Noise Floor
+    (cross-domain), Eb/N₀ (until a Digital page exists). Re-evaluate
+    QV's residence at milestone close.
+  - #78 CLOSED 2026-09-12: split (user-ratified: combined Radar &
+    Detection page; all domains in v1.2.0) into #82 Receiver, #83
+    Jamming, #84 Location, #85 Radar & Detection, #86 Doppler &
+    Resolution, #87 Digital/DSSS — ALL IMPLEMENTED on dev/v1.2.0 the
+    same day (through 7f2223d). Fourteen reference pages total; every
+    calculator pane has its page. Highlights: #83 restructured after
+    user review (the #72 diagrams depict RADAR jamming — radar SPJ/SOJ
+    J/S forms added with the 71 dB constant and the R⁴-vs-R² note;
+    comms J/S its own section; jamming calculator relabeled "Comms
+    Jamming", #88/v1.3.0 filed for the radar calculator); #84 shows
+    both Wegner EEP→CEP forms; #85 fixed a doc typo (radar.h +
+    formulas.md said 20·log₁₀(R)=(…)/4; the implementation was always
+    40·log₁₀ — prose corrected, code untouched); #86 carries the
+    dilemma product; #87 completed the QV shrink (RCS and Eb/N₀ tables
+    superseded by domain pages; QV = 3 cross-domain sections).
+    PENDING PINS for the next book session: radar SPJ/SOJ J/S forms
+    and the 71 constant (EW101 ch 9 / EW102 ch 5 family).
+  - ONCE-OVER + QV RETIREMENT 2026-09-12 (macOS session, 816e94c +
+    1e983c1): RCS moved before Radar & Detection; glossary EEP entry
+    now quotes Wegner Eq 24a; log-periodic band range normalized to
+    IEEE letters. Quick Values RETIRED and redistributed (Yagi gain
+    ladder + whip typicals → Antenna Types; Sidelobe Levels → its own
+    Antenna Types section; Noise Floor ladder → Receiver). Sidebar
+    opens at Glossary; thirteen pages, all domain-organized.
+  - GATE (user, 2026-09-12): NO milestone PR until the user completes
+    Linux and Windows UI passes over #82–#87. #82–#87 stay open on
+    GitHub for the PR to close. BOTH PASSES ARE NOW DONE — Linux
+    (close-out below) and Windows (2026-09-12, below) — so the gate is
+    satisfied for #82–#87; what remains before the PR is the macOS and
+    Linux half of the formula-column restructure (Known Gaps).
+  - WINDOWS UI PASS 2026-09-12 (#82–#87 on dev/v1.2.0 at c4882db): core
+    14/14, WinUI solution warning-free, dotnet format clean. All 13
+    reference pages driven via UIA — 93/93 formula and diagram images
+    load, every page reviewed visually, all 67 formula PNGs and 23
+    diagrams staged into the package. Calculator outputs unchanged and
+    the "Comms Jamming" relabel is live; formula copy still yields
+    `std   |   log`. Spot-checked content renders right: #85's
+    40·log₁₀ range form, the kT and Eb/N₀ notation, 1d44219's subscript
+    glyphs.
+    ONE defect found and fixed — the WinUI formula-pair wrap gap, now
+    CLOSED. 1e983c1 gave WinUI MaxWidth + Stretch=Uniform intending
+    shrink-to-fit, but the pair sits in a horizontal StackPanel, which
+    measures children with unbounded width: MaxWidth caps upscale and
+    never shrinks, so at the 860 px default the radar-range log form
+    clipped mid-equation at the card edge. Wrapping the pair in a
+    Viewbox (Uniform, StretchDirection=DownOnly) gives it a finite width
+    and scales it down; natural size stays the ceiling. Verified clean on
+    all 13 pages at 860 px and again at 700 px: no horizontal scrollbar,
+    no image past the viewport edge. (The one Viewbox around the pair was
+    superseded later the same day by one per form — see the column fix
+    below — once the forms became column-bound.)
+    THEN, at the user's direction, the flow-layout column alignment
+    (Known Gaps) was closed on WinUI too: one Grid per section, standard
+    forms in a shared Auto column and log forms in the star column, so
+    every log form in a section shares a left edge. Propagation's six
+    distinct log-form left edges collapsed to one per section; all 13
+    pages re-verified clean at 860 px and 700 px, copy buttons intact on
+    both row kinds. Accepted trade-off: a log form that must shrink no
+    longer matches its standard form's glyph size — unavoidable once the
+    two are column-bound, and only visible below ~900 px. macOS and Linux
+    keep the flow layout until a session on those machines can verify the
+    same restructure.
+  - WINDOWS UI PASS 2026-09-10 (#74-#77, #79 on dev/v1.2.0 at 7fadf97):
+    core 14/14, WinUI solution warning-free, dotnet format clean; all 8
+    reference pages driven via UIA with every formula/diagram image
+    verified loaded (46/46) and each page reviewed visually; calculator
+    outputs unchanged. Four WinUI defects found and fixed:
+      - Section headers: the WinUI-only uppercase mangled notation
+        ("RATIO → DB", "ABSOLUTE DB UNITS", "(KT, 290 K)"). Replaced the
+        one-off Eb/N₀ patch with a token list (dB family, Hz family, kT,
+        Eb/N₀) restored at source positions — extend it when a title
+        gains new notation.
+      - Value rows at the 860 px default window: Glossary prose sized the
+        Auto value column to its unwrapped width, crushing labels to
+        nothing and clipping values and copy buttons. Label column Auto
+        (capped 280), value column star + word-wrap — the Linux 7fadf97
+        and macOS behaviour.
+      - Nav grouping (user-reported): PROPAGATION / ANALYSIS / REFERENCE
+        headers replaced by the "Calculators" / "Reference" pair macOS
+        and Linux use.
+      - Compact-mode group boundary (user-reported): the stock separator
+        brush is near-invisible on the dark pane, and the reference items
+        reuse calculator icons, so collapsed they read as repeats. The
+        Reference separator now overrides NavigationViewItemSeparator-
+        Foreground on that element only (the key also draws the pane
+        border), with literal per-theme ControlStrongStroke colours — a
+        StaticResource alias from the element-local theme dictionary
+        resolved to nothing and hid the line entirely.
+    Not fixed, noted: formula pairs don't wrap on WinUI — the widest
+    (knife-edge) fits the 860 px default with ~60 px to spare but would
+    clip in a narrower window (Linux solved its equivalent with
+    WrapLongRows). The flow-layout column alignment (Known Gaps) is now
+    visibly ragged on Propagation.
+
+- v1.3.0 — Calculator Growth (open, #7), created 2026-09-12.
+  - #88 OPEN — Radar jamming calculator (SPJ/SOJ): separate sidebar
+    tab (ratified); the comms-only calculator was relabeled "Comms
+    Jamming" on dev/v1.2.0 the same day. Radar J/S forms + 71 dB
+    constant need physical-book pins (also owed on their v1.2.0
+    reference-page copies).
 
 ## GitHub Issues Without Milestone [DERIVED]
 Same leaner convention as milestones above: closed items are a count only
@@ -192,8 +361,138 @@ itemized since they're actionable.
   sits on the docs commit with README/frontend-README coverage of the
   new panes. Tag CI fully green; Release published with all four
   artifacts (signed+notarized .dmg, .msix, .AppImage, .deb).
-- NEXT: v1.2.0 Reference Library opens with #73 (data layer);
-  full formula-fidelity sweep remains as future assurance work.
+- #73 VERIFIED all three platforms 2026-09-09/10: Linux VM and Windows
+  passes done by the user (their fixes pulled: Linux sidebar-icon/
+  AppImage-plugin/monospace-font round, WinUI copy-text parity), then a
+  manual-dispatch CI run on dev/v1.2.0 went fully green at 640457c —
+  including the AppImage deploy, after adding libqt6svg6 +
+  qt6-gtk-platformtheme to the Linux job's apt line (cc933f6 updated
+  AGENTS.md prerequisites but not CI). Ready to close with the PR.
+- Branch/PR model for v1.2.0 (user-ratified 2026-09-10): ONE PR for the
+  whole milestone — the arc builds naturally off #73, and each PR costs
+  a cross-machine UI verification round, so splitting inflates work.
+  All issues land on dev/v1.2.0 (subagent worktree branches merge
+  there); validate at sensible checkpoints with manual CI dispatch
+  (`gh workflow run ci.yml --ref dev/v1.2.0` — CI does not trigger on
+  dev pushes; dispatch also exercises tag-gated-otherwise packaging)
+  plus Windows/Linux UI passes; the final PR should be a slam dunk.
+- PR #89 OPENED 2026-09-13: dev/v1.2.0 → main, closing #73–#77, #79,
+  #82–#87 on merge. All gates satisfied first: Windows + Linux UI
+  passes, macOS AX-driven live pass, manual-dispatch CI 7/7 green at
+  head (run 34738406990). The pull_request trigger runs CI on the PR
+  itself; "Protect main" requires those checks. After merge: re-check
+  milestone closure, then tag per docs/RELEASING.md conventions
+  (CHANGELOG date check learned from v1.1.0). Carried forward: PENDING
+  PINS (radar SPJ/SOJ forms + 71 constant, and the same forms on the
+  reference page); full formula-fidelity sweep as future assurance
+  work; v1.3.0 #88 radar jamming calculator.
+
+## Session Close-out 2026-09-12 (Linux UI pass) [DERIVED]
+
+Final Linux pass over the thirteen-page reference library. Every reference
+page walked at both the 1180 px default and the 980 px window minimum; build
+clean under `-Werror`, 14/14 tests.
+
+Fixed this session (all pushed to `dev/v1.2.0`):
+- `ac7b433` — formula images now shrink to fit, completing the 1e983c1
+  sizing audit. The audit gave macOS `maxWidth + scaledToFit` and WinUI
+  `MaxWidth + Stretch="Uniform"`, both genuinely responsive, but Qt got a
+  fixed 560-logical cap, which is a different thing: a QLabel pixmap is a
+  fixed size, so the widest masters still set the page's minimum width and a
+  static cap only moves the overflow threshold. At 980 px Radar & Detection
+  clipped its text behind a horizontal scrollbar with the copy buttons off
+  the right edge. Replaced with a `FormulaImage` QLabel that rescales to the
+  width it is given (aspect-preserving, never past natural size,
+  `heightForWidth` + small `minimumSizeHint`). Linux now matches the other
+  two rather than being the one frontend that cannot adapt.
+- `1d44219` — proper subscript glyphs in the reference prose (shared
+  refdata, so macOS and WinUI inherit it with no code change). See the
+  entry below for what the Windows pass should look at.
+- `.deb`/`.rpm` Qt SVG dependency — see the resolved Known Gaps entry.
+
+Carried into the Windows session:
+- **Font coverage for the new glyphs.** `Rⱼ` is U+2C7C (Latin Extended-C),
+  rarer than the rest; `Gₛ Gₘ Rₜ Rₘₐₓ` are U+2090 block. All render in
+  Yaru's UI and monospace fonts — unverified in Segoe UI / Consolas, where
+  a gap shows as tofu. Affected rows: Jamming (`Gₛ vs Gₘ`, `Ranges`),
+  Location (`Geometry`), Doppler & Resolution (`Adamy's form`,
+  `Resolution cell`), Digital / DSSS (`BW vs R(bit)`), RCS
+  (`Range scaling`, now `⁴√σ`).
+- **Narrow-window check on Radar & Detection**, the page that broke here.
+  WinUI's `MaxWidth`/`Uniform` should shrink correctly, but it is the one
+  worth resizing by hand.
+- **Uppercase-subscript caveat.** The typeset masters render G_S/G_M/R_T/R_J
+  with uppercase subscripts; the prose now shows lowercase glyphs, because
+  Unicode has no uppercase subscripts (nor b/z/θ — those three cases took
+  the parenthetical form `σ(θ)`, `θ(az)`, `θ(el)`, `R(bit)` instead). A
+  deliberate deviation from the images, not an oversight; revisit if the
+  Windows pass finds it jarring.
+- **Formula alt text keeps ASCII underscores** (`h_t`, `ERP_J`, `L_FSPL`,
+  `d_FZ`, `T_D` ...) by decision, not omission: it is a plain-text
+  transcription that also feeds the clipboard, and most of those subscripts
+  have no glyph at all, so a partial conversion would read worse.
+
+Pre-PR / release items, none of them Linux-specific:
+- **Version is still 1.1.0** in five places — `CMakeLists.txt:2`,
+  `frontend/linux/CMakeLists.txt:5`, `frontend/linux/src/main.cpp:13`,
+  `frontend/macos/CMakeLists.txt:234` (`MACOSX_BUNDLE_SHORT_VERSION_STRING`)
+  and `frontend/windows/.../Package.appxmanifest:19` (`1.1.0.0`). The built
+  `.deb` is therefore `ewcalc_1.1.0_amd64.deb`. Bump with the changelog at
+  release time, as in the v1.1.0 close-out.
+- **No CI has run on `dev/v1.2.0` at any point.** `ci.yml` triggers on push
+  only for `main` and `v*` tags, plus PRs targeting `main`, so every commit
+  on this branch is verified locally only. Opening the PR is the first real
+  CI signal, and packaging steps stay tag-gated even then —
+  `workflow_dispatch` is the escape hatch if the AppImage/deb changes want
+  exercising before a tag.
+- Both lint scripts now run on the Linux box and pass clean
+  (`lint-linux.sh`, `lint-cpp.sh`); cppcheck and clang-tidy are installed
+  user-space there, not system-wide.
+
+## Session Close-out 2026-09-12 (Windows UI pass) [DERIVED]
+
+Final Windows pass over the thirteen-page reference library, closing the
+UI-pass gate for #82–#87. Core build warning-free with 14/14 tests, WinUI
+solution warning-free, `dotnet format style --verify-no-changes` clean. All
+thirteen pages driven through UIA: 93/93 formula and diagram images load,
+all 67 formula PNGs and 23 diagrams staged into the package, every page
+reviewed visually, every page re-checked at 860 px and 700 px. Calculator
+outputs unchanged, the "Comms Jamming" relabel is live, and formula copy
+still yields `std   |   log`.
+
+Fixed this session (all pushed to `dev/v1.2.0`):
+- `0661674` — formula pairs shrink to fit, completing 1e983c1 on WinUI.
+  The audit gave WinUI `MaxWidth` + `Stretch="Uniform"` believing it
+  responsive, but the pair sat in a horizontal `StackPanel`, which measures
+  children with unbounded width: `MaxWidth` only caps upscaling, so nothing
+  ever shrank and at the 860 px default the radar-range log form clipped
+  mid-equation. Same class of mistake as Qt's fixed 560-logical cap — a
+  sizing rule that cannot actually respond to the width on offer.
+- `848ad92` — formula columns aligned per section, closing the WinUI half
+  of the flow-layout gap. See Known Gaps for the design and the
+  glyph-size trade-off it accepts.
+
+Carried items from the Linux close-out, all three resolved:
+- **Font coverage — CLEAN.** `Rⱼ` (U+2C7C) and the U+2090 subscripts
+  (`Gₛ Gₘ Rₜ Rₘₐₓ`) render correctly in both Segoe UI and the monospace
+  face; no tofu. Checked by pixel-cropping the named rows: Jamming
+  (`Gₛ vs Gₘ`, `Ranges`), RCS (`Range scaling`, now `⁴√σ`), Doppler &
+  Resolution (`Resolution cell`), plus the Location/Digital prose seen in
+  the page review.
+- **Narrow-window check on Radar & Detection — this is where the clipping
+  bug surfaced**, found and fixed as `0661674` above. The prediction that
+  WinUI's `MaxWidth`/`Uniform` "should shrink correctly" was wrong, for the
+  StackPanel reason above.
+- **Uppercase-subscript caveat — not jarring in practice.** The typeset
+  masters keep uppercase subscripts while the prose uses lowercase glyphs
+  and the parenthetical forms; side by side in a row the difference reads
+  as ordinary typographic variation, not as an error. Left as-is; reopen if
+  the user disagrees on sight.
+
+Carried into the next session:
+- The formula-column restructure on **Linux and macOS** — the only known
+  parity divergence left, and the last thing before the milestone PR.
+  Details and the accepted trade-off are in the Known Gaps entry.
 
 ## Provenance Framing & Formula Fidelity [OPEN]
 - Found 2026-09-06 while pinning #68's first citation: Adamy EW103
@@ -260,9 +559,133 @@ itemized since they're actionable.
   the books (superset of #68's pins; sequence: fidelity sweep → pins).
 
 ## Known Gaps [OPEN]
-- None currently tracked here; gaps are filed as GitHub issues on sight
-  (see milestones above). The former entries — WinUI3 colour-coding (#62)
-  and the macOS `EWCALC_BUILD_FRONTEND` no-op (#66) — are both closed.
+- Gaps are otherwise filed as GitHub issues on sight (see milestones
+  above). The former entries — WinUI3 colour-coding (#62) and the macOS
+  `EWCALC_BUILD_FRONTEND` no-op (#66) — are both closed.
+- [RESOLVED 2026-09-12] Linux sidebar icons need Qt's SVG plugin at
+  runtime. Found 2026-09-09 on Ubuntu 24.04; declared in AGENTS.md, fixed
+  for the AppImage (cc933f6), and the `.deb`/`.rpm` path now closed —
+  `CPACK_DEBIAN_PACKAGE_DEPENDS` gains `libqt6svg6` (verified to carry both
+  `iconengines/libqsvgicon.so` and `imageformats/libqsvg.so`) and
+  `CPACK_RPM_PACKAGE_REQUIRES` gains `qt6-qtsvg`. A built `.deb` was
+  inspected to confirm the control file carries them. Also added
+  `CPACK_DEBIAN_PACKAGE_RECOMMENDS=qt6-gtk-platformtheme`: without
+  `platformthemes/libqgtk3.so` Qt never learns the desktop's icon theme and
+  *no* theme icon resolves, SVG or not — but the app is fully usable
+  without it, hence Recommends. Its RPM equivalent is deliberately not
+  listed: the package name varies by distro and was not verified on a real
+  Fedora/openSUSE box.
+- [RESOLVED 2026-09-13 — closed on macOS, all three now aligned] Formula rows used a flow
+  layout, not columns, on all three frontends (WinUI `StackPanel`
+  Horizontal, Linux `QHBoxLayout` + stretch, macOS HStack): each row's log
+  form started wherever its own standard form ended, so a multi-row
+  section had ragged log forms — measured at a ~330 px spread on
+  Propagation, 287 on Link Budget. The v1.2.0 vision ("one equation per
+  row") and #76 ("equation columns") both want columns.
+  FIXED ON WINUI 2026-09-12 (user-sequenced: fix where it can be
+  verified, leave the frontends this machine cannot build): one Grid per
+  section, standard forms in a shared Auto column (capped 400 px) and log
+  forms in the star column beside them, so the Auto column sizes to the
+  section's widest standard form and every log form in that section lands
+  on one left edge. Diagrams, value rows and formula headers span both
+  columns, so interleaving order is unaffected. Each form sits in its own
+  DownOnly Viewbox — a Grid cell hands its child a finite width, so a form
+  scales down only when its column is too narrow and natural size stays
+  the ceiling. Verified: Propagation's log edges collapsed from six to one
+  per section, no clipping or horizontal scrollbar on any of the thirteen
+  pages at 860 px or 700 px, copy buttons intact on both row kinds.
+  Note the trade-off the column model accepts: at widths where a log form
+  must shrink, it no longer matches its standard form's glyph size — the
+  pair-scaled-as-a-unit behaviour only held while the forms were ragged.
+  FIXED ON LINUX 2026-09-13, same model: one QGridLayout per section with
+  the standard forms in a shared column and the log forms in the stretch
+  column beside them; value rows span both form columns and diagrams span
+  all four, so interleaving order is unaffected. Measured before/after on
+  the standard-form widths that drive the ragged edges: One-Way Link spread
+  280 px, RCS Simple Shapes 190, Spread Spectrum 133, Range Equation 116 —
+  all now one left edge per section. Two Qt-specific traps worth recording:
+  a widget added to a layout *with* an alignment flag is handed only its
+  sizeHint and never fills the cell, so the images have to be added
+  unaligned and position their own pixmap; and QLabel *clips* a pixmap
+  wider than the widget, so FormulaImage now scales in paintEvent rather
+  than holding a pre-scaled pixmap — the stand-off J/S line was losing its
+  trailing "− 10 log₁₀ σ(m²) dB" whenever the layout shrank the label
+  before its pixmap caught up. The standard-form cap is 300 px, not WinUI's
+  400: on Linux the log forms are the wide ones, and at 400 the Friis log
+  was starved to 137 px of ink against 188 at 300. Verified all thirteen
+  pages at 1180 px and 980 px — no horizontal scrollbar, no clipping, copy
+  buttons on-screen and working; cppcheck clean, 14/14 tests.
+  macOS is now the only frontend still on the flow layout.
+  At any width that fits, both render at natural size and still match.
+  REMAINING: the same restructure on Linux (`ReferencePage.cpp`,
+  QFormLayout → per-section QGridLayout) and macOS (`ReferenceView.swift`,
+  HStack → Grid/LazyVGrid) — neither builds on the Windows box, so they
+  belong to a session on those machines, each with its own UI pass. Until
+  then the three frontends differ on this detail.
+  FIXED ON MACOS 2026-09-13, same model in SwiftUI terms: each RefSection
+  computes a shared standard-form column width (widest standard form in
+  the section, capped 400 pt) at load; every formula row places its
+  standard form in a leading .frame(width: stdColWidth) so all log forms
+  in a section land on one left edge. Forms SHRINK, never stack, when a
+  column is tight (the first draft kept a ViewThatFits stacking fallback;
+  live driving showed it engaged at the 800 pt default, diverging from
+  the WinUI/Linux behaviour — removed). Verified live via the newly
+  granted Accessibility control: drove the sidebar by AX row selection
+  and screenshotted Propagation / Jamming / Radar & Detection; columns
+  align, the stand-off J/S shrinks legibly into its column.
+  BONUS PARITY FIX found the same way: macOS ValueRow clamped values to
+  one 16 pt line, truncating long prose notes with an ellipsis — the
+  value-wrap fix WinUI and Linux received in their passes had never
+  reached macOS. Now wraps (fixedSize vertical + minHeight).
+- [RESOLVED 2026-09-09] The Windows box's VS 18 2026 install was damaged,
+  not merely stale — a strictly worse case than the vswhere lag AGENTS.md
+  records, and worth recognising if it recurs after an in-place upgrade.
+  Symptoms: `vswhere` reported the instance `isComplete: False`,
+  `isLaunchable: False` with **zero** workload packages and an empty
+  `%ProgramData%\Microsoft\VisualStudio\Packages\_Instances`, so CMake
+  refused to auto-select the generator ("the instance is not known to the
+  Visual Studio Installer"); separately, no .NET SDK was present at all
+  (runtime only, no `MSBuild\Sdks\Microsoft.NET.Sdk`), failing restore of
+  both `ewcalc-winui.csproj` and `ewpresenter.net.vcxproj` with MSB4236.
+  The MSVC C++ payload was intact throughout. Fix: VS Installer
+  `setup.exe repair --installPath <path> --passive --norestart`, which
+  restored the instance metadata and installed a .NET SDK; Windows
+  rebooted during it. Afterwards `cmake --preset release` configures
+  unpinned again, so the no-pin rule in AGENTS.md stands unchanged — the
+  `CMAKE_GENERATOR_INSTANCE` pin used mid-diagnosis was a temporary
+  crutch and is not in any committed file. Note the repair installed only
+  .NET SDK 10.0.401; the net8.0 target still builds under it, but CI
+  (windows-2022) uses the .NET 8 SDK, so this box and CI now differ. The
+  one local-only symptom of that divergence is a benign NETSDK1198
+  "publish profile 'win-x64' was not found" warning from SDK 10 — it does
+  not appear on CI and is unrelated to #73.
+  - `MainWindow.cpp`'s `addPage` sources nav icons from
+    `QIcon::fromTheme`, and current GNOME themes (Adwaita 46+, Yaru) ship
+    most of those names *only* as SVG — several only in their `-symbolic`
+    form. Without Qt SVG (`libqsvgicon.so` iconengine + `libqsvg.so`
+    imageformat) `fromTheme` fails silently and the sidebar renders just
+    the handful of names the theme still carries as PNG. Nothing errors;
+    the icons are simply absent.
+  - DONE 2026-09-09: AGENTS.md's Linux prerequisite named only
+    `qt6-base-dev`, which does **not** pull in Qt SVG on Debian/Ubuntu;
+    now reads `qt6-base-dev libqt6svg6` and explains the silent failure.
+    Same trap on a minimal aqtinstall setup, where `qtsvg` is a separate
+    *archive* (`--archives qtsvg`; it is not a `-m` module) — also noted.
+  - DONE 2026-09-09: the AppImage packaging gap was real, and worse than
+    predicted. `linuxdeploy-plugin-qt` selects plugins from what the
+    binary links, and `ewcalc` never links Qt6Svg (the dependency is a
+    pure runtime theme lookup), so the packaged sidebar rendered with
+    **no icons at all** — not merely the SVG ones. Two plugins were
+    missing: `iconengines/libqsvgicon.so` (themed SVG entries go through
+    the icon *engine*; the `libqsvg.so` imageformat the plugin does bundle
+    is not sufficient) and `platformthemes/libqgtk3.so`, without which
+    `QIcon::themeName()` is empty inside the AppImage and no theme icon
+    resolves, PNG included. Fixed in `scripts/build-linux.sh` with
+    `EXTRA_QT_MODULES="svg;gtk3"` + `DEPLOY_PLATFORM_THEMES=1`; verified
+    by building an AppImage and launching it — all 11 nav icons render.
+  - STILL OPEN: the `.deb`/`.rpm` path. CPack does not declare a Qt SVG
+    dependency, so an installed package on a machine without `libqt6svg6`
+    hits the same silent icon loss. Not yet reproduced or fixed.
 - AGENTS.md context trim, complete.
   Raised by the 2026-09-07 fleet-wide AGENTS.md audit (durable vs
   on-demand context). AGENTS.md is imported eagerly by CLAUDE.md, so all

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 260" font-family="system-ui, sans-serif" font-size="14">
+  <!-- Isotropic radiator: idealized point source, equal radiation in all
+       directions (a sphere in 3-D, a circle in this 2-D slice). Used only
+       as the 0 dBi gain reference; no physical antenna radiates this way. -->
+
+  <!-- Radiation pattern (blue): full circle centered on the point source -->
+  <circle cx="290" cy="145" r="92" stroke="#3b82c4" stroke-width="2.5" fill="none"/>
+
+  <!-- Point source (gray) -->
+  <circle cx="290" cy="145" r="7" fill="#808080"/>
+  <g stroke="#808080" stroke-width="1.5">
+    <line x1="290" y1="118" x2="290" y2="103"/>
+    <line x1="290" y1="172" x2="290" y2="187"/>
+    <line x1="263" y1="145" x2="248" y2="145"/>
+    <line x1="317" y1="145" x2="332" y2="145"/>
+  </g>
+  <text x="290" y="207" text-anchor="middle" fill="#808080">point source</text>
+
+  <text x="430" y="140" fill="#3b82c4">uniform over a sphere</text>
+
+  <!-- Takeaway -->
+  <text x="320" y="30" text-anchor="middle" fill="#808080">0 dBi reference &#8212; every other antenna's gain is quoted relative to this</text>
+  <text x="320" y="48" text-anchor="middle" fill="#808080">idealized isotropic radiator</text>
+</svg>

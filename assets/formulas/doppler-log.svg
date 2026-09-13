@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 166 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Doppler shift, log/engineering form: f_d ~= 6.67 v_r(m/s) f(GHz)  Hz.
+       Unit annotations small upright; italic v_r, f.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20"><tspan font-style="italic">f</tspan><tspan font-size="10" dy="4">d</tspan><tspan dy="-4">&#8203;</tspan> &#8776; 6.67 <tspan font-style="italic">v</tspan><tspan font-size="10" dy="4">r</tspan><tspan dy="-4">&#8203;</tspan><tspan font-size="10">(m/s)</tspan> <tspan font-style="italic">f</tspan><tspan font-size="10">(GHz)</tspan>  <tspan font-size="10">Hz</tspan></text>
+  </g>
+</svg>

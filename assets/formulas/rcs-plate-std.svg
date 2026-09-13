@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 155 48" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Radar cross section of a flat plate, standard form:
+       sigma = 4 pi a^2 b^2 / lambda^2.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="29" font-style="italic">&#963;</text>
+    <text x="24" y="29">=</text>
+
+    <!-- Fraction: 4*pi*a^2*b^2 over lambda^2 -->
+    <text x="40" y="21">4<tspan font-style="italic">&#960;a</tspan><tspan font-size="11" dy="-5">2</tspan><tspan dy="5">&#8203;</tspan><tspan font-style="italic">b</tspan><tspan font-size="11" dy="-5">2</tspan><tspan dy="5">&#8203;</tspan></text>
+    <text x="76" y="44" text-anchor="middle"><tspan font-style="italic">&#955;</tspan><tspan font-size="11" dy="-5">2</tspan><tspan dy="5">&#8203;</tspan></text>
+  </g>
+  <!-- Fraction bar, sized to the wider of numerator/denominator -->
+  <line x1="39" y1="25.5" x2="113" y2="25.5" stroke="#808080" stroke-width="1.2"/>
+</svg>

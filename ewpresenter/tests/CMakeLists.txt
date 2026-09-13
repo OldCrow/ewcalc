@@ -13,6 +13,22 @@ else()
 endif()
 add_test(NAME test_presenters COMMAND test_presenters)
 
+# Reference data layer tests (#73). UTF-8 literals → /utf-8 on MSVC.
+add_executable(test_reference test_reference.cpp)
+target_link_libraries(test_reference PRIVATE ewpresenter)
+target_include_directories(test_reference PRIVATE
+    ${PROJECT_SOURCE_DIR}/libew/tests
+)
+set_target_properties(test_reference PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/tests
+)
+if(MSVC)
+    target_compile_options(test_reference PRIVATE /W4 /permissive- /utf-8)
+else()
+    target_compile_options(test_reference PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+add_test(NAME test_reference COMMAND test_reference)
+
 # Formatter buffer-size tests
 add_executable(test_formatter test_formatter.cpp)
 target_link_libraries(test_formatter PRIVATE ewpresenter)

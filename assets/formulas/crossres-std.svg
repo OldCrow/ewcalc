@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 157 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Cross-range resolution, standard (and only) form: Delta-X = R theta_3dB,
+       theta in radians.
+       Delta upright, X/R italic; theta italic with small upright 3dB
+       subscript; trailing small upright annotation with italic theta.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20">&#916;<tspan font-style="italic">X</tspan> = <tspan font-style="italic">R &#952;</tspan><tspan font-size="10" dy="4">3dB</tspan><tspan dy="-4">&#8203;</tspan>  <tspan font-size="10">(<tspan font-style="italic">&#952;</tspan> in radians)</tspan></text>
+  </g>
+</svg>
