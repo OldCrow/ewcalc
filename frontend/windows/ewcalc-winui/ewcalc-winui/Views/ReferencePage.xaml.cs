@@ -229,7 +229,22 @@ public sealed partial class ReferencePage : Page
         forms.Children.Add(MakeFormulaImage(row.SvgBase, "std", row.Value));
         if (row.LogValue is string logValue)
             forms.Children.Add(MakeFormulaImage(row.SvgBase, "log", logValue));
-        container.Children.Add(forms);
+
+        // A horizontal StackPanel measures its children with unbounded width, so
+        // the per-image MaxWidth can never shrink them and a wide pair — the
+        // radar-range log line, the stand-off J/S line — clips at the card edge
+        // on a narrow window. The Viewbox gives the pair a finite width and
+        // scales it down to fit; DownOnly keeps natural size the ceiling, so
+        // this is the frontends' shared shrink-never-upscale rule. Scaling the
+        // pair as a unit (rather than letting one form shrink alone) preserves
+        // the design invariant that both forms render at the same glyph size.
+        container.Children.Add(new Viewbox
+        {
+            Child = forms,
+            Stretch = Microsoft.UI.Xaml.Media.Stretch.Uniform,
+            StretchDirection = StretchDirection.DownOnly,
+            HorizontalAlignment = HorizontalAlignment.Left,
+        });
 
         return container;
     }
