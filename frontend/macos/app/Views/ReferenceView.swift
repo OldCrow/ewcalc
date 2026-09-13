@@ -109,8 +109,13 @@ private struct ValueRow: View {
     var body: some View {
         LabeledContent(label) {
             HStack(spacing: 4) {
+                // Long prose values (glossary definitions, the R⁴-vs-R²
+                // note) must wrap, not truncate — parity with the WinUI
+                // and Linux value-row wrap fixes. minHeight keeps short
+                // rows at the original rhythm.
                 Text(value)
                     .monospaced()
+                    .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .trailing)
                 if let cv = copyValue {
                     CopyButton(text: cv, subject: label)
@@ -118,7 +123,7 @@ private struct ValueRow: View {
                     Color.clear.frame(width: 22)
                 }
             }
-            .frame(height: 16)
+            .frame(minHeight: 16)
         }
     }
 }
@@ -175,25 +180,20 @@ private struct FormulaRow: View {
             // in a section occupies the same leading column — sized to the
             // section's widest, capped 400 — so all log forms land on one
             // shared left edge instead of starting wherever each standard
-            // form ends. Falls back to stacked forms when the pane is too
-            // narrow for the columns.
-            ViewThatFits(in: .horizontal) {
-                HStack(alignment: .center, spacing: 24) {
-                    FormulaImage(name: "\(svgBase)-std", text: stdText,
-                                 widthCap: stdColWidth)
-                        .frame(width: stdColWidth, alignment: .leading)
-                    if let logText {
-                        Divider()
-                        FormulaImage(name: "\(svgBase)-log", text: logText, widthCap: nil)
-                    }
-                    Spacer(minLength: 0)
+            // form ends. Like the WinUI Grid and Qt QGridLayout versions,
+            // a form SHRINKS (never stacks) when its column is too narrow;
+            // natural size stays the ceiling. This accepts the same
+            // trade-off recorded for WinUI: a shrunken log form no longer
+            // matches its standard form's glyph size.
+            HStack(alignment: .center, spacing: 16) {
+                FormulaImage(name: "\(svgBase)-std", text: stdText,
+                             widthCap: stdColWidth)
+                    .frame(width: min(stdColWidth, 400), alignment: .leading)
+                if let logText {
+                    Divider()
+                    FormulaImage(name: "\(svgBase)-log", text: logText, widthCap: nil)
                 }
-                VStack(alignment: .leading, spacing: 8) {
-                    FormulaImage(name: "\(svgBase)-std", text: stdText, widthCap: nil)
-                    if let logText {
-                        FormulaImage(name: "\(svgBase)-log", text: logText, widthCap: nil)
-                    }
-                }
+                Spacer(minLength: 0)
             }
         }
         .padding(.vertical, 2)

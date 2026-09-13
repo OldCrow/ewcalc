@@ -624,10 +624,17 @@ Carried into the next session:
   computes a shared standard-form column width (widest standard form in
   the section, capped 400 pt) at load; every formula row places its
   standard form in a leading .frame(width: stdColWidth) so all log forms
-  in a section land on one left edge. FormulaImage takes the column as a
-  width cap (shrink-only, natural stays the ceiling), and the narrow-pane
-  ViewThatFits fallback still stacks the forms uncapped. Verified live on
-  this machine (the designated macOS UI-pass box); SwiftLint clean.
+  in a section land on one left edge. Forms SHRINK, never stack, when a
+  column is tight (the first draft kept a ViewThatFits stacking fallback;
+  live driving showed it engaged at the 800 pt default, diverging from
+  the WinUI/Linux behaviour — removed). Verified live via the newly
+  granted Accessibility control: drove the sidebar by AX row selection
+  and screenshotted Propagation / Jamming / Radar & Detection; columns
+  align, the stand-off J/S shrinks legibly into its column.
+  BONUS PARITY FIX found the same way: macOS ValueRow clamped values to
+  one 16 pt line, truncating long prose notes with an ellipsis — the
+  value-wrap fix WinUI and Linux received in their passes had never
+  reached macOS. Now wraps (fixedSize vertical + minHeight).
 - [RESOLVED 2026-09-09] The Windows box's VS 18 2026 install was damaged,
   not merely stale — a strictly worse case than the vswhere lag AGENTS.md
   records, and worth recognising if it recurs after an in-place upgrade.
