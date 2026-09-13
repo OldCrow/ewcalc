@@ -50,18 +50,16 @@ void test_pages_shape() {
     ASSERT_TRUE(eq(pages_span[9].id, "ref-location"));
     ASSERT_TRUE(eq(pages_span[9].title, "Location"));
     ASSERT_TRUE(pages_span[9].section_count == 3);
-    ASSERT_TRUE(eq(pages_span[10].id, "ref-radar-det"));
-    ASSERT_TRUE(eq(pages_span[10].title, "Radar & Detection"));
-    ASSERT_TRUE(pages_span[10].section_count == 3);
-    ASSERT_TRUE(eq(pages_span[11].id, "ref-doppler"));
-    ASSERT_TRUE(eq(pages_span[11].title, "Doppler & Resolution"));
-    ASSERT_TRUE(pages_span[11].section_count == 2);
-    ASSERT_TRUE(eq(pages_span[12].id, "ref-digital"));
-    ASSERT_TRUE(eq(pages_span[12].title, "Digital / DSSS"));
-    ASSERT_TRUE(pages_span[12].section_count == 3);
-    ASSERT_TRUE(eq(pages_span[13].id, "ref-rcs"));
-    ASSERT_TRUE(eq(pages_span[13].title, "RCS"));
-    ASSERT_TRUE(pages_span[13].section_count == 2);
+    // RCS precedes Radar & Detection (sigma is an input concept to the
+    // range equation — once-over reorder, 2026-09-12).
+    ASSERT_TRUE(eq(pages_span[10].id, "ref-rcs"));
+    ASSERT_TRUE(pages_span[10].section_count == 2);
+    ASSERT_TRUE(eq(pages_span[11].id, "ref-radar-det"));
+    ASSERT_TRUE(pages_span[11].section_count == 3);
+    ASSERT_TRUE(eq(pages_span[12].id, "ref-doppler"));
+    ASSERT_TRUE(pages_span[12].section_count == 2);
+    ASSERT_TRUE(eq(pages_span[13].id, "ref-digital"));
+    ASSERT_TRUE(pages_span[13].section_count == 3);
 }
 
 void test_antenna_types_page() {
@@ -134,7 +132,7 @@ void test_location_page() {
 }
 
 void test_radar_det_page() {
-    const Page& page = pages()[10];
+    const Page& page = pages()[11];
     // Range equation is the page's only std+log pair; its log form is the
     // corrected 40·log10 arrangement (the /4 doc line was a typo).
     const Row& rng = page.sections[0].rows[0];
@@ -149,7 +147,7 @@ void test_radar_det_page() {
 }
 
 void test_doppler_page() {
-    const Page& page = pages()[11];
+    const Page& page = pages()[12];
     ASSERT_TRUE(eq(page.sections[1].diagram, "resolution-cell"));
     // The dilemma product row is present (test_radar.cpp guards the math).
     bool found_dilemma = false;
@@ -166,7 +164,7 @@ void test_doppler_page() {
 }
 
 void test_digital_page() {
-    const Page& page = pages()[12];
+    const Page& page = pages()[13];
     // The Eb/N0 pair carries forward and inverse forms.
     ASSERT_TRUE(eq(page.sections[0].rows[0].svg_base, "ebno"));
     ASSERT_TRUE(page.sections[0].rows[0].log_value != nullptr);
@@ -182,7 +180,7 @@ void test_digital_page() {
 }
 
 void test_rcs_page() {
-    const Page& page = pages()[13];
+    const Page& page = pages()[10];
     ASSERT_TRUE(eq(page.sections[0].title, "Simple Shapes"));
     ASSERT_TRUE(eq(page.sections[0].diagram, "rcs-regions"));
     // Six single-form shape formulas, then two value notes.

@@ -165,7 +165,7 @@ constexpr Row kGlossLocation[] = {
     val("TDOA", "time difference of arrival — hyperbolic location from a receiver baseline"),
     val("FDOA", "frequency difference of arrival — location from differential Doppler"),
     val("CEP",  "circular error probable — circle around the estimate holding 50 % of fixes"),
-    val("EEP",  "elliptical error probable — the 50 % error ellipse; CEP ≈ 0.75·√(a²+b²)"),
+    val("EEP",  "elliptical error probable — the 50 % error ellipse; CEP ≈ 0.59·(a+b) (both forms on the Location page)"),
 };
 
 constexpr Section kGlossarySections[] = {
@@ -275,7 +275,7 @@ constexpr Row kLogPeriodic[] = {
     val("Typical gain",    "6–8 dBi",           "7"),
     val("3-dB beamwidth",  "60–80°"),
     val("Bandwidth",       "10:1 (multi-decade)"),
-    val("Frequency range", "HF – SHF"),
+    val("Frequency range", "HF – X"),
 };
 
 constexpr Row kSpiral[] = {
@@ -725,14 +725,14 @@ constexpr Page kPages[] = {
      kJammingSections, std::size(kJammingSections)},
     {"ref-location", "Location", "CEP from AOA, TDOA, and the error ellipse",
      kLocationSections, std::size(kLocationSections)},
+    {"ref-rcs", "RCS", "Simple-shape formulas and typical targets",
+     kRcsSections, std::size(kRcsSections)},
     {"ref-radar-det", "Radar & Detection", "Range equation and detection statistics",
      kRadarDetSections, std::size(kRadarDetSections)},
     {"ref-doppler", "Doppler & Resolution", "Doppler relations and the resolution cell",
      kDopplerSections, std::size(kDopplerSections)},
     {"ref-digital", "Digital / DSSS", "Eb/N₀ relations and spread-spectrum forms",
      kDigitalSections, std::size(kDigitalSections)},
-    {"ref-rcs", "RCS", "Simple-shape formulas and typical targets",
-     kRcsSections, std::size(kRcsSections)},
 };
 
 } // namespace
