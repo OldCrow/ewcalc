@@ -23,43 +23,6 @@ constexpr Row formula(const char* name, const char* svg_base,
     return Row{RowKind::Formula, name, std_text, nullptr, log_text, svg_base};
 }
 
-// ── Quick-values page ────────────────────────────────────────────────────────
-// Content migrated verbatim from the former per-frontend Reference pages
-// (ReferenceView.swift / ReferencePage.cpp / ReferencePage.xaml).
-
-constexpr Row kAntennaGain[] = {
-    val("Isotropic (reference)",                 "0.0 dBi",            "0.0"),
-    val("Short whip / rubber duck",              "0 dBi  (typical)",   "0"),
-    val("Quarter-wave whip, ground-plane mount", "2 dBi  (typical)",   "2"),
-    val("Half-wave dipole",                      "2.15 dBi  (0 dBd)",  "2.15"),
-    val("2-element Yagi",                        "≈ 7 dBi",            "7"),
-    val("3-element Yagi",                        "≈ 8.5 dBi",          "8.5"),
-    val("5-element Yagi",                        "≈ 10.5 dBi",         "10.5"),
-    val("10-element Yagi",                       "≈ 14 dBi",           "14"),
-};
-
-constexpr Row kSidelobes[] = {
-    val("Uniform aperture — 1st SLL",   "−13 dBc",         "-13"),
-    val("Taylor weighted — 1st SLL",    "−25 dBc",         "-25"),
-    val("Low-sidelobe array — 1st SLL", "−35 dBc",         "-35"),
-    val("Typical back lobe",            "−25 to −35 dBc"),
-};
-
-constexpr Row kNoiseFloor[] = {
-    val("1 Hz bandwidth",    "−174.0 dBm", "-174.0"),
-    val("1 kHz bandwidth",   "−144.0 dBm", "-144.0"),
-    val("1 MHz bandwidth",   "−114.0 dBm", "-114.0"),
-    val("10 MHz bandwidth",  "−104.0 dBm", "-104.0"),
-    val("100 MHz bandwidth", "−94.0 dBm",  "-94.0"),
-    val("1 GHz bandwidth",   "−84.0 dBm",  "-84.0"),
-};
-
-constexpr Section kQuickValueSections[] = {
-    {"Antenna Gain",                        kAntennaGain, std::size(kAntennaGain)},
-    {"Antenna Sidelobe Levels (re main lobe)", kSidelobes, std::size(kSidelobes)},
-    {"Thermal Noise Floor  (kT, 290 K)",    kNoiseFloor,  std::size(kNoiseFloor)},
-};
-
 // ── Propagation page (#74) ───────────────────────────────────────────────────
 // Forms and constants follow libew exactly; provenance per docs/formulas.md
 // (32.44 = fspl_constant_km_mhz; /24 000 Fresnel-crossover per Adamy EW103
@@ -233,6 +196,8 @@ constexpr Row kDipole[] = {
 constexpr Row kMonopole[] = {
     val("Polarization",    "linear (vertical)"),
     val("Typical gain",    "5.15 dBi over ideal ground plane", "5.15"),
+    val("Ground-plane mount (typical)", "2 dBi",              "2"),
+    val("Short whip / rubber duck",     "≈ 0 dBi  (typical)", "0"),
     val("3-dB beamwidth",  "omni (azimuth)"),
     val("Bandwidth",       "≈ 10 %"),
     val("Frequency range", "HF – UHF"),
@@ -265,6 +230,10 @@ constexpr Row kHelix[] = {
 constexpr Row kYagi[] = {
     val("Polarization",    "linear"),
     val("Typical gain",    "7–15 dBi (grows with boom length)", "10"),
+    val("Gain, 2-element",  "≈ 7 dBi",    "7"),
+    val("Gain, 3-element",  "≈ 8.5 dBi",  "8.5"),
+    val("Gain, 5-element",  "≈ 10.5 dBi", "10.5"),
+    val("Gain, 10-element", "≈ 14 dBi",   "14"),
     val("3-dB beamwidth",  "30–60°"),
     val("Bandwidth",       "≈ 5 %"),
     val("Frequency range", "HF – UHF"),
@@ -302,6 +271,13 @@ constexpr Row kArray[] = {
     val("Frequency range", "L – Ka"),
 };
 
+constexpr Row kSidelobeLevels[] = {
+    val("Uniform aperture — 1st SLL",   "−13 dBc",         "-13"),
+    val("Taylor weighted — 1st SLL",    "−25 dBc",         "-25"),
+    val("Low-sidelobe array — 1st SLL", "−35 dBc",         "-35"),
+    val("Typical back lobe",            "−25 to −35 dBc"),
+};
+
 constexpr Section kAntennaSections[] = {
     {"Isotropic Reference",       kIsotropic,   std::size(kIsotropic),   "ant-isotropic"},
     {"Half-Wave Dipole",          kDipole,      std::size(kDipole),      "ant-dipole"},
@@ -314,6 +290,7 @@ constexpr Section kAntennaSections[] = {
     {"Cavity-Backed Spiral",      kSpiral,      std::size(kSpiral),      "ant-spiral"},
     {"Parabolic Reflector",       kParabolic,   std::size(kParabolic),   "ant-parabolic"},
     {"Phased Array",              kArray,       std::size(kArray),       "ant-array"},
+    {"Sidelobe Levels (re main lobe)", kSidelobeLevels, std::size(kSidelobeLevels)},
 };
 
 // ── Link Budget page (#76) ───────────────────────────────────────────────────
@@ -389,8 +366,18 @@ constexpr Row kRxDynamicRange[] = {
             "SFDR₃ = 2 (IIP₃ − S) / 3"),
 };
 
+constexpr Row kNoiseFloor[] = {
+    val("1 Hz bandwidth",    "−174.0 dBm", "-174.0"),
+    val("1 kHz bandwidth",   "−144.0 dBm", "-144.0"),
+    val("1 MHz bandwidth",   "−114.0 dBm", "-114.0"),
+    val("10 MHz bandwidth",  "−104.0 dBm", "-104.0"),
+    val("100 MHz bandwidth", "−94.0 dBm",  "-94.0"),
+    val("1 GHz bandwidth",   "−84.0 dBm",  "-84.0"),
+};
+
 constexpr Section kReceiverSections[] = {
     {"Sensitivity & Noise", kRxSensitivity,  std::size(kRxSensitivity)},
+    {"Thermal Noise Floor  (kT, 290 K)", kNoiseFloor, std::size(kNoiseFloor)},
     {"Cascaded Stages",     kRxCascade,      std::size(kRxCascade), "receiver-cascade"},
     {"Dynamic Range",       kRxDynamicRange, std::size(kRxDynamicRange)},
 };
@@ -705,8 +692,6 @@ constexpr Section kBandSections[] = {
 };
 
 constexpr Page kPages[] = {
-    {"quick-values", "Quick Values", "Common EW values for quick entry",
-     kQuickValueSections, std::size(kQuickValueSections)},
     {"ref-glossary", "Glossary", "Definitions of common EW terms",
      kGlossarySections, std::size(kGlossarySections)},
     {"ref-db-units", "dB & Units", "Decibel arithmetic and absolute dB units",

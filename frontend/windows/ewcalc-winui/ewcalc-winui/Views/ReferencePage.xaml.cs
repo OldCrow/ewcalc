@@ -271,8 +271,14 @@ public sealed partial class ReferencePage : Page
     {
         if (sender is Image { Source: BitmapImage bitmap } image)
         {
-            image.Width = bitmap.PixelWidth / 2.0;
-            image.Height = bitmap.PixelHeight / 2.0;
+            // Natural size is half the 2x asset's pixels. MaxWidth (not a
+            // fixed Width) with Stretch=Uniform lets a wide master — the
+            // stand-off J/S or the radar-range log line — shrink with the
+            // container instead of clipping at narrow windows, and never
+            // upscale past natural. Height follows via Uniform.
+            image.MaxWidth = bitmap.PixelWidth / 2.0;
+            image.MaxHeight = bitmap.PixelHeight / 2.0;
+            image.Stretch = Microsoft.UI.Xaml.Media.Stretch.Uniform;
         }
     }
 }

@@ -113,13 +113,15 @@ private struct FormulaImage: View {
     var body: some View {
         if let path = Bundle.main.path(forResource: name, ofType: "png"),
            let nsImage = NSImage(byReferencingFile: path) {
-            // Exact 1x frame (2x asset at half pixel size): glyph size then
-            // matches across formulas because all masters share one SVG
-            // font size — never let layout rescale the image.
+            // Natural size is 1x (2x asset at half pixel size) so glyphs
+            // match across formulas; maxWidth + scaledToFit lets a WIDE
+            // master (e.g. the stand-off J/S line) shrink when the pane is
+            // narrower than its natural width — never upscale.
             Image(nsImage: nsImage)
                 .resizable()
-                .frame(width: nsImage.size.width / 2,
-                       height: nsImage.size.height / 2)
+                .scaledToFit()
+                .frame(maxWidth: nsImage.size.width / 2,
+                       maxHeight: nsImage.size.height / 2)
                 .accessibilityLabel(text)
                 .help(text)
         } else {

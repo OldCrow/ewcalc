@@ -50,7 +50,6 @@ struct ReferencePageItem: Identifiable, Hashable {
     /// their own, and new pages fall back to a book.
     var icon: String {
         switch id {
-        case "quick-values":    return "book"
         case "ref-propagation": return AppSection.propagation.icon
         case "ref-antennas":    return AppSection.antenna.icon
         case "ref-link":        return AppSection.link.icon

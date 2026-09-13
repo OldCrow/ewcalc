@@ -113,6 +113,14 @@ QLabel* makeFormulaImage(const QString& resourcePath, const QString& altText)
     auto* lbl = new QLabel;
     QPixmap pix(resourcePath);
     pix.setDevicePixelRatio(2.0);
+    // Cap wide masters (e.g. the stand-off J/S line) at 560 logical px so
+    // they cannot force the page wider than the pane; aspect-preserving,
+    // and narrower masters stay at natural size (never upscaled).
+    constexpr int kMaxLogicalWidth = 560;
+    if (pix.width() / 2 > kMaxLogicalWidth) {
+        pix = pix.scaledToWidth(kMaxLogicalWidth * 2, Qt::SmoothTransformation);
+        pix.setDevicePixelRatio(2.0);
+    }
     lbl->setPixmap(pix);
     lbl->setAccessibleName(altText);
     lbl->setToolTip(altText);

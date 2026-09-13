@@ -67,7 +67,6 @@ public sealed partial class MainWindow : Window
     // glyph. Keyed on the page's stable id, not its display title.
     private static string ReferenceNavGlyph(string pageId) => pageId switch
     {
-        "quick-values"    => "", // Book — unchanged from the pre-#74 Reference item
         "ref-propagation" => "", // Matches NavPropagation's FontIcon glyph
         "ref-antennas"    => "", // Matches NavAntenna's FontIcon glyph
         "ref-link"        => "", // Matches NavLink's FontIcon glyph

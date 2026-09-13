@@ -370,21 +370,19 @@ void test_ref_shape_matches_refdata() {
 }
 
 void test_ref_row_fields() {
-    // Row 0/0/0 is a value row with a copy value.
+    // Row 0/0/0 is the glossary's ERP definition (a value row, no copy).
     ASSERT_TRUE(ewp_ref_row_kind(0, 0, 0) == EWP_REF_ROW_VALUE);
-    ASSERT_TRUE(std::strcmp(ewp_ref_row_label(0, 0, 0),
-                            "Isotropic (reference)") == 0);
-    ASSERT_TRUE(std::strcmp(ewp_ref_row_value(0, 0, 0), "0.0 dBi") == 0);
-    ASSERT_TRUE(std::strcmp(ewp_ref_row_copy_value(0, 0, 0), "0.0") == 0);
+    ASSERT_TRUE(std::strcmp(ewp_ref_row_label(0, 0, 0), "ERP") == 0);
+    ASSERT_TRUE(ewp_ref_row_copy_value(0, 0, 0) == nullptr);
     ASSERT_TRUE(ewp_ref_row_log_value(0, 0, 0) == nullptr);
     ASSERT_TRUE(ewp_ref_row_svg_base(0, 0, 0) == nullptr);
-    // Page 4 (Propagation) / section 0 (Path Loss) starts with FSPL.
-    ASSERT_TRUE(ewp_ref_row_kind(4, 0, 0) == EWP_REF_ROW_FORMULA);
-    ASSERT_TRUE(std::strcmp(ewp_ref_row_svg_base(4, 0, 0), "fspl") == 0);
-    ASSERT_TRUE(ewp_ref_row_value(4, 0, 0) != nullptr);
-    ASSERT_TRUE(ewp_ref_row_log_value(4, 0, 0) != nullptr);
+    // Page 3 (Propagation) / section 0 (Path Loss) starts with FSPL.
+    ASSERT_TRUE(ewp_ref_row_kind(3, 0, 0) == EWP_REF_ROW_FORMULA);
+    ASSERT_TRUE(std::strcmp(ewp_ref_row_svg_base(3, 0, 0), "fspl") == 0);
+    ASSERT_TRUE(ewp_ref_row_value(3, 0, 0) != nullptr);
+    ASSERT_TRUE(ewp_ref_row_log_value(3, 0, 0) != nullptr);
     // Section diagrams surface through the bridge; NULL where absent.
-    ASSERT_TRUE(std::strcmp(ewp_ref_section_diagram(4, 0), "prop-two-ray") == 0);
+    ASSERT_TRUE(std::strcmp(ewp_ref_section_diagram(3, 0), "prop-two-ray") == 0);
     ASSERT_TRUE(ewp_ref_section_diagram(0, 0) == nullptr);
     ASSERT_TRUE(ewp_ref_section_diagram(0, 999) == nullptr);
 }

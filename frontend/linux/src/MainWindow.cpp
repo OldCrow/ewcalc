@@ -50,8 +50,6 @@ namespace {
 /// theme fallback uniformly, so only the plain name is chosen here.
 QString referencePageIcon(const QString& pageId)
 {
-    if (pageId == QStringLiteral("quick-values"))
-        return QStringLiteral("help-contents");
     if (pageId == QStringLiteral("ref-propagation"))
         return QStringLiteral("network-wireless");
     if (pageId == QStringLiteral("ref-antennas"))
