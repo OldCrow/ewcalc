@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- CEP for angle-of-arrival geolocation, standard (and only) form:
+       CEP ~= 1.2 R tan(sigma_theta).
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20">CEP &#8776; 1.2 <tspan font-style="italic">R</tspan> tan <tspan font-style="italic">&#963;</tspan><tspan font-size="10" dy="4" font-style="italic">&#952;</tspan><tspan dy="-4" font-style="italic">&#8203;</tspan></text>
+  </g>
+</svg>

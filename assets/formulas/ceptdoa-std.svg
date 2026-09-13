@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 131 48" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- CEP for TDOA geolocation, standard (and only) form:
+       CEP ~= c sigma_t R / (2B).
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="29">CEP &#8776;</text>
+
+    <!-- Fraction: c sigma_t R over 2B -->
+    <text x="90" y="21" text-anchor="middle"><tspan font-style="italic">c &#963;</tspan><tspan font-size="10" dy="4">t</tspan><tspan dy="-4">&#8203;</tspan><tspan font-style="italic"> R</tspan></text>
+    <text x="90" y="44" text-anchor="middle">2<tspan font-style="italic">B</tspan></text>
+  </g>
+  <!-- Fraction bar, sized to the wider of numerator/denominator -->
+  <line x1="57" y1="25.5" x2="123" y2="25.5" stroke="#808080" stroke-width="1.2"/>
+</svg>
