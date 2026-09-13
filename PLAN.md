@@ -376,14 +376,16 @@ itemized since they're actionable.
   (`gh workflow run ci.yml --ref dev/v1.2.0` — CI does not trigger on
   dev pushes; dispatch also exercises tag-gated-otherwise packaging)
   plus Windows/Linux UI passes; the final PR should be a slam dunk.
-- NEXT (session of 2026-09-12 (Windows) ended here): the formula-column
-  restructure on Linux and macOS (Known Gaps) — the only known parity
-  divergence left — each on a machine that can build and UI-pass it.
-  Then the single dev/v1.2.0 → main milestone PR, validated by
-  manual-dispatch CI plus the UI passes already recorded, closing
-  #82–#87. Also carried: the PENDING PINS for the next book session
-  (radar SPJ/SOJ J/S forms and the 71 constant). Full formula-fidelity
-  sweep remains future assurance work.
+- PR #89 OPENED 2026-09-13: dev/v1.2.0 → main, closing #73–#77, #79,
+  #82–#87 on merge. All gates satisfied first: Windows + Linux UI
+  passes, macOS AX-driven live pass, manual-dispatch CI 7/7 green at
+  head (run 34738406990). The pull_request trigger runs CI on the PR
+  itself; "Protect main" requires those checks. After merge: re-check
+  milestone closure, then tag per docs/RELEASING.md conventions
+  (CHANGELOG date check learned from v1.1.0). Carried forward: PENDING
+  PINS (radar SPJ/SOJ forms + 71 constant, and the same forms on the
+  reference page); full formula-fidelity sweep as future assurance
+  work; v1.3.0 #88 radar jamming calculator.
 
 ## Session Close-out 2026-09-12 (Linux UI pass) [DERIVED]
 
