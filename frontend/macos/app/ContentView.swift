@@ -101,7 +101,7 @@ struct ContentView: View {
                 }
             }
             .listStyle(.sidebar)
-            .navigationSplitViewColumnWidth(min: 155, ideal: 170)
+            .navigationSplitViewColumnWidth(min: 200, ideal: 215)
         } detail: {
             // .id() forces every page to be torn down and rebuilt after a
             // reset (#20), so each view's @State input fields — read once,
