@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 311 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
   <!-- Jam-to-signal ratio, standard (and only) form:
        J/S = (ERP_J + G_rj - L_j) - (ERP_S + G_rs - L_s)   dB.
        ERP upright with italic-capital subscripts J/S (they name the

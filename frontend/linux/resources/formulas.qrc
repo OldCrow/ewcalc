@@ -35,5 +35,10 @@
         <file alias="sqnr-std.png">../../../assets/formulas/png/sqnr-std.png</file>
         <file alias="sfdr2-std.png">../../../assets/formulas/png/sfdr2-std.png</file>
         <file alias="sfdr3-std.png">../../../assets/formulas/png/sfdr3-std.png</file>
+        <file alias="js-std.png">../../../assets/formulas/png/js-std.png</file>
+        <file alias="burnlos-std.png">../../../assets/formulas/png/burnlos-std.png</file>
+        <file alias="burn2ray-std.png">../../../assets/formulas/png/burn2ray-std.png</file>
+        <file alias="pbopt-std.png">../../../assets/formulas/png/pbopt-std.png</file>
+        <file alias="pbduty-std.png">../../../assets/formulas/png/pbduty-std.png</file>
     </qresource>
 </RCC>

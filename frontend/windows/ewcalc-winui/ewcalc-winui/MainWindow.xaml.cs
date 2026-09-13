@@ -72,6 +72,7 @@ public sealed partial class MainWindow : Window
         "ref-antennas"    => "", // Matches NavAntenna's FontIcon glyph
         "ref-link"        => "", // Matches NavLink's FontIcon glyph
         "ref-receiver"    => "", // Matches NavReceiver's FontIcon glyph
+        "ref-jamming"     => "", // Matches NavJamming's FontIcon glyph
         "ref-rcs"         => "", // Airplane — RCS target table
         "ref-bands"       => "", // Signal bars — frequency-band letters
         "ref-glossary"    => "", // Dictionary — term definitions

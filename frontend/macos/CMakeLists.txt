@@ -177,6 +177,11 @@ set(FORMULA_PNGS
     "${FORMULA_PNG_DIR}/sqnr-std.png"
     "${FORMULA_PNG_DIR}/sfdr2-std.png"
     "${FORMULA_PNG_DIR}/sfdr3-std.png"
+    "${FORMULA_PNG_DIR}/js-std.png"
+    "${FORMULA_PNG_DIR}/burnlos-std.png"
+    "${FORMULA_PNG_DIR}/burn2ray-std.png"
+    "${FORMULA_PNG_DIR}/pbopt-std.png"
+    "${FORMULA_PNG_DIR}/pbduty-std.png"
 )
 set_source_files_properties(${FORMULA_PNGS} PROPERTIES
     MACOSX_PACKAGE_LOCATION Resources)

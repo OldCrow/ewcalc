@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 430 40" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 316 40" font-family="Georgia, 'Times New Roman', serif" font-size="15">
   <!-- Burn-through range, two-ray form, standard (and only) form:
        d = 10^((M - 120 + 20 log10 h_t(m) + 20 log10 h_r(m)) / 40)   km.
        Same inline-exponent treatment as linkrange-std/burnlos-std: the

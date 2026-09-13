@@ -62,6 +62,8 @@ QString referencePageIcon(const QString& pageId)
         return QStringLiteral("accessories-character-map");
     if (pageId == QStringLiteral("ref-receiver"))
         return QStringLiteral("audio-card"); // matches the Receiver row
+    if (pageId == QStringLiteral("ref-jamming"))
+        return QStringLiteral("emblem-important"); // matches the Jamming row
     if (pageId == QStringLiteral("ref-rcs"))
         return QStringLiteral("airplane-mode");
     if (pageId == QStringLiteral("ref-glossary"))

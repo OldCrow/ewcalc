@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 222 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
   <!-- Pulse-jamming duty factor, standard (and only) form:
        delta = min(BW_opt, BW_hop) / BW_hop.
        delta italic; "min" upright (a function name); BW upright with

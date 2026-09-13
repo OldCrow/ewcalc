@@ -20,7 +20,7 @@ bool eq(const char* a, std::string_view b) {
 
 void test_pages_shape() {
     const auto pages_span = pages();
-    ASSERT_TRUE(pages_span.size() == 9);
+    ASSERT_TRUE(pages_span.size() == 10);
 
     ASSERT_TRUE(eq(pages_span[0].id, "quick-values"));
     ASSERT_TRUE(eq(pages_span[0].title, "Quick Values"));
@@ -44,9 +44,12 @@ void test_pages_shape() {
     ASSERT_TRUE(eq(pages_span[7].id, "ref-receiver"));
     ASSERT_TRUE(eq(pages_span[7].title, "Receiver"));
     ASSERT_TRUE(pages_span[7].section_count == 3);
-    ASSERT_TRUE(eq(pages_span[8].id, "ref-rcs"));
-    ASSERT_TRUE(eq(pages_span[8].title, "RCS"));
-    ASSERT_TRUE(pages_span[8].section_count == 2);
+    ASSERT_TRUE(eq(pages_span[8].id, "ref-jamming"));
+    ASSERT_TRUE(eq(pages_span[8].title, "Jamming"));
+    ASSERT_TRUE(pages_span[8].section_count == 3);
+    ASSERT_TRUE(eq(pages_span[9].id, "ref-rcs"));
+    ASSERT_TRUE(eq(pages_span[9].title, "RCS"));
+    ASSERT_TRUE(pages_span[9].section_count == 2);
 }
 
 void test_antenna_types_page() {
@@ -84,8 +87,22 @@ void test_receiver_page() {
                 != std::string_view::npos);
 }
 
-void test_rcs_page() {
+void test_jamming_page() {
     const Page& page = pages()[8];
+    // Both #72 jamming geometry diagrams are reused.
+    ASSERT_TRUE(eq(page.sections[0].diagram, "jamming-self-protection"));
+    ASSERT_TRUE(eq(page.sections[1].diagram, "jamming-stand-off"));
+    ASSERT_TRUE(page.sections[2].diagram == nullptr);
+    // All jamming formulas are single-form; burnthrough quotes 32.44.
+    for (std::size_t s2 = 0; s2 < page.section_count; ++s2)
+        for (std::size_t r = 0; r < page.sections[s2].row_count; ++r)
+            ASSERT_TRUE(page.sections[s2].rows[r].log_value == nullptr);
+    ASSERT_TRUE(std::string_view{page.sections[1].rows[0].value}.find("32.44")
+                != std::string_view::npos);
+}
+
+void test_rcs_page() {
+    const Page& page = pages()[9];
     ASSERT_TRUE(eq(page.sections[0].title, "Simple Shapes"));
     ASSERT_TRUE(eq(page.sections[0].diagram, "rcs-regions"));
     // Six single-form shape formulas, then two value notes.
@@ -279,6 +296,7 @@ TEST_MAIN()
     RUN_TEST(test_antenna_types_page);
     RUN_TEST(test_link_page);
     RUN_TEST(test_receiver_page);
+    RUN_TEST(test_jamming_page);
     RUN_TEST(test_rcs_page);
     RUN_TEST(test_glossary_page);
     RUN_TEST(test_bands_page);

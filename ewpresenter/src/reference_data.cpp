@@ -404,6 +404,42 @@ constexpr Section kReceiverSections[] = {
     {"Dynamic Range",       kRxDynamicRange, std::size(kRxDynamicRange)},
 };
 
+// ── Jamming page (#83) ───────────────────────────────────────────────────────
+// Pins per docs/formulas.md: comms J/S per Adamy EW102 Sec 5.8.1 p. 138 /
+// EW103 Sec 9.1 p. 252; burnthrough inversions per Adamy EW101 Sec 9.3
+// pp. 187-191 (our 32.44 where Adamy rounds); partial-band optimum per
+// Adamy EW102 Sec 5.9.1.2 / EW103 Sec 9.3.1 (the corrected v0.7.0
+// surplus-power behavior). Both #72 jamming geometry diagrams reused.
+
+constexpr Row kJsRatio[] = {
+    formula("Communications J/S", "js",
+            "J/S = (ERP_J + G_rj − L_j) − (ERP_S + G_rs − L_s)  dB"),
+    val("Sign convention", "positive J/S favors the jammer"),
+    val("Path regimes", "signal and jammer paths may use different LOS / two-ray models"),
+};
+
+constexpr Row kBurnthrough[] = {
+    formula("Burnthrough range (LOS)", "burnlos",
+            "d = 10^((M − 32.44 − 20 log₁₀ f(MHz))/20)  km"),
+    formula("Burnthrough range (two-ray)", "burn2ray",
+            "d = 10^((M − 120 + 20 log₁₀ h_t(m) + 20 log₁₀ h_r(m))/40)  km"),
+    val("Margin M", "collects the link terms against the J/S threshold — see the Jamming calculator"),
+};
+
+constexpr Row kPartialBand[] = {
+    formula("Optimum jamming bandwidth", "pbopt",
+            "BW_opt = BW_sig · 10^(J/S₁/10)"),
+    formula("Duty cycle", "pbduty",
+            "δ = min(BW_opt, BW_hop) / BW_hop"),
+    val("Rationale", "surplus jammer power widens coverage across more hops rather than over-jamming one channel"),
+};
+
+constexpr Section kJammingSections[] = {
+    {"J/S Ratio",            kJsRatio,      std::size(kJsRatio),      "jamming-self-protection"},
+    {"Burnthrough",          kBurnthrough,  std::size(kBurnthrough),  "jamming-stand-off"},
+    {"Partial-Band Jamming", kPartialBand,  std::size(kPartialBand)},
+};
+
 // ── RCS page (#77) ───────────────────────────────────────────────────────────
 // Simple-shape maxima are optical-region (dimension ≫ λ) closed forms per
 // the standard radar literature (Skolnik, Knott); the regimes diagram is the
@@ -510,6 +546,8 @@ constexpr Page kPages[] = {
      kLinkSections, std::size(kLinkSections)},
     {"ref-receiver", "Receiver", "Sensitivity, cascade, and dynamic range",
      kReceiverSections, std::size(kReceiverSections)},
+    {"ref-jamming", "Jamming", "J/S, burnthrough, and partial-band forms",
+     kJammingSections, std::size(kJammingSections)},
     {"ref-rcs", "RCS", "Simple-shape formulas and typical targets",
      kRcsSections, std::size(kRcsSections)},
 };
