@@ -566,7 +566,7 @@ Carried into the next session:
   without it, hence Recommends. Its RPM equivalent is deliberately not
   listed: the package name varies by distro and was not verified on a real
   Fedora/openSUSE box.
-- [OPEN 2026-09-12 — macOS and Linux only] Formula rows used a flow
+- [OPEN 2026-09-13 — macOS only] Formula rows used a flow
   layout, not columns, on all three frontends (WinUI `StackPanel`
   Horizontal, Linux `QHBoxLayout` + stretch, macOS HStack): each row's log
   form started wherever its own standard form ended, so a multi-row
@@ -588,6 +588,25 @@ Carried into the next session:
   Note the trade-off the column model accepts: at widths where a log form
   must shrink, it no longer matches its standard form's glyph size — the
   pair-scaled-as-a-unit behaviour only held while the forms were ragged.
+  FIXED ON LINUX 2026-09-13, same model: one QGridLayout per section with
+  the standard forms in a shared column and the log forms in the stretch
+  column beside them; value rows span both form columns and diagrams span
+  all four, so interleaving order is unaffected. Measured before/after on
+  the standard-form widths that drive the ragged edges: One-Way Link spread
+  280 px, RCS Simple Shapes 190, Spread Spectrum 133, Range Equation 116 —
+  all now one left edge per section. Two Qt-specific traps worth recording:
+  a widget added to a layout *with* an alignment flag is handed only its
+  sizeHint and never fills the cell, so the images have to be added
+  unaligned and position their own pixmap; and QLabel *clips* a pixmap
+  wider than the widget, so FormulaImage now scales in paintEvent rather
+  than holding a pre-scaled pixmap — the stand-off J/S line was losing its
+  trailing "− 10 log₁₀ σ(m²) dB" whenever the layout shrank the label
+  before its pixmap caught up. The standard-form cap is 300 px, not WinUI's
+  400: on Linux the log forms are the wide ones, and at 400 the Friis log
+  was starved to 137 px of ink against 188 at 300. Verified all thirteen
+  pages at 1180 px and 980 px — no horizontal scrollbar, no clipping, copy
+  buttons on-screen and working; cppcheck clean, 14/14 tests.
+  macOS is now the only frontend still on the flow layout.
   At any width that fits, both render at natural size and still match.
   REMAINING: the same restructure on Linux (`ReferencePage.cpp`,
   QFormLayout → per-section QGridLayout) and macOS (`ReferenceView.swift`,
