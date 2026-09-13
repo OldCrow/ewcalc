@@ -197,6 +197,14 @@ set(FORMULA_PNGS
     "${FORMULA_PNG_DIR}/rangeres-std.png"
     "${FORMULA_PNG_DIR}/rangeres-log.png"
     "${FORMULA_PNG_DIR}/crossres-std.png"
+    "${FORMULA_PNG_DIR}/radarrange-std.png"
+    "${FORMULA_PNG_DIR}/radarrange-log.png"
+    "${FORMULA_PNG_DIR}/pulsecomp-std.png"
+    "${FORMULA_PNG_DIR}/cohint-std.png"
+    "${FORMULA_PNG_DIR}/lpi-std.png"
+    "${FORMULA_PNG_DIR}/flucloss-std.png"
+    "${FORMULA_PNG_DIR}/dwell-std.png"
+    "${FORMULA_PNG_DIR}/far-std.png"
 )
 set_source_files_properties(${FORMULA_PNGS} PROPERTIES
     MACOSX_PACKAGE_LOCATION Resources)

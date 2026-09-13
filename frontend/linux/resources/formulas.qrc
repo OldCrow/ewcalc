@@ -55,5 +55,13 @@
         <file alias="rangeres-std.png">../../../assets/formulas/png/rangeres-std.png</file>
         <file alias="rangeres-log.png">../../../assets/formulas/png/rangeres-log.png</file>
         <file alias="crossres-std.png">../../../assets/formulas/png/crossres-std.png</file>
+        <file alias="radarrange-std.png">../../../assets/formulas/png/radarrange-std.png</file>
+        <file alias="radarrange-log.png">../../../assets/formulas/png/radarrange-log.png</file>
+        <file alias="pulsecomp-std.png">../../../assets/formulas/png/pulsecomp-std.png</file>
+        <file alias="cohint-std.png">../../../assets/formulas/png/cohint-std.png</file>
+        <file alias="lpi-std.png">../../../assets/formulas/png/lpi-std.png</file>
+        <file alias="flucloss-std.png">../../../assets/formulas/png/flucloss-std.png</file>
+        <file alias="dwell-std.png">../../../assets/formulas/png/dwell-std.png</file>
+        <file alias="far-std.png">../../../assets/formulas/png/far-std.png</file>
     </qresource>
 </RCC>
