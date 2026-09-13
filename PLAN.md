@@ -231,8 +231,30 @@ Open milestones are fully itemized here since they reflect actionable state.
     and the 71 constant (EW101 ch 9 / EW102 ch 5 family).
   - GATE (user, 2026-09-12): NO milestone PR until the user completes
     Linux and Windows UI passes over #82–#87. #82–#87 stay open on
-    GitHub for the PR to close. Also still noted: the WinUI
-    formula-pair wrap gap from the earlier Windows pass.
+    GitHub for the PR to close.
+  - WINDOWS UI PASS 2026-09-12 (#82–#87 on dev/v1.2.0 at c4882db): core
+    14/14, WinUI solution warning-free, dotnet format clean. All 13
+    reference pages driven via UIA — 93/93 formula and diagram images
+    load, every page reviewed visually, all 67 formula PNGs and 23
+    diagrams staged into the package. Calculator outputs unchanged and
+    the "Comms Jamming" relabel is live; formula copy still yields
+    `std   |   log`. Spot-checked content renders right: #85's
+    40·log₁₀ range form, the kT and Eb/N₀ notation, 1d44219's subscript
+    glyphs.
+    ONE defect found and fixed — the WinUI formula-pair wrap gap, now
+    CLOSED. 1e983c1 gave WinUI MaxWidth + Stretch=Uniform intending
+    shrink-to-fit, but the pair sits in a horizontal StackPanel, which
+    measures children with unbounded width: MaxWidth caps upscale and
+    never shrinks, so at the 860 px default the radar-range log form
+    clipped mid-equation at the card edge. Wrapping the pair in a
+    Viewbox (Uniform, StretchDirection=DownOnly) gives it a finite width
+    and scales the pair as a unit — natural size stays the ceiling, and
+    scaling both forms together preserves the shared-glyph-size rule
+    that shrinking one form alone would break. Verified clean on all 13
+    pages at 860 px and again at 700 px: no horizontal scrollbar, no
+    image past the viewport edge.
+    Still open: the flow-layout column alignment (Known Gaps) — each
+    row scales independently, so log forms remain ragged across rows.
   - WINDOWS UI PASS 2026-09-10 (#74-#77, #79 on dev/v1.2.0 at 7fadf97):
     core 14/14, WinUI solution warning-free, dotnet format clean; all 8
     reference pages driven via UIA with every formula/diagram image
