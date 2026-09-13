@@ -20,7 +20,7 @@ bool eq(const char* a, std::string_view b) {
 
 void test_pages_shape() {
     const auto pages_span = pages();
-    ASSERT_TRUE(pages_span.size() == 11);
+    ASSERT_TRUE(pages_span.size() == 13);
 
     ASSERT_TRUE(eq(pages_span[0].id, "quick-values"));
     ASSERT_TRUE(eq(pages_span[0].title, "Quick Values"));
@@ -50,9 +50,15 @@ void test_pages_shape() {
     ASSERT_TRUE(eq(pages_span[9].id, "ref-location"));
     ASSERT_TRUE(eq(pages_span[9].title, "Location"));
     ASSERT_TRUE(pages_span[9].section_count == 3);
-    ASSERT_TRUE(eq(pages_span[10].id, "ref-rcs"));
-    ASSERT_TRUE(eq(pages_span[10].title, "RCS"));
-    ASSERT_TRUE(pages_span[10].section_count == 2);
+    ASSERT_TRUE(eq(pages_span[10].id, "ref-radar-det"));
+    ASSERT_TRUE(eq(pages_span[10].title, "Radar & Detection"));
+    ASSERT_TRUE(pages_span[10].section_count == 3);
+    ASSERT_TRUE(eq(pages_span[11].id, "ref-doppler"));
+    ASSERT_TRUE(eq(pages_span[11].title, "Doppler & Resolution"));
+    ASSERT_TRUE(pages_span[11].section_count == 2);
+    ASSERT_TRUE(eq(pages_span[12].id, "ref-rcs"));
+    ASSERT_TRUE(eq(pages_span[12].title, "RCS"));
+    ASSERT_TRUE(pages_span[12].section_count == 2);
 }
 
 void test_antenna_types_page() {
@@ -124,8 +130,40 @@ void test_location_page() {
     ASSERT_TRUE(page.sections[2].rows[1].kind == RowKind::Formula);
 }
 
-void test_rcs_page() {
+void test_radar_det_page() {
     const Page& page = pages()[10];
+    // Range equation is the page's only std+log pair; its log form is the
+    // corrected 40·log10 arrangement (the /4 doc line was a typo).
+    const Row& rng = page.sections[0].rows[0];
+    ASSERT_TRUE(eq(rng.svg_base, "radarrange"));
+    ASSERT_TRUE(std::string_view{rng.log_value}.find("40 log")
+                != std::string_view::npos);
+    // Albersheim/Shnidman are method anchors (value rows), not formulas.
+    ASSERT_TRUE(page.sections[1].rows[0].kind == RowKind::Value);
+    ASSERT_TRUE(page.sections[1].rows[1].kind == RowKind::Value);
+    // Swerling table covers cases 0-4 plus the rule of thumb.
+    ASSERT_TRUE(page.sections[2].row_count == 6);
+}
+
+void test_doppler_page() {
+    const Page& page = pages()[11];
+    ASSERT_TRUE(eq(page.sections[1].diagram, "resolution-cell"));
+    // The dilemma product row is present (test_radar.cpp guards the math).
+    bool found_dilemma = false;
+    for (std::size_t r = 0; r < page.sections[0].row_count; ++r) {
+        if (page.sections[0].rows[r].svg_base != nullptr &&
+            std::string_view{page.sections[0].rows[r].svg_base} == "dilemma") {
+            found_dilemma = true;
+        }
+    }
+    ASSERT_TRUE(found_dilemma);
+    // Doppler and range resolution are the page's two std+log pairs.
+    ASSERT_TRUE(page.sections[0].rows[0].log_value != nullptr);
+    ASSERT_TRUE(page.sections[1].rows[0].log_value != nullptr);
+}
+
+void test_rcs_page() {
+    const Page& page = pages()[12];
     ASSERT_TRUE(eq(page.sections[0].title, "Simple Shapes"));
     ASSERT_TRUE(eq(page.sections[0].diagram, "rcs-regions"));
     // Six single-form shape formulas, then two value notes.
@@ -321,6 +359,8 @@ TEST_MAIN()
     RUN_TEST(test_receiver_page);
     RUN_TEST(test_jamming_page);
     RUN_TEST(test_location_page);
+    RUN_TEST(test_radar_det_page);
+    RUN_TEST(test_doppler_page);
     RUN_TEST(test_rcs_page);
     RUN_TEST(test_glossary_page);
     RUN_TEST(test_bands_page);

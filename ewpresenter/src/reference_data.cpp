@@ -498,6 +498,95 @@ constexpr Section kLocationSections[] = {
     {"Error Ellipse → CEP",       kCepEep,  std::size(kCepEep),  "loc-eep-cep"},
 };
 
+// ── Radar & Detection page (#85, combined per user ratification) ─────────────
+// Pins per docs/formulas.md: range equation per Adamy EW102 Sec 3.2/3.2.2
+// (the 40·log10 form matching libew's implementation — the former
+// 20·log10(R)=(…)/4 doc line was a typo, fixed with this page); pulse
+// compression per EW102 Sec 3.5.2; LPI advantage per EW102 Sec 3.9.5;
+// coherent integration per Richards (no EW-series anchor); Albersheim/
+// Shnidman are numeric methods anchored to the Detection calculator
+// (oracle-validated, worst 0.30 dB); Swerling summaries per Richards ch 6.
+
+constexpr Row kRangeEquation[] = {
+    formula("Radar range equation", "radarrange",
+            "R_max⁴ = P_t G² λ² σ / ((4π)³ · kTBF · SNRᵣ · L)",
+            "40 log₁₀ R(m) = P_t + 2G + 20 log₁₀ λ(m) + σ − 30 log₁₀ 4π − N − SNRᵣ − L"),
+    formula("Pulse compression gain", "pulsecomp",
+            "G_pc = 10 log₁₀ (T·B)"),
+    formula("Coherent integration gain", "cohint",
+            "G_int = 10 log₁₀ N"),
+    formula("LPI advantage", "lpi",
+            "LPI advantage = 10 log₁₀ (T·B) / 4"),
+    val("LPI caveat", "the advantage collapses to 0 dB if the intercept receiver also matches the waveform"),
+};
+
+constexpr Row kDetectionStats[] = {
+    val("Albersheim", "closed-form required SNR (nonfluctuating, noncoherent N pulses; <0.2 dB in envelope) — computed by the Detection calculator"),
+    val("Shnidman", "required SNR for Swerling 0–4; oracle-validated to 0.30 dB — computed by the Detection calculator"),
+    formula("Fluctuation loss", "flucloss",
+            "L_f = SNRᵣ(Sw n) − SNRᵣ(Sw 0)"),
+    formula("Dwell time and hits", "dwell",
+            "T_D = θ_az / ω;  hits = T_D · PRF"),
+    formula("False-alarm rate", "far",
+            "FAR = P_fa · B"),
+};
+
+constexpr Row kSwerlingCases[] = {
+    val("Swerling 0 (V)", "steady target — no fluctuation (Marcum)"),
+    val("Swerling 1", "many equal scatterers, scan-to-scan (slow) fluctuation"),
+    val("Swerling 2", "many equal scatterers, pulse-to-pulse (fast) fluctuation"),
+    val("Swerling 3", "one dominant + small scatterers, scan-to-scan"),
+    val("Swerling 4", "one dominant + small scatterers, pulse-to-pulse"),
+    val("Rule of thumb", "fluctuation costs most near high Pd — see Fluctuation loss above"),
+};
+
+constexpr Section kRadarDetSections[] = {
+    {"Range Equation",       kRangeEquation,  std::size(kRangeEquation)},
+    {"Detection Statistics", kDetectionStats, std::size(kDetectionStats)},
+    {"Swerling Cases",       kSwerlingCases,  std::size(kSwerlingCases)},
+};
+
+// ── Doppler & Resolution page (#86) ──────────────────────────────────────────
+// Pins per docs/formulas.md: Doppler shift per Adamy EW102 Sec 3.6.1 p. 55
+// (6.67 = 2/0.29979 in the GHz engineering form); unambiguous range per
+// EW102's PRI statement (algebraically c/(2·PRF)); blind speed and
+// unambiguous velocity per Richards/Skolnik (absent from Adamy, verified
+// 2026-09-06); the dilemma product R_u·v_u = c·λ/8 is test-guarded in
+// test_radar.cpp; range resolution c/(2B) with Adamy's SAR c·PW/2 as the
+// uncompressed variant; cross-range is real-beam R·θ with Adamy's SAR
+// λR/(2L) noted as a method delta.
+
+constexpr Row kDopplerRows[] = {
+    formula("Doppler shift (two-way)", "doppler",
+            "f_d = 2 v_r f / c",
+            "f_d ≈ 6.67 v_r(m/s) f(GHz)  Hz"),
+    formula("Unambiguous range", "unambrange",
+            "R_u = c / (2 PRF)"),
+    val("Adamy's form", "stated as R_max < 0.5·PRI·c — algebraically the same"),
+    formula("First blind speed", "blindspeed",
+            "v_b = λ PRF / 2  (multiples n·v_b)"),
+    formula("Unambiguous velocity", "unambvel",
+            "v_u = λ PRF / 4"),
+    formula("Doppler dilemma", "dilemma",
+            "R_u · v_u = c λ / 8"),
+    val("Dilemma", "the product is PRF-invariant — raising PRF buys velocity coverage at the cost of range coverage"),
+};
+
+constexpr Row kResolutionRows[] = {
+    formula("Range resolution", "rangeres",
+            "ΔR = c / (2B)",
+            "ΔR = c τ / 2  (uncompressed pulse, B ≈ 1/τ)"),
+    formula("Cross-range resolution", "crossres",
+            "ΔX = R θ_3dB  (θ in radians)"),
+    val("SAR azimuth (method delta)", "Adamy EW102 3.8.2 gives d = λR/(2L) — SAR's two-way phase history halves the real-beam λR/L"),
+    val("Resolution cell", "ΔR × R·θ_az × R·θ_el bounds the cell — see the diagram"),
+};
+
+constexpr Section kDopplerSections[] = {
+    {"Doppler",    kDopplerRows,    std::size(kDopplerRows)},
+    {"Resolution", kResolutionRows, std::size(kResolutionRows), "resolution-cell"},
+};
+
 // ── RCS page (#77) ───────────────────────────────────────────────────────────
 // Simple-shape maxima are optical-region (dimension ≫ λ) closed forms per
 // the standard radar literature (Skolnik, Knott); the regimes diagram is the
@@ -608,6 +697,10 @@ constexpr Page kPages[] = {
      kJammingSections, std::size(kJammingSections)},
     {"ref-location", "Location", "CEP from AOA, TDOA, and the error ellipse",
      kLocationSections, std::size(kLocationSections)},
+    {"ref-radar-det", "Radar & Detection", "Range equation and detection statistics",
+     kRadarDetSections, std::size(kRadarDetSections)},
+    {"ref-doppler", "Doppler & Resolution", "Doppler relations and the resolution cell",
+     kDopplerSections, std::size(kDopplerSections)},
     {"ref-rcs", "RCS", "Simple-shape formulas and typical targets",
      kRcsSections, std::size(kRcsSections)},
 };

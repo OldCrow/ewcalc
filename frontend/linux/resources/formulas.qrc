@@ -46,5 +46,14 @@
         <file alias="cepadamy-std.png">../../../assets/formulas/png/cepadamy-std.png</file>
         <file alias="jsspj-std.png">../../../assets/formulas/png/jsspj-std.png</file>
         <file alias="jssoj-std.png">../../../assets/formulas/png/jssoj-std.png</file>
+        <file alias="doppler-std.png">../../../assets/formulas/png/doppler-std.png</file>
+        <file alias="doppler-log.png">../../../assets/formulas/png/doppler-log.png</file>
+        <file alias="unambrange-std.png">../../../assets/formulas/png/unambrange-std.png</file>
+        <file alias="blindspeed-std.png">../../../assets/formulas/png/blindspeed-std.png</file>
+        <file alias="unambvel-std.png">../../../assets/formulas/png/unambvel-std.png</file>
+        <file alias="dilemma-std.png">../../../assets/formulas/png/dilemma-std.png</file>
+        <file alias="rangeres-std.png">../../../assets/formulas/png/rangeres-std.png</file>
+        <file alias="rangeres-log.png">../../../assets/formulas/png/rangeres-log.png</file>
+        <file alias="crossres-std.png">../../../assets/formulas/png/crossres-std.png</file>
     </qresource>
 </RCC>

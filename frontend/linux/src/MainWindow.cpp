@@ -66,6 +66,10 @@ QString referencePageIcon(const QString& pageId)
         return QStringLiteral("emblem-important"); // matches the Jamming row
     if (pageId == QStringLiteral("ref-location"))
         return QStringLiteral("mark-location"); // matches the Location row
+    if (pageId == QStringLiteral("ref-radar-det"))
+        return QStringLiteral("system-search"); // matches the Radar row
+    if (pageId == QStringLiteral("ref-doppler"))
+        return QStringLiteral("media-playlist-shuffle"); // matches the Doppler & Resolution row
     if (pageId == QStringLiteral("ref-rcs"))
         return QStringLiteral("airplane-mode");
     if (pageId == QStringLiteral("ref-glossary"))

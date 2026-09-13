@@ -188,6 +188,15 @@ set(FORMULA_PNGS
     "${FORMULA_PNG_DIR}/cepadamy-std.png"
     "${FORMULA_PNG_DIR}/jsspj-std.png"
     "${FORMULA_PNG_DIR}/jssoj-std.png"
+    "${FORMULA_PNG_DIR}/doppler-std.png"
+    "${FORMULA_PNG_DIR}/doppler-log.png"
+    "${FORMULA_PNG_DIR}/unambrange-std.png"
+    "${FORMULA_PNG_DIR}/blindspeed-std.png"
+    "${FORMULA_PNG_DIR}/unambvel-std.png"
+    "${FORMULA_PNG_DIR}/dilemma-std.png"
+    "${FORMULA_PNG_DIR}/rangeres-std.png"
+    "${FORMULA_PNG_DIR}/rangeres-log.png"
+    "${FORMULA_PNG_DIR}/crossres-std.png"
 )
 set_source_files_properties(${FORMULA_PNGS} PROPERTIES
     MACOSX_PACKAGE_LOCATION Resources)
