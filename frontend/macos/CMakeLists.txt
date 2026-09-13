@@ -170,6 +170,13 @@ set(FORMULA_PNGS
     "${FORMULA_PNG_DIR}/rcs-dihedral-std.png"
     "${FORMULA_PNG_DIR}/rcs-trihedral-std.png"
     "${FORMULA_PNG_DIR}/rcs-dbsm-std.png"
+    "${FORMULA_PNG_DIR}/noisetemp-std.png"
+    "${FORMULA_PNG_DIR}/noisetemp-log.png"
+    "${FORMULA_PNG_DIR}/cascade-std.png"
+    "${FORMULA_PNG_DIR}/ddr-std.png"
+    "${FORMULA_PNG_DIR}/sqnr-std.png"
+    "${FORMULA_PNG_DIR}/sfdr2-std.png"
+    "${FORMULA_PNG_DIR}/sfdr3-std.png"
 )
 set_source_files_properties(${FORMULA_PNGS} PROPERTIES
     MACOSX_PACKAGE_LOCATION Resources)

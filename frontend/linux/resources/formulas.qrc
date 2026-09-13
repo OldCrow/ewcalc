@@ -28,5 +28,12 @@
         <file alias="rcs-dihedral-std.png">../../../assets/formulas/png/rcs-dihedral-std.png</file>
         <file alias="rcs-trihedral-std.png">../../../assets/formulas/png/rcs-trihedral-std.png</file>
         <file alias="rcs-dbsm-std.png">../../../assets/formulas/png/rcs-dbsm-std.png</file>
+        <file alias="noisetemp-std.png">../../../assets/formulas/png/noisetemp-std.png</file>
+        <file alias="noisetemp-log.png">../../../assets/formulas/png/noisetemp-log.png</file>
+        <file alias="cascade-std.png">../../../assets/formulas/png/cascade-std.png</file>
+        <file alias="ddr-std.png">../../../assets/formulas/png/ddr-std.png</file>
+        <file alias="sqnr-std.png">../../../assets/formulas/png/sqnr-std.png</file>
+        <file alias="sfdr2-std.png">../../../assets/formulas/png/sfdr2-std.png</file>
+        <file alias="sfdr3-std.png">../../../assets/formulas/png/sfdr3-std.png</file>
     </qresource>
 </RCC>

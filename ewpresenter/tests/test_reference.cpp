@@ -20,7 +20,7 @@ bool eq(const char* a, std::string_view b) {
 
 void test_pages_shape() {
     const auto pages_span = pages();
-    ASSERT_TRUE(pages_span.size() == 8);
+    ASSERT_TRUE(pages_span.size() == 9);
 
     ASSERT_TRUE(eq(pages_span[0].id, "quick-values"));
     ASSERT_TRUE(eq(pages_span[0].title, "Quick Values"));
@@ -41,9 +41,12 @@ void test_pages_shape() {
     ASSERT_TRUE(pages_span[5].section_count == 11);
     ASSERT_TRUE(eq(pages_span[6].id, "ref-link"));
     ASSERT_TRUE(pages_span[6].section_count == 2);
-    ASSERT_TRUE(eq(pages_span[7].id, "ref-rcs"));
-    ASSERT_TRUE(eq(pages_span[7].title, "RCS"));
-    ASSERT_TRUE(pages_span[7].section_count == 2);
+    ASSERT_TRUE(eq(pages_span[7].id, "ref-receiver"));
+    ASSERT_TRUE(eq(pages_span[7].title, "Receiver"));
+    ASSERT_TRUE(pages_span[7].section_count == 3);
+    ASSERT_TRUE(eq(pages_span[8].id, "ref-rcs"));
+    ASSERT_TRUE(eq(pages_span[8].title, "RCS"));
+    ASSERT_TRUE(pages_span[8].section_count == 2);
 }
 
 void test_antenna_types_page() {
@@ -64,8 +67,25 @@ void test_antenna_types_page() {
     }
 }
 
-void test_rcs_page() {
+void test_receiver_page() {
     const Page& page = pages()[7];
+    // The sensitivity row shares the Link Budget page's asset pair and text.
+    const Row& sens = page.sections[0].rows[0];
+    ASSERT_TRUE(eq(sens.svg_base, "sensitivity"));
+    ASSERT_TRUE(std::string_view{sens.log_value}.find("114")
+                != std::string_view::npos);
+    // Cascade section carries the #72 diagram; its formula is single-form.
+    ASSERT_TRUE(eq(page.sections[1].diagram, "receiver-cascade"));
+    ASSERT_TRUE(page.sections[1].rows[0].log_value == nullptr);
+    // DR and SQNR are distinct rows (resolved fidelity docket).
+    ASSERT_TRUE(eq(page.sections[2].rows[0].svg_base, "ddr"));
+    ASSERT_TRUE(eq(page.sections[2].rows[1].svg_base, "sqnr"));
+    ASSERT_TRUE(std::string_view{page.sections[2].rows[1].value}.find("1.76")
+                != std::string_view::npos);
+}
+
+void test_rcs_page() {
+    const Page& page = pages()[8];
     ASSERT_TRUE(eq(page.sections[0].title, "Simple Shapes"));
     ASSERT_TRUE(eq(page.sections[0].diagram, "rcs-regions"));
     // Six single-form shape formulas, then two value notes.
@@ -258,6 +278,7 @@ TEST_MAIN()
     RUN_TEST(test_propagation_page);
     RUN_TEST(test_antenna_types_page);
     RUN_TEST(test_link_page);
+    RUN_TEST(test_receiver_page);
     RUN_TEST(test_rcs_page);
     RUN_TEST(test_glossary_page);
     RUN_TEST(test_bands_page);

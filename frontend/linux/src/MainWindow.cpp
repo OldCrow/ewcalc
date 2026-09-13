@@ -60,6 +60,8 @@ QString referencePageIcon(const QString& pageId)
         return QStringLiteral("network-transmit-receive"); // matches the Link Budget row
     if (pageId == QStringLiteral("ref-bands"))
         return QStringLiteral("accessories-character-map");
+    if (pageId == QStringLiteral("ref-receiver"))
+        return QStringLiteral("audio-card"); // matches the Receiver row
     if (pageId == QStringLiteral("ref-rcs"))
         return QStringLiteral("airplane-mode");
     if (pageId == QStringLiteral("ref-glossary"))

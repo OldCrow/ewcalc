@@ -360,6 +360,50 @@ constexpr Section kLinkSections[] = {
     {"Component Equations", kLinkComponents, std::size(kLinkComponents)},
 };
 
+// ── Receiver page (#82) ──────────────────────────────────────────────────────
+// Pins per docs/formulas.md: sensitivity per Adamy EW103 Sec 4.4 p. 97
+// (shares the Link Budget page's asset pair); cascade per Friis (1944,
+// sole source — Adamy's coverage is component-diagram based); DR vs SQNR
+// per the resolved fidelity docket (Adamy EW103 4.5.3 for DR; Walden for
+// SQNR, +1.76 dB = 10·log10(1.5) sine crest factor); SFDR per the
+// standard IP2/IP3 slope definitions (Razavi, Pozar — Adamy is
+// graphical); noise temperature per IEEE Std 686.
+
+constexpr Row kRxSensitivity[] = {
+    formula("Receiver sensitivity", "sensitivity",
+            "S = k T B F · SNRᵣ",
+            "S = −114 + 10 log₁₀ B(MHz) + NF + SNRᵣ  dBm"),
+    formula("Noise temperature ↔ NF", "noisetemp",
+            "Tₑ = (F − 1) · 290 K",
+            "NF = 10 log₁₀(1 + Tₑ/290)  dB"),
+    val("Passive loss", "a lossy line at temperature T adds Tₑ = (L − 1)·T"),
+};
+
+constexpr Row kRxCascade[] = {
+    formula("Cascaded noise figure (Friis)", "cascade",
+            "F = F₁ + (F₂−1)/G₁ + (F₃−1)/(G₁G₂) + ⋯"),
+    val("Domains", "cascade in linear F and G, then convert back to dB"),
+    val("Rule of thumb", "a low-noise, high-gain first stage sets the system NF"),
+};
+
+constexpr Row kRxDynamicRange[] = {
+    formula("Digital dynamic range", "ddr",
+            "DR = 20 log₁₀ 2ᴺ ≈ 6.02 N  dB"),
+    formula("SQNR (full-scale sine)", "sqnr",
+            "SQNR = 6.02 N + 1.76  dB"),
+    val("DR vs SQNR", "the 1.76 dB is 10 log₁₀(1.5), the sine's crest-factor term"),
+    formula("SFDR (2nd-order)", "sfdr2",
+            "SFDR₂ = (IIP₂ − S) / 2"),
+    formula("SFDR (3rd-order)", "sfdr3",
+            "SFDR₃ = 2 (IIP₃ − S) / 3"),
+};
+
+constexpr Section kReceiverSections[] = {
+    {"Sensitivity & Noise", kRxSensitivity,  std::size(kRxSensitivity)},
+    {"Cascaded Stages",     kRxCascade,      std::size(kRxCascade), "receiver-cascade"},
+    {"Dynamic Range",       kRxDynamicRange, std::size(kRxDynamicRange)},
+};
+
 // ── RCS page (#77) ───────────────────────────────────────────────────────────
 // Simple-shape maxima are optical-region (dimension ≫ λ) closed forms per
 // the standard radar literature (Skolnik, Knott); the regimes diagram is the
@@ -464,6 +508,8 @@ constexpr Page kPages[] = {
      kAntennaSections, std::size(kAntennaSections)},
     {"ref-link", "Link Budget", "One-way budget, margin, and components",
      kLinkSections, std::size(kLinkSections)},
+    {"ref-receiver", "Receiver", "Sensitivity, cascade, and dynamic range",
+     kReceiverSections, std::size(kReceiverSections)},
     {"ref-rcs", "RCS", "Simple-shape formulas and typical targets",
      kRcsSections, std::size(kRcsSections)},
 };
