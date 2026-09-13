@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 393 30" font-family="Georgia, 'Times New Roman', serif" font-size="15">
+  <!-- Jam-to-signal ratio, self-protection jamming (SPJ), standard (and only)
+       form: J/S = ERP_J - ERP_S + 71 + 20 log10 R(km) - 10 log10 sigma(m^2).
+       J/S both italic with upright solidus (per js-std.svg); ERP upright
+       with italic-capital subscripts J/S (channel labels, not indices);
+       sigma italic (radar cross section); (km)/(m^2)/dB small upright.
+       Mid-gray (#808080) like the diagram masters so one asset serves
+       light and dark themes. Alt text lives in the data layer.
+       NOTE: all formula masters use font-size 15 — see fspl-std.svg. -->
+  <g fill="#808080">
+    <text x="8" y="20"><tspan font-style="italic">J</tspan>/<tspan font-style="italic">S</tspan> = ERP<tspan font-style="italic" font-size="10" dy="4">J</tspan><tspan dy="-4">&#8203;</tspan> &#8722; ERP<tspan font-style="italic" font-size="10" dy="4">S</tspan><tspan dy="-4">&#8203;</tspan> + 71 + 20 log<tspan font-size="10" dy="4">10</tspan><tspan dy="-4">&#8203;</tspan> <tspan font-style="italic">R</tspan><tspan font-size="10">(km)</tspan> &#8722; 10 log<tspan font-size="10" dy="4">10</tspan><tspan dy="-4">&#8203;</tspan> <tspan font-style="italic">&#963;</tspan><tspan font-size="10">(m</tspan><tspan font-size="7" dy="-4">2</tspan><tspan dy="4">&#8203;</tspan><tspan font-size="10">)</tspan>  <tspan font-size="10">dB</tspan></text>
+  </g>
+</svg>
