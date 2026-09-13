@@ -21,7 +21,9 @@
 #include <QLabel>
 #include <QPixmap>
 #include <QPushButton>
+#include <QResizeEvent>
 #include <QScrollArea>
+#include <QSizePolicy>
 #include <QString>
 #include <QVBoxLayout>
 #include <QWidget>
@@ -101,30 +103,87 @@ void addRefRow(QFormLayout* form,
     form->addRow(displayText(label) + ':', cell);
 }
 
-/// Creates a QLabel showing a typeset formula image. The PNG is a 2x render
-/// (see scripts/render-diagrams.sh); setDevicePixelRatio(2.0) on the pixmap
-/// makes Qt lay it out — and draw it — at half its pixel size, so it reads
-/// crisp on hi-DPI screens without upscaling blur. @p altText (the Unicode
-/// plain-text equivalent from the data layer) becomes the label's accessible
-/// name and tooltip, standing in for the image for screen readers and on
-/// hover.
+/// A formula image that shrinks to the width it is given and is never drawn
+/// larger than its natural size. The PNG is a 2x render (see
+/// scripts/render-diagrams.sh), so natural size is half its pixel size, and
+/// drawing at that size keeps it crisp on hi-DPI screens.
+///
+/// This exists because a plain QLabel pixmap is a *fixed* size: the widest
+/// masters (the stand-off J/S line, the radar-range log form) then set the
+/// page's minimum width, and near the 980 px window minimum the Radar &
+/// Detection page clipped its text behind a horizontal scrollbar. A static
+/// cap only moves that threshold — the image has to respond to the width
+/// actually available. This matches what the other frontends already do:
+/// maxWidth + scaledToFit on macOS, MaxWidth + Stretch="Uniform" on WinUI.
+class FormulaImage : public QLabel
+{
+public:
+    FormulaImage(const QPixmap& source, const QString& altText)
+        : source_(source)
+    {
+        setAccessibleName(altText);
+        setToolTip(altText);
+        // Horizontally shrinkable, vertically driven by heightForWidth.
+        setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
+        redraw(naturalWidth());
+    }
+
+    bool  hasHeightForWidth() const override { return true; }
+    int   heightForWidth(int w) const override { return scaledSize(w).height(); }
+    QSize sizeHint() const override          { return scaledSize(naturalWidth()); }
+    // Allow the layout to squeeze the image rather than force the page wider.
+    QSize minimumSizeHint() const override   { return QSize(1, 1); }
+
+protected:
+    void resizeEvent(QResizeEvent* event) override
+    {
+        QLabel::resizeEvent(event);
+        redraw(width());
+    }
+
+private:
+    int naturalWidth() const
+    {
+        return qRound(source_.width() / source_.devicePixelRatio());
+    }
+
+    /// Logical size when drawn into @p w px — aspect-preserving, never past
+    /// natural size.
+    QSize scaledSize(int w) const
+    {
+        const int natural = naturalWidth();
+        const int target  = std::clamp(w, 1, natural);
+        const qreal scale = qreal(target) / natural;
+        return QSize(target,
+                     qMax(1, qRound(source_.height() / source_.devicePixelRatio() * scale)));
+    }
+
+    void redraw(int w)
+    {
+        const QSize target = scaledSize(w);
+        if (target == drawnAt_)
+            return;              // avoids a setPixmap/relayout loop
+        drawnAt_ = target;
+        QPixmap pix = (target.width() == naturalWidth())
+                          ? source_
+                          : source_.scaledToWidth(qRound(target.width() * source_.devicePixelRatio()),
+                                                  Qt::SmoothTransformation);
+        pix.setDevicePixelRatio(source_.devicePixelRatio());
+        setPixmap(pix);
+    }
+
+    QPixmap source_;
+    QSize   drawnAt_;
+};
+
+/// Creates the formula image for @p resourcePath. @p altText (the Unicode
+/// plain-text equivalent from the data layer) becomes the accessible name and
+/// tooltip, standing in for the image for screen readers and on hover.
 QLabel* makeFormulaImage(const QString& resourcePath, const QString& altText)
 {
-    auto* lbl = new QLabel;
     QPixmap pix(resourcePath);
     pix.setDevicePixelRatio(2.0);
-    // Cap wide masters (e.g. the stand-off J/S line) at 560 logical px so
-    // they cannot force the page wider than the pane; aspect-preserving,
-    // and narrower masters stay at natural size (never upscaled).
-    constexpr int kMaxLogicalWidth = 560;
-    if (pix.width() / 2 > kMaxLogicalWidth) {
-        pix = pix.scaledToWidth(kMaxLogicalWidth * 2, Qt::SmoothTransformation);
-        pix.setDevicePixelRatio(2.0);
-    }
-    lbl->setPixmap(pix);
-    lbl->setAccessibleName(altText);
-    lbl->setToolTip(altText);
-    return lbl;
+    return new FormulaImage(pix, altText);
 }
 
 /// Adds one "Formula" reference row to @p form: the standard and (if
