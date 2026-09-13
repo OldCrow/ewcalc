@@ -229,6 +229,13 @@ Open milestones are fully itemized here since they reflect actionable state.
     superseded by domain pages; QV = 3 cross-domain sections).
     PENDING PINS for the next book session: radar SPJ/SOJ J/S forms
     and the 71 constant (EW101 ch 9 / EW102 ch 5 family).
+  - ONCE-OVER + QV RETIREMENT 2026-09-12 (macOS session, 816e94c +
+    1e983c1): RCS moved before Radar & Detection; glossary EEP entry
+    now quotes Wegner Eq 24a; log-periodic band range normalized to
+    IEEE letters. Quick Values RETIRED and redistributed (Yagi gain
+    ladder + whip typicals → Antenna Types; Sidelobe Levels → its own
+    Antenna Types section; Noise Floor ladder → Receiver). Sidebar
+    opens at Glossary; thirteen pages, all domain-organized.
   - GATE (user, 2026-09-12): NO milestone PR until the user completes
     Linux and Windows UI passes over #82–#87. #82–#87 stay open on
     GitHub for the PR to close. BOTH PASSES ARE NOW DONE — Linux
@@ -566,7 +573,7 @@ Carried into the next session:
   without it, hence Recommends. Its RPM equivalent is deliberately not
   listed: the package name varies by distro and was not verified on a real
   Fedora/openSUSE box.
-- [OPEN 2026-09-13 — macOS only] Formula rows used a flow
+- [RESOLVED 2026-09-13 — closed on macOS, all three now aligned] Formula rows used a flow
   layout, not columns, on all three frontends (WinUI `StackPanel`
   Horizontal, Linux `QHBoxLayout` + stretch, macOS HStack): each row's log
   form started wherever its own standard form ended, so a multi-row
@@ -613,6 +620,14 @@ Carried into the next session:
   HStack → Grid/LazyVGrid) — neither builds on the Windows box, so they
   belong to a session on those machines, each with its own UI pass. Until
   then the three frontends differ on this detail.
+  FIXED ON MACOS 2026-09-13, same model in SwiftUI terms: each RefSection
+  computes a shared standard-form column width (widest standard form in
+  the section, capped 400 pt) at load; every formula row places its
+  standard form in a leading .frame(width: stdColWidth) so all log forms
+  in a section land on one left edge. FormulaImage takes the column as a
+  width cap (shrink-only, natural stays the ceiling), and the narrow-pane
+  ViewThatFits fallback still stacks the forms uncapped. Verified live on
+  this machine (the designated macOS UI-pass box); SwiftLint clean.
 - [RESOLVED 2026-09-09] The Windows box's VS 18 2026 install was damaged,
   not merely stale — a strictly worse case than the vswhere lag AGENTS.md
   records, and worth recognising if it recurs after an in-place upgrade.

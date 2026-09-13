@@ -18,6 +18,19 @@ private struct RefSection {
     let title: String
     let diagram: String?   ///< Optional #72 diagram base name (bundled PNG).
     let rows: [RefRow]
+    /// Shared standard-form column width (pt): the widest standard form in
+    /// this section, capped at 400 so one long master cannot blow the
+    /// column open. 0 when the section has no formula rows. Aligning the
+    /// forms per section is the cross-platform column model (Known Gaps —
+    /// fixed on WinUI/Linux first, same Grid-per-section idea).
+    let stdColWidth: CGFloat
+}
+
+/// Natural 1x display width of a bundled 2x formula PNG; 0 if missing.
+private func formulaNaturalWidth(_ name: String) -> CGFloat {
+    guard let path = Bundle.main.path(forResource: name, ofType: "png"),
+          let image = NSImage(byReferencingFile: path) else { return 0 }
+    return image.size.width / 2
 }
 
 private func str(_ ptr: UnsafePointer<CChar>?) -> String? {
@@ -44,9 +57,16 @@ private func loadSections(page: Int) -> [RefSection] {
                                    copyValue: str(ewp_ref_row_copy_value(page, sec, row))))
             }
         }
+        let stdWidths: [CGFloat] = rows.compactMap {
+            if case let .formula(_, svgBase, _, _) = $0 {
+                return formulaNaturalWidth("\(svgBase)-std")
+            }
+            return nil
+        }
         sections.append(RefSection(title: str(ewp_ref_section_title(page, sec)) ?? "",
                                    diagram: str(ewp_ref_section_diagram(page, sec)),
-                                   rows: rows))
+                                   rows: rows,
+                                   stdColWidth: min(stdWidths.max() ?? 0, 400)))
     }
     return sections
 }
@@ -109,18 +129,22 @@ private struct ValueRow: View {
 private struct FormulaImage: View {
     let name: String     ///< Bundle resource base name, e.g. "fspl-std".
     let text: String     ///< Unicode equivalent (alt text / tooltip / copy).
+    var widthCap: CGFloat?  ///< Extra cap (e.g. the section column).
 
     var body: some View {
         if let path = Bundle.main.path(forResource: name, ofType: "png"),
            let nsImage = NSImage(byReferencingFile: path) {
             // Natural size is 1x (2x asset at half pixel size) so glyphs
             // match across formulas; maxWidth + scaledToFit lets a WIDE
-            // master (e.g. the stand-off J/S line) shrink when the pane is
-            // narrower than its natural width — never upscale.
+            // master (e.g. the stand-off J/S line) shrink when the pane —
+            // or the section's shared column — is narrower than natural.
+            // Never upscale.
+            let natural = nsImage.size.width / 2
+            let maxW = min(natural, widthCap ?? natural)
             Image(nsImage: nsImage)
                 .resizable()
                 .scaledToFit()
-                .frame(maxWidth: nsImage.size.width / 2,
+                .frame(maxWidth: maxW,
                        maxHeight: nsImage.size.height / 2)
                 .accessibilityLabel(text)
                 .help(text)
@@ -138,6 +162,7 @@ private struct FormulaRow: View {
     let svgBase: String
     let stdText: String
     let logText: String?
+    let stdColWidth: CGFloat
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -146,22 +171,27 @@ private struct FormulaRow: View {
                 Spacer()
                 CopyButton(text: copyText, subject: name)
             }
-            // Standard | log side by side when they fit at natural size,
-            // stacked otherwise (images have fixed frames, so ViewThatFits
-            // gets honest widths to test against).
+            // Column model (parity with WinUI/Linux): every standard form
+            // in a section occupies the same leading column — sized to the
+            // section's widest, capped 400 — so all log forms land on one
+            // shared left edge instead of starting wherever each standard
+            // form ends. Falls back to stacked forms when the pane is too
+            // narrow for the columns.
             ViewThatFits(in: .horizontal) {
                 HStack(alignment: .center, spacing: 24) {
-                    FormulaImage(name: "\(svgBase)-std", text: stdText)
+                    FormulaImage(name: "\(svgBase)-std", text: stdText,
+                                 widthCap: stdColWidth)
+                        .frame(width: stdColWidth, alignment: .leading)
                     if let logText {
                         Divider()
-                        FormulaImage(name: "\(svgBase)-log", text: logText)
+                        FormulaImage(name: "\(svgBase)-log", text: logText, widthCap: nil)
                     }
                     Spacer(minLength: 0)
                 }
                 VStack(alignment: .leading, spacing: 8) {
-                    FormulaImage(name: "\(svgBase)-std", text: stdText)
+                    FormulaImage(name: "\(svgBase)-std", text: stdText, widthCap: nil)
                     if let logText {
-                        FormulaImage(name: "\(svgBase)-log", text: logText)
+                        FormulaImage(name: "\(svgBase)-log", text: logText, widthCap: nil)
                     }
                 }
             }
@@ -198,7 +228,8 @@ struct ReferenceView: View {
                             ValueRow(label: label, value: value, copyValue: copyValue)
                         case let .formula(name, svgBase, stdText, logText):
                             FormulaRow(name: name, svgBase: svgBase,
-                                       stdText: stdText, logText: logText)
+                                       stdText: stdText, logText: logText,
+                                       stdColWidth: section.stdColWidth)
                         }
                     }
                 }
