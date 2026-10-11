@@ -115,4 +115,78 @@ struct PartialBandResult {
     Mhz hop_range_bandwidth,
     Db  single_channel_js) noexcept;
 
+// ---------------------------------------------------------------------------
+// Radar jamming — self-protection (SPJ) and stand-off (SOJ)
+// ---------------------------------------------------------------------------
+//
+// The radar's skin return travels two ways (R⁴) while the jamming travels one
+// way (R²), so J/S at the radar receiver grows 20 dB per range decade for a
+// self-protection jammer. Both forms assume the jammer's ERP falls entirely
+// within the radar's receiver bandwidth; frequency cancels between the two
+// paths. The constant is 10·log₁₀(4π·10⁶) = 70.99 dB for R in km and σ in m²
+// (constants::radar_js_constant_db; Adamy rounds it to 71).
+//
+// Source: Adamy EW101 Sec 9.3 pp.187-191 (self-protection and stand-off
+// burnthrough) / EW102 Sec 5.8 family. Equation-level page pin pending a
+// book check (see docs/formulas.md).
+
+/// Self-protection jamming J/S at the radar receiver.
+///
+/// J/S = ERP_J − ERP_S + 70.99 + 20·log₁₀ R(km) − σ(dBsm)
+///
+/// @param radar_erp  Radar ERP toward the target (dBm)
+/// @param jammer_erp Jammer ERP toward the radar (dBm)
+/// @param range      Radar-to-target range; the jammer rides on the target (km)
+/// @param rcs        Target radar cross-section (dBsm)
+/// @return J/S at the radar receiver (dB)
+[[nodiscard]] Db self_protection_js(
+    Dbm  radar_erp,
+    Dbm  jammer_erp,
+    Km   range,
+    Dbsm rcs) noexcept;
+
+/// Self-protection burnthrough range — the range at which J/S falls to the
+/// threshold. Inside it the radar sees the target through the jamming.
+///
+/// R = 10^((J/S_thr − (ERP_J − ERP_S + 70.99 − σ)) / 20)  km
+[[nodiscard]] Km self_protection_burnthrough(
+    Dbm  radar_erp,
+    Dbm  jammer_erp,
+    Dbsm rcs,
+    Db   js_threshold) noexcept;
+
+/// Stand-off jamming J/S at the radar receiver.
+///
+/// J/S = ERP_J − ERP_S + G_S − G_M + 70.99 + 40·log₁₀ R_T − 20·log₁₀ R_J − σ
+///
+/// @param radar_erp     Radar ERP toward the target, mainbeam (dBm)
+/// @param jammer_erp    Jammer ERP toward the radar (dBm)
+/// @param target_range  Radar-to-target range R_T (km)
+/// @param jammer_range  Radar-to-jammer range R_J (km)
+/// @param mainbeam_gain Radar receive gain toward the target, G_M (dB)
+/// @param sidelobe_gain Radar receive gain toward the jammer, G_S (dB)
+/// @param rcs           Target radar cross-section (dBsm)
+/// @return J/S at the radar receiver (dB)
+[[nodiscard]] Db stand_off_js(
+    Dbm  radar_erp,
+    Dbm  jammer_erp,
+    Km   target_range,
+    Km   jammer_range,
+    Db   mainbeam_gain,
+    Db   sidelobe_gain,
+    Dbsm rcs) noexcept;
+
+/// Stand-off burnthrough range — the radar-to-target range at which J/S falls
+/// to the threshold, with the jammer held at jammer_range.
+///
+/// R_T = 10^((J/S_thr − (ERP_J − ERP_S + G_S − G_M + 70.99 − 20·log₁₀ R_J − σ)) / 40)  km
+[[nodiscard]] Km stand_off_burnthrough(
+    Dbm  radar_erp,
+    Dbm  jammer_erp,
+    Km   jammer_range,
+    Db   mainbeam_gain,
+    Db   sidelobe_gain,
+    Dbsm rcs,
+    Db   js_threshold) noexcept;
+
 } // namespace libew::jamming

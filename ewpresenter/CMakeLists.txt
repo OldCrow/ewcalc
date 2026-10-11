@@ -5,6 +5,7 @@ set(EWPRESENTER_SOURCES
     src/link_presenter.cpp
     src/receiver_presenter.cpp
     src/jamming_presenter.cpp
+    src/radar_jamming_presenter.cpp
     src/location_presenter.cpp
     src/radar_presenter.cpp
     src/detection_presenter.cpp

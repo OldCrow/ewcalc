@@ -381,6 +381,59 @@ EwpFieldError ewp_detection_bandwidth_error(EwpDetectionRef ref);
 EwpDetectionOutput ewp_detection_output(EwpDetectionRef ref);
 
 // ============================================================================
+// Radar Jamming (self-protection / stand-off)
+// ============================================================================
+
+#define EWP_RADAR_JAMMING_SELF_PROTECTION 0
+#define EWP_RADAR_JAMMING_STAND_OFF       1
+
+typedef struct EwpRadarJammingOutput {
+    char js_ratio_str[EWP_STR_MAX];
+    char js_margin_str[EWP_STR_MAX];
+    char burnthrough_range_str[EWP_STR_MAX];
+    char status_str[EWP_STR_MAX];
+    bool jammer_effective;
+    bool valid;
+} EwpRadarJammingOutput;
+
+typedef void* EwpRadarJammingRef;
+typedef void (*EwpRadarJammingCallback)(EwpRadarJammingOutput output, void* ctx);
+
+EwpRadarJammingRef ewp_radar_jamming_create(void);
+void               ewp_radar_jamming_destroy(EwpRadarJammingRef ref);
+
+void ewp_radar_jamming_set_geometry(EwpRadarJammingRef ref, int g);
+void ewp_radar_jamming_set_radar_erp(EwpRadarJammingRef ref, double dbm);
+void ewp_radar_jamming_set_jammer_erp(EwpRadarJammingRef ref, double dbm);
+void ewp_radar_jamming_set_target_rcs(EwpRadarJammingRef ref, double dbsm);
+void ewp_radar_jamming_set_target_range(EwpRadarJammingRef ref, double km);
+void ewp_radar_jamming_set_jammer_range(EwpRadarJammingRef ref, double km);
+void ewp_radar_jamming_set_mainbeam_gain(EwpRadarJammingRef ref, double db);
+void ewp_radar_jamming_set_sidelobe_gain(EwpRadarJammingRef ref, double db);
+void ewp_radar_jamming_set_js_threshold(EwpRadarJammingRef ref, double db);
+void ewp_radar_jamming_set_callback(EwpRadarJammingRef ref, EwpRadarJammingCallback cb, void* ctx);
+
+int           ewp_radar_jamming_geometry(EwpRadarJammingRef ref);
+double        ewp_radar_jamming_radar_erp(EwpRadarJammingRef ref);
+double        ewp_radar_jamming_jammer_erp(EwpRadarJammingRef ref);
+double        ewp_radar_jamming_target_rcs(EwpRadarJammingRef ref);
+double        ewp_radar_jamming_target_range(EwpRadarJammingRef ref);
+double        ewp_radar_jamming_jammer_range(EwpRadarJammingRef ref);
+double        ewp_radar_jamming_mainbeam_gain(EwpRadarJammingRef ref);
+double        ewp_radar_jamming_sidelobe_gain(EwpRadarJammingRef ref);
+double        ewp_radar_jamming_js_threshold(EwpRadarJammingRef ref);
+EwpFieldError ewp_radar_jamming_geometry_error(EwpRadarJammingRef ref);
+EwpFieldError ewp_radar_jamming_radar_erp_error(EwpRadarJammingRef ref);
+EwpFieldError ewp_radar_jamming_jammer_erp_error(EwpRadarJammingRef ref);
+EwpFieldError ewp_radar_jamming_target_rcs_error(EwpRadarJammingRef ref);
+EwpFieldError ewp_radar_jamming_target_range_error(EwpRadarJammingRef ref);
+EwpFieldError ewp_radar_jamming_jammer_range_error(EwpRadarJammingRef ref);
+EwpFieldError ewp_radar_jamming_mainbeam_gain_error(EwpRadarJammingRef ref);
+EwpFieldError ewp_radar_jamming_sidelobe_gain_error(EwpRadarJammingRef ref);
+EwpFieldError ewp_radar_jamming_js_threshold_error(EwpRadarJammingRef ref);
+EwpRadarJammingOutput ewp_radar_jamming_output(EwpRadarJammingRef ref);
+
+// ============================================================================
 // Doppler & Resolution
 // ============================================================================
 

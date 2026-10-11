@@ -345,6 +345,55 @@ void test_detection_validation() {
 }
 
 // ============================================================================
+// RadarJammingPresenter
+// ============================================================================
+
+void test_radar_jamming_defaults() {
+    // SPJ defaults: ERP_S 110 dBm, ERP_J 40 dBm, σ 10 dBsm, R 20 km, thr 0 dB.
+    // J/S = 40 − 110 + 70.992 + 26.021 − 10 = 17.013 dB; R_bt = 10^(9.0079/20).
+    ewpresenter::RadarJammingPresenter p;
+    ASSERT_TRUE(p.output().valid);
+    ASSERT_NEAR(p.output().js_ratio.value, 17.013, 1e-3);
+    ASSERT_NEAR(p.output().js_margin.value, 17.013, 1e-3);
+    ASSERT_NEAR(p.output().burnthrough_range.value, 2.82095, 1e-4);
+    ASSERT_TRUE(p.output().jammer_effective);
+    ASSERT_TRUE(p.output().status_str == "Jammer effective");
+    ASSERT_TRUE(p.output().burnthrough_range_str.find("km") != std::string::npos);
+}
+
+void test_radar_jamming_stand_off() {
+    // SOJ defaults: R_J 50 km, G_M 30 dB, G_S 0 dB.
+    // J/S = 40 − 110 + 0 − 30 + 70.992 + 52.041 − 33.979 − 10 = −20.946 dB.
+    ewpresenter::RadarJammingPresenter p;
+    p.set_geometry(ewpresenter::RadarJammingPresenter::kStandOff);
+    ASSERT_TRUE(p.output().valid);
+    ASSERT_NEAR(p.output().js_ratio.value, -20.946, 1e-3);
+    ASSERT_FALSE(p.output().jammer_effective);
+    ASSERT_TRUE(p.output().status_str == "Radar burns through");
+    // Burnthrough lies beyond the current target range here.
+    ASSERT_TRUE(p.output().burnthrough_range.value > 20.0);
+}
+
+void test_radar_jamming_validation() {
+    ewpresenter::RadarJammingPresenter p;
+    // A stand-off-only field does not block self-protection ...
+    p.set_jammer_range(0.0);
+    ASSERT_TRUE(p.output().valid);
+    // ... but does block stand-off.
+    p.set_geometry(ewpresenter::RadarJammingPresenter::kStandOff);
+    ASSERT_FALSE(p.output().valid);
+    ASSERT_TRUE(p.output().js_ratio_str == ewpresenter::kDash);
+    p.set_jammer_range(50.0);
+    ASSERT_TRUE(p.output().valid);
+    p.set_geometry(2);
+    ASSERT_FALSE(p.output().valid);
+    ASSERT_TRUE(p.geometry_error() != ewpresenter::FieldError::none);
+    p.set_geometry(0);
+    p.set_target_rcs(99.0);
+    ASSERT_FALSE(p.output().valid);
+}
+
+// ============================================================================
 // DopplerPresenter
 // ============================================================================
 
@@ -549,6 +598,9 @@ int main() {
     RUN_TEST(test_detection_default_values);
     RUN_TEST(test_detection_validation);
 
+    RUN_TEST(test_radar_jamming_defaults);
+    RUN_TEST(test_radar_jamming_stand_off);
+    RUN_TEST(test_radar_jamming_validation);
     RUN_TEST(test_doppler_default_valid);
     RUN_TEST(test_doppler_default_values);
     RUN_TEST(test_doppler_validation);

@@ -398,7 +398,7 @@ constexpr Row kSpjRadar[] = {
     formula("Self-protection J/S", "jsspj",
             "J/S = ERP_J − ERP_S + 71 + 20 log₁₀ R(km) − 10 log₁₀ σ(m²)  dB"),
     val("R⁴ vs R²", "the skin return falls off as R⁴ (two-way) but jamming only as R² (one-way) — J/S improves 20 dB per range decade, so burnthrough happens close-in"),
-    val("Constant 71", "collects 4π (11 dB) and the km / m² unit choices (60 dB)"),
+    val("Constant 71", "collects 4π (11 dB) and the km / m² unit choices (60 dB); exactly 70.99, which the Radar Jamming calculator uses"),
 };
 
 constexpr Row kSojRadar[] = {

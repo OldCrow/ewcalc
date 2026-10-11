@@ -272,6 +272,22 @@ void test_detection_invalid_swerling() {
 // DopplerPresenter
 // ============================================================================
 
+void test_radar_jamming_bridge() {
+    EwpRadarJammingRef ref = ewp_radar_jamming_create();
+    ASSERT_TRUE(ewp_radar_jamming_output(ref).valid);
+    ASSERT_TRUE(ewp_radar_jamming_geometry(ref) == EWP_RADAR_JAMMING_SELF_PROTECTION);
+    ASSERT_TRUE(ewp_radar_jamming_output(ref).jammer_effective);
+    ewp_radar_jamming_set_geometry(ref, EWP_RADAR_JAMMING_STAND_OFF);
+    EwpRadarJammingOutput out = ewp_radar_jamming_output(ref);
+    ASSERT_TRUE(out.valid);
+    ASSERT_FALSE(out.jammer_effective);
+    ASSERT_TRUE(out.burnthrough_range_str[0] != '\0');
+    ewp_radar_jamming_set_sidelobe_gain(ref, 99.0);
+    ASSERT_TRUE(ewp_radar_jamming_sidelobe_gain_error(ref) != EWP_FIELD_OK);
+    ASSERT_FALSE(ewp_radar_jamming_output(ref).valid);
+    ewp_radar_jamming_destroy(ref);
+}
+
 void test_doppler_defaults_valid() {
     EwpDopplerRef ref = ewp_doppler_create();
     ASSERT_TRUE(ewp_doppler_output(ref).valid);
@@ -428,6 +444,7 @@ int main() {
     RUN_TEST(test_radar_output_field_names);
     RUN_TEST(test_detection_defaults_valid);
     RUN_TEST(test_detection_invalid_swerling);
+    RUN_TEST(test_radar_jamming_bridge);
     RUN_TEST(test_doppler_defaults_valid);
     RUN_TEST(test_doppler_invalid_prf);
 

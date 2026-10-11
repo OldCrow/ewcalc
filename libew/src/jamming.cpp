@@ -98,4 +98,50 @@ PartialBandResult partial_band_jamming(
     return {Mhz{bw_jam}, duty};
 }
 
+// J/S terms independent of the range being solved for. SPJ is SOJ with the
+// jammer on the target: R_J = R_T and G_S = G_M.
+namespace {
+
+double spj_offset_db(Dbm radar_erp, Dbm jammer_erp, Dbsm rcs) noexcept {
+    return (jammer_erp - radar_erp).value + constants::radar_js_constant_db - rcs.value;
+}
+
+double soj_offset_db(Dbm radar_erp, Dbm jammer_erp, Km jammer_range,
+                     Db mainbeam_gain, Db sidelobe_gain, Dbsm rcs) noexcept {
+    return spj_offset_db(radar_erp, jammer_erp, rcs)
+         + sidelobe_gain.value - mainbeam_gain.value
+         - 20.0 * std::log10(jammer_range.value);
+}
+
+} // namespace
+
+Db self_protection_js(Dbm radar_erp, Dbm jammer_erp, Km range, Dbsm rcs) noexcept
+{
+    return Db{spj_offset_db(radar_erp, jammer_erp, rcs) + 20.0 * std::log10(range.value)};
+}
+
+Km self_protection_burnthrough(Dbm radar_erp, Dbm jammer_erp, Dbsm rcs,
+                               Db js_threshold) noexcept
+{
+    const double offset = spj_offset_db(radar_erp, jammer_erp, rcs);
+    return Km{std::pow(10.0, (js_threshold.value - offset) / 20.0)};
+}
+
+Db stand_off_js(Dbm radar_erp, Dbm jammer_erp, Km target_range, Km jammer_range,
+                Db mainbeam_gain, Db sidelobe_gain, Dbsm rcs) noexcept
+{
+    return Db{soj_offset_db(radar_erp, jammer_erp, jammer_range,
+                            mainbeam_gain, sidelobe_gain, rcs)
+              + 40.0 * std::log10(target_range.value)};
+}
+
+Km stand_off_burnthrough(Dbm radar_erp, Dbm jammer_erp, Km jammer_range,
+                         Db mainbeam_gain, Db sidelobe_gain, Dbsm rcs,
+                         Db js_threshold) noexcept
+{
+    const double offset = soj_offset_db(radar_erp, jammer_erp, jammer_range,
+                                        mainbeam_gain, sidelobe_gain, rcs);
+    return Km{std::pow(10.0, (js_threshold.value - offset) / 40.0)};
+}
+
 } // namespace libew::jamming

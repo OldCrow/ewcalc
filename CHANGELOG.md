@@ -4,6 +4,16 @@ All notable changes to this project are documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Added
+
+- Radar Jamming calculator (#88), its own sidebar tab on all three
+  frontends: self-protection and stand-off J/S at the radar receiver
+  (σ in dBsm, R⁴ skin return vs R² jamming path, stand-off mainbeam and
+  sidelobe gains), burnthrough range, and J/S margin against a threshold.
+  Uses the exact 70.99 dB constant; Adamy rounds it to 71.
+
 ## [v1.2.0] — 2026-09-13
 
 Reference Library release: thirteen data-driven reference pages on all
