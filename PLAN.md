@@ -333,6 +333,18 @@ Open milestones are fully itemized here since they reflect actionable state.
     reference page's Comms Jamming section.
     Selector note: geometry is a segmented picker (macOS) / combo box
     (Linux, WinUI) — no prior pane had an int-enum selector.
+    VERIFIED macOS 2026-10-11 (clean Release build, app driven via AX
+    scripting + screencapture): both modes compute the presenter-test
+    values, stand-off rows hide in SPJ mode, Geometry diagram swaps with
+    the mode, Comms Jamming shows only jamming-comms. Fixed from the pass:
+    stale "Jamming" pane title (macOS + WinUI; WinUI home card split into
+    Comms/Radar Jamming), stand-off diagram R_T/R_J subscripts (U+2C7C has
+    no glyph in the render font) and both radar diagrams' jamming labels
+    clipping their lines.
+    CI: dispatch runs on dev/v1.3.0 all green after the Linux Qt 6.2 fix
+    (eb7e600). A notary 403 "agreement missing or expired" right after
+    accepting Apple's agreement is propagation lag — it cleared on its own.
+    REMAINING for #88: Linux and Windows UI passes.
 
 ## GitHub Issues Without Milestone [DERIVED]
 Same leaner convention as milestones above: closed items are a count only

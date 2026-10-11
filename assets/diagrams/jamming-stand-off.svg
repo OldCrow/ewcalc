@@ -30,7 +30,7 @@
     <path d="M540 133 l-13 -3 l5 10 Z"/>
     <path d="M98 168 l13 3 l-5 -10 Z"/>
   </g>
-  <text x="320" y="112" text-anchor="middle" fill="#c49a3b">skin echo, R&#8348;: two-way</text>
+  <text x="320" y="112" text-anchor="middle" fill="#c49a3b">skin echo, R<tspan font-size="10" dy="3">T</tspan><tspan dy="-3">&#8203;</tspan>: two-way</text>
 
   <!-- Stand-off jammer, holding a racetrack roughly parallel to the target's track -->
   <g stroke="#808080" stroke-width="2" fill="none">
@@ -41,7 +41,7 @@
 
   <line x1="470" y1="258" x2="97" y2="180" stroke="#3b82c4" stroke-width="2.5"/>
   <path d="M97 180 l14 -2 l-3 10 Z" fill="#3b82c4"/>
-  <text x="255" y="246" text-anchor="middle" fill="#3b82c4">jamming, R&#11388;: one-way, off-boresight</text>
+  <text x="255" y="264" text-anchor="middle" fill="#3b82c4">jamming, R<tspan font-size="10" dy="3">J</tspan><tspan dy="-3">&#8203;</tspan>: one-way, off-boresight</text>
 
   <!-- Offset angle arc -->
   <path d="M150 165 A 58 58 0 0 1 148 192" stroke="#808080" stroke-width="1" fill="none"/>

@@ -33,7 +33,7 @@
   <!-- One-way jamming (blue, straight line) -->
   <line x1="558" y1="200" x2="97" y2="200" stroke="#3b82c4" stroke-width="2.5"/>
   <path d="M97 200 l13 -5 l0 10 Z" fill="#3b82c4"/>
-  <text x="323" y="222" text-anchor="middle" fill="#3b82c4">jamming: one-way, &#8733; 1/R&#178;</text>
+  <text x="323" y="254" text-anchor="middle" fill="#3b82c4">jamming: one-way, &#8733; 1/R&#178;</text>
 
   <!-- Range dimension -->
   <g stroke="#808080" stroke-width="1">

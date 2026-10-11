@@ -125,7 +125,7 @@ struct JammingView: View {
             DiagramSection(names: ["jamming-comms"])
         }
         .formStyle(.grouped)
-        .navigationTitle("Jamming")
+        .navigationTitle("Comms Jamming")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 CopyResultsButton(rows: resultsForCopy)
