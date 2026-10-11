@@ -7,8 +7,8 @@ namespace ewpresenter {
 
 DetectionPresenter::DetectionPresenter() noexcept { recompute(); }
 
-void DetectionPresenter::set_pd(double pd) noexcept {
-    update_field(pd, pd_, pd_err_, validate_bounds(pd, 0.1, 0.99));
+void DetectionPresenter::set_pd(double probability) noexcept {
+    update_field(probability, pd_, pd_err_, validate_bounds(probability, 0.1, 0.99));
 }
 void DetectionPresenter::set_pfa_exponent(double x) noexcept {
     update_field(x, pfa_exponent_, pfa_exponent_err_, validate_bounds(x, -9.0, -3.0));

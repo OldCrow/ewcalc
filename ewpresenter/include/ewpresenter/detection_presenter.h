@@ -45,7 +45,7 @@ public:
     // Detection inputs
     // -----------------------------------------------------------------------
     /// Probability of detection. Range: 0.1 – 0.99 (Shnidman validity range).
-    void set_pd(double pd) noexcept;
+    void set_pd(double probability) noexcept;
 
     /// False-alarm probability exponent x, Pfa = 10^x. Range: -9 – -3
     /// (Shnidman validity range).
