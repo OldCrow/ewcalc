@@ -126,9 +126,8 @@ struct PartialBandResult {
 // paths. The constant is 10·log₁₀(4π·10⁶) = 70.99 dB for R in km and σ in m²
 // (constants::radar_js_constant_db; Adamy rounds it to 71).
 //
-// Source: Adamy EW101 Sec 9.3.4 — the 71 constant (as −71) appears in its
-// burnthrough formula. The stand-off form is from EW101 Sec 9.3 pp.187-191,
-// subsection unconfirmed (see docs/formulas.md).
+// Source: Adamy EW101 Sec 9.2 (J/S), J/S ratio at Sec 9.2.3; burnthrough
+// at Sec 9.3.4, where the constant appears as −71 (see docs/formulas.md).
 
 /// Self-protection jamming J/S at the radar receiver.
 ///
