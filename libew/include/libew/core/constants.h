@@ -33,7 +33,7 @@ inline constexpr double four_pi_squared_db = 21.984;
 
 /// Radar-jamming J/S constant for R in km and σ in m²: 10*log10(4π * 1e6)
 /// = 10.99 dB (4π) + 60 dB (km² → m²) ≈ 70.99. Adamy rounds it to 71
-/// (EW101 Sec 9.2.3 J/S ratio; as −71 in the Sec 9.3.4 burnthrough formula).
+/// (EW101 Sec 9.2.3 J/S ratio; as −71 in the Sec 9.3.4 stand-off burnthrough).
 inline constexpr double radar_js_constant_db = 70.99210;
 
 /// dBi to dBd conversion: isotropic antenna is 2.15 dB above half-wave dipole

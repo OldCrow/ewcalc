@@ -389,10 +389,10 @@ constexpr Section kReceiverSections[] = {
 // Adamy EW102 Sec 5.9.1.2 / EW103 Sec 9.3.1 (the corrected v0.7.0
 // surplus-power behavior). Radar J/S forms (self-protection and
 // stand-off; the 71 dB constant = 11 dB for 4π + 60 dB for the km/m²
-// unit choices) are Adamy's: J/S is the topic of EW101 Sec 9.2, with
-// the J/S ratio at Sec 9.2.3; the constant reappears (as −71) in the
-// burnthrough formula at Sec 9.3.4. They match the geometries the two
-// #72 diagrams depict; the comms form keeps its own section with the R⁴-vs-R² contrast noted.
+// unit choices) are Adamy's: J/S ratio at EW101 Sec 9.2.3; burnthrough
+// at Sec 9.3.4 (stand-off, constant as −71) and Sec 9.3.5 (self-
+// protection). They match the geometries the two #72 diagrams depict;
+// the comms form keeps its own section with the R⁴-vs-R² contrast noted.
 
 constexpr Row kSpjRadar[] = {
     formula("Self-protection J/S", "jsspj",

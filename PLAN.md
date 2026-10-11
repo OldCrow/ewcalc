@@ -228,9 +228,9 @@ Open milestones are fully itemized here since they reflect actionable state.
     dilemma product; #87 completed the QV shrink (RCS and Eb/N₀ tables
     superseded by domain pages; QV = 3 cross-domain sections).
     PINNED 2026-10-11 (user, from the book): J/S is the topic of
-    EW101 Sec 9.2 — the J/S ratio at Sec 9.2.3 is the primary cite;
-    the constant reappears as −71 in the burnthrough formula at
-    Sec 9.3.4. Still open: whether Sec 9.2.3 also carries the SOJ form.
+    EW101 Sec 9.2, J/S ratio at Sec 9.2.3. Burnthrough: stand-off at
+    Sec 9.3.4 (its formula carries the constant as −71), self-
+    protection at Sec 9.3.5. No radar-jamming pins remain open.
   - ONCE-OVER + QV RETIREMENT 2026-09-12 (macOS session, 816e94c +
     1e983c1): RCS moved before Radar & Detection; glossary EEP entry
     now quotes Wegner Eq 24a; log-periodic band range normalized to
@@ -414,8 +414,8 @@ itemized since they're actionable.
   BUNDLE_VERSION int), Package.appxmanifest, AND
   frontend/linux/CMakeLists.txt project VERSION. The user disabled
   "Protect release tags" for the re-cut — confirm it is re-enabled.
-  Carried: radar J/S pinned (EW101 Sec 9.2.3 / 9.3.4, see #83
-  entry; SOJ subsection unconfirmed); v1.3.0 #88 radar jamming
+  Carried: radar J/S pinned (EW101 Sec 9.2.3, 9.3.4 SOJ, 9.3.5 SPJ;
+  see #83 entry); v1.3.0 #88 radar jamming
   calculator; full formula-fidelity
   sweep as future assurance work.
 
