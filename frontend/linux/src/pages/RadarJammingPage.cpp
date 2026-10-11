@@ -58,7 +58,7 @@ RadarJammingPage::RadarJammingPage(QWidget* parent)
         presenter_.js_threshold_db(), 1.0, 1, kGroup, QStringLiteral("js_threshold_db"),
         QStringLiteral("J/S at or above which the jamming is considered effective"));
 
-    // Stand-off-only rows; hidden in self-protection mode via setRowVisible().
+    // Stand-off-only rows; hidden in self-protection mode (see applyGeometryVisibility).
     auto* jamRangeSb = addSpinRow(radarForm, QStringLiteral("Jammer range (km)"), 0.01, 10000.0,
         presenter_.jammer_range_km(), 1.0, 2, kGroup, QStringLiteral("jammer_range_km"),
         QStringLiteral("Radar-to-jammer range (stand-off only)"));
@@ -108,11 +108,18 @@ RadarJammingPage::RadarJammingPage(QWidget* parent)
     outer->addWidget(scroll);
 
     // Shows/hides the stand-off-only rows and the matching diagram.
+    // QFormLayout::setRowVisible needs Qt 6.4; CI's Ubuntu 22.04 ships 6.2,
+    // so hide each row's label and field directly.
+    auto setRowShown = [radarForm](QWidget* field, bool shown) {
+        field->setVisible(shown);
+        if (QWidget* label = radarForm->labelForField(field))
+            label->setVisible(shown);
+    };
     auto applyGeometryVisibility = [=](int geometry) {
         const bool standOff = (geometry == Presenter::kStandOff);
-        radarForm->setRowVisible(jamRangeSb->parentWidget(), standOff);
-        radarForm->setRowVisible(gmSb->parentWidget(), standOff);
-        radarForm->setRowVisible(gsSb->parentWidget(), standOff);
+        setRowShown(jamRangeSb->parentWidget(), standOff);
+        setRowShown(gmSb->parentWidget(), standOff);
+        setRowShown(gsSb->parentWidget(), standOff);
         spDiagram->setVisible(!standOff);
         soDiagram->setVisible(standOff);
     };
