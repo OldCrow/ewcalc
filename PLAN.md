@@ -227,8 +227,10 @@ Open milestones are fully itemized here since they reflect actionable state.
     40·log₁₀ — prose corrected, code untouched); #86 carries the
     dilemma product; #87 completed the QV shrink (RCS and Eb/N₀ tables
     superseded by domain pages; QV = 3 cross-domain sections).
-    PENDING PINS for the next book session: radar SPJ/SOJ J/S forms
-    and the 71 constant (EW101 ch 9 / EW102 ch 5 family).
+    PINNED 2026-10-11 (user, from the book): the 71 constant appears
+    (as −71) in the burnthrough formula at EW101 Sec 9.3.4 — covers
+    the constant and the SPJ form. Still open: the SOJ form's exact
+    subsection within EW101 Sec 9.3.
   - ONCE-OVER + QV RETIREMENT 2026-09-12 (macOS session, 816e94c +
     1e983c1): RCS moved before Radar & Detection; glossary EEP entry
     now quotes Wegner Eq 24a; log-periodic band range normalized to
@@ -412,8 +414,8 @@ itemized since they're actionable.
   BUNDLE_VERSION int), Package.appxmanifest, AND
   frontend/linux/CMakeLists.txt project VERSION. The user disabled
   "Protect release tags" for the re-cut — confirm it is re-enabled.
-  Carried: PENDING PINS (radar SPJ/SOJ + 71, also on the reference
-  page); v1.3.0 #88 radar jamming calculator; full formula-fidelity
+  Carried: radar 71 + SPJ form now pinned (EW101 Sec 9.3.4, see
+  #83 entry); SOJ subsection still unconfirmed; v1.3.0 #88 radar jamming calculator; full formula-fidelity
   sweep as future assurance work.
 
 ## Session Close-out 2026-09-12 (Linux UI pass) [DERIVED]

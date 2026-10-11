@@ -389,9 +389,10 @@ constexpr Section kReceiverSections[] = {
 // Adamy EW102 Sec 5.9.1.2 / EW103 Sec 9.3.1 (the corrected v0.7.0
 // surplus-power behavior). Radar J/S forms (self-protection and
 // stand-off; the 71 dB constant = 11 dB for 4π + 60 dB for the km/m²
-// unit choices) are the standard Adamy radar-jamming equations
-// (EW101 ch 9 / EW102 ch 5 family — exact page pin pending a book
-// check), matching the geometries the two #72 diagrams depict; the
+// unit choices) are the standard Adamy radar-jamming equations: the
+// 71 constant (as −71) and the self-protection burnthrough form are
+// pinned to EW101 Sec 9.3.4; the stand-off form to EW101 Sec 9.3
+// (subsection unconfirmed). They match the geometries the two #72 diagrams depict; the
 // comms form keeps its own section with the R⁴-vs-R² contrast noted.
 
 constexpr Row kSpjRadar[] = {

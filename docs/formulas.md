@@ -147,7 +147,7 @@ LOS: `d = 10^((margin - 32.44 - 20*log10(f))/20)`; 2-ray: `d = 10^((margin - 120
 ### Radar jamming J/S — self-protection
 `J/S = ERP_J - ERP_S + 70.99 + 20*log10(R) - sigma_dBsm`.
 
-- Source: Adamy EW101 Sec. 9.3, pp. 187-191 (self-protection and stand-off burnthrough); EW102 Sec. 5.8 family. Equation-level page pin pending a book check.
+- Source: Adamy EW101 Sec. 9.3.4 — the 71 constant appears (as −71) in its burnthrough formula. Section 9.3 (pp. 187-191) covers self-protection and stand-off burnthrough together.
 - Constant: `10*log10(4π·10⁶) = 70.99` (4π plus the km² → m² conversion); Adamy rounds it to 71. libew keeps the exact value, as for the 4.122 horizon constant.
 - Assumptions: the jammer rides on the target, so radar receive gains cancel; jammer ERP lies entirely within the radar receiver bandwidth; frequency cancels between the two-way skin return (R⁴) and the one-way jamming path (R²).
 - Burnthrough: `R = 10^((J/S_thr - (ERP_J - ERP_S + 70.99 - sigma_dBsm))/20)`.
@@ -156,7 +156,7 @@ LOS: `d = 10^((margin - 32.44 - 20*log10(f))/20)`; 2-ray: `d = 10^((margin - 120
 ### Radar jamming J/S — stand-off
 `J/S = ERP_J - ERP_S + G_S - G_M + 70.99 + 40*log10(R_T) - 20*log10(R_J) - sigma_dBsm`.
 
-- Source: as for self-protection.
+- Source: Adamy EW101 Sec. 9.3, pp. 187-191; subsection not yet confirmed against the book.
 - Assumptions: `G_M` is the radar receive gain toward the target (mainbeam), `G_S` toward the jammer (usually a sidelobe); reduces to the self-protection form when `R_J = R_T` and `G_S = G_M`.
 - Burnthrough: radar-to-target range with the jammer held at `R_J`, `R_T = 10^((J/S_thr - (ERP_J - ERP_S + G_S - G_M + 70.99 - 20*log10(R_J) - sigma_dBsm))/40)`.
 - Units: ERP in dBm, gains in dB, ranges in km, sigma in dBsm.
