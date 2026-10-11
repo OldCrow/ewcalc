@@ -16,6 +16,7 @@
 #include "ewpresenter/antenna_presenter.h"
 #include "ewpresenter/detection_presenter.h"
 #include "ewpresenter/doppler_presenter.h"
+#include "ewpresenter/radar_jamming_presenter.h"
 
 // One typedef per presenter output type.
 typedef void (*PropagationCB)(void*, const ewpresenter::PropagationPresenter::Output*);
@@ -28,6 +29,7 @@ typedef void (*DigitalCB)    (void*, const ewpresenter::DigitalPresenter::Output
 typedef void (*AntennaCB)    (void*, const ewpresenter::AntennaPresenter::Output*);
 typedef void (*DetectionCB)  (void*, const ewpresenter::DetectionPresenter::Output*);
 typedef void (*DopplerCB)    (void*, const ewpresenter::DopplerPresenter::Output*);
+typedef void (*RadarJammingCB)(void*, const ewpresenter::RadarJammingPresenter::Output*);
 
 // Factory: returns a std::function<> that calls fn(cookie, &output).
 // The lambda captures only native types — safe inside #pragma managed(off).
@@ -79,4 +81,9 @@ MakeDetectionCB(DetectionCB fn, void* cookie) {
 inline std::function<void(const ewpresenter::DopplerPresenter::Output&)>
 MakeDopplerCB(DopplerCB fn, void* cookie) {
     return [fn, cookie](const ewpresenter::DopplerPresenter::Output& o) { fn(cookie, &o); };
+}
+
+inline std::function<void(const ewpresenter::RadarJammingPresenter::Output&)>
+MakeRadarJammingCB(RadarJammingCB fn, void* cookie) {
+    return [fn, cookie](const ewpresenter::RadarJammingPresenter::Output& o) { fn(cookie, &o); };
 }

@@ -71,6 +71,15 @@
                 </NavigationViewItem>
 
                 <NavigationViewItem
+                    x:Name="NavRadarJamming"
+                    Tag="RadarJamming"
+                    Content="Radar Jamming">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xEA18;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem
                     x:Name="NavLocation"
                     Tag="Location"
                     Content="Location">

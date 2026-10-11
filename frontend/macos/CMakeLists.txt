@@ -79,6 +79,7 @@ set(SWIFT_SOURCES
     app/Adapters/LinkAdapter.swift
     app/Adapters/ReceiverAdapter.swift
     app/Adapters/JammingAdapter.swift
+    app/Adapters/RadarJammingAdapter.swift
     app/Adapters/LocationAdapter.swift
     app/Adapters/RadarAdapter.swift
     app/Adapters/DetectionAdapter.swift
@@ -90,6 +91,7 @@ set(SWIFT_SOURCES
     app/Views/LinkView.swift
     app/Views/ReceiverView.swift
     app/Views/JammingView.swift
+    app/Views/RadarJammingView.swift
     app/Views/LocationView.swift
     app/Views/RadarView.swift
     app/Views/DetectionView.swift

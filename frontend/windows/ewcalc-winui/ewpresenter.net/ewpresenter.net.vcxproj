@@ -98,6 +98,7 @@
     <ClCompile Include="AntennaAdapter.cpp" />
     <ClCompile Include="DetectionAdapter.cpp" />
     <ClCompile Include="DopplerAdapter.cpp" />
+    <ClCompile Include="RadarJammingAdapter.cpp" />
     <ClCompile Include="RefData.cpp" />
   </ItemGroup>
 
@@ -115,6 +116,7 @@
     <ClInclude Include="AntennaAdapter.h" />
     <ClInclude Include="DetectionAdapter.h" />
     <ClInclude Include="DopplerAdapter.h" />
+    <ClInclude Include="RadarJammingAdapter.h" />
   </ItemGroup>
 
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

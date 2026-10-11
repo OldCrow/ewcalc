@@ -1,5 +1,5 @@
 // Views/PageCodeBehinds.cs
-// Code-behind for Link, Jamming, Location, Radar, Detection, Doppler, Receiver, Home, Digital, and Antenna pages.
+// Code-behind for Link, Jamming, Radar Jamming, Location, Radar, Detection, Doppler, Receiver, Home, Digital, and Antenna pages.
 // (Reference has its own file — Views/ReferencePage.xaml.cs — see #73.)
 using EwCalc.Helpers;
 using EwCalc.ViewModels;
@@ -84,6 +84,41 @@ public sealed partial class JammingPage : Page
     private void RxGainSignalBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)  { if (!double.IsNaN(e.NewValue)) ViewModel.SetRxGainSignal(e.NewValue);   }
     private void RxGainJammerBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)  { if (!double.IsNaN(e.NewValue)) ViewModel.SetRxGainJammer(e.NewValue);   }
     private void JsThresholdBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)   { if (!double.IsNaN(e.NewValue)) ViewModel.SetJsThreshold(e.NewValue);    }
+
+    private void CopyResultsButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        => ClipboardHelper.CopyText(ViewModel.BuildResultsText());
+}
+
+public sealed partial class RadarJammingPage : Page
+{
+    public RadarJammingViewModel ViewModel { get; } = new();
+    public RadarJammingPage() {
+        InitializeComponent();
+        RadarErpBox    .Setup(-100.0,   200.0);
+        JammerErpBox   .Setup(-100.0,   200.0);
+        TargetRcsBox   .Setup(-40.0,     60.0);
+        TargetRangeBox .Setup(0.01,   10000.0);
+        JammerRangeBox .Setup(0.01,   10000.0);
+        MainbeamGainBox.Setup(-30.0,     60.0);
+        SidelobeGainBox.Setup(-30.0,     60.0);
+        JsThresholdBox .Setup(-30.0,     30.0);
+    }
+
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        ViewModel.Dispose();
+        base.OnNavigatedFrom(e);
+    }
+
+    private void GeometryBox_SelectionChanged(object s, SelectionChangedEventArgs e)           { if (GeometryBox.SelectedIndex >= 0) ViewModel.SetGeometry(GeometryBox.SelectedIndex); }
+    private void RadarErpBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)       { if (!double.IsNaN(e.NewValue)) ViewModel.SetRadarErp(e.NewValue);      }
+    private void JammerErpBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)      { if (!double.IsNaN(e.NewValue)) ViewModel.SetJammerErp(e.NewValue);     }
+    private void TargetRcsBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)      { if (!double.IsNaN(e.NewValue)) ViewModel.SetTargetRcs(e.NewValue);     }
+    private void TargetRangeBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)    { if (!double.IsNaN(e.NewValue)) ViewModel.SetTargetRange(e.NewValue);   }
+    private void JammerRangeBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)    { if (!double.IsNaN(e.NewValue)) ViewModel.SetJammerRange(e.NewValue);   }
+    private void MainbeamGainBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)   { if (!double.IsNaN(e.NewValue)) ViewModel.SetMainbeamGain(e.NewValue);  }
+    private void SidelobeGainBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)   { if (!double.IsNaN(e.NewValue)) ViewModel.SetSidelobeGain(e.NewValue);  }
+    private void JsThresholdBox_ValueChanged(NumberBox s, NumberBoxValueChangedEventArgs e)    { if (!double.IsNaN(e.NewValue)) ViewModel.SetJsThreshold(e.NewValue);   }
 
     private void CopyResultsButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         => ClipboardHelper.CopyText(ViewModel.BuildResultsText());
