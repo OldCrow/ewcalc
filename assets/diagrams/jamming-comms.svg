@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" font-family="system-ui, sans-serif" font-size="14">
+  <!-- Communications jamming geometry: the desired signal and the jamming
+       each reach the victim receiver over their own one-way path, so J/S
+       depends on the two path losses, not on a two-way echo. Theme-neutral
+       palette: mid-gray structure (#808080), accent blue jamming (#3b82c4),
+       accent amber desired signal (#c49a3b). -->
+
+  <!-- Signal transmitter (left): mast with whip -->
+  <g stroke="#808080" stroke-width="2" fill="none">
+    <line x1="75" y1="250" x2="75" y2="205"/>
+    <line x1="58" y1="250" x2="92" y2="250"/>
+    <line x1="68" y1="230" x2="82" y2="230"/>
+  </g>
+  <circle cx="75" cy="202" r="4" fill="#c49a3b"/>
+  <text x="75" y="272" text-anchor="middle" fill="#808080">Transmitter</text>
+
+  <!-- Victim receiver (centre): mast with whip -->
+  <g stroke="#808080" stroke-width="2" fill="none">
+    <line x1="330" y1="250" x2="330" y2="205"/>
+    <line x1="313" y1="250" x2="347" y2="250"/>
+    <line x1="323" y1="230" x2="337" y2="230"/>
+  </g>
+  <circle cx="330" cy="202" r="4" fill="#808080"/>
+  <text x="330" y="272" text-anchor="middle" fill="#808080">Receiver</text>
+
+  <!-- Jammer (right), elevated: airborne platform -->
+  <g stroke="#808080" stroke-width="2" fill="none">
+    <path d="M0 -18 L10 12 L0 5 L-10 12 Z" transform="translate(568,110) rotate(-90)"/>
+  </g>
+  <circle cx="568" cy="110" r="5" fill="#3b82c4"/>
+  <text x="568" y="85" text-anchor="middle" fill="#808080">Jammer</text>
+
+  <!-- Desired signal: one-way, transmitter to receiver -->
+  <line x1="82" y1="202" x2="318" y2="202" stroke="#c49a3b" stroke-width="2.5"/>
+  <path d="M318 202 l-13 -5 l0 10 Z" fill="#c49a3b"/>
+  <text x="200" y="190" text-anchor="middle" fill="#c49a3b">signal: one-way, loss L<tspan font-size="10" dy="3">S</tspan><tspan dy="-3">&#8203;</tspan></text>
+
+  <!-- Jamming: one-way, jammer to receiver -->
+  <line x1="560" y1="114" x2="340" y2="198" stroke="#3b82c4" stroke-width="2.5"/>
+  <path d="M340 198 l9 -10 l4 9 Z" fill="#3b82c4"/>
+  <text x="525" y="108" text-anchor="end" fill="#3b82c4">jamming: one-way, loss L<tspan font-size="10" dy="3">J</tspan><tspan dy="-3">&#8203;</tspan></text>
+
+  <!-- Range dimensions -->
+  <g stroke="#808080" stroke-width="1">
+    <line x1="75" y1="285" x2="328" y2="285"/>
+    <line x1="75" y1="280" x2="75" y2="290"/>
+    <line x1="328" y1="280" x2="328" y2="290"/>
+    <line x1="332" y1="285" x2="568" y2="285"/>
+    <line x1="332" y1="280" x2="332" y2="290"/>
+    <line x1="568" y1="280" x2="568" y2="290"/>
+  </g>
+  <text x="200" y="281" text-anchor="middle" fill="#808080">d<tspan font-size="10" dy="3">S</tspan><tspan dy="-3">&#8203;</tspan></text>
+  <text x="450" y="281" text-anchor="middle" fill="#808080">d<tspan font-size="10" dy="3">J</tspan><tspan dy="-3">&#8203;</tspan></text>
+
+  <!-- Takeaway -->
+  <text x="320" y="40" text-anchor="middle" fill="#808080">Both paths are one-way &#8212; J/S is set by the two path losses;</text>
+  <text x="320" y="58" text-anchor="middle" fill="#808080">burnthrough is where the signal path is short enough to win</text>
+</svg>

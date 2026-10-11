@@ -127,6 +127,7 @@ set(DIAGRAM_PNGS
     "${DIAGRAM_PNG_DIR}/rcs-regions.png"
     "${DIAGRAM_PNG_DIR}/jamming-self-protection.png"
     "${DIAGRAM_PNG_DIR}/jamming-stand-off.png"
+    "${DIAGRAM_PNG_DIR}/jamming-comms.png"
     "${DIAGRAM_PNG_DIR}/loc-aoa-cep.png"
     "${DIAGRAM_PNG_DIR}/loc-eep-cep.png"
     "${DIAGRAM_PNG_DIR}/prop-horizon-bulge.png"

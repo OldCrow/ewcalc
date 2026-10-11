@@ -312,6 +312,25 @@ Open milestones are fully itemized here since they reflect actionable state.
     Jamming" on dev/v1.2.0 the same day. Radar J/S forms + 71 dB
     constant need physical-book pins (also owed on their v1.2.0
     reference-page copies).
+    IN PROGRESS 2026-10-11 on dev/v1.3.0 (milestone branch, same
+    one-PR model as v1.2.0). Core DONE: libew self_protection_js /
+    stand_off_js + burnthrough inversions, RadarJammingPresenter
+    (int geometry 0 = SPJ / 1 = SOJ; SOJ-only fields never block an
+    SPJ result), ewp_radar_jamming_* bridge, tests 14/14.
+    DECIDED: one pane with a geometry picker (each mode maps to its
+    existing #72 diagram); no frequency input (it cancels); constant
+    kept exact at 70.99 (Adamy rounds to 71, same precedent as 4.122).
+    Frontend panes DONE on all three. Verified here: macOS app builds
+    warning-free + SwiftLint clean; the Qt6 frontend also builds on
+    this Mac (Qt 6.11.2 present) under -Werror + lint-linux.sh clean;
+    WinUI uncompiled. NOT yet seen on screen on any platform — each
+    needs a UI pass (macOS here, Linux VM, Windows box).
+    DECIDED (user, 2026-10-11): diagrams aligned to their calculators —
+    the two radar diagrams now live only on Radar Jamming; Comms Jamming
+    got a new one-way geometry diagram (jamming-comms), also on the
+    reference page's Comms Jamming section.
+    Selector note: geometry is a segmented picker (macOS) / combo box
+    (Linux, WinUI) — no prior pane had an int-enum selector.
 
 ## GitHub Issues Without Milestone [DERIVED]
 Same leaner convention as milestones above: closed items are a count only

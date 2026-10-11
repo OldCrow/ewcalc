@@ -435,7 +435,7 @@ constexpr Row kPartialBand[] = {
 constexpr Section kJammingSections[] = {
     {"Radar Jamming — Self-Protection", kSpjRadar,    std::size(kSpjRadar),    "jamming-self-protection"},
     {"Radar Jamming — Stand-Off",       kSojRadar,    std::size(kSojRadar),    "jamming-stand-off"},
-    {"Comms Jamming",                   kJsComms,     std::size(kJsComms)},
+    {"Comms Jamming",                   kJsComms,     std::size(kJsComms),     "jamming-comms"},
     {"Burnthrough (one-way link)",      kBurnthrough, std::size(kBurnthrough)},
     {"Partial-Band Jamming",            kPartialBand, std::size(kPartialBand)},
 };
