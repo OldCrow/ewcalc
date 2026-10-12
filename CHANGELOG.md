@@ -6,13 +6,41 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [v1.3.0] — 2026-10-11
+
+Radar Jamming release: a new calculator for self-protection and
+stand-off radar jamming on all three frontends.
+
 ### Added
 
 - Radar Jamming calculator (#88), its own sidebar tab on all three
   frontends: self-protection and stand-off J/S at the radar receiver
   (σ in dBsm, R⁴ skin return vs R² jamming path, stand-off mainbeam and
   sidelobe gains), burnthrough range, and J/S margin against a threshold.
-  Uses the exact 70.99 dB constant; Adamy rounds it to 71.
+  Uses the exact 70.99 dB constant; Adamy rounds it to 71. A geometry
+  picker selects the mode, shows the stand-off inputs only when needed,
+  and swaps the matching diagram.
+- Comms Jamming geometry diagram (`jamming-comms`): both one-way paths,
+  on the Comms Jamming pane and its reference section.
+
+### Changed
+
+- The two radar jamming diagrams moved from Comms Jamming to Radar
+  Jamming, so each calculator shows only its own geometry.
+- The 71 dB constant and the radar J/S and burnthrough forms are now
+  cited to Adamy EW101 Sec 9.2.3, 9.3.4 and 9.3.5.
+
+### Fixed
+
+- Partial-band jamming: the optimum bandwidth now spends only the J/S
+  margin over the threshold (identical at the 0 dB default), and below
+  the threshold it reports "J/S below threshold" / "N/A" instead of a
+  bandwidth shown as 0.000. Checked against EW102 Sec 5.9.1.2.
+- Standard-form formulas shown without a log form beside them are no
+  longer shrunk to fit a shared column (macOS, Linux).
+- Linux: `&` in group titles ("Radar & jammer", "Doppler & ambiguity")
+  is no longer swallowed as a mnemonic marker; stand-off rows hide
+  correctly on Qt 6.2; the selected sidebar icon is no longer washed out.
 
 ## [v1.2.0] — 2026-09-13
 
@@ -398,7 +426,10 @@ Architecture review remediation.
 - Antenna calculator across all platforms.
 - Knife-edge diffraction and SNR↔Eb/N₀ wired up.
 
-[Unreleased]: ../../compare/v1.0.2...HEAD
+[Unreleased]: ../../compare/v1.3.0...HEAD
+[v1.3.0]: ../../releases/tag/v1.3.0
+[v1.2.0]: ../../releases/tag/v1.2.0
+[v1.1.0]: ../../releases/tag/v1.1.0
 [v1.0.2]: ../../releases/tag/v1.0.2
 [v1.0.1]: ../../releases/tag/v1.0.1
 [v1.0.0]: ../../releases/tag/v1.0.0

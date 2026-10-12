@@ -145,14 +145,20 @@ notarization (see `frontend/macos/CMakeLists.txt` and the `build-macos` job in
 `.github/workflows/ci.yml`). There is no Store-specific step here — Microsoft
 Store submission re-signs the package with its own certificate at ingestion.
 
-## Current state (v1.2.0)
+## Current state (v1.3.0)
 
-Ten calculator pages plus the thirteen-page reference library at full
+Eleven calculator pages plus the thirteen-page reference library at full
 parity with macOS and Linux: `RefData` (C++/CLI) snapshots
 `ewpresenter::refdata`, `ReferencePage` renders any page by navigation
 parameter, and `MainWindow` enumerates the pages into the nav pane.
 Formula images sit in per-section Grid columns inside DownOnly Viewboxes;
 section headers preserve case-sensitive notation when uppercased.
+
+v1.3.0 (radar jamming, #88): new `RadarJammingAdapter` (C++/CLI),
+`RadarJammingViewModel` and `RadarJammingPage.xaml` (self-protection and
+stand-off J/S, J/S margin, burnthrough range), with a geometry combo box that
+shows or hides the stand-off inputs and swaps the diagram; the home page
+splits its jamming card into Comms and Radar Jamming.
 
 ## Completed in v1.1.0
 

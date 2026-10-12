@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 A multi-platform electronic warfare engineering calculator covering antenna analysis,
-RF propagation, link budgets, receiver performance, jamming analysis, emitter location,
+RF propagation, link budgets, receiver performance, communications and radar jamming, emitter location,
 radar (range equation, detection statistics, Doppler & resolution), and spread-spectrum
 communications — implementing the standard formulas, inspired by and audited against
 the EW101 series by David Adamy.
@@ -41,14 +41,14 @@ Layered, with clean separation:
 | `antenna` | ERP, gain conversions, beamwidth |
 | `link` | One-way link budget, effective range |
 | `receiver` | Sensitivity, cascaded NF (Friis), SFDR, digital DR and SQNR, noise temperature conversions |
-| `jamming` | J/S ratio, burnthrough range, partial-band optimization |
+| `jamming` | Comms J/S ratio, burnthrough range, partial-band optimization; radar self-protection and stand-off J/S and burnthrough range |
 | `location` | CEP from AOA bearing error, TDOA timing error, and EEP |
 | `radar` | Radar range equation, pulse compression, coherent integration gain, LPI advantage; detection statistics (Albersheim, Shnidman with Swerling 0–4, fluctuation loss, dwell/hits per scan, false-alarm rate); Doppler shift, unambiguous range/velocity, blind speed, range and cross-range resolution |
 | `digital` | Eb/N₀ ↔ SNR conversion (both directions), DSSS process gain, jamming margin, required J/S |
 
 ## ewpresenter
 
-Ten presenters wrap the `libew` modules for use by any view layer:
+Eleven presenters wrap the `libew` modules for use by any view layer:
 
 | Presenter | Inputs | Key outputs |
 |-----------|--------|-------------|
@@ -56,7 +56,8 @@ Ten presenters wrap the `libew` modules for use by any view layer:
 | `AntennaPresenter` | gain, az/el beamwidth, Tx power, frequency | ERP, beamwidth from gain, gain from beamwidth, wavelength |
 | `LinkPresenter` | Tx power/gain, Rx gain, geometry, sensitivity | Received power, link margin, effective range |
 | `ReceiverPresenter` | Bandwidth, NF, SNR, stage chain, ADC bits | Sensitivity, cascaded NF, system noise temp, SFDR, digital DR, SQNR |
-| `JammingPresenter` | Signal/jammer ERP, geometry, frequency, J/S threshold | J/S ratio, burnthrough range, partial-band optimum BW (N/A when hop range = 0) |
+| `JammingPresenter` | Signal/jammer ERP, geometry, frequency, J/S threshold | J/S ratio, burnthrough range, partial-band optimum BW (N/A when hop range = 0 or J/S is below the threshold) |
+| `RadarJammingPresenter` | Geometry (self-protection / stand-off), radar and jammer ERP, RCS, target range, J/S threshold; stand-off jammer range and mainbeam/sidelobe gains | J/S ratio, J/S margin, burnthrough range, status |
 | `LocationPresenter` | Bearing error, range, TDOA timing error, EEP semi-axes | CEP (AOA, TDOA, and EEP methods) |
 | `RadarPresenter` | Tx power, gain, RCS, frequency, NF, TB product | Max range, two-way loss, PC gain, coherent integration gain, LPI advantage |
 | `DetectionPresenter` | Pd, Pfa exponent, pulses, Swerling case, beamwidth, scan rate, PRF, bandwidth | Required SNR (Shnidman and Albersheim), fluctuation loss, dwell time, hits per scan, false-alarm rate |
@@ -128,10 +129,10 @@ for how to report it privately.
 ## Current status
 
 All three platform frontends — Windows (WinUI 3), macOS (SwiftUI), and Linux
-(Qt6 Widgets) — are feature-complete across all ten calculators plus a
+(Qt6 Widgets) — are feature-complete across all eleven calculators plus a
 thirteen-page reference library (glossary, units, frequency bands, and a
 formulas-and-tables page per calculator domain), with collapsible
-geometry-diagram sections on six of the calculator panes. See
+geometry-diagram sections on seven of the calculator panes. See
 [`CHANGELOG.md`](CHANGELOG.md) for release history.
 
 ## License

@@ -21,6 +21,7 @@ frontend/linux/
         ├── LinkPage.h/.cpp
         ├── ReceiverPage.h/.cpp
         ├── JammingPage.h/.cpp
+        ├── RadarJammingPage.h/.cpp
         ├── LocationPage.h/.cpp
         ├── RadarPage.h/.cpp
         ├── DetectionPage.h/.cpp
@@ -98,11 +99,17 @@ per-field validation UI (#41). Cross-field checks that clamping can't express
 chain's aggregate stage-NF error — are surfaced the same way on the affected
 field(s).
 
-## Current state (v1.2.0)
+## Current state (v1.3.0)
 
-Ten calculator pages plus the thirteen-page reference library, all
+Eleven calculator pages plus the thirteen-page reference library, all
 rendered from `ewpresenter::refdata` (`ReferencePage` takes a page index;
 `MainWindow` enumerates the pages into the sidebar).
+
+v1.3.0 (radar jamming, #88): new `RadarJammingPage` (self-protection and
+stand-off J/S, J/S margin, burnthrough range) with a geometry combo box that
+shows or hides the stand-off inputs and swaps the geometry diagram; the
+Comms Jamming page gets its own one-way diagram; `&` in group titles is
+escaped so it is no longer eaten as a mnemonic.
 
 v1.2.0 (reference library, #73–#87): data-driven `ReferencePage` with
 typeset formula images (`formulas.qrc`), per-section QGridLayout formula

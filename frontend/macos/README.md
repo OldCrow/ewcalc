@@ -15,13 +15,14 @@ frontend/macos/
 │   ├── Info.plist           Bundle metadata; version pulled from CMake via MARKETING_VERSION
 │   │
 │   ├── Adapters/
-│   │   ├── EwCalcStore.swift      Owns all ten adapter instances for the app lifetime
+│   │   ├── EwCalcStore.swift      Owns all eleven adapter instances for the app lifetime
 │   │   ├── SavedInputs.swift      Versioned UserDefaults persistence snapshot
 │   │   ├── PropagationAdapter.swift
 │   │   ├── AntennaAdapter.swift
 │   │   ├── LinkAdapter.swift
 │   │   ├── ReceiverAdapter.swift
 │   │   ├── JammingAdapter.swift
+│   │   ├── RadarJammingAdapter.swift
 │   │   ├── LocationAdapter.swift
 │   │   ├── RadarAdapter.swift
 │   │   ├── DetectionAdapter.swift
@@ -35,6 +36,7 @@ frontend/macos/
 │       ├── LinkView.swift
 │       ├── ReceiverView.swift
 │       ├── JammingView.swift
+│       ├── RadarJammingView.swift
 │       ├── LocationView.swift
 │       ├── RadarView.swift
 │       ├── DetectionView.swift
@@ -117,11 +119,17 @@ Each Swift adapter class wraps the C bridge for one presenter. It:
 adding a new Swift file, add it to the `SWIFT_SOURCES` list in
 `frontend/macos/CMakeLists.txt`.
 
-## Current state (v1.2.0)
+## Current state (v1.3.0)
 
-Ten calculator pages plus the thirteen-page reference library, all
+Eleven calculator pages plus the thirteen-page reference library, all
 rendered from the data layer via the `ewp_ref_*` bridge (`ReferenceView`
 takes a page index; `ContentView` enumerates pages into the sidebar).
+
+v1.3.0 (radar jamming, #88): new `RadarJammingAdapter` and
+`RadarJammingView` over the `ewp_radar_jamming_*` bridge (self-protection
+and stand-off J/S, J/S margin, burnthrough range), with a segmented geometry
+picker that shows or hides the stand-off inputs and swaps the diagram; Comms
+Jamming gets its own one-way diagram.
 
 v1.2.0 (reference library, #73–#87): bridge-driven `ReferenceView` with
 typeset formula images at shared per-section column widths, section
