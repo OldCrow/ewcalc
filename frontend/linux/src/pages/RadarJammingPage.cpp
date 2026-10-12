@@ -62,10 +62,10 @@ RadarJammingPage::RadarJammingPage(QWidget* parent)
     auto* jamRangeSb = addSpinRow(radarForm, QStringLiteral("Jammer range (km)"), 0.01, 10000.0,
         presenter_.jammer_range_km(), 1.0, 2, kGroup, QStringLiteral("jammer_range_km"),
         QStringLiteral("Radar-to-jammer range (stand-off only)"));
-    auto* gmSb = addSpinRow(radarForm, QStringLiteral("Mainbeam gain G_M (dB)"), -30.0, 60.0,
+    auto* gmSb = addSpinRow(radarForm, QStringLiteral("Mainbeam gain Gₘ (dB)"), -30.0, 60.0,
         presenter_.mainbeam_gain_db(), 1.0, 1, kGroup, QStringLiteral("mainbeam_gain_db"),
         QStringLiteral("Radar receive gain toward the target (stand-off only)"));
-    auto* gsSb = addSpinRow(radarForm, QStringLiteral("Sidelobe gain G_S (dB)"), -30.0, 60.0,
+    auto* gsSb = addSpinRow(radarForm, QStringLiteral("Sidelobe gain Gₛ (dB)"), -30.0, 60.0,
         presenter_.sidelobe_gain_db(), 1.0, 1, kGroup, QStringLiteral("sidelobe_gain_db"),
         QStringLiteral("Radar receive gain toward the jammer (stand-off only)"));
 

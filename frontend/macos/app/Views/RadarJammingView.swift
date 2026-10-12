@@ -77,11 +77,11 @@ struct RadarJammingView: View {
                              in: 0.01...10000, step: 1, decimals: 2,
                              error: adapter.jammerRangeError,
                              help: "Radar-to-jammer range (stand-off only)") { adapter.setJammerRange($0) }
-                    InputRow("Mainbeam gain G_M", unit: "dB", value: $mainbeamGain,
+                    InputRow("Mainbeam gain Gₘ", unit: "dB", value: $mainbeamGain,
                              in: -30...60,
                              error: adapter.mainbeamGainError,
                              help: "Radar antenna gain toward the target (mainbeam) — stand-off only") { adapter.setMainbeamGain($0) }
-                    InputRow("Sidelobe gain G_S", unit: "dB", value: $sidelobeGain,
+                    InputRow("Sidelobe gain Gₛ", unit: "dB", value: $sidelobeGain,
                              in: -30...60,
                              error: adapter.sidelobeGainError,
                              help: "Radar antenna gain toward the jammer (sidelobe) — stand-off only") { adapter.setSidelobeGain($0) }

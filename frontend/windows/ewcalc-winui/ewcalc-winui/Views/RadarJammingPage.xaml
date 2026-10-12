@@ -108,7 +108,7 @@
                                    BorderBrush="{x:Bind ViewModel.JammerRangeError, Mode=OneWay,
                                        Converter={StaticResource FieldErrorToBrush}}"
                                    ValueChanged="JammerRangeBox_ValueChanged" />
-                        <NumberBox x:Name="MainbeamGainBox" Header="Mainbeam gain G_M (dB)"
+                        <NumberBox x:Name="MainbeamGainBox" Header="Mainbeam gain Gₘ (dB)"
                                    AutomationProperties.Name="Mainbeam gain (dB)"
                                    ToolTipService.ToolTip="Radar receive gain toward the target (mainbeam)"
                                    Value="{x:Bind ViewModel.DefaultMainbeamGain, Mode=OneTime}"
@@ -116,7 +116,7 @@
                                    BorderBrush="{x:Bind ViewModel.MainbeamGainError, Mode=OneWay,
                                        Converter={StaticResource FieldErrorToBrush}}"
                                    ValueChanged="MainbeamGainBox_ValueChanged" />
-                        <NumberBox x:Name="SidelobeGainBox" Header="Sidelobe gain G_S (dB)"
+                        <NumberBox x:Name="SidelobeGainBox" Header="Sidelobe gain Gₛ (dB)"
                                    AutomationProperties.Name="Sidelobe gain (dB)"
                                    ToolTipService.ToolTip="Radar receive gain toward the jammer (sidelobe) — the gap from the mainbeam gain is the sidelobe rejection the jammer must overcome"
                                    Value="{x:Bind ViewModel.DefaultSidelobeGain, Mode=OneTime}"
