@@ -415,6 +415,15 @@ Open milestones are fully itemized here since they reflect actionable state.
       CFBundleVersion = release version (no separate build number — no
       shipped build ever carried one). scripts/check-version.sh checks the
       appxmanifest and the built .app; CI runs it after the macOS build.
+    - RELEASED 2026-10-12 UTC: v1.3.1 published (Latest) —
+      https://github.com/OldCrow/ewcalc/releases/tag/v1.3.1 — PR #98
+      squash-merged (0f590a5); main CI green; signed tag v1.3.1; tag CI
+      green; draft published with generated notes. Verified from the
+      published draft before publishing: DMG app CFBundleShortVersionString
+      and CFBundleVersion = 1.3.1 (check-version.sh passes), universal,
+      Developer ID + notarized, DMG stapled; AppImage binary reports 1.3.1.
+      PENDING: user check of ewcalc_1.3.1_amd64.deb and the 1.3.1.0 .msix
+      on the Zen. release/v1.3.1 and dev/v1.3.0 remain on the remote.
 
 ## GitHub Issues Without Milestone [DERIVED]
 Same leaner convention as milestones above: closed items are a count only
