@@ -22,7 +22,7 @@ RadarJammingPage::RadarJammingPage(QWidget* parent)
 
     // ── Geometry selector + shared inputs ────────────────────────────────────
     QFormLayout* radarForm = nullptr;
-    auto* radarGroup = makeGroup(QStringLiteral("Radar & jammer"), radarForm);
+    auto* radarGroup = makeGroup(QStringLiteral("Radar && jammer"), radarForm);
 
     // Int-enum selector: item data carries the presenter's geometry constant.
     auto* geomCb = new QComboBox;
