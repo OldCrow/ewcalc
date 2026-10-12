@@ -9,7 +9,10 @@
    (see `git log` for examples, e.g. `v0.9.0 — Infrastructure & Hardening (#36)`).
 4. Releases follow a squash-merged milestone PR, then a separate
    `chore: bump version to vX.Y.Z` commit and tag on `main`. Add a matching
-   entry to `CHANGELOG.md`.
+   entry to `CHANGELOG.md`. The version lives in two places: the root
+   `CMakeLists.txt` `project(ewcalc VERSION ...)`, which the macOS and Linux
+   frontends read via `cmake/EwcalcVersion.cmake`, and the WinUI
+   `Package.appxmanifest` (`X.Y.Z.0`). `scripts/check-version.sh` checks them.
 
 ## Build prerequisites
 

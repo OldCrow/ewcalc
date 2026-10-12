@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
-project(ewcalc-macos LANGUAGES CXX Swift)
+# Standalone project: EwcalcVersion.cmake reads the version from the root
+# CMakeLists.txt rather than keeping a copy here.
+include("${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/EwcalcVersion.cmake")
+project(ewcalc-macos VERSION ${EWCALC_VERSION} LANGUAGES CXX Swift)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -234,8 +237,15 @@ set_target_properties(ewcalc PROPERTIES
     MACOSX_BUNDLE_ICON_FILE          "AppIcon.icns"
     MACOSX_BUNDLE_BUNDLE_IDENTIFIER  "com.oldcrow.ewcalc"
     MACOSX_BUNDLE_BUNDLE_NAME        "EW Calculator"
-    MACOSX_BUNDLE_SHORT_VERSION_STRING "1.3.0"
-    MACOSX_BUNDLE_BUNDLE_VERSION     "5"
+    MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}"
+    MACOSX_BUNDLE_BUNDLE_VERSION     "${PROJECT_VERSION}"
+
+    # app/Info.plist reads the version from these two Xcode build settings
+    # ($(MARKETING_VERSION) / $(CURRENT_PROJECT_VERSION)), not from the
+    # MACOSX_BUNDLE_* properties above. Without them both keys expand empty
+    # and Xcode drops them; the v1.3.0 DMG shipped with no version at all.
+    XCODE_ATTRIBUTE_MARKETING_VERSION                     "${PROJECT_VERSION}"
+    XCODE_ATTRIBUTE_CURRENT_PROJECT_VERSION               "${PROJECT_VERSION}"
 
     # Xcode build settings (only effective with -G Xcode)
     XCODE_ATTRIBUTE_SWIFT_VERSION                         "5.9"
