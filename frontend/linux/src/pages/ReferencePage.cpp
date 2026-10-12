@@ -52,9 +52,10 @@ QString displayText(QString text)
 /// order and only the pairs are column-bound.
 enum SectionColumn { ColLabel = 0, ColStd = 1, ColLog = 2, ColCopy = 3, ColCount = 4 };
 
-/// Cap on the standard-form column, matching WinUI's 400 px Auto column: it
-/// stops one unusually wide standard form (the stand-off J/S line) from
-/// starving the log form beside it.
+/// Cap on a standard form that has a log form beside it: it stops one
+/// unusually wide standard form from starving its log form. Applied only to
+/// such pairs — a lone standard form (the stand-off J/S line) has nothing to
+/// starve, and capping it shrank it to about half size, unreadably small.
 constexpr int kStdFormMaxWidth = 300;
 
 /// Fixed width of the trailing copy-button column.
@@ -227,7 +228,7 @@ void addFormulaRow(QGridLayout* grid, int row, const refdata::Row& formulaRow)
     const QString base    = QString::fromUtf8(formulaRow.svg_base);
 
     auto* stdImage = makeFormulaImage(QStringLiteral(":/formulas/%1-std.png").arg(base),
-                                      stdText, kStdFormMaxWidth);
+                                      stdText, formulaRow.log_value ? kStdFormMaxWidth : 0);
     grid->addWidget(makeRowLabel(label, stdImage), row, ColLabel, Qt::AlignLeft | Qt::AlignVCenter);
     grid->addWidget(stdImage, row, ColStd);
 

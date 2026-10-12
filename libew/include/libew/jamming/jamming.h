@@ -93,6 +93,7 @@ struct JammingResult {
 struct PartialBandResult {
     Mhz    optimum_jamming_bandwidth; ///< Optimum jamming bandwidth (MHz)
     double duty_cycle{0.0};           ///< Fraction of hop range covered
+    bool   meets_threshold{true};     ///< false when J/S < required on even one channel
 };
 
 /// Compute optimum partial-band jamming parameters.
@@ -101,19 +102,27 @@ struct PartialBandResult {
 /// instantaneous J/S at the expense of hit probability. The optimum bandwidth
 /// maximises the effective J/S averaged over the hopping band.
 ///
-/// BW_opt = signal_bw * 10^(single_channel_js / 10)
-/// The result is capped only by hop_range_bandwidth; for single-channel J/S
-/// >= 0 dB, surplus jammer power widens the jammed bandwidth beyond the
-/// signal bandwidth to cover more hops.
+/// BW_opt = signal_bw * 10^((single_channel_js - required_js) / 10)
+/// The result is capped only by hop_range_bandwidth. Only the J/S margin over
+/// the required J/S can be traded for bandwidth: spreading over N signal
+/// bandwidths costs 10 log N dB per channel, so every jammed channel still
+/// meets required_js. At required_js = 0 dB this is Adamy's form.
+///
+/// When single_channel_js < required_js the jammer cannot meet the
+/// requirement on even one channel, so no partial-band optimum exists: the
+/// result is {0, 0} with meets_threshold = false, rather than a fraction of
+/// one channel (which the unguarded formula would give).
 ///
 /// @param signal_bandwidth     Target signal occupied bandwidth (kHz → stored as MHz)
 /// @param hop_range_bandwidth  Total frequency hopping range (MHz)
 /// @param single_channel_js    J/S achievable against a single non-hopping channel (dB)
+/// @param required_js          J/S needed per channel for effective jamming (dB)
 /// @return PartialBandResult with optimum bandwidth and duty cycle
 [[nodiscard]] PartialBandResult partial_band_jamming(
     Mhz signal_bandwidth,
     Mhz hop_range_bandwidth,
-    Db  single_channel_js) noexcept;
+    Db  single_channel_js,
+    Db  required_js = Db{0.0}) noexcept;
 
 // ---------------------------------------------------------------------------
 // Radar jamming — self-protection (SPJ) and stand-off (SOJ)

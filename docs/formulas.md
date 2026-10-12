@@ -162,10 +162,11 @@ LOS: `d = 10^((margin - 32.44 - 20*log10(f))/20)`; 2-ray: `d = 10^((margin - 120
 - Units: ERP in dBm, gains in dB, ranges in km, sigma in dBsm.
 
 ### Partial-band / spot jamming
-`BW_opt = signal_bandwidth * 10^(single_channel_js/10)`, capped only by `hop_range_bandwidth`; `duty_cycle = min(BW_opt, hop_range) / hop_range`.
+`BW_opt = signal_bandwidth * 10^((single_channel_js - required_js)/10)`, capped only by `hop_range_bandwidth`; `duty_cycle = min(BW_opt, hop_range) / hop_range`. `required_js` is the calculator's J/S threshold.
 
 - Source: Adamy EW102 Sec. 5.9.1.2, pp. 144-147; equivalently Adamy EW103 Sec. 9.3.1, pp. 259-262 (essentially the same material).
-- Assumptions: for `single_channel_js >= 0 dB`, surplus jammer power should widen bandwidth beyond the signal bandwidth to cover more hops (the corrected v0.7.0 behavior).
+- Assumptions: only the margin `single_channel_js - required_js` is traded for bandwidth (spreading over N channels costs 10 log N dB each), so a non-negative margin widens bandwidth beyond the signal bandwidth to cover more hops (the corrected v0.7.0 behavior). At `required_js = 0 dB` this is the source's form; the threshold term is this repo's generalisation, not quoted from it.
+- Guard: a negative margin means the jammer misses the requirement on even one channel, so no optimum exists; libew returns `meets_threshold = false` with zero bandwidth/duty, and the presenter shows "J/S below threshold" / "N/A" instead of the sub-channel bandwidth the bare formula gives (v1.3.0).
 - Units: bandwidths in MHz, J/S in dB.
 
 ## Location

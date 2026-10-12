@@ -344,7 +344,30 @@ Open milestones are fully itemized here since they reflect actionable state.
     CI: dispatch runs on dev/v1.3.0 all green after the Linux Qt 6.2 fix
     (eb7e600). A notary 403 "agreement missing or expired" right after
     accepting Apple's agreement is propagation lag — it cleared on its own.
-    REMAINING for #88: Linux and Windows UI passes.
+    VERIFIED Linux 2026-10-11 (Ubuntu 26.04 VM, Qt 6.8.3): all seven
+    checks pass. The out-of-range check can't fire on Linux by design —
+    an audit found all 82 spin boxes clamped to (81) or inside (1) their
+    presenter bounds, so no invalid value can be entered. Fixed from the
+    pass: '&' mnemonic eating group titles ("Radar & jammer", "Doppler &
+    ambiguity", 7b4ddae); stand-off J/S formula squeezed to half size by
+    the 300 px std-form cap (now applied only beside a log form);
+    selected sidebar icon washed out by the style's highlight tint; stale
+    "see the Jamming calculator" reference text.
+    Partial-band fix (same pass, core — reaches all frontends):
+    BW_opt now spends only the margin over the J/S threshold
+    (10^((J/S − J/S_req)/10); identical at the 0 dB default), and below
+    threshold reports "J/S below threshold" / "N/A" instead of a
+    sub-channel bandwidth shown as 0.000. Threshold term is our
+    generalisation of Adamy's 0 dB form — owes a physical-book check of
+    EW102 Sec 5.9.1.2 alongside the radar J/S pins above.
+    REMAINING for #88:
+    - macOS: re-render assets/formulas/png/pbopt-std.png via
+      scripts/render-diagrams.sh (master pbopt-std.svg gained the
+      − J/S_req term; the Linux VM lacks Georgia so it was not rendered
+      there) and commit it — until then the reference image shows the
+      old formula while its copy text shows the new one. Also eyeball
+      the "J/S below threshold" result on the macOS pane.
+    - Windows UI pass (same seven checks, plus the partial-band guard).
 
 ## GitHub Issues Without Milestone [DERIVED]
 Same leaner convention as milestones above: closed items are a count only

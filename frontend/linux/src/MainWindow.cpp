@@ -159,6 +159,17 @@ MainWindow::MainWindow(QWidget* parent)
             painter.end();
             icon = QIcon(canvas);
         }
+        // Without an explicit Selected pixmap the style generates one by
+        // tinting the icon toward the highlight colour; on Yaru's green
+        // highlight (Ubuntu 26.04) that washed the selected row's icon out
+        // almost entirely. Reuse the normal rendering for the selected state.
+        if (!icon.isNull()) {
+            const QPixmap normal = icon.pixmap(navIconSize, nav_->devicePixelRatioF());
+            QIcon flat;
+            flat.addPixmap(normal, QIcon::Normal);
+            flat.addPixmap(normal, QIcon::Selected);
+            icon = flat;
+        }
         if (!icon.isNull())
             item->setIcon(icon);
         nav_->addItem(item);

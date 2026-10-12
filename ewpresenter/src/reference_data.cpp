@@ -421,15 +421,15 @@ constexpr Row kBurnthrough[] = {
             "d = 10^((M − 32.44 − 20 log₁₀ f(MHz))/20)  km"),
     formula("Burnthrough range (two-ray)", "burn2ray",
             "d = 10^((M − 120 + 20 log₁₀ h_t(m) + 20 log₁₀ h_r(m))/40)  km"),
-    val("Margin M", "collects the link terms against the J/S threshold — see the Jamming calculator"),
+    val("Margin M", "collects the link terms against the J/S threshold — see the Comms Jamming calculator"),
 };
 
 constexpr Row kPartialBand[] = {
     formula("Optimum jamming bandwidth", "pbopt",
-            "BW_opt = BW_sig · 10^(J/S₁/10)"),
+            "BW_opt = BW_sig · 10^((J/S₁ − J/S_req)/10)"),
     formula("Duty cycle", "pbduty",
             "δ = min(BW_opt, BW_hop) / BW_hop"),
-    val("Rationale", "surplus jammer power widens coverage across more hops rather than over-jamming one channel"),
+    val("Rationale", "only J/S above the threshold (J/S_req) is spread across more hops; below it on one channel there is no optimum and the calculator shows \"J/S below threshold\""),
 };
 
 constexpr Section kJammingSections[] = {

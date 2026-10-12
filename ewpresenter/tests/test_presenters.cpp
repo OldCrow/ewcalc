@@ -6,6 +6,7 @@
 
 #include "test_main.h"
 #include "ewpresenter/ewpresenter.h"
+#include <cmath>
 
 // ============================================================================
 // PropagationPresenter
@@ -181,6 +182,28 @@ void test_jamming_partial_band_na_when_zero_hop() {
     ASSERT_TRUE(p.output().valid);
     ASSERT_TRUE(p.output().optimum_bw_str == "N/A");
     ASSERT_TRUE(p.output().duty_cycle_str == "N/A");
+}
+
+void test_jamming_partial_band_below_threshold() {
+    // Jammer 5000 km out: J/S ≈ -43.5 dB, far under the 0 dB threshold. The
+    // unguarded formula printed "0.000 MHz" / "0.000 %" here.
+    ewpresenter::JammingPresenter p;
+    p.set_jammer_to_rx_dist(5000.0);
+    ASSERT_TRUE(p.output().valid);
+    ASSERT_TRUE(p.output().js_ratio.value < 0.0);
+    ASSERT_TRUE(p.output().optimum_bw_str == "J/S below threshold");
+    ASSERT_TRUE(p.output().duty_cycle_str == "N/A");
+}
+
+void test_jamming_partial_band_uses_threshold() {
+    // Default J/S ≈ 36.5 dB; a 30 dB threshold leaves ≈ 6.5 dB to spread,
+    // which stays under the 58 MHz hop range (0 dB would cap it at 100 %).
+    ewpresenter::JammingPresenter p;
+    p.set_js_threshold(30.0);
+    const double margin   = p.output().js_ratio.value - 30.0;
+    const double expected = 0.025 * std::pow(10.0, margin / 10.0);
+    ASSERT_NEAR(p.output().optimum_bw.value, expected, 1e-9);
+    ASSERT_TRUE(p.output().duty_cycle < 1.0);
 }
 
 // ============================================================================
@@ -579,6 +602,8 @@ int main() {
     RUN_TEST(test_jamming_default_valid);
     RUN_TEST(test_jamming_js_value);
     RUN_TEST(test_jamming_partial_band_na_when_zero_hop);
+    RUN_TEST(test_jamming_partial_band_below_threshold);
+    RUN_TEST(test_jamming_partial_band_uses_threshold);
 
     RUN_TEST(test_digital_default_valid);
     RUN_TEST(test_digital_eb_no_value);

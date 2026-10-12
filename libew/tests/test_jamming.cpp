@@ -65,16 +65,45 @@ void test_partial_band_zero_js() {
 }
 
 void test_partial_band_negative_js() {
-    // J/S = -10 dB: jammer weaker than signal on each channel.
-    // BW_opt = 0.025 * 10^(-10/10) = 0.025 * 0.1 = 0.0025 MHz
-    // duty   = 0.0025 / 58.0 ≈ 4.310e-5
+    // J/S = -10 dB against the default 0 dB requirement: the jammer cannot
+    // jam even one channel, so there is no optimum to report. The unguarded
+    // formula gave 0.0025 MHz here — a tenth of one channel, which is not a
+    // usable jamming bandwidth.
     const PartialBandResult r = partial_band_jamming(
         0.025_MHz,
         58.0_MHz,
         -10.0_dB
     );
-    ASSERT_NEAR(r.optimum_jamming_bandwidth.value, 0.0025, 1e-6);
-    ASSERT_NEAR(r.duty_cycle, 0.0025 / 58.0, 1e-7);
+    ASSERT_TRUE(!r.meets_threshold);
+    ASSERT_NEAR(r.optimum_jamming_bandwidth.value, 0.0, 1e-12);
+    ASSERT_NEAR(r.duty_cycle, 0.0, 1e-12);
+}
+
+void test_partial_band_required_js_shifts_bandwidth() {
+    // Only the margin over the required J/S can be spread: J/S 16 dB against
+    // a 10 dB requirement spreads the same as J/S 6 dB against 0 dB.
+    const double expected_bw_opt = 0.025 * std::pow(10.0, 6.0 / 10.0);
+    const PartialBandResult r = partial_band_jamming(
+        0.025_MHz, 58.0_MHz, 16.0_dB, 10.0_dB);
+    ASSERT_TRUE(r.meets_threshold);
+    ASSERT_NEAR(r.optimum_jamming_bandwidth.value, expected_bw_opt, 1e-6);
+    ASSERT_NEAR(r.duty_cycle, expected_bw_opt / 58.0, 1e-7);
+}
+
+void test_partial_band_exactly_at_required_js() {
+    // Zero margin is still effective on one channel: BW_opt = signal_bw.
+    const PartialBandResult r = partial_band_jamming(
+        0.025_MHz, 58.0_MHz, 10.0_dB, 10.0_dB);
+    ASSERT_TRUE(r.meets_threshold);
+    ASSERT_NEAR(r.optimum_jamming_bandwidth.value, 0.025, 1e-9);
+}
+
+void test_partial_band_below_required_js() {
+    // Positive J/S is not enough if it misses the requirement.
+    const PartialBandResult r = partial_band_jamming(
+        0.025_MHz, 58.0_MHz, 6.0_dB, 10.0_dB);
+    ASSERT_TRUE(!r.meets_threshold);
+    ASSERT_NEAR(r.duty_cycle, 0.0, 1e-12);
 }
 
 void test_js_ratio_self_screen() {
@@ -260,6 +289,9 @@ int main() {
     RUN_TEST(test_js_ratio_spreadsheet);
     RUN_TEST(test_partial_band_zero_js);
     RUN_TEST(test_partial_band_negative_js);
+    RUN_TEST(test_partial_band_required_js_shifts_bandwidth);
+    RUN_TEST(test_partial_band_exactly_at_required_js);
+    RUN_TEST(test_partial_band_below_required_js);
     RUN_TEST(test_js_ratio_self_screen);
     RUN_TEST(test_burnthrough_range_los_regime);
     RUN_TEST(test_burnthrough_range_two_ray_regime);
