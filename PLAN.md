@@ -373,24 +373,26 @@ Open milestones are fully itemized here since they reflect actionable state.
       size) — fixed the Linux way: the cap and the shared column width
       now apply only to std forms with a log form beside them; paired
       sections (Propagation) still align.
-    - Windows UI pass (full):
-      [ ] Radar Jamming sits right after Comms Jamming in the nav, and
-          its icon renders.
-      [ ] Self-protection: jammer range, G_M and G_S hidden; J/S 17.0 dB,
-          burnthrough 2.821 km, "Jammer effective".
-      [ ] Stand-off: those three inputs shown; J/S −20.9 dB, burnthrough
-          66.786 km, "Radar burns through".
-      [ ] Geometry diagram swaps with the mode; R_T/R_J subscripts clean.
-      [ ] Out-of-range input (RCS 100) shows the error display and dashes
-          the results — testable here, unlike Linux, since WinUI accepts
-          free text.
-      [ ] Selected mode and inputs survive a restart.
-      [ ] Comms Jamming shows only the one-way diagram (jamming-comms),
-          as does the reference page's Comms Jamming section.
-      [ ] Partial-band guard: 5000 km → "J/S below threshold" / "N/A".
-      [ ] Reference page: stand-off J/S formula not squeezed (the old
-          Linux comment cites a 400 px WinUI std-form column; the master
-          is 579 px logical), plus the new Margin M / Rationale text.
+    - Windows UI pass DONE 2026-10-11 (Zen box, dev/v1.3.0 at f7e636f):
+      core 14/14 warning-free; first WinUI compile of the pane builds
+      clean (only the known local NETSDK1198, see Known Gaps); dotnet
+      format style clean. Driven via UIA + screen capture. No defects.
+      Passed: nav order + shield icon; SPJ hides the three stand-off
+      inputs, 17.0 dB / 2.821 km / "Jammer effective"; SOJ shows them,
+      −20.9 dB / 66.786 km / "Radar burns through"; diagram swaps with
+      the mode, R_T/R_J and Gₘ/Gₛ subscripts clean; mode + inputs survive
+      a restart; Comms Jamming pane and reference section show only
+      jamming-comms; 5000 km → "J/S below threshold" / "N/A"; reference
+      stand-off formula at full size (723 px physical ≈ 578 logical at
+      125 %), Margin M / Rationale text present.
+      Out-of-range check UNREACHABLE by design, as on Linux — the
+      premise that WinUI accepts free text was wrong: every NumberBox
+      carries Minimum/Maximum equal to the presenter bounds (RCS 100
+      clamps to 60), and an emptied field (NaN) is ignored app-wide, so
+      results keep the last valid value.
+      Next: all three UI passes are done — #88 is ready for the
+      dev/v1.3.0 → main PR once the user decides whether more v1.3.0
+      calculators ride the same branch.
 
 ## GitHub Issues Without Milestone [DERIVED]
 Same leaner convention as milestones above: closed items are a count only
