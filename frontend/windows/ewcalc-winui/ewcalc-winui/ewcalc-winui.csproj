@@ -22,6 +22,24 @@
     <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
   </PropertyGroup>
 
+  <!-- The root CMakeLists.txt project(ewcalc VERSION X.Y.Z) is the single
+       source of the app version (see cmake/EwcalcVersion.cmake). Without
+       this the assemblies carried the .NET SDK default, 1.0.0.0. The
+       Package.appxmanifest Identity Version is still kept by hand, and
+       scripts/check-version.sh checks it. -->
+  <PropertyGroup>
+    <EwcalcRootCMakeLists>$(MSBuildThisFileDirectory)..\..\..\..\CMakeLists.txt</EwcalcRootCMakeLists>
+    <EwcalcVersion>$([System.Text.RegularExpressions.Regex]::Match($([System.IO.File]::ReadAllText('$(EwcalcRootCMakeLists)')), '(?&lt;=project\(ewcalc VERSION )\d+\.\d+\.\d+').Value)</EwcalcVersion>
+    <Version>$(EwcalcVersion)</Version>
+    <AssemblyVersion>$(EwcalcVersion).0</AssemblyVersion>
+    <FileVersion>$(EwcalcVersion).0</FileVersion>
+  </PropertyGroup>
+
+  <Target Name="EwcalcCheckVersion" BeforeTargets="BeforeBuild">
+    <Error Condition="'$(EwcalcVersion)' == ''"
+           Text="No 'project(ewcalc VERSION X.Y.Z' line in $(EwcalcRootCMakeLists)" />
+  </Target>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.0.1" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4654" PrivateAssets="all" />
