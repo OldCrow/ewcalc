@@ -41,8 +41,8 @@
   Windows Frontend conventions.
 
 ## GitHub Synchronization [DERIVED]
-Last reconciled against live GitHub state: 2026-09-06 UTC (v1.1.0 leg:
-#62/#69/#70/#71/#72 closed, milestone #5 closed, tag v1.1.0 pushed).
+Last reconciled against live GitHub state: 2026-10-12 UTC (v1.3.0 leg:
+#88 closed, milestone #7 closed, v1.3.0 released; no open issues or PRs).
 - GitHub is the collaborator-facing source for issues and milestones; this
   PLAN.md is the agent-facing durable project state. Keep both in sync.
 - When creating, closing, reopening, retitling, or moving a GitHub issue or
@@ -57,8 +57,8 @@ Last reconciled against live GitHub state: 2026-09-06 UTC (v1.1.0 leg:
   wasted effort in one direction and a rubber stamp in the other. Update
   the "Last reconciled" date whenever this section is actually re-checked,
   whether or not anything had drifted.
-- Dependabot PRs #60 (codeql-action group) and #61 (actionlint 1.73.2)
-  merged 2026-08-23 (ac33d41, daa89c5); no Dependabot PRs outstanding.
+- Dependabot PRs #90–#96 (codeql-action group, actionlint up to 1.79.1)
+  merged before v1.3.0; no Dependabot PRs outstanding.
 
 ## GitHub Milestones [DERIVED]
 Closed milestones are summarized only (title + counts) since their issue
@@ -308,8 +308,8 @@ Open milestones are fully itemized here since they reflect actionable state.
     WrapLongRows). The flow-layout column alignment (Known Gaps) is now
     visibly ragged on Propagation.
 
-- v1.3.0 — Calculator Growth (open, #7), created 2026-09-12.
-  - #88 OPEN — Radar jamming calculator (SPJ/SOJ): separate sidebar
+- v1.3.0 — Calculator Growth (closed, #7): 0 open / 1 closed.
+  - #88 CLOSED — Radar jamming calculator (SPJ/SOJ): separate sidebar
     tab (ratified); the comms-only calculator was relabeled "Comms
     Jamming" on dev/v1.2.0 the same day. Radar J/S forms + 71 dB
     constant need physical-book pins (also owed on their v1.2.0
@@ -390,9 +390,16 @@ Open milestones are fully itemized here since they reflect actionable state.
       carries Minimum/Maximum equal to the presenter bounds (RCS 100
       clamps to 60), and an emptied field (NaN) is ignored app-wide, so
       results keep the last valid value.
-      Next: all three UI passes are done — #88 is ready for the
-      dev/v1.3.0 → main PR once the user decides whether more v1.3.0
-      calculators ride the same branch.
+    - RELEASED 2026-10-11 (local; 2026-10-12 UTC): v1.3.0 published —
+      https://github.com/OldCrow/ewcalc/releases/tag/v1.3.0 — all four
+      artifacts (.dmg, .msix 1.3.0.0, .AppImage, ewcalc_1.3.0_amd64.deb);
+      .msix provenance attestation verified; tag CI green. Path: PR #97
+      squash-merged (3a599bd); release commit 0294ad3 (four-place bumps,
+      macOS bundle 1.3.0/5; CHANGELOG dated with release links added for
+      v1.1.0–v1.3.0; READMEs updated for the eleventh calculator); main
+      CI green on 0294ad3 before tagging; signed tag v1.3.0; draft
+      published with generated notes, as v1.2.0 was. dev/v1.3.0 is
+      still on the remote.
 
 ## GitHub Issues Without Milestone [DERIVED]
 Same leaner convention as milestones above: closed items are a count only
@@ -473,7 +480,7 @@ itemized since they're actionable.
   root CMakeLists project VERSION, frontend/macos (SHORT_VERSION +
   BUNDLE_VERSION int), Package.appxmanifest, AND
   frontend/linux/CMakeLists.txt project VERSION. The user disabled
-  "Protect release tags" for the re-cut — confirm it is re-enabled.
+  "Protect release tags" for the re-cut — CONFIRMED re-enabled 2026-10-11.
   Carried: radar J/S pinned (EW101 Sec 9.2.3, 9.3.4 SOJ, 9.3.5 SPJ;
   see #83 entry); v1.3.0 #88 radar jamming
   calculator; full formula-fidelity
