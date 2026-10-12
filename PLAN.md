@@ -422,8 +422,22 @@ Open milestones are fully itemized here since they reflect actionable state.
       published draft before publishing: DMG app CFBundleShortVersionString
       and CFBundleVersion = 1.3.1 (check-version.sh passes), universal,
       Developer ID + notarized, DMG stapled; AppImage binary reports 1.3.1.
-      PENDING: user check of ewcalc_1.3.1_amd64.deb and the 1.3.1.0 .msix
-      on the Zen. release/v1.3.1 and dev/v1.3.0 remain on the remote.
+      VERIFIED on the Zen 2026-10-11 from the published assets: .deb
+      control Version 1.3.1, binary carries exactly one version string,
+      "1.3.1" (UTF-16, from EWCALC_VERSION; no stale 1.1.0/1.2.0/1.3.0),
+      CPack version from PROJECT_VERSION, so the whole chain reads the
+      root version; .msix Identity 1.3.1.0 x64. Both attestations verify.
+      release/v1.3.1 and dev/v1.3.0 remain on the remote.
+      Found then: the WinUI assemblies reported FileVersion 1.0.0.0 (the
+      csproj set no <Version>; .NET SDK default; Windows Settings shows
+      the package version, which was always correct). FIXED on
+      fix/winui-assembly-version (user: fix now, ship in the next
+      release): the csproj reads the root CMakeLists.txt version with an
+      MSBuild property function (Version, AssemblyVersion and FileVersion
+      X.Y.Z.0) and errors if the line is missing; a Windows CI "Check app
+      version" step fails if the built exe disagrees. Verified locally:
+      exe and dll report 1.3.1.0. CHANGELOG [Unreleased] entry added. No
+      version bump: it ships with whatever the next release is.
 
 ## GitHub Issues Without Milestone [DERIVED]
 Same leaner convention as milestones above: closed items are a count only

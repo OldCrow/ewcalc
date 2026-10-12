@@ -6,6 +6,15 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- The Windows app's executable and assembly now carry the release version.
+  The WinUI project set no version, so `ewcalc-winui.exe` reported the
+  .NET SDK default 1.0.0.0 in its file properties (the package version
+  Windows shows in Settings was always correct). The `.csproj` now reads
+  the root `CMakeLists.txt` version, and the Windows CI job fails if the
+  built exe disagrees.
+
 ## [v1.3.1] — 2026-10-12
 
 Version-stamping fix: no calculator or UI changes.

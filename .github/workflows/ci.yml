@@ -60,6 +60,17 @@ jobs:
         shell: pwsh
         run: scripts\build-windows.ps1 -Config Release -Package
 
+      # The exe must carry the root project version; through v1.3.1 it reported
+      # the .NET SDK default 1.0.0.0 and nothing noticed.
+      - name: Check app version
+        shell: pwsh
+        run: |
+          $v = (Select-String CMakeLists.txt -Pattern '^project\(ewcalc VERSION (\d+\.\d+\.\d+)').Matches[0].Groups[1].Value
+          $exe = 'frontend\windows\ewcalc-winui\ewcalc-winui\bin\x64\Release\net8.0-windows10.0.26100.0\ewcalc-winui.exe'
+          $fv = (Get-Item $exe).VersionInfo.FileVersion
+          Write-Host "root version: $v; ewcalc-winui.exe FileVersion: $fv"
+          if ($fv -ne "$v.0") { Write-Error "FileVersion '$fv' does not match root version '$v.0'"; exit 1 }
+
       # C# style/analyzer gate for the WinUI frontend (see .editorconfig and
       # ewcalc-winui.csproj's EnableNETAnalyzers/AnalysisLevel — issue #44).
       # Scoped to `dotnet format style` only, targeting the .sln with

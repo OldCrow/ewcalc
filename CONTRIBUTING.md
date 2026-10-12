@@ -11,8 +11,10 @@
    `chore: bump version to vX.Y.Z` commit and tag on `main`. Add a matching
    entry to `CHANGELOG.md`. The version lives in two places: the root
    `CMakeLists.txt` `project(ewcalc VERSION ...)`, which the macOS and Linux
-   frontends read via `cmake/EwcalcVersion.cmake`, and the WinUI
-   `Package.appxmanifest` (`X.Y.Z.0`). `scripts/check-version.sh` checks them.
+   frontends read via `cmake/EwcalcVersion.cmake` and the WinUI `.csproj`
+   reads for its assembly version, and the WinUI `Package.appxmanifest`
+   (`X.Y.Z.0`). `scripts/check-version.sh` checks the manifest and the macOS
+   app; the Windows CI job checks the built exe.
 
 ## Build prerequisites
 
