@@ -153,6 +153,11 @@ jobs:
         if: "!(startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch')"
         run: bash scripts/build-macos.sh --config Release
 
+      # The built bundle must carry the root project version; the v1.3.0
+      # DMG shipped with no CFBundleShortVersionString and nothing noticed.
+      - name: Check app version
+        run: bash scripts/check-version.sh build/macos-frontend/Release/ewcalc.app
+
       - name: Run tests
         run: |
           cmake -B build -DEWCALC_BUILD_TESTS=ON

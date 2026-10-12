@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.20)
 # Configured as a standalone CMake project (see scripts/build-linux.sh), so it
-# does not inherit the root CMakeLists.txt's project(ewcalc VERSION ...) —
-# keep this version in sync with that one and with CHANGELOG.md.
-project(ewcalc-linux VERSION 1.3.0 LANGUAGES CXX)
+# does not inherit the root CMakeLists.txt's project(ewcalc VERSION ...);
+# EwcalcVersion.cmake reads it from there instead of keeping a copy here.
+include("${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/EwcalcVersion.cmake")
+project(ewcalc-linux VERSION ${EWCALC_VERSION} LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -72,6 +73,8 @@ set(SOURCES
 )
 
 add_executable(ewcalc ${SOURCES})
+# main.cpp reports this through QCoreApplication::applicationVersion().
+target_compile_definitions(ewcalc PRIVATE EWCALC_VERSION="${PROJECT_VERSION}")
 
 target_include_directories(ewcalc PRIVATE src)
 

@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
     QApplication app(argc, argv);
     app.setApplicationName(QStringLiteral("ewcalc"));
     app.setApplicationDisplayName(QStringLiteral("EW Calculator"));
-    app.setApplicationVersion(QStringLiteral("1.1.0"));
+    app.setApplicationVersion(QStringLiteral(EWCALC_VERSION)); // from CMake
 
     // Ties the running app to assets/linux/ewcalc.desktop: this sets the
     // Wayland app_id and the X11 desktop-entry hint, which is what the shell

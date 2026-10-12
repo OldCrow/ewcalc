@@ -400,6 +400,21 @@ Open milestones are fully itemized here since they reflect actionable state.
       CI green on 0294ad3 before tagging; signed tag v1.3.0; draft
       published with generated notes, as v1.2.0 was. dev/v1.3.0 is
       still on the remote.
+    - VERSION DEFECTS FOUND post-release 2026-10-12 (artifact check on the
+      published v1.3.0 DMG and AppImage): the DMG's app had NO
+      CFBundleShortVersionString/CFBundleVersion — app/Info.plist reads
+      $(MARKETING_VERSION)/$(CURRENT_PROJECT_VERSION), which CMake never
+      set (it set MACOSX_BUNDLE_*, which only fills ${...} placeholders),
+      so Xcode dropped both keys; the AppImage binary reported 1.1.0 from a
+      hard-coded main.cpp literal (the fifth version location the checklist
+      had missed). Signing/notarization were fine. Fixed in v1.3.1 (below).
+    - v1.3.1 (patch, branch release/v1.3.1): root CMakeLists.txt is the
+      single version source for CMake-built artifacts via
+      cmake/EwcalcVersion.cmake (macOS + Linux frontends); macOS sets the
+      two Xcode settings; Linux passes EWCALC_VERSION to main.cpp;
+      CFBundleVersion = release version (no separate build number — no
+      shipped build ever carried one). scripts/check-version.sh checks the
+      appxmanifest and the built .app; CI runs it after the macOS build.
 
 ## GitHub Issues Without Milestone [DERIVED]
 Same leaner convention as milestones above: closed items are a count only
@@ -476,10 +491,14 @@ itemized since they're actionable.
   re-cut on e60c42b: frontend/linux/CMakeLists.txt carries its OWN
   project VERSION (its comment says so) and had stamped the .deb as
   1.1.0 — a dpkg-upgrade breaker, caught on the draft before publish.
-  RELEASE-CHECKLIST ADDITION: version bumps live in FOUR places —
-  root CMakeLists project VERSION, frontend/macos (SHORT_VERSION +
-  BUNDLE_VERSION int), Package.appxmanifest, AND
-  frontend/linux/CMakeLists.txt project VERSION. The user disabled
+  RELEASE CHECKLIST (since v1.3.1): bump the version in TWO places —
+  root CMakeLists.txt project VERSION and Package.appxmanifest
+  (X.Y.Z.0) — plus the CHANGELOG. macOS and Linux derive theirs from the
+  root (cmake/EwcalcVersion.cmake); scripts/check-version.sh verifies the
+  manifest and, given a built .app, the bundle. After release, still
+  check the published DMG/AppImage/.deb/.msix versions.
+  (History: v1.2.0 found the Linux CMake copy, v1.3.0 the macOS plist and
+  the main.cpp literal — three drifted copies, now gone.) The user disabled
   "Protect release tags" for the re-cut — CONFIRMED re-enabled 2026-10-11.
   Carried: radar J/S pinned (EW101 Sec 9.2.3, 9.3.4 SOJ, 9.3.5 SPJ;
   see #83 entry); v1.3.0 #88 radar jamming

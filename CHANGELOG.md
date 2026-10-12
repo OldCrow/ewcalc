@@ -6,6 +6,29 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [v1.3.1] — 2026-10-12
+
+Version-stamping fix: no calculator or UI changes.
+
+### Fixed
+
+- The macOS app now reports its version. Its Info.plist read
+  `$(MARKETING_VERSION)` / `$(CURRENT_PROJECT_VERSION)`, which the CMake
+  build never set, so the v1.3.0 DMG shipped with no
+  `CFBundleShortVersionString` or `CFBundleVersion`.
+- The Linux binary (AppImage and .deb) reported version 1.1.0: `main.cpp`
+  hard-coded it. It now comes from the build.
+
+### Changed
+
+- The root `CMakeLists.txt` is the single source of the version for every
+  CMake-built artifact; the macOS and Linux frontends read it through
+  `cmake/EwcalcVersion.cmake`. `CFBundleVersion` now equals the release
+  version instead of a separate build number. Only the WinUI
+  `Package.appxmanifest` still carries its own copy, and
+  `scripts/check-version.sh` (run in CI after the macOS build) fails when it
+  or the built app disagrees with the root version.
+
 ## [v1.3.0] — 2026-10-11
 
 Radar Jamming release: a new calculator for self-protection and
@@ -426,7 +449,8 @@ Architecture review remediation.
 - Antenna calculator across all platforms.
 - Knife-edge diffraction and SNR↔Eb/N₀ wired up.
 
-[Unreleased]: ../../compare/v1.3.0...HEAD
+[Unreleased]: ../../compare/v1.3.1...HEAD
+[v1.3.1]: ../../releases/tag/v1.3.1
 [v1.3.0]: ../../releases/tag/v1.3.0
 [v1.2.0]: ../../releases/tag/v1.2.0
 [v1.1.0]: ../../releases/tag/v1.1.0
