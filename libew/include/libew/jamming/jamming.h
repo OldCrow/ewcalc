@@ -106,7 +106,10 @@ struct PartialBandResult {
 /// The result is capped only by hop_range_bandwidth. Only the J/S margin over
 /// the required J/S can be traded for bandwidth: spreading over N signal
 /// bandwidths costs 10 log N dB per channel, so every jammed channel still
-/// meets required_js. At required_js = 0 dB this is Adamy's form.
+/// meets required_js. Adamy (EW102 Sec 5.9.1.2) states the rule, not a
+/// formula: aim for J/S = 0 dB per channel, so total J/S sets the channel
+/// count (20 dB → 100 channels). This is that rule; required_js generalises
+/// his 0 dB per-channel target.
 ///
 /// When single_channel_js < required_js the jammer cannot meet the
 /// requirement on even one channel, so no partial-band optimum exists: the

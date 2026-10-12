@@ -358,8 +358,10 @@ Open milestones are fully itemized here since they reflect actionable state.
     (10^((J/S − J/S_req)/10); identical at the 0 dB default), and below
     threshold reports "J/S below threshold" / "N/A" instead of a
     sub-channel bandwidth shown as 0.000. Threshold term is our
-    generalisation of Adamy's 0 dB form — owes a physical-book check of
-    EW102 Sec 5.9.1.2 alongside the radar J/S pins above.
+    generalisation of Adamy's 0 dB per-channel target. BOOK-CHECKED
+    2026-10-11 (user): EW102 Sec 5.9.1.2 gives the rule, not a formula —
+    J/S = 0 dB per channel is the goal, so total J/S fixes the channel
+    count (20 dB → 100 channels). BW_opt is that rule in closed form.
     CI: dispatch run 38192845739 on 8b8031e all green (all three
     frontends, sanitizers, static analysis, coverage, docs).
     REMAINING for #88:
@@ -389,8 +391,6 @@ Open milestones are fully itemized here since they reflect actionable state.
       [ ] Reference page: stand-off J/S formula not squeezed (the old
           Linux comment cites a 400 px WinUI std-form column; the master
           is 579 px logical), plus the new Margin M / Rationale text.
-    - Physical-book check of EW102 Sec 5.9.1.2 for the partial-band
-      threshold term (see above), with the radar J/S pins.
 
 ## GitHub Issues Without Milestone [DERIVED]
 Same leaner convention as milestones above: closed items are a count only
