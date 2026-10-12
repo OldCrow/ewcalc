@@ -41,8 +41,8 @@
   Windows Frontend conventions.
 
 ## GitHub Synchronization [DERIVED]
-Last reconciled against live GitHub state: 2026-10-12 UTC (v1.3.0 leg:
-#88 closed, milestone #7 closed, v1.3.0 released; no open issues or PRs).
+Last reconciled against live GitHub state: 2026-10-12 UTC (after v1.3.1
+and PR #99: no open issues, PRs, or milestones; only branch is main).
 - GitHub is the collaborator-facing source for issues and milestones; this
   PLAN.md is the agent-facing durable project state. Keep both in sync.
 - When creating, closing, reopening, retitling, or moving a GitHub issue or
@@ -398,8 +398,7 @@ Open milestones are fully itemized here since they reflect actionable state.
       macOS bundle 1.3.0/5; CHANGELOG dated with release links added for
       v1.1.0–v1.3.0; READMEs updated for the eleventh calculator); main
       CI green on 0294ad3 before tagging; signed tag v1.3.0; draft
-      published with generated notes, as v1.2.0 was. dev/v1.3.0 is
-      still on the remote.
+      published with generated notes, as v1.2.0 was.
     - VERSION DEFECTS FOUND post-release 2026-10-12 (artifact check on the
       published v1.3.0 DMG and AppImage): the DMG's app had NO
       CFBundleShortVersionString/CFBundleVersion — app/Info.plist reads
@@ -427,17 +426,32 @@ Open milestones are fully itemized here since they reflect actionable state.
       "1.3.1" (UTF-16, from EWCALC_VERSION; no stale 1.1.0/1.2.0/1.3.0),
       CPack version from PROJECT_VERSION, so the whole chain reads the
       root version; .msix Identity 1.3.1.0 x64. Both attestations verify.
-      release/v1.3.1 and dev/v1.3.0 remain on the remote.
-      Found then: the WinUI assemblies reported FileVersion 1.0.0.0 (the
-      csproj set no <Version>; .NET SDK default; Windows Settings shows
-      the package version, which was always correct). FIXED on
-      fix/winui-assembly-version (user: fix now, ship in the next
-      release): the csproj reads the root CMakeLists.txt version with an
-      MSBuild property function (Version, AssemblyVersion and FileVersion
-      X.Y.Z.0) and errors if the line is missing; a Windows CI "Check app
-      version" step fails if the built exe disagrees. Verified locally:
-      exe and dll report 1.3.1.0. CHANGELOG [Unreleased] entry added. No
-      version bump: it ships with whatever the next release is.
+    - WinUI assembly version FIXED, MERGED 2026-10-12 (PR #99, 4fab90e;
+      main CI green): the v1.3.1 check found ewcalc-winui.exe/.dll at the
+      .NET SDK default FileVersion 1.0.0.0 (the csproj set no <Version>;
+      the package version in Windows Settings was always correct). The
+      csproj now reads the root CMakeLists.txt version with an MSBuild
+      property function (Version, AssemblyVersion, FileVersion X.Y.Z.0)
+      and errors if the line is missing; the Windows CI "Check app
+      version" step fails if the built exe disagrees (passed on #99:
+      1.3.1.0). DECIDED (user): no release for this alone — it ships
+      with the next one, under CHANGELOG [Unreleased].
+      Version locations now: root CMakeLists.txt (source for macOS,
+      Linux, and WinUI assemblies) + Package.appxmanifest (by hand,
+      checked by check-version.sh). Release checklist: bump those two
+      and the CHANGELOG.
+      Branches: release/v1.3.1, dev/v1.3.0 and fix/winui-assembly-version
+      are all deleted, on the remote and locally; main is the only branch.
+
+## Next Steps [OPEN]
+- No milestone is open. The next release (v1.3.2 or v1.4.0) carries the
+  WinUI assembly-version fix; pick its scope (more calculators under
+  "Calculator Growth", or a patch now) when work resumes.
+- The PENDING PINS carried from v1.2.0 (radar SPJ/SOJ forms + the 71
+  constant, including the reference-page copies) are RESOLVED: #88 pinned
+  them to EW101 Sec 9.2.3 / 9.3.4 / 9.3.5 in jamming.h, constants.h,
+  reference_data.cpp and docs/formulas.md. The full formula-fidelity
+  sweep remains future assurance work (see Provenance Framing below).
 
 ## GitHub Issues Without Milestone [DERIVED]
 Same leaner convention as milestones above: closed items are a count only
