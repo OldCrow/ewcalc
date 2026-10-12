@@ -106,11 +106,19 @@ void JammingPresenter::recompute() noexcept {
 
     if (partial_band_valid) {
         const auto pb = libew::jamming::partial_band_jamming(
-            Mhz{signal_bandwidth_mhz_}, Mhz{hop_range_mhz_}, Db{computed_js_db});
+            Mhz{signal_bandwidth_mhz_}, Mhz{hop_range_mhz_}, Db{computed_js_db},
+            Db{js_threshold_db_});
         output_.optimum_bw = pb.optimum_jamming_bandwidth;
         output_.duty_cycle = pb.duty_cycle;
-        output_.optimum_bw_str   = format_mhz(output_.optimum_bw, 3);
-        output_.duty_cycle_str   = format_percent(output_.duty_cycle);
+        if (pb.meets_threshold) {
+            output_.optimum_bw_str = format_mhz(output_.optimum_bw, 3);
+            output_.duty_cycle_str = format_percent(output_.duty_cycle);
+        } else {
+            // J/S misses the threshold on a single channel: no partial-band
+            // optimum exists, so say why instead of printing 0.000.
+            output_.optimum_bw_str = "J/S below threshold";
+            output_.duty_cycle_str = "N/A";
+        }
     } else {
         // Non-hopping signal (hop_range = 0) or invalid BW inputs
         output_.optimum_bw_str = "N/A";

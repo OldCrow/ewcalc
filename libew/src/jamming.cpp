@@ -79,23 +79,77 @@ Km burnthrough_range(
 PartialBandResult partial_band_jamming(
     Mhz signal_bandwidth,
     Mhz hop_range_bandwidth,
-    Db  single_channel_js) noexcept
+    Db  single_channel_js,
+    Db  required_js) noexcept
 {
     // Reject non-positive hop range unconditionally so release builds don't divide by zero.
     if (hop_range_bandwidth.value <= 0.0)
         return {Mhz{0.0}, 0.0};
 
+    // Below the requirement on a single channel there is nothing to spread:
+    // the formula would return a fraction of one signal bandwidth, which no
+    // jamming bandwidth can usefully be.
+    const Db margin = single_channel_js - required_js;
+    if (margin.value < 0.0)
+        return {Mhz{0.0}, 0.0, false};
+
     // Optimum jamming bandwidth maximises effective J/S.
-    // BW_opt = signal_bw * 10^(js_single / 10); at J/S = 0 dB this naturally
-    // reduces to BW_opt = signal_bw, and for J/S > 0 dB it widens beyond the
-    // signal bandwidth (spreading excess J/S across more of the hop range).
-    const double bw_opt = signal_bandwidth.value * std::pow(10.0, single_channel_js.value / 10.0);
+    // BW_opt = signal_bw * 10^(margin / 10); at zero margin this naturally
+    // reduces to BW_opt = signal_bw, and above it widens beyond the signal
+    // bandwidth (spreading the surplus J/S across more of the hop range).
+    const double bw_opt = signal_bandwidth.value * std::pow(10.0, margin.value / 10.0);
     const double bw_jam = std::min(bw_opt, hop_range_bandwidth.value);
     // bw_jam is already clamped to hop_range_bandwidth above (and hop_range_bandwidth
     // is > 0 here per the guard clause), so this ratio can never exceed 1.0.
     const double duty   = bw_jam / hop_range_bandwidth.value;
 
     return {Mhz{bw_jam}, duty};
+}
+
+// J/S terms independent of the range being solved for. SPJ is SOJ with the
+// jammer on the target: R_J = R_T and G_S = G_M.
+namespace {
+
+double spj_offset_db(Dbm radar_erp, Dbm jammer_erp, Dbsm rcs) noexcept {
+    return (jammer_erp - radar_erp).value + constants::radar_js_constant_db - rcs.value;
+}
+
+double soj_offset_db(Dbm radar_erp, Dbm jammer_erp, Km jammer_range,
+                     Db mainbeam_gain, Db sidelobe_gain, Dbsm rcs) noexcept {
+    return spj_offset_db(radar_erp, jammer_erp, rcs)
+         + sidelobe_gain.value - mainbeam_gain.value
+         - 20.0 * std::log10(jammer_range.value);
+}
+
+} // namespace
+
+Db self_protection_js(Dbm radar_erp, Dbm jammer_erp, Km range, Dbsm rcs) noexcept
+{
+    return Db{spj_offset_db(radar_erp, jammer_erp, rcs) + 20.0 * std::log10(range.value)};
+}
+
+Km self_protection_burnthrough(Dbm radar_erp, Dbm jammer_erp, Dbsm rcs,
+                               Db js_threshold) noexcept
+{
+    const double offset = spj_offset_db(radar_erp, jammer_erp, rcs);
+    return Km{std::pow(10.0, (js_threshold.value - offset) / 20.0)};
+}
+
+Db stand_off_js(Dbm radar_erp, Dbm jammer_erp, Km target_range, Km jammer_range,
+                Db mainbeam_gain, Db sidelobe_gain, Dbsm rcs) noexcept
+{
+    return Db{soj_offset_db(radar_erp, jammer_erp, jammer_range,
+                            mainbeam_gain, sidelobe_gain, rcs)
+              + 40.0 * std::log10(target_range.value)};
+}
+
+Km stand_off_burnthrough(Dbm radar_erp, Dbm jammer_erp, Km jammer_range,
+                         Db mainbeam_gain, Db sidelobe_gain, Dbsm rcs,
+                         Db js_threshold) noexcept
+{
+    const double offset = soj_offset_db(radar_erp, jammer_erp, jammer_range,
+                                        mainbeam_gain, sidelobe_gain, rcs);
+    return Km{std::pow(10.0, (js_threshold.value - offset) / 40.0)};
 }
 
 } // namespace libew::jamming

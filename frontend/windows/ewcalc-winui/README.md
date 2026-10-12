@@ -18,6 +18,7 @@ ewcalc-winui.sln
 │   ├── RadarAdapter.h/.cpp
 │   ├── DetectionAdapter.h/.cpp
 │   ├── DopplerAdapter.h/.cpp
+│   ├── RadarJammingAdapter.h/.cpp
 │   └── DigitalAdapter.h/.cpp
 │
 └── ewcalc-winui/          C# WinUI 3 (.csproj)
@@ -33,6 +34,7 @@ ewcalc-winui.sln
 │   ├── JammingLocationRadarViewModels.cs
 │   ├── DetectionViewModel.cs
 │   ├── DopplerViewModel.cs
+│   ├── RadarJammingViewModel.cs
 │   └── DigitalViewModel.cs
     └── Views/
         ├── ResultRow.xaml/.cs       Shared label/value row control
@@ -45,6 +47,7 @@ ewcalc-winui.sln
         ├── RadarPage.xaml/.cs
         ├── DetectionPage.xaml
         ├── DopplerPage.xaml
+        ├── RadarJammingPage.xaml
         └── DigitalPage.xaml
 ```
 

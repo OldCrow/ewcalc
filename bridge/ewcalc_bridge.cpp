@@ -13,6 +13,7 @@
 #include <ewpresenter/radar_presenter.h>
 #include <ewpresenter/detection_presenter.h>
 #include <ewpresenter/doppler_presenter.h>
+#include <ewpresenter/radar_jamming_presenter.h>
 #include <ewpresenter/digital_presenter.h>
 #include <ewpresenter/antenna_presenter.h>
 #include <ewpresenter/reference_data.h>
@@ -177,6 +178,25 @@ static EwpDetectionOutput to_c(const ewpresenter::DetectionPresenter::Output& o)
     copy_str(out.dwell_time_str,              o.dwell_time_str);
     copy_str(out.hits_per_scan_str,           o.hits_per_scan_str);
     copy_str(out.far_str,                     o.far_str);
+    out.valid = o.valid;
+    return out;
+}
+
+// ── Radar Jamming ────────────────────────────────────────────────────────────
+
+struct RadarJammingWrapper {
+    ewpresenter::RadarJammingPresenter presenter;
+    EwpRadarJammingCallback cb = nullptr;
+    void* ctx = nullptr;
+};
+
+static EwpRadarJammingOutput to_c(const ewpresenter::RadarJammingPresenter::Output& o) noexcept {
+    EwpRadarJammingOutput out{};
+    copy_str(out.js_ratio_str,          o.js_ratio_str);
+    copy_str(out.js_margin_str,         o.js_margin_str);
+    copy_str(out.burnthrough_range_str, o.burnthrough_range_str);
+    copy_str(out.status_str,            o.status_str);
+    out.jammer_effective = o.jammer_effective;
     out.valid = o.valid;
     return out;
 }
@@ -586,6 +606,52 @@ double           ewp_doppler_target_range(EwpDopplerRef ref) { return cast<Doppl
 double           ewp_doppler_beamwidth_az(EwpDopplerRef ref) { return cast<DopplerWrapper>(ref)->presenter.beamwidth_az_deg(); }
 double           ewp_doppler_beamwidth_el(EwpDopplerRef ref) { return cast<DopplerWrapper>(ref)->presenter.beamwidth_el_deg(); }
 EwpDopplerOutput ewp_doppler_output(EwpDopplerRef ref)       { return to_c(cast<DopplerWrapper>(ref)->presenter.output()); }
+
+// ============================================================================
+// Radar Jamming implementation
+// ============================================================================
+
+EwpRadarJammingRef ewp_radar_jamming_create(void) {
+    auto* w = new RadarJammingWrapper();
+    w->presenter.set_on_change([w](const ewpresenter::RadarJammingPresenter::Output& o) {
+        if (w->cb) w->cb(to_c(o), w->ctx);
+    });
+    return w;
+}
+void ewp_radar_jamming_destroy(EwpRadarJammingRef ref) { delete cast<RadarJammingWrapper>(ref); }
+
+void ewp_radar_jamming_set_geometry(EwpRadarJammingRef ref, int g)          { cast<RadarJammingWrapper>(ref)->presenter.set_geometry(g); }
+void ewp_radar_jamming_set_radar_erp(EwpRadarJammingRef ref, double dbm)    { cast<RadarJammingWrapper>(ref)->presenter.set_radar_erp(dbm); }
+void ewp_radar_jamming_set_jammer_erp(EwpRadarJammingRef ref, double dbm)   { cast<RadarJammingWrapper>(ref)->presenter.set_jammer_erp(dbm); }
+void ewp_radar_jamming_set_target_rcs(EwpRadarJammingRef ref, double dbsm)  { cast<RadarJammingWrapper>(ref)->presenter.set_target_rcs(dbsm); }
+void ewp_radar_jamming_set_target_range(EwpRadarJammingRef ref, double km)  { cast<RadarJammingWrapper>(ref)->presenter.set_target_range(km); }
+void ewp_radar_jamming_set_jammer_range(EwpRadarJammingRef ref, double km)  { cast<RadarJammingWrapper>(ref)->presenter.set_jammer_range(km); }
+void ewp_radar_jamming_set_mainbeam_gain(EwpRadarJammingRef ref, double db) { cast<RadarJammingWrapper>(ref)->presenter.set_mainbeam_gain(db); }
+void ewp_radar_jamming_set_sidelobe_gain(EwpRadarJammingRef ref, double db) { cast<RadarJammingWrapper>(ref)->presenter.set_sidelobe_gain(db); }
+void ewp_radar_jamming_set_js_threshold(EwpRadarJammingRef ref, double db)  { cast<RadarJammingWrapper>(ref)->presenter.set_js_threshold(db); }
+void ewp_radar_jamming_set_callback(EwpRadarJammingRef ref, EwpRadarJammingCallback cb, void* ctx) {
+    auto* w = cast<RadarJammingWrapper>(ref); w->cb = cb; w->ctx = ctx;
+}
+
+int    ewp_radar_jamming_geometry(EwpRadarJammingRef ref)      { return cast<RadarJammingWrapper>(ref)->presenter.geometry(); }
+double ewp_radar_jamming_radar_erp(EwpRadarJammingRef ref)     { return cast<RadarJammingWrapper>(ref)->presenter.radar_erp_dbm(); }
+double ewp_radar_jamming_jammer_erp(EwpRadarJammingRef ref)    { return cast<RadarJammingWrapper>(ref)->presenter.jammer_erp_dbm(); }
+double ewp_radar_jamming_target_rcs(EwpRadarJammingRef ref)    { return cast<RadarJammingWrapper>(ref)->presenter.target_rcs_dbsm(); }
+double ewp_radar_jamming_target_range(EwpRadarJammingRef ref)  { return cast<RadarJammingWrapper>(ref)->presenter.target_range_km(); }
+double ewp_radar_jamming_jammer_range(EwpRadarJammingRef ref)  { return cast<RadarJammingWrapper>(ref)->presenter.jammer_range_km(); }
+double ewp_radar_jamming_mainbeam_gain(EwpRadarJammingRef ref) { return cast<RadarJammingWrapper>(ref)->presenter.mainbeam_gain_db(); }
+double ewp_radar_jamming_sidelobe_gain(EwpRadarJammingRef ref) { return cast<RadarJammingWrapper>(ref)->presenter.sidelobe_gain_db(); }
+double ewp_radar_jamming_js_threshold(EwpRadarJammingRef ref)  { return cast<RadarJammingWrapper>(ref)->presenter.js_threshold_db(); }
+EwpFieldError ewp_radar_jamming_geometry_error(EwpRadarJammingRef ref)      { return to_c(cast<RadarJammingWrapper>(ref)->presenter.geometry_error()); }
+EwpFieldError ewp_radar_jamming_radar_erp_error(EwpRadarJammingRef ref)     { return to_c(cast<RadarJammingWrapper>(ref)->presenter.radar_erp_error()); }
+EwpFieldError ewp_radar_jamming_jammer_erp_error(EwpRadarJammingRef ref)    { return to_c(cast<RadarJammingWrapper>(ref)->presenter.jammer_erp_error()); }
+EwpFieldError ewp_radar_jamming_target_rcs_error(EwpRadarJammingRef ref)    { return to_c(cast<RadarJammingWrapper>(ref)->presenter.target_rcs_error()); }
+EwpFieldError ewp_radar_jamming_target_range_error(EwpRadarJammingRef ref)  { return to_c(cast<RadarJammingWrapper>(ref)->presenter.target_range_error()); }
+EwpFieldError ewp_radar_jamming_jammer_range_error(EwpRadarJammingRef ref)  { return to_c(cast<RadarJammingWrapper>(ref)->presenter.jammer_range_error()); }
+EwpFieldError ewp_radar_jamming_mainbeam_gain_error(EwpRadarJammingRef ref) { return to_c(cast<RadarJammingWrapper>(ref)->presenter.mainbeam_gain_error()); }
+EwpFieldError ewp_radar_jamming_sidelobe_gain_error(EwpRadarJammingRef ref) { return to_c(cast<RadarJammingWrapper>(ref)->presenter.sidelobe_gain_error()); }
+EwpFieldError ewp_radar_jamming_js_threshold_error(EwpRadarJammingRef ref)  { return to_c(cast<RadarJammingWrapper>(ref)->presenter.js_threshold_error()); }
+EwpRadarJammingOutput ewp_radar_jamming_output(EwpRadarJammingRef ref)      { return to_c(cast<RadarJammingWrapper>(ref)->presenter.output()); }
 
 // ============================================================================
 // Digital implementation

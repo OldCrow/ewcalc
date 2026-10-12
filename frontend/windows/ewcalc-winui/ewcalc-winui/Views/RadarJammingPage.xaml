@@ -1,0 +1,164 @@
+<Page
+    x:Class="EwCalc.Views.RadarJammingPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:helpers="using:EwCalc.Helpers"
+    xmlns:local="using:EwCalc.Views">
+
+    <Page.Resources>
+        <helpers:FieldErrorToBrushConverter x:Key="FieldErrorToBrush" />
+        <helpers:FieldErrorToTooltipConverter x:Key="FieldErrorToTooltip" />
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24,20,24,24" Spacing="8">
+
+            <Grid Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Radar Jamming" Style="{ThemeResource TitleTextBlockStyle}" />
+                    <TextBlock Text="Self-protection and stand-off J/S · J/S margin · Burnthrough range"
+                               Style="{ThemeResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <Button Grid.Column="1" VerticalAlignment="Top"
+                        Click="CopyResultsButton_Click"
+                        AutomationProperties.Name="Copy results to clipboard"
+                        ToolTipService.ToolTip="Copy all results to clipboard">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" FontSize="14" />
+                        <TextBlock Text="Copy results" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <TextBlock Text="GEOMETRY" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource InputCardStyle}">
+                <StackPanel Spacing="12">
+                    <ComboBox x:Name="GeometryBox" Header="Jamming geometry"
+                              AutomationProperties.Name="Jamming geometry"
+                              ToolTipService.ToolTip="Self-protection: the jammer is on the target, so jammer and target share one range. Stand-off: the jammer sits apart from the target at its own range and reaches the radar through a sidelobe"
+                              HorizontalAlignment="Stretch"
+                              SelectedIndex="{x:Bind ViewModel.DefaultGeometry, Mode=OneTime}"
+                              SelectionChanged="GeometryBox_SelectionChanged">
+                        <ComboBoxItem Content="Self-protection" />
+                        <ComboBoxItem Content="Stand-off" />
+                    </ComboBox>
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="RADAR, TARGET &amp; JAMMER" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource InputCardStyle}">
+                <StackPanel Spacing="12">
+                    <NumberBox x:Name="RadarErpBox" Header="Radar ERP (dBm)"
+                               AutomationProperties.Name="Radar ERP (dBm)"
+                               ToolTipService.ToolTip="Effective radiated power of the radar toward the target: peak transmit power + transmit antenna gain"
+                               Value="{x:Bind ViewModel.DefaultRadarErp, Mode=OneTime}"
+                               Minimum="-100" Maximum="200" SmallChange="1"
+                               BorderBrush="{x:Bind ViewModel.RadarErpError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
+                               ValueChanged="RadarErpBox_ValueChanged" />
+                    <NumberBox x:Name="JammerErpBox" Header="Jammer ERP (dBm)"
+                               AutomationProperties.Name="Jammer ERP (dBm)"
+                               ToolTipService.ToolTip="Effective radiated power of the jammer toward the radar, within the radar's receiver bandwidth — power outside that bandwidth does not count"
+                               Value="{x:Bind ViewModel.DefaultJammerErp, Mode=OneTime}"
+                               Minimum="-100" Maximum="200" SmallChange="1"
+                               BorderBrush="{x:Bind ViewModel.JammerErpError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
+                               ValueChanged="JammerErpBox_ValueChanged" />
+                    <NumberBox x:Name="TargetRcsBox" Header="Target RCS (dBsm)"
+                               AutomationProperties.Name="Target RCS (dBsm)"
+                               ToolTipService.ToolTip="Radar cross-section of the target in dB relative to 1 m² — sets the strength of the skin return the jammer must overcome"
+                               Value="{x:Bind ViewModel.DefaultTargetRcs, Mode=OneTime}"
+                               Minimum="-40" Maximum="60" SmallChange="1"
+                               BorderBrush="{x:Bind ViewModel.TargetRcsError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
+                               ValueChanged="TargetRcsBox_ValueChanged" />
+                    <NumberBox x:Name="TargetRangeBox" Header="Target range (km)"
+                               AutomationProperties.Name="Target range (km)"
+                               ToolTipService.ToolTip="Range from the radar to the target"
+                               Value="{x:Bind ViewModel.DefaultTargetRange, Mode=OneTime}"
+                               Minimum="0.01" Maximum="10000" SmallChange="1"
+                               BorderBrush="{x:Bind ViewModel.TargetRangeError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
+                               ValueChanged="TargetRangeBox_ValueChanged" />
+                    <NumberBox x:Name="JsThresholdBox" Header="J/S threshold (dB)"
+                               AutomationProperties.Name="J/S threshold (dB)"
+                               ToolTipService.ToolTip="J/S level at which jamming is considered effective — sets the J/S margin and the burnthrough range"
+                               Value="{x:Bind ViewModel.DefaultJsThreshold, Mode=OneTime}"
+                               Minimum="-30" Maximum="30" SmallChange="0.5"
+                               BorderBrush="{x:Bind ViewModel.JsThresholdError, Mode=OneWay,
+                                   Converter={StaticResource FieldErrorToBrush}}"
+                               ValueChanged="JsThresholdBox_ValueChanged" />
+                </StackPanel>
+            </Border>
+
+            <StackPanel Spacing="8" Visibility="{x:Bind ViewModel.IsStandOff, Mode=OneWay}">
+                <TextBlock Text="STAND-OFF" Style="{StaticResource SectionHeaderStyle}" />
+                <Border Style="{StaticResource InputCardStyle}">
+                    <StackPanel Spacing="12">
+                        <NumberBox x:Name="JammerRangeBox" Header="Jammer range (km)"
+                                   AutomationProperties.Name="Jammer range (km)"
+                                   ToolTipService.ToolTip="Range from the radar to the stand-off jammer"
+                                   Value="{x:Bind ViewModel.DefaultJammerRange, Mode=OneTime}"
+                                   Minimum="0.01" Maximum="10000" SmallChange="1"
+                                   BorderBrush="{x:Bind ViewModel.JammerRangeError, Mode=OneWay,
+                                       Converter={StaticResource FieldErrorToBrush}}"
+                                   ValueChanged="JammerRangeBox_ValueChanged" />
+                        <NumberBox x:Name="MainbeamGainBox" Header="Mainbeam gain Gₘ (dB)"
+                                   AutomationProperties.Name="Mainbeam gain (dB)"
+                                   ToolTipService.ToolTip="Radar receive gain toward the target (mainbeam)"
+                                   Value="{x:Bind ViewModel.DefaultMainbeamGain, Mode=OneTime}"
+                                   Minimum="-30" Maximum="60" SmallChange="0.5"
+                                   BorderBrush="{x:Bind ViewModel.MainbeamGainError, Mode=OneWay,
+                                       Converter={StaticResource FieldErrorToBrush}}"
+                                   ValueChanged="MainbeamGainBox_ValueChanged" />
+                        <NumberBox x:Name="SidelobeGainBox" Header="Sidelobe gain Gₛ (dB)"
+                                   AutomationProperties.Name="Sidelobe gain (dB)"
+                                   ToolTipService.ToolTip="Radar receive gain toward the jammer (sidelobe) — the gap from the mainbeam gain is the sidelobe rejection the jammer must overcome"
+                                   Value="{x:Bind ViewModel.DefaultSidelobeGain, Mode=OneTime}"
+                                   Minimum="-30" Maximum="60" SmallChange="0.5"
+                                   BorderBrush="{x:Bind ViewModel.SidelobeGainError, Mode=OneWay,
+                                       Converter={StaticResource FieldErrorToBrush}}"
+                                   ValueChanged="SidelobeGainBox_ValueChanged" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <TextBlock Text="J/S ANALYSIS" Style="{StaticResource SectionHeaderStyle}" />
+            <Border Style="{StaticResource ResultCardStyle}">
+                <StackPanel Spacing="0">
+                    <local:ResultRow Label="J/S" Value="{x:Bind ViewModel.JsRatio, Mode=OneWay}" IsHighlighted="True"
+                                     ToolTipService.ToolTip="Jammer-to-signal power ratio at the radar receiver for the current range (dB)" />
+                    <local:ResultRow Label="J/S margin" Value="{x:Bind ViewModel.JsMargin, Mode=OneWay}"
+                                     ToolTipService.ToolTip="J/S minus the threshold — positive means the jammer meets the effectiveness threshold at the current range" />
+                    <local:ResultRow Label="Burnthrough range" Value="{x:Bind ViewModel.BurnthroughRange, Mode=OneWay}"
+                                     ToolTipService.ToolTip="Range at which J/S falls to the threshold. Self-protection: the radar sees the target inside this range. Stand-off: the radar-to-target range at which the radar sees through the jamming, with the jammer held at its range" />
+                    <local:ResultRow Label="Status" Value="{x:Bind ViewModel.Status, Mode=OneWay}"
+                                     ToolTipService.ToolTip="Jammer effective if J/S meets the threshold at the current range; otherwise the radar burns through" />
+                </StackPanel>
+            </Border>
+
+            <Expander Header="Geometry"
+                      AutomationProperties.Name="Geometry diagram"
+                      ToolTipService.ToolTip="Show or hide the geometry diagram for the selected jamming geometry"
+                      HorizontalAlignment="Stretch"
+                      HorizontalContentAlignment="Stretch">
+                <StackPanel Spacing="8">
+                    <Image Source="ms-appx:///Assets/Diagrams/jamming-self-protection.png"
+                           Visibility="{x:Bind ViewModel.IsSelfProtection, Mode=OneWay}"
+                           MaxWidth="640" Stretch="Uniform" HorizontalAlignment="Center"
+                           AutomationProperties.Name="jamming self protection" />
+                    <Image Source="ms-appx:///Assets/Diagrams/jamming-stand-off.png"
+                           Visibility="{x:Bind ViewModel.IsStandOff, Mode=OneWay}"
+                           MaxWidth="640" Stretch="Uniform" HorizontalAlignment="Center"
+                           AutomationProperties.Name="jamming stand off" />
+                </StackPanel>
+            </Expander>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

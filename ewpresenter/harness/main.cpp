@@ -104,6 +104,20 @@ int main() {
         row("Duty cycle",     out.duty_cycle_str);
     }
 
+    section("Radar Jamming");
+    {
+        ewpresenter::RadarJammingPresenter p;
+        const auto& out = p.output();
+        row("Valid",             out.valid ? "yes" : "NO");
+        row("SPJ J/S",           out.js_ratio_str);
+        row("SPJ burnthrough",   out.burnthrough_range_str);
+        row("SPJ status",        out.status_str);
+        p.set_geometry(ewpresenter::RadarJammingPresenter::kStandOff);
+        row("SOJ J/S",           out.js_ratio_str);
+        row("SOJ burnthrough",   out.burnthrough_range_str);
+        row("SOJ status",        out.status_str);
+    }
+
     // -----------------------------------------------------------------------
     // 5. Location
     //    Default: 1° RMS bearing, 100 km range; EEP 2/1 km

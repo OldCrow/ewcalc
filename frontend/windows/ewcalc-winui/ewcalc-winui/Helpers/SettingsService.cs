@@ -75,6 +75,19 @@ public sealed class JammingSettings
     public double? JsThreshold { get; set; }
 }
 
+public sealed class RadarJammingSettings
+{
+    public int? Geometry { get; set; }
+    public double? RadarErp { get; set; }
+    public double? JammerErp { get; set; }
+    public double? TargetRcs { get; set; }
+    public double? TargetRange { get; set; }
+    public double? JammerRange { get; set; }
+    public double? MainbeamGain { get; set; }
+    public double? SidelobeGain { get; set; }
+    public double? JsThreshold { get; set; }
+}
+
 public sealed class LocationSettings
 {
     public double? RmsBearingError { get; set; }
@@ -143,6 +156,7 @@ public sealed class AppSettings
     public LinkSettings        Link        { get; set; } = new();
     public ReceiverSettings    Receiver    { get; set; } = new();
     public JammingSettings     Jamming     { get; set; } = new();
+    public RadarJammingSettings RadarJamming { get; set; } = new();
     public LocationSettings    Location    { get; set; } = new();
     public RadarSettings       Radar       { get; set; } = new();
     public DetectionSettings   Detection   { get; set; } = new();

@@ -5,6 +5,7 @@
 #include "pages/LinkPage.h"
 #include "pages/ReceiverPage.h"
 #include "pages/JammingPage.h"
+#include "pages/RadarJammingPage.h"
 #include "pages/LocationPage.h"
 #include "pages/RadarPage.h"
 #include "pages/DetectionPage.h"
@@ -158,6 +159,17 @@ MainWindow::MainWindow(QWidget* parent)
             painter.end();
             icon = QIcon(canvas);
         }
+        // Without an explicit Selected pixmap the style generates one by
+        // tinting the icon toward the highlight colour; on Yaru's green
+        // highlight (Ubuntu 26.04) that washed the selected row's icon out
+        // almost entirely. Reuse the normal rendering for the selected state.
+        if (!icon.isNull()) {
+            const QPixmap normal = icon.pixmap(navIconSize, nav_->devicePixelRatioF());
+            QIcon flat;
+            flat.addPixmap(normal, QIcon::Normal);
+            flat.addPixmap(normal, QIcon::Selected);
+            icon = flat;
+        }
         if (!icon.isNull())
             item->setIcon(icon);
         nav_->addItem(item);
@@ -172,6 +184,7 @@ MainWindow::MainWindow(QWidget* parent)
     addPage(QStringLiteral("Link Budget"),   QStringLiteral("network-transmit-receive"), new LinkPage);
     addPage(QStringLiteral("Receiver"),      QStringLiteral("audio-card"),              new ReceiverPage);
     addPage(QStringLiteral("Comms Jamming"), QStringLiteral("emblem-important"),        new JammingPage);
+    addPage(QStringLiteral("Radar Jamming"), QStringLiteral("dialog-warning"),         new RadarJammingPage);
     // "find-location" isn't a standard XDG icon name and resolves to nothing
     // on most icon themes; "mark-location" is the widely-shipped equivalent.
     addPage(QStringLiteral("Location"),      QStringLiteral("mark-location"),           new LocationPage);

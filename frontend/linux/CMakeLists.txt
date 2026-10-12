@@ -58,6 +58,7 @@ set(SOURCES
     src/pages/LinkPage.cpp
     src/pages/ReceiverPage.cpp
     src/pages/JammingPage.cpp
+    src/pages/RadarJammingPage.cpp
     src/pages/LocationPage.cpp
     src/pages/RadarPage.cpp
     src/pages/DetectionPage.cpp

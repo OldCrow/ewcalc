@@ -19,7 +19,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0">
-                    <TextBlock Text="Jamming" Style="{ThemeResource TitleTextBlockStyle}" />
+                    <TextBlock Text="Comms Jamming" Style="{ThemeResource TitleTextBlockStyle}" />
                     <TextBlock Text="J/S ratio · Burnthrough · Partial-band optimum bandwidth"
                                Style="{ThemeResource CaptionTextBlockStyle}"
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
@@ -189,12 +189,9 @@
                       HorizontalAlignment="Stretch"
                       HorizontalContentAlignment="Stretch">
                 <StackPanel Spacing="8">
-                    <Image Source="ms-appx:///Assets/Diagrams/jamming-self-protection.png"
+                    <Image Source="ms-appx:///Assets/Diagrams/jamming-comms.png"
                            MaxWidth="640" Stretch="Uniform" HorizontalAlignment="Center"
-                           AutomationProperties.Name="jamming self protection" />
-                    <Image Source="ms-appx:///Assets/Diagrams/jamming-stand-off.png"
-                           MaxWidth="640" Stretch="Uniform" HorizontalAlignment="Center"
-                           AutomationProperties.Name="jamming stand off" />
+                           AutomationProperties.Name="communications jamming" />
                 </StackPanel>
             </Expander>
 

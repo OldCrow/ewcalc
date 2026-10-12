@@ -20,7 +20,7 @@ DopplerPage::DopplerPage(QWidget* parent)
 
     // ── Doppler & ambiguity ───────────────────────────────────────────────────
     QFormLayout* dopForm = nullptr;
-    auto* dopGroup = makeGroup(QStringLiteral("Doppler & ambiguity"), dopForm);
+    auto* dopGroup = makeGroup(QStringLiteral("Doppler && ambiguity"), dopForm);
 
     auto* freqSb = addSpinRow(dopForm, QStringLiteral("Carrier frequency (MHz)"), 1.0, 100000.0,
         presenter_.frequency_mhz(), 100.0, 1, kGroup, QStringLiteral("frequency_mhz"),

@@ -109,6 +109,18 @@ struct SavedInputs: Codable {
         var beamwidthEl: Double
     }
 
+    struct RadarJamming: Codable {
+        var geometry: Int
+        var radarErp: Double
+        var jammerErp: Double
+        var targetRcs: Double
+        var targetRange: Double
+        var jammerRange: Double
+        var mainbeamGain: Double
+        var sidelobeGain: Double
+        var jsThreshold: Double
+    }
+
     struct Digital: Codable {
         var snr: Double
         var bandwidth: Double
@@ -140,6 +152,9 @@ struct SavedInputs: Codable {
     // missing key as nil, so pre-Doppler saved blobs still load without a
     // format-version bump; `apply` simply skips it when absent.
     var doppler: Doppler?
+    // Optional: added after format v1 shipped (see `detection`); `apply`
+    // simply skips it when absent.
+    var radarJamming: RadarJamming?
     var digital: Digital
     var antenna: Antenna
 }
@@ -336,6 +351,31 @@ extension SavedInputs.Doppler {
     }
 }
 
+extension SavedInputs.RadarJamming {
+    init(from a: RadarJammingAdapter) {
+        geometry     = a.defaultGeometry
+        radarErp     = a.defaultRadarErp
+        jammerErp    = a.defaultJammerErp
+        targetRcs    = a.defaultTargetRcs
+        targetRange  = a.defaultTargetRange
+        jammerRange  = a.defaultJammerRange
+        mainbeamGain = a.defaultMainbeamGain
+        sidelobeGain = a.defaultSidelobeGain
+        jsThreshold  = a.defaultJsThreshold
+    }
+    func apply(to a: RadarJammingAdapter) {
+        a.setGeometry(geometry)
+        a.setRadarErp(radarErp)
+        a.setJammerErp(jammerErp)
+        a.setTargetRcs(targetRcs)
+        a.setTargetRange(targetRange)
+        a.setJammerRange(jammerRange)
+        a.setMainbeamGain(mainbeamGain)
+        a.setSidelobeGain(sidelobeGain)
+        a.setJsThreshold(jsThreshold)
+    }
+}
+
 extension SavedInputs.Digital {
     init(from a: DigitalAdapter) {
         snr                = a.defaultSnr
@@ -385,6 +425,7 @@ extension SavedInputs {
         radar         = .init(from: store.radar)
         detection     = .init(from: store.detection)
         doppler       = .init(from: store.doppler)
+        radarJamming  = .init(from: store.radarJamming)
         digital       = .init(from: store.digital)
         antenna       = .init(from: store.antenna)
     }
@@ -398,6 +439,7 @@ extension SavedInputs {
         radar.apply(to: store.radar)
         detection?.apply(to: store.detection)
         doppler?.apply(to: store.doppler)
+        radarJamming?.apply(to: store.radarJamming)
         digital.apply(to: store.digital)
         antenna.apply(to: store.antenna)
     }

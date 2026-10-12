@@ -50,8 +50,19 @@
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1" CornerRadius="8" Padding="16">
                 <StackPanel Spacing="4">
-                    <TextBlock Text="Jamming" FontWeight="SemiBold" />
+                    <TextBlock Text="Comms Jamming" FontWeight="SemiBold" />
                     <TextBlock Text="J/S ratio · Burnthrough range · Partial-band optimum BW"
+                               Style="{ThemeResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+            </Border>
+
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="16">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Radar Jamming" FontWeight="SemiBold" />
+                    <TextBlock Text="Self-protection and stand-off J/S · Burnthrough range"
                                Style="{ThemeResource CaptionTextBlockStyle}"
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                 </StackPanel>

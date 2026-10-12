@@ -104,8 +104,7 @@ JammingPage::JammingPage(QWidget* parent)
     vbox->addWidget(jsGroup);
     vbox->addWidget(pbGroup);
     vbox->addWidget(makeDiagramGroup({
-        QStringLiteral(":/diagrams/jamming-self-protection.png"),
-        QStringLiteral(":/diagrams/jamming-stand-off.png")}));
+        QStringLiteral(":/diagrams/jamming-comms.png")}));
     vbox->addStretch();
 
     auto* scroll = new QScrollArea(this);

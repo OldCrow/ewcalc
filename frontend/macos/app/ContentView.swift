@@ -6,6 +6,7 @@ enum AppSection: String, CaseIterable, Identifiable {
     case link        = "Link Budget"
     case receiver    = "Receiver"
     case jamming     = "Comms Jamming"
+    case radarJamming = "Radar Jamming"
     case location    = "Location"
     case radar       = "Radar"
     case detection   = "Detection"
@@ -21,6 +22,7 @@ enum AppSection: String, CaseIterable, Identifiable {
         case .link:        return "link"
         case .receiver:    return "dot.radiowaves.left.and.right"
         case .jamming:     return "wifi.exclamationmark"
+        case .radarJamming: return "shield.lefthalf.filled"
         case .location:    return "location.circle"
         case .radar:       return "scope"
         case .detection:   return "target"
@@ -32,7 +34,7 @@ enum AppSection: String, CaseIterable, Identifiable {
 
     /// Ordered calculator pages — excludes the reference panel.
     static let calculators: [AppSection] = [
-        .propagation, .antenna, .link, .receiver, .jamming, .location, .radar, .detection, .doppler, .digital
+        .propagation, .antenna, .link, .receiver, .jamming, .radarJamming, .location, .radar, .detection, .doppler, .digital
     ]
 }
 
@@ -139,6 +141,7 @@ struct ContentView: View {
             case .link:        LinkView(adapter: store.link)
             case .receiver:    ReceiverView(adapter: store.receiver)
             case .jamming:     JammingView(adapter: store.jamming)
+            case .radarJamming: RadarJammingView(adapter: store.radarJamming)
             case .location:    LocationView(adapter: store.location)
             case .radar:       RadarView(adapter: store.radar)
             case .detection:   DetectionView(adapter: store.detection)

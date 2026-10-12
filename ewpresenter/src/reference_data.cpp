@@ -389,16 +389,16 @@ constexpr Section kReceiverSections[] = {
 // Adamy EW102 Sec 5.9.1.2 / EW103 Sec 9.3.1 (the corrected v0.7.0
 // surplus-power behavior). Radar J/S forms (self-protection and
 // stand-off; the 71 dB constant = 11 dB for 4π + 60 dB for the km/m²
-// unit choices) are the standard Adamy radar-jamming equations
-// (EW101 ch 9 / EW102 ch 5 family — exact page pin pending a book
-// check), matching the geometries the two #72 diagrams depict; the
-// comms form keeps its own section with the R⁴-vs-R² contrast noted.
+// unit choices) are Adamy's: J/S ratio at EW101 Sec 9.2.3; burnthrough
+// at Sec 9.3.4 (stand-off, constant as −71) and Sec 9.3.5 (self-
+// protection). They match the geometries the two #72 diagrams depict;
+// the comms form keeps its own section with the R⁴-vs-R² contrast noted.
 
 constexpr Row kSpjRadar[] = {
     formula("Self-protection J/S", "jsspj",
             "J/S = ERP_J − ERP_S + 71 + 20 log₁₀ R(km) − 10 log₁₀ σ(m²)  dB"),
     val("R⁴ vs R²", "the skin return falls off as R⁴ (two-way) but jamming only as R² (one-way) — J/S improves 20 dB per range decade, so burnthrough happens close-in"),
-    val("Constant 71", "collects 4π (11 dB) and the km / m² unit choices (60 dB)"),
+    val("Constant 71", "collects 4π (11 dB) and the km / m² unit choices (60 dB); exactly 70.99, which the Radar Jamming calculator uses"),
 };
 
 constexpr Row kSojRadar[] = {
@@ -421,21 +421,21 @@ constexpr Row kBurnthrough[] = {
             "d = 10^((M − 32.44 − 20 log₁₀ f(MHz))/20)  km"),
     formula("Burnthrough range (two-ray)", "burn2ray",
             "d = 10^((M − 120 + 20 log₁₀ h_t(m) + 20 log₁₀ h_r(m))/40)  km"),
-    val("Margin M", "collects the link terms against the J/S threshold — see the Jamming calculator"),
+    val("Margin M", "collects the link terms against the J/S threshold — see the Comms Jamming calculator"),
 };
 
 constexpr Row kPartialBand[] = {
     formula("Optimum jamming bandwidth", "pbopt",
-            "BW_opt = BW_sig · 10^(J/S₁/10)"),
+            "BW_opt = BW_sig · 10^((J/S₁ − J/S_req)/10)"),
     formula("Duty cycle", "pbduty",
             "δ = min(BW_opt, BW_hop) / BW_hop"),
-    val("Rationale", "surplus jammer power widens coverage across more hops rather than over-jamming one channel"),
+    val("Rationale", "only J/S above the threshold (J/S_req) is spread across more hops; below it on one channel there is no optimum and the calculator shows \"J/S below threshold\""),
 };
 
 constexpr Section kJammingSections[] = {
     {"Radar Jamming — Self-Protection", kSpjRadar,    std::size(kSpjRadar),    "jamming-self-protection"},
     {"Radar Jamming — Stand-Off",       kSojRadar,    std::size(kSojRadar),    "jamming-stand-off"},
-    {"Comms Jamming",                   kJsComms,     std::size(kJsComms)},
+    {"Comms Jamming",                   kJsComms,     std::size(kJsComms),     "jamming-comms"},
     {"Burnthrough (one-way link)",      kBurnthrough, std::size(kBurnthrough)},
     {"Partial-Band Jamming",            kPartialBand, std::size(kPartialBand)},
 };

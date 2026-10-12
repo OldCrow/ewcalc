@@ -144,11 +144,29 @@ LOS: `d = 10^((margin - 32.44 - 20*log10(f))/20)`; 2-ray: `d = 10^((margin - 120
 - Assumptions: jammer geometry is fixed; signal range is solved for `J/S = threshold`.
 - Units: km, m, MHz, dB/dBm.
 
+### Radar jamming J/S — self-protection
+`J/S = ERP_J - ERP_S + 70.99 + 20*log10(R) - sigma_dBsm`.
+
+- Source: Adamy EW101 Sec. 9.2.3 "J/S ratio" (Sec. 9.2 is the J/S topic); self-protection burnthrough at Sec. 9.3.5.
+- Constant: `10*log10(4π·10⁶) = 70.99` (4π plus the km² → m² conversion); Adamy rounds it to 71. libew keeps the exact value, as for the 4.122 horizon constant.
+- Assumptions: the jammer rides on the target, so radar receive gains cancel; jammer ERP lies entirely within the radar receiver bandwidth; frequency cancels between the two-way skin return (R⁴) and the one-way jamming path (R²).
+- Burnthrough: `R = 10^((J/S_thr - (ERP_J - ERP_S + 70.99 - sigma_dBsm))/20)`.
+- Units: ERP in dBm, R in km, sigma in dBsm.
+
+### Radar jamming J/S — stand-off
+`J/S = ERP_J - ERP_S + G_S - G_M + 70.99 + 40*log10(R_T) - 20*log10(R_J) - sigma_dBsm`.
+
+- Source: Adamy EW101 Sec. 9.2.3 "J/S ratio"; stand-off burnthrough at Sec. 9.3.4, whose formula carries the constant as −71.
+- Assumptions: `G_M` is the radar receive gain toward the target (mainbeam), `G_S` toward the jammer (usually a sidelobe); reduces to the self-protection form when `R_J = R_T` and `G_S = G_M`.
+- Burnthrough: radar-to-target range with the jammer held at `R_J`, `R_T = 10^((J/S_thr - (ERP_J - ERP_S + G_S - G_M + 70.99 - 20*log10(R_J) - sigma_dBsm))/40)`.
+- Units: ERP in dBm, gains in dB, ranges in km, sigma in dBsm.
+
 ### Partial-band / spot jamming
-`BW_opt = signal_bandwidth * 10^(single_channel_js/10)`, capped only by `hop_range_bandwidth`; `duty_cycle = min(BW_opt, hop_range) / hop_range`.
+`BW_opt = signal_bandwidth * 10^((single_channel_js - required_js)/10)`, capped only by `hop_range_bandwidth`; `duty_cycle = min(BW_opt, hop_range) / hop_range`. `required_js` is the calculator's J/S threshold.
 
 - Source: Adamy EW102 Sec. 5.9.1.2, pp. 144-147; equivalently Adamy EW103 Sec. 9.3.1, pp. 259-262 (essentially the same material).
-- Assumptions: for `single_channel_js >= 0 dB`, surplus jammer power should widen bandwidth beyond the signal bandwidth to cover more hops (the corrected v0.7.0 behavior).
+- Assumptions: only the margin `single_channel_js - required_js` is traded for bandwidth (spreading over N channels costs 10 log N dB each), so a non-negative margin widens bandwidth beyond the signal bandwidth to cover more hops (the corrected v0.7.0 behavior). Adamy gives the rule, not a formula: J/S = 0 dB in each channel is the goal, so the total J/S fixes how many channels the jammer power covers (J/S = 20 dB → 100 channels); verified against the book 2026-10-11. `BW_opt` writes that rule in closed form, and the threshold term generalises his 0 dB per-channel target.
+- Guard: a negative margin means the jammer misses the requirement on even one channel, so no optimum exists; libew returns `meets_threshold = false` with zero bandwidth/duty, and the presenter shows "J/S below threshold" / "N/A" instead of the sub-channel bandwidth the bare formula gives (v1.3.0).
 - Units: bandwidths in MHz, J/S in dB.
 
 ## Location

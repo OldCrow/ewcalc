@@ -99,10 +99,10 @@ void test_jamming_page() {
     const Page& page = pages()[7];
     ASSERT_TRUE(page.section_count == 5);
     // The #72 radar-jamming geometry diagrams pair with the RADAR J/S
-    // sections (user correction 2026-09-12); comms has its own section.
+    // sections (user correction 2026-09-12); comms has its own diagram (#88).
     ASSERT_TRUE(eq(page.sections[0].diagram, "jamming-self-protection"));
     ASSERT_TRUE(eq(page.sections[1].diagram, "jamming-stand-off"));
-    ASSERT_TRUE(page.sections[2].diagram == nullptr);
+    ASSERT_TRUE(eq(page.sections[2].diagram, "jamming-comms"));
     // Radar forms carry the 71 dB constant and the R4-vs-R2 contrast note.
     ASSERT_TRUE(std::string_view{page.sections[0].rows[0].value}.find("71")
                 != std::string_view::npos);

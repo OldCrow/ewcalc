@@ -6,6 +6,7 @@
 
 #include "test_main.h"
 #include "ewpresenter/ewpresenter.h"
+#include <cmath>
 
 // ============================================================================
 // PropagationPresenter
@@ -183,6 +184,28 @@ void test_jamming_partial_band_na_when_zero_hop() {
     ASSERT_TRUE(p.output().duty_cycle_str == "N/A");
 }
 
+void test_jamming_partial_band_below_threshold() {
+    // Jammer 5000 km out: J/S ≈ -43.5 dB, far under the 0 dB threshold. The
+    // unguarded formula printed "0.000 MHz" / "0.000 %" here.
+    ewpresenter::JammingPresenter p;
+    p.set_jammer_to_rx_dist(5000.0);
+    ASSERT_TRUE(p.output().valid);
+    ASSERT_TRUE(p.output().js_ratio.value < 0.0);
+    ASSERT_TRUE(p.output().optimum_bw_str == "J/S below threshold");
+    ASSERT_TRUE(p.output().duty_cycle_str == "N/A");
+}
+
+void test_jamming_partial_band_uses_threshold() {
+    // Default J/S ≈ 36.5 dB; a 30 dB threshold leaves ≈ 6.5 dB to spread,
+    // which stays under the 58 MHz hop range (0 dB would cap it at 100 %).
+    ewpresenter::JammingPresenter p;
+    p.set_js_threshold(30.0);
+    const double margin   = p.output().js_ratio.value - 30.0;
+    const double expected = 0.025 * std::pow(10.0, margin / 10.0);
+    ASSERT_NEAR(p.output().optimum_bw.value, expected, 1e-9);
+    ASSERT_TRUE(p.output().duty_cycle < 1.0);
+}
+
 // ============================================================================
 // DigitalPresenter
 // ============================================================================
@@ -342,6 +365,55 @@ void test_detection_validation() {
     ASSERT_TRUE(p.output().valid);
     // Swerling 0: fluctuation loss is identically zero.
     ASSERT_NEAR(p.output().fluctuation_loss.value, 0.0, 1e-12);
+}
+
+// ============================================================================
+// RadarJammingPresenter
+// ============================================================================
+
+void test_radar_jamming_defaults() {
+    // SPJ defaults: ERP_S 110 dBm, ERP_J 40 dBm, σ 10 dBsm, R 20 km, thr 0 dB.
+    // J/S = 40 − 110 + 70.992 + 26.021 − 10 = 17.013 dB; R_bt = 10^(9.0079/20).
+    ewpresenter::RadarJammingPresenter p;
+    ASSERT_TRUE(p.output().valid);
+    ASSERT_NEAR(p.output().js_ratio.value, 17.013, 1e-3);
+    ASSERT_NEAR(p.output().js_margin.value, 17.013, 1e-3);
+    ASSERT_NEAR(p.output().burnthrough_range.value, 2.82095, 1e-4);
+    ASSERT_TRUE(p.output().jammer_effective);
+    ASSERT_TRUE(p.output().status_str == "Jammer effective");
+    ASSERT_TRUE(p.output().burnthrough_range_str.find("km") != std::string::npos);
+}
+
+void test_radar_jamming_stand_off() {
+    // SOJ defaults: R_J 50 km, G_M 30 dB, G_S 0 dB.
+    // J/S = 40 − 110 + 0 − 30 + 70.992 + 52.041 − 33.979 − 10 = −20.946 dB.
+    ewpresenter::RadarJammingPresenter p;
+    p.set_geometry(ewpresenter::RadarJammingPresenter::kStandOff);
+    ASSERT_TRUE(p.output().valid);
+    ASSERT_NEAR(p.output().js_ratio.value, -20.946, 1e-3);
+    ASSERT_FALSE(p.output().jammer_effective);
+    ASSERT_TRUE(p.output().status_str == "Radar burns through");
+    // Burnthrough lies beyond the current target range here.
+    ASSERT_TRUE(p.output().burnthrough_range.value > 20.0);
+}
+
+void test_radar_jamming_validation() {
+    ewpresenter::RadarJammingPresenter p;
+    // A stand-off-only field does not block self-protection ...
+    p.set_jammer_range(0.0);
+    ASSERT_TRUE(p.output().valid);
+    // ... but does block stand-off.
+    p.set_geometry(ewpresenter::RadarJammingPresenter::kStandOff);
+    ASSERT_FALSE(p.output().valid);
+    ASSERT_TRUE(p.output().js_ratio_str == ewpresenter::kDash);
+    p.set_jammer_range(50.0);
+    ASSERT_TRUE(p.output().valid);
+    p.set_geometry(2);
+    ASSERT_FALSE(p.output().valid);
+    ASSERT_TRUE(p.geometry_error() != ewpresenter::FieldError::none);
+    p.set_geometry(0);
+    p.set_target_rcs(99.0);
+    ASSERT_FALSE(p.output().valid);
 }
 
 // ============================================================================
@@ -530,6 +602,8 @@ int main() {
     RUN_TEST(test_jamming_default_valid);
     RUN_TEST(test_jamming_js_value);
     RUN_TEST(test_jamming_partial_band_na_when_zero_hop);
+    RUN_TEST(test_jamming_partial_band_below_threshold);
+    RUN_TEST(test_jamming_partial_band_uses_threshold);
 
     RUN_TEST(test_digital_default_valid);
     RUN_TEST(test_digital_eb_no_value);
@@ -549,6 +623,9 @@ int main() {
     RUN_TEST(test_detection_default_values);
     RUN_TEST(test_detection_validation);
 
+    RUN_TEST(test_radar_jamming_defaults);
+    RUN_TEST(test_radar_jamming_stand_off);
+    RUN_TEST(test_radar_jamming_validation);
     RUN_TEST(test_doppler_default_valid);
     RUN_TEST(test_doppler_default_values);
     RUN_TEST(test_doppler_validation);

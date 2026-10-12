@@ -4,7 +4,7 @@ import Combine
 import Foundation
 
 /// Top-level store injected as an environment object.
-/// Owns all ten presenter adapters for the lifetime of the app.
+/// Owns all eleven presenter adapters for the lifetime of the app.
 ///
 /// Also owns input persistence (#20): every adapter's current values are
 /// captured into a `SavedInputs` snapshot and written to UserDefaults a short
@@ -16,6 +16,7 @@ final class EwCalcStore: ObservableObject {
     let link        = LinkAdapter()
     let receiver    = ReceiverAdapter()
     let jamming     = JammingAdapter()
+    let radarJamming = RadarJammingAdapter()
     let location    = LocationAdapter()
     let radar       = RadarAdapter()
     let detection   = DetectionAdapter()
@@ -93,8 +94,8 @@ final class EwCalcStore: ObservableObject {
     private func observeChangesForAutosave() {
         Publishers.MergeMany(
             propagation.objectWillChange, link.objectWillChange, receiver.objectWillChange,
-            jamming.objectWillChange, location.objectWillChange, radar.objectWillChange,
-            detection.objectWillChange, doppler.objectWillChange,
+            jamming.objectWillChange, radarJamming.objectWillChange, location.objectWillChange,
+            radar.objectWillChange, detection.objectWillChange, doppler.objectWillChange,
             digital.objectWillChange, antenna.objectWillChange
         )
         .debounce(for: .milliseconds(400), scheduler: RunLoop.main)

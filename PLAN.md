@@ -227,8 +227,10 @@ Open milestones are fully itemized here since they reflect actionable state.
     40·log₁₀ — prose corrected, code untouched); #86 carries the
     dilemma product; #87 completed the QV shrink (RCS and Eb/N₀ tables
     superseded by domain pages; QV = 3 cross-domain sections).
-    PENDING PINS for the next book session: radar SPJ/SOJ J/S forms
-    and the 71 constant (EW101 ch 9 / EW102 ch 5 family).
+    PINNED 2026-10-11 (user, from the book): J/S is the topic of
+    EW101 Sec 9.2, J/S ratio at Sec 9.2.3. Burnthrough: stand-off at
+    Sec 9.3.4 (its formula carries the constant as −71), self-
+    protection at Sec 9.3.5. No radar-jamming pins remain open.
   - ONCE-OVER + QV RETIREMENT 2026-09-12 (macOS session, 816e94c +
     1e983c1): RCS moved before Radar & Detection; glossary EEP entry
     now quotes Wegner Eq 24a; log-periodic band range normalized to
@@ -312,6 +314,85 @@ Open milestones are fully itemized here since they reflect actionable state.
     Jamming" on dev/v1.2.0 the same day. Radar J/S forms + 71 dB
     constant need physical-book pins (also owed on their v1.2.0
     reference-page copies).
+    IN PROGRESS 2026-10-11 on dev/v1.3.0 (milestone branch, same
+    one-PR model as v1.2.0). Core DONE: libew self_protection_js /
+    stand_off_js + burnthrough inversions, RadarJammingPresenter
+    (int geometry 0 = SPJ / 1 = SOJ; SOJ-only fields never block an
+    SPJ result), ewp_radar_jamming_* bridge, tests 14/14.
+    DECIDED: one pane with a geometry picker (each mode maps to its
+    existing #72 diagram); no frequency input (it cancels); constant
+    kept exact at 70.99 (Adamy rounds to 71, same precedent as 4.122).
+    Frontend panes DONE on all three. Verified here: macOS app builds
+    warning-free + SwiftLint clean; the Qt6 frontend also builds on
+    this Mac (Qt 6.11.2 present) under -Werror + lint-linux.sh clean;
+    WinUI uncompiled. NOT yet seen on screen on any platform — each
+    needs a UI pass (macOS here, Linux VM, Windows box).
+    DECIDED (user, 2026-10-11): diagrams aligned to their calculators —
+    the two radar diagrams now live only on Radar Jamming; Comms Jamming
+    got a new one-way geometry diagram (jamming-comms), also on the
+    reference page's Comms Jamming section.
+    Selector note: geometry is a segmented picker (macOS) / combo box
+    (Linux, WinUI) — no prior pane had an int-enum selector.
+    VERIFIED macOS 2026-10-11 (clean Release build, app driven via AX
+    scripting + screencapture): both modes compute the presenter-test
+    values, stand-off rows hide in SPJ mode, Geometry diagram swaps with
+    the mode, Comms Jamming shows only jamming-comms. Fixed from the pass:
+    stale "Jamming" pane title (macOS + WinUI; WinUI home card split into
+    Comms/Radar Jamming), stand-off diagram R_T/R_J subscripts (U+2C7C has
+    no glyph in the render font) and both radar diagrams' jamming labels
+    clipping their lines.
+    CI: dispatch runs on dev/v1.3.0 all green after the Linux Qt 6.2 fix
+    (eb7e600). A notary 403 "agreement missing or expired" right after
+    accepting Apple's agreement is propagation lag — it cleared on its own.
+    VERIFIED Linux 2026-10-11 (Ubuntu 26.04 VM, Qt 6.8.3): all seven
+    checks pass. The out-of-range check can't fire on Linux by design —
+    an audit found all 82 spin boxes clamped to (81) or inside (1) their
+    presenter bounds, so no invalid value can be entered. Fixed from the
+    pass: '&' mnemonic eating group titles ("Radar & jammer", "Doppler &
+    ambiguity", 7b4ddae); stand-off J/S formula squeezed to half size by
+    the 300 px std-form cap (now applied only beside a log form);
+    selected sidebar icon washed out by the style's highlight tint; stale
+    "see the Jamming calculator" reference text.
+    Partial-band fix (same pass, core — reaches all frontends):
+    BW_opt now spends only the margin over the J/S threshold
+    (10^((J/S − J/S_req)/10); identical at the 0 dB default), and below
+    threshold reports "J/S below threshold" / "N/A" instead of a
+    sub-channel bandwidth shown as 0.000. Threshold term is our
+    generalisation of Adamy's 0 dB per-channel target. BOOK-CHECKED
+    2026-10-11 (user): EW102 Sec 5.9.1.2 gives the rule, not a formula —
+    J/S = 0 dB per channel is the goal, so total J/S fixes the channel
+    count (20 dB → 100 channels). BW_opt is that rule in closed form.
+    CI: dispatch run 38192845739 on 8b8031e all green (all three
+    frontends, sanitizers, static analysis, coverage, docs).
+    REMAINING for #88:
+    - macOS re-check DONE 2026-10-11: pbopt-std.png re-rendered (only
+      that PNG changed — renders are deterministic); defaults 58.000 MHz
+      / 100.000 %, 5000 km → J/S −43.5 dB, "J/S below threshold" / "N/A";
+      Margin M and Rationale text correct. The stand-off J/S squeeze
+      reproduced on macOS too (400 pt column cap on a lone std form, ~2/3
+      size) — fixed the Linux way: the cap and the shared column width
+      now apply only to std forms with a log form beside them; paired
+      sections (Propagation) still align.
+    - Windows UI pass DONE 2026-10-11 (Zen box, dev/v1.3.0 at f7e636f):
+      core 14/14 warning-free; first WinUI compile of the pane builds
+      clean (only the known local NETSDK1198, see Known Gaps); dotnet
+      format style clean. Driven via UIA + screen capture. No defects.
+      Passed: nav order + shield icon; SPJ hides the three stand-off
+      inputs, 17.0 dB / 2.821 km / "Jammer effective"; SOJ shows them,
+      −20.9 dB / 66.786 km / "Radar burns through"; diagram swaps with
+      the mode, R_T/R_J and Gₘ/Gₛ subscripts clean; mode + inputs survive
+      a restart; Comms Jamming pane and reference section show only
+      jamming-comms; 5000 km → "J/S below threshold" / "N/A"; reference
+      stand-off formula at full size (723 px physical ≈ 578 logical at
+      125 %), Margin M / Rationale text present.
+      Out-of-range check UNREACHABLE by design, as on Linux — the
+      premise that WinUI accepts free text was wrong: every NumberBox
+      carries Minimum/Maximum equal to the presenter bounds (RCS 100
+      clamps to 60), and an emptied field (NaN) is ignored app-wide, so
+      results keep the last valid value.
+      Next: all three UI passes are done — #88 is ready for the
+      dev/v1.3.0 → main PR once the user decides whether more v1.3.0
+      calculators ride the same branch.
 
 ## GitHub Issues Without Milestone [DERIVED]
 Same leaner convention as milestones above: closed items are a count only
@@ -393,8 +474,9 @@ itemized since they're actionable.
   BUNDLE_VERSION int), Package.appxmanifest, AND
   frontend/linux/CMakeLists.txt project VERSION. The user disabled
   "Protect release tags" for the re-cut — confirm it is re-enabled.
-  Carried: PENDING PINS (radar SPJ/SOJ + 71, also on the reference
-  page); v1.3.0 #88 radar jamming calculator; full formula-fidelity
+  Carried: radar J/S pinned (EW101 Sec 9.2.3, 9.3.4 SOJ, 9.3.5 SPJ;
+  see #83 entry); v1.3.0 #88 radar jamming
+  calculator; full formula-fidelity
   sweep as future assurance work.
 
 ## Session Close-out 2026-09-12 (Linux UI pass) [DERIVED]

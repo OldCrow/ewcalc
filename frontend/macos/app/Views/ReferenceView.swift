@@ -18,9 +18,9 @@ private struct RefSection {
     let title: String
     let diagram: String?   ///< Optional #72 diagram base name (bundled PNG).
     let rows: [RefRow]
-    /// Shared standard-form column width (pt): the widest standard form in
-    /// this section, capped at 400 so one long master cannot blow the
-    /// column open. 0 when the section has no formula rows. Aligning the
+    /// Shared standard-form column width (pt): the widest standard form that
+    /// has a log form beside it, capped at 400 so one long master cannot
+    /// starve its log form. 0 when the section has no such pairs. Aligning the
     /// forms per section is the cross-platform column model (Known Gaps —
     /// fixed on WinUI/Linux first, same Grid-per-section idea).
     let stdColWidth: CGFloat
@@ -58,7 +58,7 @@ private func loadSections(page: Int) -> [RefSection] {
             }
         }
         let stdWidths: [CGFloat] = rows.compactMap {
-            if case let .formula(_, svgBase, _, _) = $0 {
+            if case let .formula(_, svgBase, _, logText) = $0, logText != nil {
                 return formulaNaturalWidth("\(svgBase)-std")
             }
             return nil
@@ -185,13 +185,18 @@ private struct FormulaRow: View {
             // natural size stays the ceiling. This accepts the same
             // trade-off recorded for WinUI: a shrunken log form no longer
             // matches its standard form's glyph size.
+            // A lone standard form (no log form) is not column-bound — the
+            // cap would only squeeze it (the stand-off J/S line drew at about
+            // two-thirds size); it shrinks only to the pane, as on Linux.
             HStack(alignment: .center, spacing: 16) {
-                FormulaImage(name: "\(svgBase)-std", text: stdText,
-                             widthCap: stdColWidth)
-                    .frame(width: min(stdColWidth, 400), alignment: .leading)
                 if let logText {
+                    FormulaImage(name: "\(svgBase)-std", text: stdText,
+                                 widthCap: stdColWidth)
+                        .frame(width: min(stdColWidth, 400), alignment: .leading)
                     Divider()
                     FormulaImage(name: "\(svgBase)-log", text: logText, widthCap: nil)
+                } else {
+                    FormulaImage(name: "\(svgBase)-std", text: stdText, widthCap: nil)
                 }
                 Spacer(minLength: 0)
             }
