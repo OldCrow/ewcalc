@@ -360,14 +360,46 @@ Open milestones are fully itemized here since they reflect actionable state.
     sub-channel bandwidth shown as 0.000. Threshold term is our
     generalisation of Adamy's 0 dB form — owes a physical-book check of
     EW102 Sec 5.9.1.2 alongside the radar J/S pins above.
+    CI: dispatch run 38192845739 on 8b8031e all green (all three
+    frontends, sanitizers, static analysis, coverage, docs).
     REMAINING for #88:
-    - macOS: re-render assets/formulas/png/pbopt-std.png via
-      scripts/render-diagrams.sh (master pbopt-std.svg gained the
-      − J/S_req term; the Linux VM lacks Georgia so it was not rendered
-      there) and commit it — until then the reference image shows the
-      old formula while its copy text shows the new one. Also eyeball
-      the "J/S below threshold" result on the macOS pane.
-    - Windows UI pass (same seven checks, plus the partial-band guard).
+    - macOS re-check (the 2026-10-11 pass still holds; this covers only
+      the shared core/refdata changes since — the '&' and selected-icon
+      fixes were Linux-only):
+      [ ] Re-render assets/formulas/png/pbopt-std.png via
+          scripts/render-diagrams.sh (master pbopt-std.svg gained the
+          − J/S_req term; the Linux VM lacks Georgia so it was not
+          rendered there), commit it, and confirm it on the Jamming
+          reference page. Until then the image shows the old formula
+          while its copy text shows the new one.
+      [ ] Comms Jamming with Jammer→Rx dist 5000 km (J/S ≈ −43.5 dB):
+          Partial-Band shows "J/S below threshold" / "N/A". At defaults:
+          58.000 MHz / 100.000 %.
+      [ ] Reference page: "Margin M … see the Comms Jamming calculator"
+          and the new partial-band Rationale text.
+      [ ] Stand-off J/S formula on the reference page is drawn readably
+          (Linux squeezed it via a fixed cap; macOS uses maxWidth +
+          scaledToFit, so likely fine, but unchecked since).
+    - Windows UI pass (full):
+      [ ] Radar Jamming sits right after Comms Jamming in the nav, and
+          its icon renders.
+      [ ] Self-protection: jammer range, G_M and G_S hidden; J/S 17.0 dB,
+          burnthrough 2.821 km, "Jammer effective".
+      [ ] Stand-off: those three inputs shown; J/S −20.9 dB, burnthrough
+          66.786 km, "Radar burns through".
+      [ ] Geometry diagram swaps with the mode; R_T/R_J subscripts clean.
+      [ ] Out-of-range input (RCS 100) shows the error display and dashes
+          the results — testable here, unlike Linux, since WinUI accepts
+          free text.
+      [ ] Selected mode and inputs survive a restart.
+      [ ] Comms Jamming shows only the one-way diagram (jamming-comms),
+          as does the reference page's Comms Jamming section.
+      [ ] Partial-band guard: 5000 km → "J/S below threshold" / "N/A".
+      [ ] Reference page: stand-off J/S formula not squeezed (the old
+          Linux comment cites a 400 px WinUI std-form column; the master
+          is 579 px logical), plus the new Margin M / Rationale text.
+    - Physical-book check of EW102 Sec 5.9.1.2 for the partial-band
+      threshold term (see above), with the radar J/S pins.
 
 ## GitHub Issues Without Milestone [DERIVED]
 Same leaner convention as milestones above: closed items are a count only
