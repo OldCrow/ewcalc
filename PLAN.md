@@ -363,23 +363,14 @@ Open milestones are fully itemized here since they reflect actionable state.
     CI: dispatch run 38192845739 on 8b8031e all green (all three
     frontends, sanitizers, static analysis, coverage, docs).
     REMAINING for #88:
-    - macOS re-check (the 2026-10-11 pass still holds; this covers only
-      the shared core/refdata changes since — the '&' and selected-icon
-      fixes were Linux-only):
-      [ ] Re-render assets/formulas/png/pbopt-std.png via
-          scripts/render-diagrams.sh (master pbopt-std.svg gained the
-          − J/S_req term; the Linux VM lacks Georgia so it was not
-          rendered there), commit it, and confirm it on the Jamming
-          reference page. Until then the image shows the old formula
-          while its copy text shows the new one.
-      [ ] Comms Jamming with Jammer→Rx dist 5000 km (J/S ≈ −43.5 dB):
-          Partial-Band shows "J/S below threshold" / "N/A". At defaults:
-          58.000 MHz / 100.000 %.
-      [ ] Reference page: "Margin M … see the Comms Jamming calculator"
-          and the new partial-band Rationale text.
-      [ ] Stand-off J/S formula on the reference page is drawn readably
-          (Linux squeezed it via a fixed cap; macOS uses maxWidth +
-          scaledToFit, so likely fine, but unchecked since).
+    - macOS re-check DONE 2026-10-11: pbopt-std.png re-rendered (only
+      that PNG changed — renders are deterministic); defaults 58.000 MHz
+      / 100.000 %, 5000 km → J/S −43.5 dB, "J/S below threshold" / "N/A";
+      Margin M and Rationale text correct. The stand-off J/S squeeze
+      reproduced on macOS too (400 pt column cap on a lone std form, ~2/3
+      size) — fixed the Linux way: the cap and the shared column width
+      now apply only to std forms with a log form beside them; paired
+      sections (Propagation) still align.
     - Windows UI pass (full):
       [ ] Radar Jamming sits right after Comms Jamming in the nav, and
           its icon renders.
