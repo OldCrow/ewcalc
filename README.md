@@ -32,6 +32,10 @@ Layered, with clean separation:
   (Swift cannot import C++ directly); Linux and Windows link `ewpresenter` directly
 - **`frontend/`** — platform-native UIs: WinUI 3 (Windows), SwiftUI (macOS), Qt6 (Linux)
 
+![ewcalc layering](docs/architecture-layers.svg)
+
+Layer and frontend detail: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
 ## libew modules
 
 | Module | Content |

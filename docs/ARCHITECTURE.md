@@ -4,15 +4,7 @@ Full layer-by-layer detail behind the summary in AGENTS.md.
 
 Three strict layers — each layer only depends on layers below it:
 
-```
-frontend/{macos,linux,windows}   ← platform-native UI (SwiftUI / Qt6 / WinUI 3)
-         ↓
-bridge                           ← plain-C API over ewpresenter (platform-agnostic)
-         ↓
-ewpresenter                      ← presenter/viewmodel (platform-agnostic C++20)
-         ↓
-libew                            ← pure calculation library (no UI, no external deps)
-```
+![ewcalc layering](architecture-layers.svg)
 
 `bridge` is optional: only the macOS Swift frontend consumes it today (Swift
 cannot import C++ directly). Linux and Windows frontends link `ewpresenter`

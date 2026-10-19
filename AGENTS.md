@@ -204,6 +204,9 @@ not evidence.
   convention → `docs/formulas.md`.
 - Layer/component detail beyond the summary above (header layout, presenter
   lifecycle, why `bridge` exists, test macros) → `docs/ARCHITECTURE.md`.
+  Its band diagram (`docs/architecture-layers.svg`) is VISUAL REFERENCE
+  ONLY: it restates the Architecture section and adds no constraint. Update
+  it when a layer, frontend, or interop shim is added or removed.
 - CMake conventions in depth → [CMake House Style](https://github.com/OldCrow/standards/blob/main/CMAKE-HOUSE-STYLE.md).
 - CI workflow conventions in depth → [CI House Style](https://github.com/OldCrow/standards/blob/main/CI-HOUSE-STYLE.md).
 - MSVC environment setup, Smart App Control, `vcvars64` activation →
