@@ -34,12 +34,9 @@ repos:
       - id: check-added-large-files
         args: ['--maxkb=500']
 
-  # C++ core, presenter, bridge, tests and the Qt frontend. frontend/windows
-  # (C++/CLI, generated WinUI code) and frontend/macos are out of scope.
-  - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v23.1.5
-    hooks:
-      - id: clang-format
-        types_or: [c++, c]
-        args: ['--style=file']
-        files: '^(libew|ewpresenter|bridge)/|^frontend/linux/'
+# No source formatter, deliberately. The C++ is hand-aligned throughout
+# (tag structs, member blocks, field-by-field mappings, data tables), and
+# clang-format has no option that keeps aligned call arguments. Measured
+# 2026-11-11 with a style tuned to the code: about 1,690 of 2,434 changed
+# lines were lost alignment; with the three table files excluded, still
+# 1,132 of 1,858.

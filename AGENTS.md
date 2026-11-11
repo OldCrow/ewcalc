@@ -151,8 +151,8 @@ The conventions below are scoped per target — the frontends are Swift, C#, and
 - No external dependencies in `libew` or `ewpresenter`.
 - All quantity types from `libew::units` — never use bare `double` for RF quantities in these layers.
 - Static analysis: `scripts/lint-cpp.sh` runs clang-tidy (rules in `.clang-tidy`, repo root) and cppcheck against `libew/`, `ewpresenter/`, and `bridge/`. Mirrors the `static-analysis` CI job — run it locally before pushing.
-- Formatting: `.clang-format` (LLVM-based, 4-space indent, 100 columns, include order preserved) governs `libew/`, `ewpresenter/`, `bridge/`, and `frontend/linux/`. `frontend/windows/` (C++/CLI, generated WinUI code) and `frontend/macos/` are not clang-formatted.
-- Pre-commit: `.pre-commit-config.yaml` runs whitespace, EOF, line-ending (LF; Windows-owned `.sln`/`.vcxproj`/`.csproj`/`.ps1` etc. stay CRLF per `.gitattributes`), YAML/JSON, merge-conflict, case-conflict, large-file, and clang-format hooks. Enable locally with `python -m pre_commit install`. The `precommit` CI job runs the same config on all files.
+- Formatting: no automatic formatter. The C++ is hand-aligned on purpose (tag structs, member blocks, field-by-field mappings, data tables), and clang-format flattens that alignment; it was trialled and rejected on 2026-11-11 (numbers in `.pre-commit-config.yaml`). Keep the alignment of the code around your change.
+- Pre-commit: `.pre-commit-config.yaml` runs whitespace, EOF, line-ending (LF; Windows-owned `.sln`/`.vcxproj`/`.csproj`/`.ps1` etc. stay CRLF per `.gitattributes`), YAML/JSON, merge-conflict, case-conflict, and large-file hooks. Enable locally with `python -m pre_commit install`. The `precommit` CI job runs the same config on all files.
 
 ### Frontends
 
