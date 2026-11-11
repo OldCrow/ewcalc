@@ -8,6 +8,7 @@ class LinkPage : public QWidget
 {
 public:
     explicit LinkPage(QWidget* parent = nullptr);
+
 private:
     ewpresenter::LinkPresenter presenter_;
     QLabel* received_power_;

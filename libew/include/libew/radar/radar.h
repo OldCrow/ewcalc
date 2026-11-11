@@ -40,14 +40,14 @@ struct RadarRangeResult {
 /// @param required_snr Minimum required SNR for detection (dB)
 /// @return RadarRangeResult with max range and two-way path loss
 [[nodiscard]] RadarRangeResult radar_range(
-    Dbm  tx_power,
-    Db   antenna_gain,
+    Dbm tx_power,
+    Db antenna_gain,
     Dbsm target_rcs,
-    Mhz  frequency,
-    Db   system_losses,
-    Db   noise_figure,
-    Mhz  bandwidth,
-    Db   required_snr) noexcept;
+    Mhz frequency,
+    Db system_losses,
+    Db noise_figure,
+    Mhz bandwidth,
+    Db required_snr) noexcept;
 
 // ---------------------------------------------------------------------------
 // Signal processing gain

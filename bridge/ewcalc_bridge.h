@@ -19,12 +19,12 @@ extern "C" {
 /// Validation status for a single input field.
 /// Numeric values match ewpresenter::FieldError exactly.
 typedef enum {
-    EWP_FIELD_OK               = 0, ///< Value is valid.
-    EWP_FIELD_BELOW_MINIMUM    = 1, ///< Value is below the minimum for this field.
-    EWP_FIELD_ABOVE_MAXIMUM    = 2, ///< Value exceeds the maximum for this field.
-    EWP_FIELD_INVALID_ZERO     = 3, ///< Value is zero where it must be strictly positive.
+    EWP_FIELD_OK = 0,               ///< Value is valid.
+    EWP_FIELD_BELOW_MINIMUM = 1,    ///< Value is below the minimum for this field.
+    EWP_FIELD_ABOVE_MAXIMUM = 2,    ///< Value exceeds the maximum for this field.
+    EWP_FIELD_INVALID_ZERO = 3,     ///< Value is zero where it must be strictly positive.
     EWP_FIELD_INVALID_NEGATIVE = 4, ///< Value is negative where it must be non-negative.
-    EWP_FIELD_NOT_FINITE       = 5  ///< Value is NaN or infinite.
+    EWP_FIELD_NOT_FINITE = 5        ///< Value is NaN or infinite.
 } EwpFieldError;
 
 // ============================================================================
@@ -47,7 +47,7 @@ typedef void* EwpPropagationRef;
 typedef void (*EwpPropagationCallback)(EwpPropagationOutput output, void* ctx);
 
 EwpPropagationRef ewp_propagation_create(void);
-void              ewp_propagation_destroy(EwpPropagationRef ref);
+void ewp_propagation_destroy(EwpPropagationRef ref);
 
 void ewp_propagation_set_distance(EwpPropagationRef ref, double km);
 void ewp_propagation_set_frequency(EwpPropagationRef ref, double mhz);
@@ -56,11 +56,11 @@ void ewp_propagation_set_rx_height(EwpPropagationRef ref, double m);
 void ewp_propagation_set_obstruction_height(EwpPropagationRef ref, double m);
 void ewp_propagation_set_callback(EwpPropagationRef ref, EwpPropagationCallback cb, void* ctx);
 
-double               ewp_propagation_distance(EwpPropagationRef ref);
-double               ewp_propagation_frequency(EwpPropagationRef ref);
-double               ewp_propagation_tx_height(EwpPropagationRef ref);
-double               ewp_propagation_rx_height(EwpPropagationRef ref);
-double               ewp_propagation_obstruction_height(EwpPropagationRef ref);
+double ewp_propagation_distance(EwpPropagationRef ref);
+double ewp_propagation_frequency(EwpPropagationRef ref);
+double ewp_propagation_tx_height(EwpPropagationRef ref);
+double ewp_propagation_rx_height(EwpPropagationRef ref);
+double ewp_propagation_obstruction_height(EwpPropagationRef ref);
 EwpFieldError ewp_propagation_distance_error(EwpPropagationRef ref);
 EwpFieldError ewp_propagation_frequency_error(EwpPropagationRef ref);
 EwpFieldError ewp_propagation_tx_height_error(EwpPropagationRef ref);
@@ -87,7 +87,7 @@ typedef void* EwpLinkRef;
 typedef void (*EwpLinkCallback)(EwpLinkOutput output, void* ctx);
 
 EwpLinkRef ewp_link_create(void);
-void       ewp_link_destroy(EwpLinkRef ref);
+void ewp_link_destroy(EwpLinkRef ref);
 
 void ewp_link_set_tx_power(EwpLinkRef ref, double dbm);
 void ewp_link_set_tx_gain(EwpLinkRef ref, double db);
@@ -99,14 +99,14 @@ void ewp_link_set_frequency(EwpLinkRef ref, double mhz);
 void ewp_link_set_rx_sensitivity(EwpLinkRef ref, double dbm);
 void ewp_link_set_callback(EwpLinkRef ref, EwpLinkCallback cb, void* ctx);
 
-double      ewp_link_tx_power(EwpLinkRef ref);
-double      ewp_link_tx_gain(EwpLinkRef ref);
-double      ewp_link_rx_gain(EwpLinkRef ref);
-double      ewp_link_distance(EwpLinkRef ref);
-double      ewp_link_tx_height(EwpLinkRef ref);
-double      ewp_link_rx_height(EwpLinkRef ref);
-double      ewp_link_frequency(EwpLinkRef ref);
-double      ewp_link_rx_sensitivity(EwpLinkRef ref);
+double ewp_link_tx_power(EwpLinkRef ref);
+double ewp_link_tx_gain(EwpLinkRef ref);
+double ewp_link_rx_gain(EwpLinkRef ref);
+double ewp_link_distance(EwpLinkRef ref);
+double ewp_link_tx_height(EwpLinkRef ref);
+double ewp_link_rx_height(EwpLinkRef ref);
+double ewp_link_frequency(EwpLinkRef ref);
+double ewp_link_rx_sensitivity(EwpLinkRef ref);
 EwpFieldError ewp_link_tx_power_error(EwpLinkRef ref);
 EwpFieldError ewp_link_tx_gain_error(EwpLinkRef ref);
 EwpFieldError ewp_link_rx_gain_error(EwpLinkRef ref);
@@ -142,7 +142,7 @@ typedef void* EwpReceiverRef;
 typedef void (*EwpReceiverCallback)(EwpReceiverOutput output, void* ctx);
 
 EwpReceiverRef ewp_receiver_create(void);
-void           ewp_receiver_destroy(EwpReceiverRef ref);
+void ewp_receiver_destroy(EwpReceiverRef ref);
 
 void ewp_receiver_set_bandwidth(EwpReceiverRef ref, double mhz);
 void ewp_receiver_set_noise_figure(EwpReceiverRef ref, double db);
@@ -155,14 +155,14 @@ void ewp_receiver_set_adc_bits(EwpReceiverRef ref, int bits);
 void ewp_receiver_set_stages(EwpReceiverRef ref, const EwpStageInput* stages, int count);
 void ewp_receiver_set_callback(EwpReceiverRef ref, EwpReceiverCallback cb, void* ctx);
 
-double         ewp_receiver_bandwidth(EwpReceiverRef ref);
-double         ewp_receiver_noise_figure(EwpReceiverRef ref);
-double         ewp_receiver_required_snr(EwpReceiverRef ref);
-double         ewp_receiver_second_order_ip(EwpReceiverRef ref);
-double         ewp_receiver_third_order_ip(EwpReceiverRef ref);
-int            ewp_receiver_adc_bits(EwpReceiverRef ref);
-int            ewp_receiver_stage_count(EwpReceiverRef ref);
-EwpStageInput  ewp_receiver_stage(EwpReceiverRef ref, int index);
+double ewp_receiver_bandwidth(EwpReceiverRef ref);
+double ewp_receiver_noise_figure(EwpReceiverRef ref);
+double ewp_receiver_required_snr(EwpReceiverRef ref);
+double ewp_receiver_second_order_ip(EwpReceiverRef ref);
+double ewp_receiver_third_order_ip(EwpReceiverRef ref);
+int ewp_receiver_adc_bits(EwpReceiverRef ref);
+int ewp_receiver_stage_count(EwpReceiverRef ref);
+EwpStageInput ewp_receiver_stage(EwpReceiverRef ref, int index);
 EwpFieldError ewp_receiver_bandwidth_error(EwpReceiverRef ref);
 EwpFieldError ewp_receiver_noise_figure_error(EwpReceiverRef ref);
 EwpFieldError ewp_receiver_required_snr_error(EwpReceiverRef ref);
@@ -190,7 +190,7 @@ typedef void* EwpJammingRef;
 typedef void (*EwpJammingCallback)(EwpJammingOutput output, void* ctx);
 
 EwpJammingRef ewp_jamming_create(void);
-void          ewp_jamming_destroy(EwpJammingRef ref);
+void ewp_jamming_destroy(EwpJammingRef ref);
 
 void ewp_jamming_set_signal_erp(EwpJammingRef ref, double dbm);
 void ewp_jamming_set_jammer_erp(EwpJammingRef ref, double dbm);
@@ -207,19 +207,19 @@ void ewp_jamming_set_hop_range(EwpJammingRef ref, double mhz);
 void ewp_jamming_set_js_threshold(EwpJammingRef ref, double db);
 void ewp_jamming_set_callback(EwpJammingRef ref, EwpJammingCallback cb, void* ctx);
 
-double        ewp_jamming_signal_erp(EwpJammingRef ref);
-double        ewp_jamming_jammer_erp(EwpJammingRef ref);
-double        ewp_jamming_signal_dist(EwpJammingRef ref);
-double        ewp_jamming_jammer_dist(EwpJammingRef ref);
-double        ewp_jamming_signal_height(EwpJammingRef ref);
-double        ewp_jamming_jammer_height(EwpJammingRef ref);
-double        ewp_jamming_rx_height(EwpJammingRef ref);
-double        ewp_jamming_frequency(EwpJammingRef ref);
-double        ewp_jamming_rx_gain_signal(EwpJammingRef ref);
-double        ewp_jamming_rx_gain_jammer(EwpJammingRef ref);
-double        ewp_jamming_signal_bandwidth(EwpJammingRef ref);
-double        ewp_jamming_hop_range(EwpJammingRef ref);
-double        ewp_jamming_js_threshold(EwpJammingRef ref);
+double ewp_jamming_signal_erp(EwpJammingRef ref);
+double ewp_jamming_jammer_erp(EwpJammingRef ref);
+double ewp_jamming_signal_dist(EwpJammingRef ref);
+double ewp_jamming_jammer_dist(EwpJammingRef ref);
+double ewp_jamming_signal_height(EwpJammingRef ref);
+double ewp_jamming_jammer_height(EwpJammingRef ref);
+double ewp_jamming_rx_height(EwpJammingRef ref);
+double ewp_jamming_frequency(EwpJammingRef ref);
+double ewp_jamming_rx_gain_signal(EwpJammingRef ref);
+double ewp_jamming_rx_gain_jammer(EwpJammingRef ref);
+double ewp_jamming_signal_bandwidth(EwpJammingRef ref);
+double ewp_jamming_hop_range(EwpJammingRef ref);
+double ewp_jamming_js_threshold(EwpJammingRef ref);
 EwpFieldError ewp_jamming_signal_erp_error(EwpJammingRef ref);
 EwpFieldError ewp_jamming_jammer_erp_error(EwpJammingRef ref);
 EwpFieldError ewp_jamming_signal_dist_error(EwpJammingRef ref);
@@ -250,7 +250,7 @@ typedef void* EwpLocationRef;
 typedef void (*EwpLocationCallback)(EwpLocationOutput output, void* ctx);
 
 EwpLocationRef ewp_location_create(void);
-void           ewp_location_destroy(EwpLocationRef ref);
+void ewp_location_destroy(EwpLocationRef ref);
 
 void ewp_location_set_rms_bearing_error(EwpLocationRef ref, double deg);
 void ewp_location_set_aoa_range(EwpLocationRef ref, double km);
@@ -260,12 +260,12 @@ void ewp_location_set_semi_major(EwpLocationRef ref, double km);
 void ewp_location_set_semi_minor(EwpLocationRef ref, double km);
 void ewp_location_set_callback(EwpLocationRef ref, EwpLocationCallback cb, void* ctx);
 
-double         ewp_location_rms_bearing_error(EwpLocationRef ref);
-double         ewp_location_aoa_range(EwpLocationRef ref);
-double         ewp_location_rms_time_error(EwpLocationRef ref);
-double         ewp_location_baseline(EwpLocationRef ref);
-double         ewp_location_semi_major(EwpLocationRef ref);
-double         ewp_location_semi_minor(EwpLocationRef ref);
+double ewp_location_rms_bearing_error(EwpLocationRef ref);
+double ewp_location_aoa_range(EwpLocationRef ref);
+double ewp_location_rms_time_error(EwpLocationRef ref);
+double ewp_location_baseline(EwpLocationRef ref);
+double ewp_location_semi_major(EwpLocationRef ref);
+double ewp_location_semi_minor(EwpLocationRef ref);
 // Note: rms_bearing_error and rms_time_error name the physical quantity (degrees/ns);
 // _field_error suffix distinguishes the validation-status accessors.
 EwpFieldError ewp_location_rms_bearing_field_error(EwpLocationRef ref);
@@ -296,7 +296,7 @@ typedef void* EwpRadarRef;
 typedef void (*EwpRadarCallback)(EwpRadarOutput output, void* ctx);
 
 EwpRadarRef ewp_radar_create(void);
-void        ewp_radar_destroy(EwpRadarRef ref);
+void ewp_radar_destroy(EwpRadarRef ref);
 
 void ewp_radar_set_tx_power(EwpRadarRef ref, double dbm);
 void ewp_radar_set_antenna_gain(EwpRadarRef ref, double dbi);
@@ -310,16 +310,16 @@ void ewp_radar_set_time_bandwidth(EwpRadarRef ref, double tb);
 void ewp_radar_set_num_pulses(EwpRadarRef ref, int n);
 void ewp_radar_set_callback(EwpRadarRef ref, EwpRadarCallback cb, void* ctx);
 
-double        ewp_radar_tx_power(EwpRadarRef ref);
-double        ewp_radar_antenna_gain(EwpRadarRef ref);
-double        ewp_radar_target_rcs(EwpRadarRef ref);
-double        ewp_radar_frequency(EwpRadarRef ref);
-double        ewp_radar_system_losses(EwpRadarRef ref);
-double        ewp_radar_noise_figure(EwpRadarRef ref);
-double        ewp_radar_bandwidth(EwpRadarRef ref);
-double        ewp_radar_required_snr(EwpRadarRef ref);
-double        ewp_radar_time_bandwidth(EwpRadarRef ref);
-int           ewp_radar_num_pulses(EwpRadarRef ref);
+double ewp_radar_tx_power(EwpRadarRef ref);
+double ewp_radar_antenna_gain(EwpRadarRef ref);
+double ewp_radar_target_rcs(EwpRadarRef ref);
+double ewp_radar_frequency(EwpRadarRef ref);
+double ewp_radar_system_losses(EwpRadarRef ref);
+double ewp_radar_noise_figure(EwpRadarRef ref);
+double ewp_radar_bandwidth(EwpRadarRef ref);
+double ewp_radar_required_snr(EwpRadarRef ref);
+double ewp_radar_time_bandwidth(EwpRadarRef ref);
+int ewp_radar_num_pulses(EwpRadarRef ref);
 EwpFieldError ewp_radar_tx_power_error(EwpRadarRef ref);
 EwpFieldError ewp_radar_antenna_gain_error(EwpRadarRef ref);
 EwpFieldError ewp_radar_target_rcs_error(EwpRadarRef ref);
@@ -350,7 +350,7 @@ typedef void* EwpDetectionRef;
 typedef void (*EwpDetectionCallback)(EwpDetectionOutput output, void* ctx);
 
 EwpDetectionRef ewp_detection_create(void);
-void            ewp_detection_destroy(EwpDetectionRef ref);
+void ewp_detection_destroy(EwpDetectionRef ref);
 
 void ewp_detection_set_pd(EwpDetectionRef ref, double pd);
 void ewp_detection_set_pfa_exponent(EwpDetectionRef ref, double x);
@@ -362,14 +362,14 @@ void ewp_detection_set_prf(EwpDetectionRef ref, double hz);
 void ewp_detection_set_bandwidth(EwpDetectionRef ref, double mhz);
 void ewp_detection_set_callback(EwpDetectionRef ref, EwpDetectionCallback cb, void* ctx);
 
-double        ewp_detection_pd(EwpDetectionRef ref);
-double        ewp_detection_pfa_exponent(EwpDetectionRef ref);
-int           ewp_detection_num_pulses(EwpDetectionRef ref);
-int           ewp_detection_swerling_case(EwpDetectionRef ref);
-double        ewp_detection_beamwidth(EwpDetectionRef ref);
-double        ewp_detection_scan_rate(EwpDetectionRef ref);
-double        ewp_detection_prf(EwpDetectionRef ref);
-double        ewp_detection_bandwidth(EwpDetectionRef ref);
+double ewp_detection_pd(EwpDetectionRef ref);
+double ewp_detection_pfa_exponent(EwpDetectionRef ref);
+int ewp_detection_num_pulses(EwpDetectionRef ref);
+int ewp_detection_swerling_case(EwpDetectionRef ref);
+double ewp_detection_beamwidth(EwpDetectionRef ref);
+double ewp_detection_scan_rate(EwpDetectionRef ref);
+double ewp_detection_prf(EwpDetectionRef ref);
+double ewp_detection_bandwidth(EwpDetectionRef ref);
 EwpFieldError ewp_detection_pd_error(EwpDetectionRef ref);
 EwpFieldError ewp_detection_pfa_exponent_error(EwpDetectionRef ref);
 EwpFieldError ewp_detection_num_pulses_error(EwpDetectionRef ref);
@@ -385,7 +385,7 @@ EwpDetectionOutput ewp_detection_output(EwpDetectionRef ref);
 // ============================================================================
 
 #define EWP_RADAR_JAMMING_SELF_PROTECTION 0
-#define EWP_RADAR_JAMMING_STAND_OFF       1
+#define EWP_RADAR_JAMMING_STAND_OFF 1
 
 typedef struct EwpRadarJammingOutput {
     char js_ratio_str[EWP_STR_MAX];
@@ -400,7 +400,7 @@ typedef void* EwpRadarJammingRef;
 typedef void (*EwpRadarJammingCallback)(EwpRadarJammingOutput output, void* ctx);
 
 EwpRadarJammingRef ewp_radar_jamming_create(void);
-void               ewp_radar_jamming_destroy(EwpRadarJammingRef ref);
+void ewp_radar_jamming_destroy(EwpRadarJammingRef ref);
 
 void ewp_radar_jamming_set_geometry(EwpRadarJammingRef ref, int g);
 void ewp_radar_jamming_set_radar_erp(EwpRadarJammingRef ref, double dbm);
@@ -413,15 +413,15 @@ void ewp_radar_jamming_set_sidelobe_gain(EwpRadarJammingRef ref, double db);
 void ewp_radar_jamming_set_js_threshold(EwpRadarJammingRef ref, double db);
 void ewp_radar_jamming_set_callback(EwpRadarJammingRef ref, EwpRadarJammingCallback cb, void* ctx);
 
-int           ewp_radar_jamming_geometry(EwpRadarJammingRef ref);
-double        ewp_radar_jamming_radar_erp(EwpRadarJammingRef ref);
-double        ewp_radar_jamming_jammer_erp(EwpRadarJammingRef ref);
-double        ewp_radar_jamming_target_rcs(EwpRadarJammingRef ref);
-double        ewp_radar_jamming_target_range(EwpRadarJammingRef ref);
-double        ewp_radar_jamming_jammer_range(EwpRadarJammingRef ref);
-double        ewp_radar_jamming_mainbeam_gain(EwpRadarJammingRef ref);
-double        ewp_radar_jamming_sidelobe_gain(EwpRadarJammingRef ref);
-double        ewp_radar_jamming_js_threshold(EwpRadarJammingRef ref);
+int ewp_radar_jamming_geometry(EwpRadarJammingRef ref);
+double ewp_radar_jamming_radar_erp(EwpRadarJammingRef ref);
+double ewp_radar_jamming_jammer_erp(EwpRadarJammingRef ref);
+double ewp_radar_jamming_target_rcs(EwpRadarJammingRef ref);
+double ewp_radar_jamming_target_range(EwpRadarJammingRef ref);
+double ewp_radar_jamming_jammer_range(EwpRadarJammingRef ref);
+double ewp_radar_jamming_mainbeam_gain(EwpRadarJammingRef ref);
+double ewp_radar_jamming_sidelobe_gain(EwpRadarJammingRef ref);
+double ewp_radar_jamming_js_threshold(EwpRadarJammingRef ref);
 EwpFieldError ewp_radar_jamming_geometry_error(EwpRadarJammingRef ref);
 EwpFieldError ewp_radar_jamming_radar_erp_error(EwpRadarJammingRef ref);
 EwpFieldError ewp_radar_jamming_jammer_erp_error(EwpRadarJammingRef ref);
@@ -452,7 +452,7 @@ typedef void* EwpDopplerRef;
 typedef void (*EwpDopplerCallback)(EwpDopplerOutput output, void* ctx);
 
 EwpDopplerRef ewp_doppler_create(void);
-void          ewp_doppler_destroy(EwpDopplerRef ref);
+void ewp_doppler_destroy(EwpDopplerRef ref);
 
 void ewp_doppler_set_frequency(EwpDopplerRef ref, double mhz);
 void ewp_doppler_set_radial_speed(EwpDopplerRef ref, double m_s);
@@ -463,13 +463,13 @@ void ewp_doppler_set_beamwidth_az(EwpDopplerRef ref, double deg);
 void ewp_doppler_set_beamwidth_el(EwpDopplerRef ref, double deg);
 void ewp_doppler_set_callback(EwpDopplerRef ref, EwpDopplerCallback cb, void* ctx);
 
-double        ewp_doppler_frequency(EwpDopplerRef ref);
-double        ewp_doppler_radial_speed(EwpDopplerRef ref);
-double        ewp_doppler_prf(EwpDopplerRef ref);
-double        ewp_doppler_bandwidth(EwpDopplerRef ref);
-double        ewp_doppler_target_range(EwpDopplerRef ref);
-double        ewp_doppler_beamwidth_az(EwpDopplerRef ref);
-double        ewp_doppler_beamwidth_el(EwpDopplerRef ref);
+double ewp_doppler_frequency(EwpDopplerRef ref);
+double ewp_doppler_radial_speed(EwpDopplerRef ref);
+double ewp_doppler_prf(EwpDopplerRef ref);
+double ewp_doppler_bandwidth(EwpDopplerRef ref);
+double ewp_doppler_target_range(EwpDopplerRef ref);
+double ewp_doppler_beamwidth_az(EwpDopplerRef ref);
+double ewp_doppler_beamwidth_el(EwpDopplerRef ref);
 EwpFieldError ewp_doppler_frequency_error(EwpDopplerRef ref);
 EwpFieldError ewp_doppler_radial_speed_error(EwpDopplerRef ref);
 EwpFieldError ewp_doppler_prf_error(EwpDopplerRef ref);
@@ -496,7 +496,7 @@ typedef void* EwpDigitalRef;
 typedef void (*EwpDigitalCallback)(EwpDigitalOutput output, void* ctx);
 
 EwpDigitalRef ewp_digital_create(void);
-void          ewp_digital_destroy(EwpDigitalRef ref);
+void ewp_digital_destroy(EwpDigitalRef ref);
 
 void ewp_digital_set_snr(EwpDigitalRef ref, double db);
 void ewp_digital_set_bandwidth(EwpDigitalRef ref, double mhz);
@@ -506,12 +506,12 @@ void ewp_digital_set_required_eb_no(EwpDigitalRef ref, double db);
 void ewp_digital_set_implementation_loss(EwpDigitalRef ref, double db);
 void ewp_digital_set_callback(EwpDigitalRef ref, EwpDigitalCallback cb, void* ctx);
 
-double           ewp_digital_snr(EwpDigitalRef ref);
-double           ewp_digital_bandwidth(EwpDigitalRef ref);
-double           ewp_digital_data_rate(EwpDigitalRef ref);
-double           ewp_digital_chip_rate(EwpDigitalRef ref);
-double           ewp_digital_required_eb_no(EwpDigitalRef ref);
-double           ewp_digital_implementation_loss(EwpDigitalRef ref);
+double ewp_digital_snr(EwpDigitalRef ref);
+double ewp_digital_bandwidth(EwpDigitalRef ref);
+double ewp_digital_data_rate(EwpDigitalRef ref);
+double ewp_digital_chip_rate(EwpDigitalRef ref);
+double ewp_digital_required_eb_no(EwpDigitalRef ref);
+double ewp_digital_implementation_loss(EwpDigitalRef ref);
 EwpFieldError ewp_digital_snr_error(EwpDigitalRef ref);
 EwpFieldError ewp_digital_bandwidth_error(EwpDigitalRef ref);
 EwpFieldError ewp_digital_data_rate_error(EwpDigitalRef ref);
@@ -535,7 +535,7 @@ typedef void* EwpAntennaRef;
 typedef void (*EwpAntennaCallback)(EwpAntennaOutput output, void* ctx);
 
 EwpAntennaRef ewp_antenna_create(void);
-void          ewp_antenna_destroy(EwpAntennaRef ref);
+void ewp_antenna_destroy(EwpAntennaRef ref);
 
 void ewp_antenna_set_gain(EwpAntennaRef ref, double dbi);
 void ewp_antenna_set_az_beamwidth(EwpAntennaRef ref, double deg);
@@ -544,11 +544,11 @@ void ewp_antenna_set_tx_power(EwpAntennaRef ref, double dbm);
 void ewp_antenna_set_frequency(EwpAntennaRef ref, double mhz);
 void ewp_antenna_set_callback(EwpAntennaRef ref, EwpAntennaCallback cb, void* ctx);
 
-double           ewp_antenna_gain(EwpAntennaRef ref);
-double           ewp_antenna_az_beamwidth(EwpAntennaRef ref);
-double           ewp_antenna_el_beamwidth(EwpAntennaRef ref);
-double           ewp_antenna_tx_power(EwpAntennaRef ref);
-double           ewp_antenna_frequency(EwpAntennaRef ref);
+double ewp_antenna_gain(EwpAntennaRef ref);
+double ewp_antenna_az_beamwidth(EwpAntennaRef ref);
+double ewp_antenna_el_beamwidth(EwpAntennaRef ref);
+double ewp_antenna_tx_power(EwpAntennaRef ref);
+double ewp_antenna_frequency(EwpAntennaRef ref);
 EwpFieldError ewp_antenna_gain_error(EwpAntennaRef ref);
 EwpFieldError ewp_antenna_az_beamwidth_error(EwpAntennaRef ref);
 EwpFieldError ewp_antenna_el_beamwidth_error(EwpAntennaRef ref);
@@ -566,33 +566,33 @@ EwpAntennaOutput ewp_antenna_output(EwpAntennaRef ref);
 
 /// Kind of a reference row. Numeric values match refdata::RowKind exactly.
 typedef enum {
-    EWP_REF_ROW_VALUE   = 0, ///< label + display value (+ optional copy value)
-    EWP_REF_ROW_FORMULA = 1  ///< typeset formula with Unicode alt text
+    EWP_REF_ROW_VALUE = 0,  ///< label + display value (+ optional copy value)
+    EWP_REF_ROW_FORMULA = 1 ///< typeset formula with Unicode alt text
 } EwpRefRowKind;
 
-size_t      ewp_ref_page_count(void);
+size_t ewp_ref_page_count(void);
 const char* ewp_ref_page_id(size_t page);
 const char* ewp_ref_page_title(size_t page);
 const char* ewp_ref_page_subtitle(size_t page);
 
-size_t      ewp_ref_section_count(size_t page);
+size_t ewp_ref_section_count(size_t page);
 const char* ewp_ref_section_title(size_t page, size_t section);
 /// Base name of the section's optional geometry thumbnail (a #72 diagram
 /// PNG bundled from assets/diagrams/png); NULL when the section has none.
 const char* ewp_ref_section_diagram(size_t page, size_t section);
 
-size_t        ewp_ref_row_count(size_t page, size_t section);
+size_t ewp_ref_row_count(size_t page, size_t section);
 EwpRefRowKind ewp_ref_row_kind(size_t page, size_t section, size_t row);
-const char*   ewp_ref_row_label(size_t page, size_t section, size_t row);
-const char*   ewp_ref_row_value(size_t page, size_t section, size_t row);
+const char* ewp_ref_row_label(size_t page, size_t section, size_t row);
+const char* ewp_ref_row_value(size_t page, size_t section, size_t row);
 /// NULL when the row has no copy button (value rows with range values, and
 /// all formula rows — formula copy text is ewp_ref_row_value).
-const char*   ewp_ref_row_copy_value(size_t page, size_t section, size_t row);
+const char* ewp_ref_row_copy_value(size_t page, size_t section, size_t row);
 /// Formula rows: log-form Unicode text, NULL when no log form. Else NULL.
-const char*   ewp_ref_row_log_value(size_t page, size_t section, size_t row);
+const char* ewp_ref_row_log_value(size_t page, size_t section, size_t row);
 /// Formula rows: base name of the typeset asset pair "<base>-std"/"<base>-log"
 /// bundled from assets/formulas/png/. Else NULL.
-const char*   ewp_ref_row_svg_base(size_t page, size_t section, size_t row);
+const char* ewp_ref_row_svg_base(size_t page, size_t section, size_t row);
 
 #ifdef __cplusplus
 }

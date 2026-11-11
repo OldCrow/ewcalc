@@ -23,14 +23,14 @@ namespace ewpresenter::refdata {
 
 /// Kind of a reference row.
 enum class RowKind : std::uint8_t {
-    Value   = 0, ///< label + display value (+ optional copy value)
-    Formula = 1  ///< name + typeset standard/log forms with Unicode alt text
+    Value = 0,  ///< label + display value (+ optional copy value)
+    Formula = 1 ///< name + typeset standard/log forms with Unicode alt text
 };
 
 /// One reference row. String pointers are static-lifetime UTF-8; a nullptr
 /// field means "not present" (see per-field notes).
 struct Row {
-    RowKind     kind;
+    RowKind kind;
     const char* label;      ///< Entry label (Value) or formula name (Formula).
     const char* value;      ///< Display string (Value) or standard-form
                             ///  Unicode text (Formula: alt text + copy text).
@@ -49,8 +49,8 @@ struct Row {
 
 /// A titled group of rows.
 struct Section {
-    const char* title     = nullptr;
-    const Row*  rows      = nullptr;
+    const char* title = nullptr;
+    const Row* rows = nullptr;
     std::size_t row_count = 0;
     const char* diagram = nullptr; ///< Optional geometry thumbnail: base name
                                    ///  of a #72 diagram under
@@ -61,11 +61,11 @@ struct Section {
 /// One reference page. `id` is a stable machine key (navigation, settings
 /// persistence); `title`/`subtitle` are display strings.
 struct Page {
-    const char*    id;
-    const char*    title;
-    const char*    subtitle;
+    const char* id;
+    const char* title;
+    const char* subtitle;
     const Section* sections;
-    std::size_t    section_count;
+    std::size_t section_count;
 };
 
 /// All reference pages, in display order. Static lifetime.

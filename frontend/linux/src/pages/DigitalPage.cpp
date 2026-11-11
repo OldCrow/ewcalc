@@ -20,28 +20,28 @@ DigitalPage::DigitalPage(QWidget* parent)
     auto* dlGroup = makeGroup(QStringLiteral("Digital Link"), dlForm);
 
     auto* dataRateSb = addSpinRow(dlForm, QStringLiteral("Data rate (Mbps)"), 0.0001, 10000.0,
-        presenter_.data_rate_mhz(), 0.01, 4, kGroup, QStringLiteral("data_rate_mhz"),
-        QStringLiteral("Information bit rate \u2014 shared between the Eb/N\u2080 conversion and DSSS process gain"));
+                                  presenter_.data_rate_mhz(), 0.01, 4, kGroup, QStringLiteral("data_rate_mhz"),
+                                  QStringLiteral("Information bit rate \u2014 shared between the Eb/N\u2080 conversion and DSSS process gain"));
     auto* bwSb = addSpinRow(dlForm, QStringLiteral("Bandwidth (MHz)"), 0.001, 10000.0,
-        presenter_.bandwidth_mhz(), 0.1, 3, kGroup, QStringLiteral("bandwidth_mhz"),
-        QStringLiteral("Receiver noise bandwidth \u2014 wider than the data rate gives Eb/N\u2080 > SNR"));
+                            presenter_.bandwidth_mhz(), 0.1, 3, kGroup, QStringLiteral("bandwidth_mhz"),
+                            QStringLiteral("Receiver noise bandwidth \u2014 wider than the data rate gives Eb/N\u2080 > SNR"));
     auto* snrSb = addSpinRow(dlForm, QStringLiteral("Received SNR (dB)"), -30.0, 60.0,
-        presenter_.snr_db(), 0.5, 1, kGroup, QStringLiteral("snr_db"),
-        QStringLiteral("Carrier-to-noise ratio measured in the noise bandwidth"));
+                             presenter_.snr_db(), 0.5, 1, kGroup, QStringLiteral("snr_db"),
+                             QStringLiteral("Carrier-to-noise ratio measured in the noise bandwidth"));
 
     // ── DSSS ──────────────────────────────────────────────────────
     QFormLayout* dsForm = nullptr;
     auto* dsGroup = makeGroup(QStringLiteral("DSSS"), dsForm);
 
     auto* chipRateSb = addSpinRow(dsForm, QStringLiteral("Chip rate (Mcps)"), 0.0001, 10000.0,
-        presenter_.chip_rate_mhz(), 1.0, 3, kGroup, QStringLiteral("chip_rate_mhz"),
-        QStringLiteral("Spread-spectrum chipping rate \u2014 determines the spreading bandwidth and process gain"));
+                                  presenter_.chip_rate_mhz(), 1.0, 3, kGroup, QStringLiteral("chip_rate_mhz"),
+                                  QStringLiteral("Spread-spectrum chipping rate \u2014 determines the spreading bandwidth and process gain"));
     auto* reqEbNoSb = addSpinRow(dsForm, QStringLiteral("Required Eb/N\u2080 (dB)"), -10.0, 30.0,
-        presenter_.required_eb_no_db(), 0.5, 1, kGroup, QStringLiteral("required_eb_no_db"),
-        QStringLiteral("Minimum energy-per-bit to noise density for acceptable BER \u2014 typically 10\u201313 dB for BPSK/QPSK"));
+                                 presenter_.required_eb_no_db(), 0.5, 1, kGroup, QStringLiteral("required_eb_no_db"),
+                                 QStringLiteral("Minimum energy-per-bit to noise density for acceptable BER \u2014 typically 10\u201313 dB for BPSK/QPSK"));
     auto* implLossSb = addSpinRow(dsForm, QStringLiteral("Impl. loss (dB)"), 0.0, 10.0,
-        presenter_.implementation_loss_db(), 0.5, 1, kGroup, QStringLiteral("implementation_loss_db"),
-        QStringLiteral("Practical losses from non-ideal code synchronisation, filter roll-off, etc. \u2014 typically 1\u20133 dB"));
+                                  presenter_.implementation_loss_db(), 0.5, 1, kGroup, QStringLiteral("implementation_loss_db"),
+                                  QStringLiteral("Practical losses from non-ideal code synchronisation, filter roll-off, etc. \u2014 typically 1\u20133 dB"));
 
     // ── Outputs ───────────────────────────────────────────────────────────────
     QFormLayout* outForm = nullptr;
@@ -49,21 +49,21 @@ DigitalPage::DigitalPage(QWidget* parent)
 
     ResultRowRegistry results;
     eb_no_ = addResultRow(outForm, QStringLiteral("Eb/N\u2080"),
-        QStringLiteral("Energy-per-bit to noise density: SNR + 10\u00b7log\u2081\u2080(bandwidth / data rate)"), &results);
+                          QStringLiteral("Energy-per-bit to noise density: SNR + 10\u00b7log\u2081\u2080(bandwidth / data rate)"), &results);
     required_snr_for_eb_no_ = addResultRow(outForm, QStringLiteral("Required SNR"),
-        QStringLiteral("Carrier SNR needed to achieve the required Eb/N\u2080, given the same bandwidth and data rate"), &results);
+                                           QStringLiteral("Carrier SNR needed to achieve the required Eb/N\u2080, given the same bandwidth and data rate"), &results);
     process_gain_ = addResultRow(outForm, QStringLiteral("Process gain"),
-        QStringLiteral("DSSS spreading gain: 10\u00b7log\u2081\u2080(chip rate / data rate)"), &results);
+                                 QStringLiteral("DSSS spreading gain: 10\u00b7log\u2081\u2080(chip rate / data rate)"), &results);
     jamming_margin_ = addResultRow(outForm, QStringLiteral("Jamming margin"),
-        QStringLiteral("Process gain minus required Eb/N\u2080 minus implementation losses \u2014 positive means spreading gain exceeds jammer advantage"), &results);
+                                   QStringLiteral("Process gain minus required Eb/N\u2080 minus implementation losses \u2014 positive means spreading gain exceeds jammer advantage"), &results);
     required_js_ = addResultRow(outForm, QStringLiteral("Required J/S"),
-        QStringLiteral("J/S a jammer must achieve to overcome the spreading gain \u2014 negative means the jammer has an inherent advantage"), &results);
+                                QStringLiteral("J/S a jammer must achieve to overcome the spreading gain \u2014 negative means the jammer has an inherent advantage"), &results);
 
     outForm->addRow(addCopyResultsButton(results));
 
     // ── Scroll container ──────────────────────────────────────────────────────────
     auto* content = new QWidget;
-    auto* vbox    = new QVBoxLayout(content);
+    auto* vbox = new QVBoxLayout(content);
     vbox->addWidget(dlGroup);
     vbox->addWidget(dsGroup);
     vbox->addWidget(outGroup);
@@ -80,36 +80,36 @@ DigitalPage::DigitalPage(QWidget* parent)
 
     // ── Signal wiring ─────────────────────────────────────────────────────────
     connect(dataRateSb, &QDoubleSpinBox::valueChanged, this,
-            [this, dataRateSb](double v){ presenter_.set_data_rate(v); applyFieldError(dataRateSb, presenter_.data_rate_error()); });
-    connect(bwSb,       &QDoubleSpinBox::valueChanged, this,
-            [this, bwSb](double v){ presenter_.set_bandwidth(v); applyFieldError(bwSb, presenter_.bandwidth_error()); });
-    connect(snrSb,      &QDoubleSpinBox::valueChanged, this,
-            [this, snrSb](double v){ presenter_.set_snr(v); applyFieldError(snrSb, presenter_.snr_error()); });
+            [this, dataRateSb](double v) { presenter_.set_data_rate(v); applyFieldError(dataRateSb, presenter_.data_rate_error()); });
+    connect(bwSb, &QDoubleSpinBox::valueChanged, this,
+            [this, bwSb](double v) { presenter_.set_bandwidth(v); applyFieldError(bwSb, presenter_.bandwidth_error()); });
+    connect(snrSb, &QDoubleSpinBox::valueChanged, this,
+            [this, snrSb](double v) { presenter_.set_snr(v); applyFieldError(snrSb, presenter_.snr_error()); });
     connect(chipRateSb, &QDoubleSpinBox::valueChanged, this,
-            [this, chipRateSb](double v){ presenter_.set_chip_rate(v); applyFieldError(chipRateSb, presenter_.chip_rate_error()); });
-    connect(reqEbNoSb,  &QDoubleSpinBox::valueChanged, this,
-            [this, reqEbNoSb](double v){ presenter_.set_required_eb_no(v); applyFieldError(reqEbNoSb, presenter_.required_eb_no_error()); });
+            [this, chipRateSb](double v) { presenter_.set_chip_rate(v); applyFieldError(chipRateSb, presenter_.chip_rate_error()); });
+    connect(reqEbNoSb, &QDoubleSpinBox::valueChanged, this,
+            [this, reqEbNoSb](double v) { presenter_.set_required_eb_no(v); applyFieldError(reqEbNoSb, presenter_.required_eb_no_error()); });
     connect(implLossSb, &QDoubleSpinBox::valueChanged, this,
-            [this, implLossSb](double v){ presenter_.set_implementation_loss(v); applyFieldError(implLossSb, presenter_.implementation_loss_error()); });
+            [this, implLossSb](double v) { presenter_.set_implementation_loss(v); applyFieldError(implLossSb, presenter_.implementation_loss_error()); });
 
     // ── Restore persisted values (after presenter wiring, before first recompute) ──
     restoreSpinValue(dataRateSb, kGroup, QStringLiteral("data_rate_mhz"));
-    restoreSpinValue(bwSb,       kGroup, QStringLiteral("bandwidth_mhz"));
-    restoreSpinValue(snrSb,      kGroup, QStringLiteral("snr_db"));
+    restoreSpinValue(bwSb, kGroup, QStringLiteral("bandwidth_mhz"));
+    restoreSpinValue(snrSb, kGroup, QStringLiteral("snr_db"));
     restoreSpinValue(chipRateSb, kGroup, QStringLiteral("chip_rate_mhz"));
-    restoreSpinValue(reqEbNoSb,  kGroup, QStringLiteral("required_eb_no_db"));
+    restoreSpinValue(reqEbNoSb, kGroup, QStringLiteral("required_eb_no_db"));
     restoreSpinValue(implLossSb, kGroup, QStringLiteral("implementation_loss_db"));
 
-    presenter_.set_on_change([this](const ewpresenter::DigitalPresenter::Output& o){
+    presenter_.set_on_change([this](const ewpresenter::DigitalPresenter::Output& o) {
         applyOutput(o);
     });
 
     // Seed per-field validation-error styling from initial/restored values (#41).
     applyFieldError(dataRateSb, presenter_.data_rate_error());
-    applyFieldError(bwSb,       presenter_.bandwidth_error());
-    applyFieldError(snrSb,      presenter_.snr_error());
+    applyFieldError(bwSb, presenter_.bandwidth_error());
+    applyFieldError(snrSb, presenter_.snr_error());
     applyFieldError(chipRateSb, presenter_.chip_rate_error());
-    applyFieldError(reqEbNoSb,  presenter_.required_eb_no_error());
+    applyFieldError(reqEbNoSb, presenter_.required_eb_no_error());
     applyFieldError(implLossSb, presenter_.implementation_loss_error());
 
     applyOutput(presenter_.output());

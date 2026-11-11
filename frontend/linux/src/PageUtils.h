@@ -96,12 +96,12 @@ inline QDoubleSpinBox* addSpinRow(
     sb->setProperty("ewcBaseHelp", help);
 
     QObject::connect(sb, &QDoubleSpinBox::valueChanged, sb,
-        [settingsGroup, settingsKey](double v) {
-            AppSettings::instance().setValue(settingsGroup, settingsKey, v);
-        });
+                     [settingsGroup, settingsKey](double v) {
+                         AppSettings::instance().setValue(settingsGroup, settingsKey, v);
+                     });
 
     auto* wrapper = new QWidget;
-    auto* hbox    = new QHBoxLayout(wrapper);
+    auto* hbox = new QHBoxLayout(wrapper);
     hbox->setContentsMargins(0, 0, 0, 0);
     hbox->addStretch(1);
     hbox->addWidget(sb);
@@ -129,12 +129,12 @@ inline QSpinBox* addIntSpinRow(
     sb->setProperty("ewcBaseHelp", help);
 
     QObject::connect(sb, &QSpinBox::valueChanged, sb,
-        [settingsGroup, settingsKey](int v) {
-            AppSettings::instance().setValue(settingsGroup, settingsKey, v);
-        });
+                     [settingsGroup, settingsKey](int v) {
+                         AppSettings::instance().setValue(settingsGroup, settingsKey, v);
+                     });
 
     auto* wrapper = new QWidget;
-    auto* hbox    = new QHBoxLayout(wrapper);
+    auto* hbox = new QHBoxLayout(wrapper);
     hbox->setContentsMargins(0, 0, 0, 0);
     hbox->addStretch(1);
     hbox->addWidget(sb);
@@ -170,12 +170,12 @@ inline void restoreSpinValue(QSpinBox* sb, const QString& group, const QString& 
 inline QString describeFieldError(ewpresenter::FieldError err)
 {
     switch (err) {
-        case ewpresenter::FieldError::none:             return QString();
-        case ewpresenter::FieldError::below_minimum:    return QStringLiteral("Value is below the minimum");
-        case ewpresenter::FieldError::above_maximum:    return QStringLiteral("Value exceeds the maximum");
-        case ewpresenter::FieldError::invalid_zero:     return QStringLiteral("Value must be positive");
+        case ewpresenter::FieldError::none: return QString();
+        case ewpresenter::FieldError::below_minimum: return QStringLiteral("Value is below the minimum");
+        case ewpresenter::FieldError::above_maximum: return QStringLiteral("Value exceeds the maximum");
+        case ewpresenter::FieldError::invalid_zero: return QStringLiteral("Value must be positive");
         case ewpresenter::FieldError::invalid_negative: return QStringLiteral("Value must not be negative");
-        case ewpresenter::FieldError::not_finite:       return QStringLiteral("Value must be a finite number");
+        case ewpresenter::FieldError::not_finite: return QStringLiteral("Value must be a finite number");
     }
     return QStringLiteral("Invalid value");
 }
@@ -229,8 +229,8 @@ inline QLabel* addResultRow(
 /// @param outLayout   receives the form layout; caller populates it.
 inline QGroupBox* makeGroup(const QString& title, QFormLayout*& outLayout)
 {
-    auto* box    = new QGroupBox(title);
-    outLayout    = new QFormLayout(box);
+    auto* box = new QGroupBox(title);
+    outLayout = new QFormLayout(box);
     return box;
 }
 

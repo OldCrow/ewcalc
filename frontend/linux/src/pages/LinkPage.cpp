@@ -20,39 +20,39 @@ LinkPage::LinkPage(QWidget* parent)
     auto* txGroup = makeGroup(QStringLiteral("Transmitter"), txForm);
 
     auto* txPwrSb = addSpinRow(txForm, QStringLiteral("Tx power (dBm)"), -50.0, 200.0,
-        presenter_.tx_power_dbm(), 1.0, 1, kGroup, QStringLiteral("tx_power_dbm"),
-        QStringLiteral("Transmitter output power at the antenna port"));
+                               presenter_.tx_power_dbm(), 1.0, 1, kGroup, QStringLiteral("tx_power_dbm"),
+                               QStringLiteral("Transmitter output power at the antenna port"));
     auto* txGainSb = addSpinRow(txForm, QStringLiteral("Tx gain (dB)"), -30.0, 60.0,
-        presenter_.tx_gain_db(), 1.0, 1, kGroup, QStringLiteral("tx_gain_db"),
-        QStringLiteral("Transmit antenna gain toward the receiver (dBi)"));
+                                presenter_.tx_gain_db(), 1.0, 1, kGroup, QStringLiteral("tx_gain_db"),
+                                QStringLiteral("Transmit antenna gain toward the receiver (dBi)"));
     auto* freqSb = addSpinRow(txForm, QStringLiteral("Frequency (MHz)"), 0.1, 100000.0,
-        presenter_.frequency_mhz(), 1.0, 1, kGroup, QStringLiteral("frequency_mhz"),
-        QStringLiteral("Carrier frequency \u2014 used to select the propagation regime"));
+                              presenter_.frequency_mhz(), 1.0, 1, kGroup, QStringLiteral("frequency_mhz"),
+                              QStringLiteral("Carrier frequency \u2014 used to select the propagation regime"));
 
     // ── Geometry: Distance, Tx height, Rx height (matches macOS) ────────
     QFormLayout* geoForm = nullptr;
     auto* geoGroup = makeGroup(QStringLiteral("Geometry"), geoForm);
 
     auto* distSb = addSpinRow(geoForm, QStringLiteral("Distance (km)"), 0.01, 10000.0,
-        presenter_.distance_km(), 0.1, 3, kGroup, QStringLiteral("distance_km"),
-        QStringLiteral("Straight-line distance between transmitter and receiver"));
+                              presenter_.distance_km(), 0.1, 3, kGroup, QStringLiteral("distance_km"),
+                              QStringLiteral("Straight-line distance between transmitter and receiver"));
     auto* txHtSb = addSpinRow(geoForm, QStringLiteral("Tx height (m)"), 0.1, 100000.0,
-        presenter_.tx_height_m(), 0.5, 1, kGroup, QStringLiteral("tx_height_m"),
-        QStringLiteral("Transmit antenna height above ground level"));
+                              presenter_.tx_height_m(), 0.5, 1, kGroup, QStringLiteral("tx_height_m"),
+                              QStringLiteral("Transmit antenna height above ground level"));
     auto* rxHtSb = addSpinRow(geoForm, QStringLiteral("Rx height (m)"), 0.1, 100000.0,
-        presenter_.rx_height_m(), 0.5, 1, kGroup, QStringLiteral("rx_height_m"),
-        QStringLiteral("Receive antenna height above ground level"));
+                              presenter_.rx_height_m(), 0.5, 1, kGroup, QStringLiteral("rx_height_m"),
+                              QStringLiteral("Receive antenna height above ground level"));
 
     // ── Receiver: Rx gain, Rx sensitivity (matches macOS) ───────────
     QFormLayout* rxForm = nullptr;
     auto* rxGroup = makeGroup(QStringLiteral("Receiver"), rxForm);
 
     auto* rxGainSb = addSpinRow(rxForm, QStringLiteral("Rx gain (dB)"), -30.0, 60.0,
-        presenter_.rx_gain_db(), 1.0, 1, kGroup, QStringLiteral("rx_gain_db"),
-        QStringLiteral("Receive antenna gain toward the transmitter (dBi)"));
+                                presenter_.rx_gain_db(), 1.0, 1, kGroup, QStringLiteral("rx_gain_db"),
+                                QStringLiteral("Receive antenna gain toward the transmitter (dBi)"));
     auto* rxSensSb = addSpinRow(rxForm, QStringLiteral("Rx sensitivity (dBm)"), -200.0, 0.0,
-        presenter_.rx_sensitivity_dbm(), 1.0, 1, kGroup, QStringLiteral("rx_sensitivity_dbm"),
-        QStringLiteral("Minimum signal level the receiver can detect; the link closes when received power \u2265 sensitivity"));
+                                presenter_.rx_sensitivity_dbm(), 1.0, 1, kGroup, QStringLiteral("rx_sensitivity_dbm"),
+                                QStringLiteral("Minimum signal level the receiver can detect; the link closes when received power \u2265 sensitivity"));
 
     // ── Outputs ───────────────────────────────────────────────────────────────
     QFormLayout* outForm = nullptr;
@@ -60,25 +60,25 @@ LinkPage::LinkPage(QWidget* parent)
 
     ResultRowRegistry results;
     received_power_ = addResultRow(outForm, QStringLiteral("Received power"),
-        QStringLiteral("Signal power at the receiver input: Ptx + Gtx + Grx \u2212 path loss"), &results);
+                                   QStringLiteral("Signal power at the receiver input: Ptx + Gtx + Grx \u2212 path loss"), &results);
     path_loss_ = addResultRow(outForm, QStringLiteral("Path loss"),
-        QStringLiteral("Attenuation of the signal as it travels from transmitter to receiver"), &results);
+                              QStringLiteral("Attenuation of the signal as it travels from transmitter to receiver"), &results);
     link_margin_ = addResultRow(outForm, QStringLiteral("Link margin"),
-        QStringLiteral("Received power minus sensitivity \u2014 positive = link closed; negative = link failure"), &results);
+                                QStringLiteral("Received power minus sensitivity \u2014 positive = link closed; negative = link failure"), &results);
     fresnel_zone_ = addResultRow(outForm, QStringLiteral("Fresnel crossover"),
-        QStringLiteral("Range at which ground reflection begins to dominate"), &results);
+                                 QStringLiteral("Range at which ground reflection begins to dominate"), &results);
     regime_ = addResultRow(outForm, QStringLiteral("Regime"),
-        QStringLiteral("Propagation model \u2014 free-space or two-ray \u2014 that applies at the given distance"), &results);
+                           QStringLiteral("Propagation model \u2014 free-space or two-ray \u2014 that applies at the given distance"), &results);
     effective_range_ = addResultRow(outForm, QStringLiteral("Effective range"),
-        QStringLiteral("Maximum range at which the link closes \u2014 where received power equals sensitivity"), &results);
+                                    QStringLiteral("Maximum range at which the link closes \u2014 where received power equals sensitivity"), &results);
     range_regime_ = addResultRow(outForm, QStringLiteral("Range regime"),
-        QStringLiteral("Propagation model that limits the effective range"), &results);
+                                 QStringLiteral("Propagation model that limits the effective range"), &results);
 
     outForm->addRow(addCopyResultsButton(results));
 
     // ── Scroll container ──────────────────────────────────────────────────────────
     auto* content = new QWidget;
-    auto* vbox    = new QVBoxLayout(content);
+    auto* vbox = new QVBoxLayout(content);
     vbox->addWidget(txGroup);
     vbox->addWidget(geoGroup);
     vbox->addWidget(rxGroup);
@@ -95,44 +95,44 @@ LinkPage::LinkPage(QWidget* parent)
     outer->addWidget(scroll);
 
     // ── Signal wiring ──────────────────────────────────────────────────────
-    connect(txPwrSb,  &QDoubleSpinBox::valueChanged, this,
-            [this, txPwrSb](double v){ presenter_.set_tx_power(v); applyFieldError(txPwrSb, presenter_.tx_power_error()); });
+    connect(txPwrSb, &QDoubleSpinBox::valueChanged, this,
+            [this, txPwrSb](double v) { presenter_.set_tx_power(v); applyFieldError(txPwrSb, presenter_.tx_power_error()); });
     connect(txGainSb, &QDoubleSpinBox::valueChanged, this,
-            [this, txGainSb](double v){ presenter_.set_tx_gain(v); applyFieldError(txGainSb, presenter_.tx_gain_error()); });
-    connect(freqSb,   &QDoubleSpinBox::valueChanged, this,
-            [this, freqSb](double v){ presenter_.set_frequency(v); applyFieldError(freqSb, presenter_.frequency_error()); });
-    connect(distSb,   &QDoubleSpinBox::valueChanged, this,
-            [this, distSb](double v){ presenter_.set_distance(v); applyFieldError(distSb, presenter_.distance_error()); });
-    connect(txHtSb,   &QDoubleSpinBox::valueChanged, this,
-            [this, txHtSb](double v){ presenter_.set_tx_height(v); applyFieldError(txHtSb, presenter_.tx_height_error()); });
-    connect(rxHtSb,   &QDoubleSpinBox::valueChanged, this,
-            [this, rxHtSb](double v){ presenter_.set_rx_height(v); applyFieldError(rxHtSb, presenter_.rx_height_error()); });
+            [this, txGainSb](double v) { presenter_.set_tx_gain(v); applyFieldError(txGainSb, presenter_.tx_gain_error()); });
+    connect(freqSb, &QDoubleSpinBox::valueChanged, this,
+            [this, freqSb](double v) { presenter_.set_frequency(v); applyFieldError(freqSb, presenter_.frequency_error()); });
+    connect(distSb, &QDoubleSpinBox::valueChanged, this,
+            [this, distSb](double v) { presenter_.set_distance(v); applyFieldError(distSb, presenter_.distance_error()); });
+    connect(txHtSb, &QDoubleSpinBox::valueChanged, this,
+            [this, txHtSb](double v) { presenter_.set_tx_height(v); applyFieldError(txHtSb, presenter_.tx_height_error()); });
+    connect(rxHtSb, &QDoubleSpinBox::valueChanged, this,
+            [this, rxHtSb](double v) { presenter_.set_rx_height(v); applyFieldError(rxHtSb, presenter_.rx_height_error()); });
     connect(rxGainSb, &QDoubleSpinBox::valueChanged, this,
-            [this, rxGainSb](double v){ presenter_.set_rx_gain(v); applyFieldError(rxGainSb, presenter_.rx_gain_error()); });
+            [this, rxGainSb](double v) { presenter_.set_rx_gain(v); applyFieldError(rxGainSb, presenter_.rx_gain_error()); });
     connect(rxSensSb, &QDoubleSpinBox::valueChanged, this,
-            [this, rxSensSb](double v){ presenter_.set_rx_sensitivity(v); applyFieldError(rxSensSb, presenter_.rx_sensitivity_error()); });
+            [this, rxSensSb](double v) { presenter_.set_rx_sensitivity(v); applyFieldError(rxSensSb, presenter_.rx_sensitivity_error()); });
 
     // ── Restore persisted values (after presenter wiring, before first recompute) ──
-    restoreSpinValue(txPwrSb,  kGroup, QStringLiteral("tx_power_dbm"));
+    restoreSpinValue(txPwrSb, kGroup, QStringLiteral("tx_power_dbm"));
     restoreSpinValue(txGainSb, kGroup, QStringLiteral("tx_gain_db"));
-    restoreSpinValue(freqSb,   kGroup, QStringLiteral("frequency_mhz"));
-    restoreSpinValue(distSb,   kGroup, QStringLiteral("distance_km"));
-    restoreSpinValue(txHtSb,   kGroup, QStringLiteral("tx_height_m"));
-    restoreSpinValue(rxHtSb,   kGroup, QStringLiteral("rx_height_m"));
+    restoreSpinValue(freqSb, kGroup, QStringLiteral("frequency_mhz"));
+    restoreSpinValue(distSb, kGroup, QStringLiteral("distance_km"));
+    restoreSpinValue(txHtSb, kGroup, QStringLiteral("tx_height_m"));
+    restoreSpinValue(rxHtSb, kGroup, QStringLiteral("rx_height_m"));
     restoreSpinValue(rxGainSb, kGroup, QStringLiteral("rx_gain_db"));
     restoreSpinValue(rxSensSb, kGroup, QStringLiteral("rx_sensitivity_dbm"));
 
-    presenter_.set_on_change([this](const ewpresenter::LinkPresenter::Output& o){
+    presenter_.set_on_change([this](const ewpresenter::LinkPresenter::Output& o) {
         applyOutput(o);
     });
 
     // Seed per-field validation-error styling from initial/restored values (#41).
-    applyFieldError(txPwrSb,  presenter_.tx_power_error());
+    applyFieldError(txPwrSb, presenter_.tx_power_error());
     applyFieldError(txGainSb, presenter_.tx_gain_error());
-    applyFieldError(freqSb,   presenter_.frequency_error());
-    applyFieldError(distSb,   presenter_.distance_error());
-    applyFieldError(txHtSb,   presenter_.tx_height_error());
-    applyFieldError(rxHtSb,   presenter_.rx_height_error());
+    applyFieldError(freqSb, presenter_.frequency_error());
+    applyFieldError(distSb, presenter_.distance_error());
+    applyFieldError(txHtSb, presenter_.tx_height_error());
+    applyFieldError(rxHtSb, presenter_.rx_height_error());
     applyFieldError(rxGainSb, presenter_.rx_gain_error());
     applyFieldError(rxSensSb, presenter_.rx_sensitivity_error());
 

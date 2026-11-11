@@ -27,7 +27,7 @@ void DigitalPresenter::set_implementation_loss(double db) noexcept {
 
 void DigitalPresenter::recompute() noexcept {
     // Eb/N₀ section: depends only on SNR, bandwidth, and data rate.
-    const bool eb_no_valid = (snr_err_       == FieldError::none &&
+    const bool eb_no_valid = (snr_err_ == FieldError::none &&
                               bandwidth_err_ == FieldError::none &&
                               data_rate_err_ == FieldError::none);
 
@@ -35,19 +35,19 @@ void DigitalPresenter::recompute() noexcept {
     // implementation loss. chip_rate < data_rate gives a physically nonsensical negative
     // process gain; treat the combination as invalid rather than displaying a bad result.
     const bool dsss_valid = eb_no_valid &&
-                            chip_rate_err_      == FieldError::none &&
+                            chip_rate_err_ == FieldError::none &&
                             required_eb_no_err_ == FieldError::none &&
-                            impl_loss_err_      == FieldError::none &&
-                            chip_rate_mhz_      >= data_rate_mhz_;
+                            impl_loss_err_ == FieldError::none &&
+                            chip_rate_mhz_ >= data_rate_mhz_;
 
     output_.valid = eb_no_valid;
 
     if (!eb_no_valid) {
-        output_.eb_no_str                   = kDash;
-        output_.required_snr_for_eb_no_str  = kDash;
-        output_.process_gain_str            = kDash;
-        output_.jamming_margin_str          = kDash;
-        output_.required_js_str             = kDash;
+        output_.eb_no_str = kDash;
+        output_.required_snr_for_eb_no_str = kDash;
+        output_.process_gain_str = kDash;
+        output_.jamming_margin_str = kDash;
+        output_.required_js_str = kDash;
         return;
     }
 
@@ -69,9 +69,9 @@ void DigitalPresenter::recompute() noexcept {
     }
 
     if (!dsss_valid) {
-        output_.process_gain_str   = "N/A";
+        output_.process_gain_str = "N/A";
         output_.jamming_margin_str = "N/A";
-        output_.required_js_str    = "N/A";
+        output_.required_js_str = "N/A";
         return;
     }
 
@@ -86,9 +86,9 @@ void DigitalPresenter::recompute() noexcept {
         Db{required_eb_no_db_},
         Db{implementation_loss_db_});
 
-    output_.process_gain_str   = format_db(output_.process_gain);
+    output_.process_gain_str = format_db(output_.process_gain);
     output_.jamming_margin_str = format_db(output_.jamming_margin);
-    output_.required_js_str    = format_db(output_.required_js);
+    output_.required_js_str = format_db(output_.required_js);
 }
 
 void DigitalPresenter::fire() noexcept {

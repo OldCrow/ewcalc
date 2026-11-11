@@ -50,7 +50,11 @@ QString displayText(QString text)
 /// section on a common left edge. Value rows span the two form columns and
 /// diagrams span all four, so a section that interleaves them keeps its
 /// order and only the pairs are column-bound.
-enum SectionColumn { ColLabel = 0, ColStd = 1, ColLog = 2, ColCopy = 3, ColCount = 4 };
+enum SectionColumn { ColLabel = 0,
+                     ColStd = 1,
+                     ColLog = 2,
+                     ColCopy = 3,
+                     ColCount = 4 };
 
 /// Cap on a standard form that has a log form beside it: it stops one
 /// unusually wide standard form from starving its log form. Applied only to
@@ -69,7 +73,7 @@ QPushButton* makeCopyButton(const QString& copyText, const QString& label)
     btn->setFlat(true);
     btn->setToolTip(QStringLiteral("Copy ") + copyText);
     btn->setAccessibleName(QStringLiteral("Copy ") + label);
-    QObject::connect(btn, &QPushButton::clicked, btn, [copyText](){
+    QObject::connect(btn, &QPushButton::clicked, btn, [copyText]() {
         QGuiApplication::clipboard()->setText(copyText);
     });
     return btn;
@@ -142,7 +146,8 @@ class FormulaImage : public QLabel
 public:
     /// @p maxLogicalWidth caps the drawn width (0 = natural size only).
     FormulaImage(const QPixmap& source, const QString& altText, int maxLogicalWidth = 0)
-        : source_(source), maxWidth_(maxLogicalWidth)
+        : source_(source)
+        , maxWidth_(maxLogicalWidth)
     {
         setAccessibleName(altText);
         setToolTip(altText);
@@ -150,11 +155,11 @@ public:
         setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
     }
 
-    bool  hasHeightForWidth() const override { return true; }
-    int   heightForWidth(int w) const override { return scaledSize(w).height(); }
-    QSize sizeHint() const override          { return scaledSize(naturalWidth()); }
+    bool hasHeightForWidth() const override { return true; }
+    int heightForWidth(int w) const override { return scaledSize(w).height(); }
+    QSize sizeHint() const override { return scaledSize(naturalWidth()); }
     // Allow the layout to squeeze the image rather than force the page wider.
-    QSize minimumSizeHint() const override   { return QSize(1, 1); }
+    QSize minimumSizeHint() const override { return QSize(1, 1); }
 
 protected:
     /// Draws the source scaled to the width actually granted, left-aligned and
@@ -189,14 +194,14 @@ private:
         const int natural = naturalWidth();
         if (natural <= 0)
             return QSize();
-        const int   target = std::clamp(w, 1, natural);
-        const qreal scale  = qreal(target) / natural;
+        const int target = std::clamp(w, 1, natural);
+        const qreal scale = qreal(target) / natural;
         return QSize(target,
                      qMax(1, qRound(source_.height() / source_.devicePixelRatio() * scale)));
     }
 
     QPixmap source_;
-    int     maxWidth_ = 0;
+    int maxWidth_ = 0;
 };
 
 /// Creates the formula image for @p resourcePath. @p altText (the Unicode
@@ -223,9 +228,9 @@ QLabel* makeFormulaImage(const QString& resourcePath, const QString& altText,
 /// trade in 848ad92.
 void addFormulaRow(QGridLayout* grid, int row, const refdata::Row& formulaRow)
 {
-    const QString label   = QString::fromUtf8(formulaRow.label);
+    const QString label = QString::fromUtf8(formulaRow.label);
     const QString stdText = QString::fromUtf8(formulaRow.value);
-    const QString base    = QString::fromUtf8(formulaRow.svg_base);
+    const QString base = QString::fromUtf8(formulaRow.svg_base);
 
     auto* stdImage = makeFormulaImage(QStringLiteral(":/formulas/%1-std.png").arg(base),
                                       stdText, formulaRow.log_value ? kStdFormMaxWidth : 0);
@@ -261,7 +266,7 @@ QLabel* makeSectionDiagram(const QString& name)
     constexpr qreal dpr = 2.0;
     if (!pix.isNull()) {
         const int naturalWidth = qRound(pix.width() / dpr);
-        const int targetWidth  = std::min(naturalWidth, kSectionDiagramMaxWidth);
+        const int targetWidth = std::min(naturalWidth, kSectionDiagramMaxWidth);
         if (targetWidth > 0 && targetWidth < naturalWidth)
             pix = pix.scaledToWidth(qRound(targetWidth * dpr), Qt::SmoothTransformation);
         pix.setDevicePixelRatio(dpr);
@@ -284,7 +289,7 @@ ReferencePage::ReferencePage(std::size_t pageIndex, QWidget* parent)
     : QWidget(parent)
 {
     auto* content = new QWidget;
-    auto* vbox    = new QVBoxLayout(content);
+    auto* vbox = new QVBoxLayout(content);
 
     const auto pages = refdata::pages();
     ResultRowRegistry results;
@@ -292,7 +297,7 @@ ReferencePage::ReferencePage(std::size_t pageIndex, QWidget* parent)
         const auto& page = pages[pageIndex];
         for (std::size_t s = 0; s < page.section_count; ++s) {
             const auto& section = page.sections[s];
-            auto* box  = new QGroupBox(displayText(QString::fromUtf8(section.title)));
+            auto* box = new QGroupBox(displayText(QString::fromUtf8(section.title)));
             auto* grid = new QGridLayout(box);
             grid->setHorizontalSpacing(12);
             // Only the log-form column takes up slack, so the standard-form

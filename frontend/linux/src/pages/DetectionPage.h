@@ -8,6 +8,7 @@ class DetectionPage : public QWidget
 {
 public:
     explicit DetectionPage(QWidget* parent = nullptr);
+
 private:
     ewpresenter::DetectionPresenter presenter_;
     QLabel* required_snr_;

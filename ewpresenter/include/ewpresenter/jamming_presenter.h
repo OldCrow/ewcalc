@@ -15,10 +15,11 @@ using namespace libew::units;
 
 class JammingPresenter : public PresenterBase<JammingPresenter> {
     friend PresenterBase<JammingPresenter>;
+
 public:
     struct Output {
         // J/S ratio
-        Db  js_ratio{};
+        Db js_ratio{};
         Dbm signal_at_rx{};
         Dbm jammer_at_rx{};
         std::string js_ratio_str;
@@ -26,13 +27,13 @@ public:
         std::string jammer_at_rx_str;
 
         // Partial-band jamming
-        Mhz    optimum_bw{};
+        Mhz optimum_bw{};
         double duty_cycle{};
         std::string optimum_bw_str;
         std::string duty_cycle_str;
 
         // Burnthrough range
-        Km  burnthrough_range{};
+        Km burnthrough_range{};
         std::string burnthrough_range_str;
 
         bool valid{false};
@@ -92,66 +93,66 @@ public:
     [[nodiscard]] const Output& output() const noexcept { return output_; }
     [[nodiscard]] bool is_valid() const noexcept { return output_.valid; }
 
-    [[nodiscard]] double signal_erp_dbm()       const noexcept { return signal_erp_dbm_; }
-    [[nodiscard]] double jammer_erp_dbm()       const noexcept { return jammer_erp_dbm_; }
+    [[nodiscard]] double signal_erp_dbm() const noexcept { return signal_erp_dbm_; }
+    [[nodiscard]] double jammer_erp_dbm() const noexcept { return jammer_erp_dbm_; }
     [[nodiscard]] double signal_to_rx_dist_km() const noexcept { return signal_to_rx_dist_km_; }
     [[nodiscard]] double jammer_to_rx_dist_km() const noexcept { return jammer_to_rx_dist_km_; }
-    [[nodiscard]] double signal_tx_height_m()   const noexcept { return signal_tx_height_m_; }
-    [[nodiscard]] double jammer_height_m()      const noexcept { return jammer_height_m_; }
-    [[nodiscard]] double rx_height_m()          const noexcept { return rx_height_m_; }
-    [[nodiscard]] double frequency_mhz()        const noexcept { return frequency_mhz_; }
-    [[nodiscard]] double rx_gain_signal_db()    const noexcept { return rx_gain_signal_db_; }
-    [[nodiscard]] double rx_gain_jammer_db()    const noexcept { return rx_gain_jammer_db_; }
+    [[nodiscard]] double signal_tx_height_m() const noexcept { return signal_tx_height_m_; }
+    [[nodiscard]] double jammer_height_m() const noexcept { return jammer_height_m_; }
+    [[nodiscard]] double rx_height_m() const noexcept { return rx_height_m_; }
+    [[nodiscard]] double frequency_mhz() const noexcept { return frequency_mhz_; }
+    [[nodiscard]] double rx_gain_signal_db() const noexcept { return rx_gain_signal_db_; }
+    [[nodiscard]] double rx_gain_jammer_db() const noexcept { return rx_gain_jammer_db_; }
     [[nodiscard]] double signal_bandwidth_mhz() const noexcept { return signal_bandwidth_mhz_; }
-    [[nodiscard]] double hop_range_mhz()        const noexcept { return hop_range_mhz_; }
-    [[nodiscard]] double js_threshold_db()      const noexcept { return js_threshold_db_; }
+    [[nodiscard]] double hop_range_mhz() const noexcept { return hop_range_mhz_; }
+    [[nodiscard]] double js_threshold_db() const noexcept { return js_threshold_db_; }
 
-    [[nodiscard]] FieldError signal_erp_error()         const noexcept { return signal_erp_err_; }
-    [[nodiscard]] FieldError jammer_erp_error()         const noexcept { return jammer_erp_err_; }
-    [[nodiscard]] FieldError signal_to_rx_dist_error()  const noexcept { return signal_to_rx_err_; }
-    [[nodiscard]] FieldError jammer_to_rx_dist_error()  const noexcept { return jammer_to_rx_err_; }
-    [[nodiscard]] FieldError signal_tx_height_error()   const noexcept { return signal_height_err_; }
-    [[nodiscard]] FieldError jammer_height_error()      const noexcept { return jammer_height_err_; }
-    [[nodiscard]] FieldError rx_height_error()          const noexcept { return rx_height_err_; }
-    [[nodiscard]] FieldError frequency_error()          const noexcept { return frequency_err_; }
-    [[nodiscard]] FieldError rx_gain_signal_error()     const noexcept { return rx_gain_signal_err_; }
-    [[nodiscard]] FieldError rx_gain_jammer_error()     const noexcept { return rx_gain_jammer_err_; }
-    [[nodiscard]] FieldError signal_bandwidth_error()   const noexcept { return signal_bandwidth_err_; }
-    [[nodiscard]] FieldError hop_range_error()          const noexcept { return hop_range_err_; }
-    [[nodiscard]] FieldError js_threshold_error()       const noexcept { return js_threshold_err_; }
+    [[nodiscard]] FieldError signal_erp_error() const noexcept { return signal_erp_err_; }
+    [[nodiscard]] FieldError jammer_erp_error() const noexcept { return jammer_erp_err_; }
+    [[nodiscard]] FieldError signal_to_rx_dist_error() const noexcept { return signal_to_rx_err_; }
+    [[nodiscard]] FieldError jammer_to_rx_dist_error() const noexcept { return jammer_to_rx_err_; }
+    [[nodiscard]] FieldError signal_tx_height_error() const noexcept { return signal_height_err_; }
+    [[nodiscard]] FieldError jammer_height_error() const noexcept { return jammer_height_err_; }
+    [[nodiscard]] FieldError rx_height_error() const noexcept { return rx_height_err_; }
+    [[nodiscard]] FieldError frequency_error() const noexcept { return frequency_err_; }
+    [[nodiscard]] FieldError rx_gain_signal_error() const noexcept { return rx_gain_signal_err_; }
+    [[nodiscard]] FieldError rx_gain_jammer_error() const noexcept { return rx_gain_jammer_err_; }
+    [[nodiscard]] FieldError signal_bandwidth_error() const noexcept { return signal_bandwidth_err_; }
+    [[nodiscard]] FieldError hop_range_error() const noexcept { return hop_range_err_; }
+    [[nodiscard]] FieldError js_threshold_error() const noexcept { return js_threshold_err_; }
 
     void set_on_change(std::function<void(const Output&)> cb) noexcept {
         on_change_ = std::move(cb);
     }
 
 private:
-    double signal_erp_dbm_       {30.0};
-    double jammer_erp_dbm_       {50.0};
-    double signal_to_rx_dist_km_ {5.0};
-    double jammer_to_rx_dist_km_ {50.0};
-    double signal_tx_height_m_   {1.5};
-    double jammer_height_m_      {1000.0};
-    double rx_height_m_          {1.5};
-    double frequency_mhz_        {100.0};
-    double rx_gain_signal_db_    {0.0};
-    double rx_gain_jammer_db_    {0.0};
-    double signal_bandwidth_mhz_ {0.025};
-    double hop_range_mhz_        {58.0};
-    double js_threshold_db_      {0.0};
+    double signal_erp_dbm_{30.0};
+    double jammer_erp_dbm_{50.0};
+    double signal_to_rx_dist_km_{5.0};
+    double jammer_to_rx_dist_km_{50.0};
+    double signal_tx_height_m_{1.5};
+    double jammer_height_m_{1000.0};
+    double rx_height_m_{1.5};
+    double frequency_mhz_{100.0};
+    double rx_gain_signal_db_{0.0};
+    double rx_gain_jammer_db_{0.0};
+    double signal_bandwidth_mhz_{0.025};
+    double hop_range_mhz_{58.0};
+    double js_threshold_db_{0.0};
 
-    FieldError signal_erp_err_       {FieldError::none};
-    FieldError jammer_erp_err_       {FieldError::none};
-    FieldError signal_to_rx_err_     {FieldError::none};
-    FieldError jammer_to_rx_err_     {FieldError::none};
-    FieldError signal_height_err_    {FieldError::none};
-    FieldError jammer_height_err_    {FieldError::none};
-    FieldError rx_height_err_        {FieldError::none};
-    FieldError frequency_err_        {FieldError::none};
-    FieldError rx_gain_signal_err_   {FieldError::none};
-    FieldError rx_gain_jammer_err_   {FieldError::none};
-    FieldError signal_bandwidth_err_ {FieldError::none};
-    FieldError hop_range_err_        {FieldError::none};
-    FieldError js_threshold_err_     {FieldError::none};
+    FieldError signal_erp_err_{FieldError::none};
+    FieldError jammer_erp_err_{FieldError::none};
+    FieldError signal_to_rx_err_{FieldError::none};
+    FieldError jammer_to_rx_err_{FieldError::none};
+    FieldError signal_height_err_{FieldError::none};
+    FieldError jammer_height_err_{FieldError::none};
+    FieldError rx_height_err_{FieldError::none};
+    FieldError frequency_err_{FieldError::none};
+    FieldError rx_gain_signal_err_{FieldError::none};
+    FieldError rx_gain_jammer_err_{FieldError::none};
+    FieldError signal_bandwidth_err_{FieldError::none};
+    FieldError hop_range_err_{FieldError::none};
+    FieldError js_threshold_err_{FieldError::none};
 
     Output output_;
     std::function<void(const Output&)> on_change_;

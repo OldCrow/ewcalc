@@ -58,7 +58,7 @@ void test_sensitivity_additive() {
 void test_cascaded_nf_perfect_preamp() {
     // If stage 1 is a perfect (noiseless) preamp with infinite gain,
     // NF_sys should equal NF1 = 0 dB. Approximate with G=60 dB, NF1=0 dB:
-    const Stage preamp  = {0.0_dB, 60.0_dB};
+    const Stage preamp = {0.0_dB, 60.0_dB};
     const Stage backend = {20.0_dB, Db{0.0}};
     const Db nf = cascaded_noise_figure(preamp, backend);
     // NF_sys = 1 + (10^2 - 1)/10^6 ≈ 1 + 0 = 1 linear = 0 dB
@@ -73,7 +73,7 @@ void test_cascaded_nf_dominant_first_stage() {
     // 10*log10(2.0853) = 3.19 dB
     const Stage s1 = {3.0_dB, 20.0_dB};
     const Stage s2 = {10.0_dB, Db{0.0}};
-    ASSERT_NEAR(cascaded_noise_figure(s1, s2).value, 10.0*std::log10(2.0853), 0.02);
+    ASSERT_NEAR(cascaded_noise_figure(s1, s2).value, 10.0 * std::log10(2.0853), 0.02);
 }
 
 void test_cascaded_nf_four_stage_chain() {
@@ -91,12 +91,10 @@ void test_cascaded_nf_four_stage_chain() {
     //          + (10.0 -1)/(0.7943*100)      = 0.1133
     //          + (12.589-1)/(0.7943*100*0.1) = 1.4590
     //        = 4.0847 linear = 6.11 dB
-    const std::array<Stage, 4> chain = {{
-        {Db{1.0},  Db{-1.0}},
-        {Db{3.0},  Db{20.0}},
-        {Db{10.0}, Db{-10.0}},
-        {Db{11.0}, Db{0.0}}
-    }};
+    const std::array<Stage, 4> chain = {{{Db{1.0}, Db{-1.0}},
+                                         {Db{3.0}, Db{20.0}},
+                                         {Db{10.0}, Db{-10.0}},
+                                         {Db{11.0}, Db{0.0}}}};
     ASSERT_NEAR(cascaded_noise_figure(std::span<const Stage>{chain}).value, 6.11, 0.05);
 }
 
@@ -126,8 +124,8 @@ void test_digital_dr_12bit() {
 
 void test_digital_dr_each_bit_adds_6db() {
     // Each additional bit adds exactly 20*log10(2) = 6.0206 dB
-    const Db dr8  = digital_dynamic_range(8);
-    const Db dr9  = digital_dynamic_range(9);
+    const Db dr8 = digital_dynamic_range(8);
+    const Db dr9 = digital_dynamic_range(9);
     ASSERT_NEAR(dr9.value - dr8.value, 6.0206, 0.001);
 }
 
@@ -166,7 +164,7 @@ void test_sfdr_linearity_third_order() {
     // Each dB increase in IP3 adds 2/3 dB to SFDR3
     const Db sfdr1 = analog_sfdr_third_order(Dbm{-100.0}, Dbm{10.0});
     const Db sfdr2 = analog_sfdr_third_order(Dbm{-100.0}, Dbm{11.0});
-    ASSERT_NEAR(sfdr2.value - sfdr1.value, 2.0/3.0, 0.001);
+    ASSERT_NEAR(sfdr2.value - sfdr1.value, 2.0 / 3.0, 0.001);
 }
 
 void test_sfdr_linearity_second_order() {
@@ -216,7 +214,7 @@ void test_loss_noise_temp_at_standard_temp() {
     // This must equal the result of noise_temp_from_nf for the same loss value.
     const Db loss{3.0}; // 3 dB
     const Kelvin te_loss = loss_noise_temp(loss, Kelvin{290.0});
-    const Kelvin te_nf   = noise_temp_from_nf(loss);
+    const Kelvin te_nf = noise_temp_from_nf(loss);
     ASSERT_NEAR(te_loss.value, te_nf.value, 1e-6);
 }
 

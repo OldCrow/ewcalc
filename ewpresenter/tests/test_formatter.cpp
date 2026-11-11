@@ -18,30 +18,30 @@
 using namespace ewpresenter;
 using namespace libew::units;
 
-static constexpr std::size_t kInnerBuf  = 64;  ///< fmt() internal buffer in formatter.cpp
-static constexpr std::size_t kBridgeBuf = 80;  ///< EWP_STR_MAX in ewcalc_bridge.h
+static constexpr std::size_t kInnerBuf = 64;  ///< fmt() internal buffer in formatter.cpp
+static constexpr std::size_t kBridgeBuf = 80; ///< EWP_STR_MAX in ewcalc_bridge.h
 
 // ---------------------------------------------------------------------------
 // Helper macro: assert both size constraints in one call.
 // ---------------------------------------------------------------------------
-#define ASSERT_SIZE(s) \
-    do { \
-        ASSERT_TRUE((s).size() < kInnerBuf); \
+#define ASSERT_SIZE(s)                        \
+    do {                                      \
+        ASSERT_TRUE((s).size() < kInnerBuf);  \
         ASSERT_TRUE((s).size() < kBridgeBuf); \
-    } while(false)
+    } while (false)
 
 // ---------------------------------------------------------------------------
 // Power
 // ---------------------------------------------------------------------------
 void test_format_dbm() {
-    ASSERT_SIZE(format_dbm(Dbm{-200.0}));   // large negative
-    ASSERT_SIZE(format_dbm(Dbm{ 200.0}));   // large positive
+    ASSERT_SIZE(format_dbm(Dbm{-200.0})); // large negative
+    ASSERT_SIZE(format_dbm(Dbm{200.0}));  // large positive
     ASSERT_SIZE(format_dbm(Dbm{-200.0}, 3));
 }
 
 void test_format_dbw() {
     ASSERT_SIZE(format_dbw(Dbw{-200.0}));
-    ASSERT_SIZE(format_dbw(Dbw{ 200.0}));
+    ASSERT_SIZE(format_dbw(Dbw{200.0}));
 }
 
 void test_format_watts() {
@@ -60,7 +60,7 @@ void test_format_watts() {
 // ---------------------------------------------------------------------------
 void test_format_db() {
     ASSERT_SIZE(format_db(Db{-100.0}));
-    ASSERT_SIZE(format_db(Db{ 100.0}));
+    ASSERT_SIZE(format_db(Db{100.0}));
     ASSERT_SIZE(format_db(Db{-100.0}, 3));
 }
 
@@ -71,7 +71,7 @@ void test_format_db_negative_zero() {
 
 void test_format_dbsm() {
     ASSERT_SIZE(format_dbsm(Dbsm{-40.0}));
-    ASSERT_SIZE(format_dbsm(Dbsm{ 60.0}));
+    ASSERT_SIZE(format_dbsm(Dbsm{60.0}));
 }
 
 // ---------------------------------------------------------------------------
@@ -116,8 +116,8 @@ void test_format_degrees() {
 // ---------------------------------------------------------------------------
 void test_format_percent() {
     ASSERT_SIZE(format_percent(0.0));
-    ASSERT_SIZE(format_percent(1.0));        // 100.000 %
-    ASSERT_SIZE(format_percent(0.9999, 6));  // 99.990000 % — high decimal count
+    ASSERT_SIZE(format_percent(1.0));       // 100.000 %
+    ASSERT_SIZE(format_percent(0.9999, 6)); // 99.990000 % — high decimal count
 }
 
 // ---------------------------------------------------------------------------
@@ -125,9 +125,9 @@ void test_format_percent() {
 // ---------------------------------------------------------------------------
 void test_format_seconds() {
     ASSERT_SIZE(format_seconds(Seconds{0.0}));
-    ASSERT_SIZE(format_seconds(Seconds{1.5}));       // "1.500 s"
-    ASSERT_SIZE(format_seconds(Seconds{0.0556}));    // "55.6 ms"
-    ASSERT_SIZE(format_seconds(Seconds{1.23e-5}));   // "12.3 µs"
+    ASSERT_SIZE(format_seconds(Seconds{1.5}));     // "1.500 s"
+    ASSERT_SIZE(format_seconds(Seconds{0.0556}));  // "55.6 ms"
+    ASSERT_SIZE(format_seconds(Seconds{1.23e-5})); // "12.3 µs"
     ASSERT_SIZE(format_seconds(Seconds{1.0e9}));
     // Band checks
     ASSERT_TRUE(format_seconds(Seconds{1.5}).find(" s") != std::string::npos);
@@ -138,9 +138,9 @@ void test_format_seconds() {
 
 void test_format_hz() {
     ASSERT_SIZE(format_hz(0.0));
-    ASSERT_SIZE(format_hz(1.0));       // "1.00 Hz"
-    ASSERT_SIZE(format_hz(2500.0));    // "2.50 kHz"
-    ASSERT_SIZE(format_hz(3.1e6));     // "3.10 MHz"
+    ASSERT_SIZE(format_hz(1.0));    // "1.00 Hz"
+    ASSERT_SIZE(format_hz(2500.0)); // "2.50 kHz"
+    ASSERT_SIZE(format_hz(3.1e6));  // "3.10 MHz"
     ASSERT_SIZE(format_hz(1.0e12));
     ASSERT_TRUE(format_hz(2500.0).find("kHz") != std::string::npos);
     ASSERT_TRUE(format_hz(3.1e6).find("MHz") != std::string::npos);
@@ -151,7 +151,7 @@ void test_format_mps() {
     ASSERT_SIZE(format_mps(-3000.0));
     ASSERT_SIZE(format_mps(1.0e9, 6));
     ASSERT_TRUE(format_mps(15.0) == "15.0 m/s");
-    ASSERT_TRUE(format_mps(-0.0) == "0.0 m/s");   // negative-zero normalization
+    ASSERT_TRUE(format_mps(-0.0) == "0.0 m/s"); // negative-zero normalization
 }
 
 void test_format_count() {
@@ -160,7 +160,7 @@ void test_format_count() {
     ASSERT_SIZE(format_count(1.0e15, 3));
     // 55.55 is 55.5499… in binary — rounds down; avoid the half-way case.
     ASSERT_TRUE(format_count(55.56) == "55.6");
-    ASSERT_TRUE(format_count(-0.0) == "0.0");   // negative-zero normalization
+    ASSERT_TRUE(format_count(-0.0) == "0.0"); // negative-zero normalization
 }
 
 void test_format_kelvin() {

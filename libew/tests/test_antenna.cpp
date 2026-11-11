@@ -110,10 +110,10 @@ void test_gain_from_beamwidth_1x1() {
 void test_beamwidth_gain_consistency() {
     // beamwidth_from_gain is the circular/symmetric inverse of
     // gain_from_beamwidth where θ_az == θ_el.
-    const Degrees bw_low  = beamwidth_from_gain(10.0_dB);
+    const Degrees bw_low = beamwidth_from_gain(10.0_dB);
     const Degrees bw_high = beamwidth_from_gain(30.0_dB);
-    ASSERT_TRUE(bw_high.value < bw_low.value);  // higher gain → narrower beam
-    const Db g_from_low  = gain_from_beamwidth(bw_low,  bw_low);
+    ASSERT_TRUE(bw_high.value < bw_low.value); // higher gain → narrower beam
+    const Db g_from_low = gain_from_beamwidth(bw_low, bw_low);
     const Db g_from_high = gain_from_beamwidth(bw_high, bw_high);
     ASSERT_NEAR(g_from_low.value, 10.0, 1e-9);
     ASSERT_NEAR(g_from_high.value, 30.0, 1e-9);

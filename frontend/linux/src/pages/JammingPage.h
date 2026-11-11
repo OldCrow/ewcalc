@@ -8,6 +8,7 @@ class JammingPage : public QWidget
 {
 public:
     explicit JammingPage(QWidget* parent = nullptr);
+
 private:
     ewpresenter::JammingPresenter presenter_;
     QLabel* js_ratio_;

@@ -35,9 +35,9 @@ void test_one_way_link_los_power() {
 void test_one_way_link_gain_adds_linearly() {
     // Adding 3 dB to Gtx raises Prx by exactly 3 dB
     const auto r1 = one_way_link(20.0_dBm, 0.0_dB, 0.0_dB,
-                                  0.1_km, 10.0_m, 10.0_m, 100.0_MHz);
+                                 0.1_km, 10.0_m, 10.0_m, 100.0_MHz);
     const auto r2 = one_way_link(20.0_dBm, 3.0_dB, 0.0_dB,
-                                  0.1_km, 10.0_m, 10.0_m, 100.0_MHz);
+                                 0.1_km, 10.0_m, 10.0_m, 100.0_MHz);
     ASSERT_NEAR(r2.received_power.value - r1.received_power.value, 3.0, 1e-9);
 }
 
@@ -55,9 +55,9 @@ void test_one_way_link_two_ray_regime_flag() {
     // h_tx=10m, h_rx=10m, f=100 MHz → FZ = 0.417 km
     // At 1 km: 2-ray regime; at 0.1 km: LOS regime
     const auto los = one_way_link(0.0_dBm, 0.0_dB, 0.0_dB,
-                                   0.1_km, 10.0_m, 10.0_m, 100.0_MHz);
+                                  0.1_km, 10.0_m, 10.0_m, 100.0_MHz);
     const auto two_ray = one_way_link(0.0_dBm, 0.0_dB, 0.0_dB,
-                                       1.0_km, 10.0_m, 10.0_m, 100.0_MHz);
+                                      1.0_km, 10.0_m, 10.0_m, 100.0_MHz);
     ASSERT_FALSE(los.two_ray_regime);
     ASSERT_TRUE(two_ray.two_ray_regime);
 }
@@ -65,9 +65,9 @@ void test_one_way_link_two_ray_regime_flag() {
 void test_one_way_link_fresnel_zone_reported() {
     // Fresnel zone distance is returned in the result
     const auto r = one_way_link(0.0_dBm, 0.0_dB, 0.0_dB,
-                                 0.5_km, 10.0_m, 10.0_m, 100.0_MHz);
+                                0.5_km, 10.0_m, 10.0_m, 100.0_MHz);
     // FZ = 10 * 10 * 100 / 24000 = 0.4167 km
-    ASSERT_NEAR(r.fresnel_zone_distance.value, 10.0*10.0*100.0/24000.0, 1e-6);
+    ASSERT_NEAR(r.fresnel_zone_distance.value, 10.0 * 10.0 * 100.0 / 24000.0, 1e-6);
 }
 
 // ---------------------------------------------------------------------------

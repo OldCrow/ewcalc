@@ -15,6 +15,7 @@ using namespace libew::units;
 
 class RadarPresenter : public PresenterBase<RadarPresenter> {
     friend PresenterBase<RadarPresenter>;
+
 public:
     struct Output {
         // Radar range equation
@@ -86,53 +87,53 @@ public:
     [[nodiscard]] const Output& output() const noexcept { return output_; }
     [[nodiscard]] bool is_valid() const noexcept { return output_.valid; }
 
-    [[nodiscard]] double tx_power_dbm()            const noexcept { return tx_power_dbm_; }
-    [[nodiscard]] double antenna_gain_dbi()        const noexcept { return antenna_gain_dbi_; }
-    [[nodiscard]] double target_rcs_dbsm()         const noexcept { return target_rcs_dbsm_; }
-    [[nodiscard]] double frequency_mhz()           const noexcept { return frequency_mhz_; }
-    [[nodiscard]] double system_losses_db()        const noexcept { return system_losses_db_; }
-    [[nodiscard]] double noise_figure_db()         const noexcept { return noise_figure_db_; }
-    [[nodiscard]] double bandwidth_mhz()           const noexcept { return bandwidth_mhz_; }
-    [[nodiscard]] double required_snr_db()         const noexcept { return required_snr_db_; }
-    [[nodiscard]] double time_bandwidth_product()  const noexcept { return time_bandwidth_product_; }
-    [[nodiscard]] int    num_pulses()              const noexcept { return num_pulses_; }
-    [[nodiscard]] FieldError tx_power_error()               const noexcept { return tx_power_err_; }
-    [[nodiscard]] FieldError antenna_gain_error()           const noexcept { return antenna_gain_err_; }
-    [[nodiscard]] FieldError target_rcs_error()             const noexcept { return target_rcs_err_; }
-    [[nodiscard]] FieldError frequency_error()              const noexcept { return frequency_err_; }
-    [[nodiscard]] FieldError system_losses_error()          const noexcept { return system_losses_err_; }
-    [[nodiscard]] FieldError noise_figure_error()           const noexcept { return noise_figure_err_; }
-    [[nodiscard]] FieldError bandwidth_error()              const noexcept { return bandwidth_err_; }
-    [[nodiscard]] FieldError required_snr_error()           const noexcept { return required_snr_err_; }
+    [[nodiscard]] double tx_power_dbm() const noexcept { return tx_power_dbm_; }
+    [[nodiscard]] double antenna_gain_dbi() const noexcept { return antenna_gain_dbi_; }
+    [[nodiscard]] double target_rcs_dbsm() const noexcept { return target_rcs_dbsm_; }
+    [[nodiscard]] double frequency_mhz() const noexcept { return frequency_mhz_; }
+    [[nodiscard]] double system_losses_db() const noexcept { return system_losses_db_; }
+    [[nodiscard]] double noise_figure_db() const noexcept { return noise_figure_db_; }
+    [[nodiscard]] double bandwidth_mhz() const noexcept { return bandwidth_mhz_; }
+    [[nodiscard]] double required_snr_db() const noexcept { return required_snr_db_; }
+    [[nodiscard]] double time_bandwidth_product() const noexcept { return time_bandwidth_product_; }
+    [[nodiscard]] int num_pulses() const noexcept { return num_pulses_; }
+    [[nodiscard]] FieldError tx_power_error() const noexcept { return tx_power_err_; }
+    [[nodiscard]] FieldError antenna_gain_error() const noexcept { return antenna_gain_err_; }
+    [[nodiscard]] FieldError target_rcs_error() const noexcept { return target_rcs_err_; }
+    [[nodiscard]] FieldError frequency_error() const noexcept { return frequency_err_; }
+    [[nodiscard]] FieldError system_losses_error() const noexcept { return system_losses_err_; }
+    [[nodiscard]] FieldError noise_figure_error() const noexcept { return noise_figure_err_; }
+    [[nodiscard]] FieldError bandwidth_error() const noexcept { return bandwidth_err_; }
+    [[nodiscard]] FieldError required_snr_error() const noexcept { return required_snr_err_; }
     [[nodiscard]] FieldError time_bandwidth_product_error() const noexcept { return tb_product_err_; }
-    [[nodiscard]] FieldError num_pulses_error()             const noexcept { return num_pulses_err_; }
+    [[nodiscard]] FieldError num_pulses_error() const noexcept { return num_pulses_err_; }
 
     void set_on_change(std::function<void(const Output&)> cb) noexcept {
         on_change_ = std::move(cb);
     }
 
 private:
-    double tx_power_dbm_           {60.0};   // 1 kW
-    double antenna_gain_dbi_       {30.0};
-    double target_rcs_dbsm_        {0.0};    // 1 m²
-    double frequency_mhz_          {3000.0}; // X-band
-    double system_losses_db_       {3.0};
-    double noise_figure_db_        {5.0};
-    double bandwidth_mhz_          {1.0};
-    double required_snr_db_        {13.0};
-    double time_bandwidth_product_ {100.0};
-    int    num_pulses_             {16};
+    double tx_power_dbm_{60.0}; // 1 kW
+    double antenna_gain_dbi_{30.0};
+    double target_rcs_dbsm_{0.0};  // 1 m²
+    double frequency_mhz_{3000.0}; // X-band
+    double system_losses_db_{3.0};
+    double noise_figure_db_{5.0};
+    double bandwidth_mhz_{1.0};
+    double required_snr_db_{13.0};
+    double time_bandwidth_product_{100.0};
+    int num_pulses_{16};
 
-    FieldError tx_power_err_    {FieldError::none};
+    FieldError tx_power_err_{FieldError::none};
     FieldError antenna_gain_err_{FieldError::none};
-    FieldError target_rcs_err_  {FieldError::none};
-    FieldError frequency_err_   {FieldError::none};
+    FieldError target_rcs_err_{FieldError::none};
+    FieldError frequency_err_{FieldError::none};
     FieldError system_losses_err_{FieldError::none};
     FieldError noise_figure_err_{FieldError::none};
-    FieldError bandwidth_err_   {FieldError::none};
+    FieldError bandwidth_err_{FieldError::none};
     FieldError required_snr_err_{FieldError::none};
-    FieldError tb_product_err_  {FieldError::none};
-    FieldError num_pulses_err_  {FieldError::none};
+    FieldError tb_product_err_{FieldError::none};
+    FieldError num_pulses_err_{FieldError::none};
 
     Output output_;
     std::function<void(const Output&)> on_change_;

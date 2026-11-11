@@ -8,6 +8,7 @@ class RadarPage : public QWidget
 {
 public:
     explicit RadarPage(QWidget* parent = nullptr);
+
 private:
     ewpresenter::RadarPresenter presenter_;
     QLabel* max_range_;

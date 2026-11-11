@@ -38,16 +38,16 @@ using namespace libew::units::literals;
 
 void test_js_ratio_spreadsheet() {
     const JammingResult r = comms_jamming_js(
-        30.0_dBm,    // signal ERP
-        50.0_dBm,    // jammer ERP
-        5.0_km,      // signal to rx
-        50.0_km,     // jammer to rx
-        1.5_m,       // signal tx height
-        1000.0_m,    // jammer height
-        1.5_m,       // rx height
-        100.0_MHz,   // frequency
-        0.0_dB,      // rx gain toward signal
-        0.0_dB       // rx gain toward jammer
+        30.0_dBm,  // signal ERP
+        50.0_dBm,  // jammer ERP
+        5.0_km,    // signal to rx
+        50.0_km,   // jammer to rx
+        1.5_m,     // signal tx height
+        1000.0_m,  // jammer height
+        1.5_m,     // rx height
+        100.0_MHz, // frequency
+        0.0_dB,    // rx gain toward signal
+        0.0_dB     // rx gain toward jammer
     );
     // Spreadsheet: J/S = 36.478 dB
     ASSERT_NEAR(r.js_ratio.value, 36.478, 0.5);
@@ -56,9 +56,9 @@ void test_js_ratio_spreadsheet() {
 void test_partial_band_zero_js() {
     // single-channel J/S = 0 dB → jam full signal bandwidth
     const PartialBandResult r = partial_band_jamming(
-        0.025_MHz,   // signal bandwidth
-        58.0_MHz,    // hop range
-        0.0_dB       // single-channel J/S
+        0.025_MHz, // signal bandwidth
+        58.0_MHz,  // hop range
+        0.0_dB     // single-channel J/S
     );
     ASSERT_NEAR(r.optimum_jamming_bandwidth.value, 0.025, 1e-6);
     ASSERT_NEAR(r.duty_cycle, 0.025 / 58.0, 1e-5);
@@ -72,8 +72,7 @@ void test_partial_band_negative_js() {
     const PartialBandResult r = partial_band_jamming(
         0.025_MHz,
         58.0_MHz,
-        -10.0_dB
-    );
+        -10.0_dB);
     ASSERT_TRUE(!r.meets_threshold);
     ASSERT_NEAR(r.optimum_jamming_bandwidth.value, 0.0, 1e-12);
     ASSERT_NEAR(r.duty_cycle, 0.0, 1e-12);
@@ -113,8 +112,7 @@ void test_js_ratio_self_screen() {
         10.0_km, 10.0_km,
         10.0_m, 10.0_m, 10.0_m,
         150.0_MHz,
-        0.0_dB, 0.0_dB
-    );
+        0.0_dB, 0.0_dB);
     ASSERT_NEAR(r.js_ratio.value, 0.0, 0.1);
 }
 
@@ -136,14 +134,14 @@ void test_burnthrough_range_los_regime() {
     // Use h_tx=100 m, h_rx=100 m, freq=100 MHz → FZ = 100*100*100/24000 = 41.7 km
     // LOS burnthrough ≈ 35.6 km < 41.7 km ✓
     const Km bt = burnthrough_range(
-        30.0_dBm,   // signal ERP
-        50.0_dBm,   // jammer ERP
-        50.0_km,    // jammer-to-rx dist
-        100.0_m,    // signal tx height
-        1000.0_m,   // jammer height
-        100.0_m,    // rx height
-        100.0_MHz,  // frequency
-        0.0_dB      // J/S threshold
+        30.0_dBm,  // signal ERP
+        50.0_dBm,  // jammer ERP
+        50.0_km,   // jammer-to-rx dist
+        100.0_m,   // signal tx height
+        1000.0_m,  // jammer height
+        100.0_m,   // rx height
+        100.0_MHz, // frequency
+        0.0_dB     // J/S threshold
     );
     // Verify: J/S at the returned burnthrough range must equal the threshold.
     const JammingResult check = comms_jamming_js(
@@ -151,8 +149,7 @@ void test_burnthrough_range_los_regime() {
         bt, 50.0_km,
         100.0_m, 1000.0_m, 100.0_m,
         100.0_MHz,
-        0.0_dB, 0.0_dB
-    );
+        0.0_dB, 0.0_dB);
     ASSERT_NEAR(check.js_ratio.value, 0.0, 0.5);
     ASSERT_TRUE(bt.value > 0.0);
 }
@@ -165,22 +162,21 @@ void test_burnthrough_range_two_ray_regime() {
     // FZ_signal = 1.5*1.5*100/24000 ≈ 9 m ≈ 0.009 km
     // LOS burnthrough ~ 35 km >> 0.009 km → 2-ray inversion used.
     const Km bt = burnthrough_range(
-        50.0_dBm,   // signal ERP
-        70.0_dBm,   // jammer ERP
-        50.0_km,    // jammer-to-rx dist
-        1.5_m,      // signal tx height (low)
-        1000.0_m,   // jammer height
-        1.5_m,      // rx height (low)
-        100.0_MHz,  // frequency
-        0.0_dB      // J/S threshold
+        50.0_dBm,  // signal ERP
+        70.0_dBm,  // jammer ERP
+        50.0_km,   // jammer-to-rx dist
+        1.5_m,     // signal tx height (low)
+        1000.0_m,  // jammer height
+        1.5_m,     // rx height (low)
+        100.0_MHz, // frequency
+        0.0_dB     // J/S threshold
     );
     const JammingResult check = comms_jamming_js(
         50.0_dBm, 70.0_dBm,
         bt, 50.0_km,
         1.5_m, 1000.0_m, 1.5_m,
         100.0_MHz,
-        0.0_dB, 0.0_dB
-    );
+        0.0_dB, 0.0_dB);
     ASSERT_NEAR(check.js_ratio.value, 0.0, 0.5);
     ASSERT_TRUE(bt.value > 0.0);
 }
@@ -202,9 +198,9 @@ void test_partial_band_positive_js() {
     // duty   = bw_jam / hop_range ≈ 0.09952679 / 58.0 ≈ 0.0017160
     const double expected_bw_opt = 0.025 * std::pow(10.0, 6.0 / 10.0);
     const PartialBandResult r = partial_band_jamming(
-        0.025_MHz,   // signal bandwidth
-        58.0_MHz,    // hop range
-        6.0_dB       // single-channel J/S
+        0.025_MHz, // signal bandwidth
+        58.0_MHz,  // hop range
+        6.0_dB     // single-channel J/S
     );
     ASSERT_NEAR(r.optimum_jamming_bandwidth.value, expected_bw_opt, 1e-6);
     ASSERT_NEAR(r.duty_cycle, expected_bw_opt / 58.0, 1e-7);
@@ -220,9 +216,9 @@ void test_partial_band_positive_js() {
 
 namespace {
 double dbm_to_w(double dbm) { return std::pow(10.0, (dbm - 30.0) / 10.0); }
-double to_db(double x)      { return 10.0 * std::log10(x); }
+double to_db(double x) { return 10.0 * std::log10(x); }
 constexpr double kFourPi = 12.566370614359172;
-}
+} // namespace
 
 void test_radar_js_constant() {
     ASSERT_NEAR(libew::constants::radar_js_constant_db, to_db(kFourPi * 1.0e6), 1e-5);
@@ -230,16 +226,15 @@ void test_radar_js_constant() {
 
 void test_self_protection_js_linear_oracle() {
     const double r_m = 20.0e3;
-    const double expected = to_db(dbm_to_w(40.0) * kFourPi * r_m * r_m
-                                  / (dbm_to_w(110.0) * 10.0));
+    const double expected = to_db(dbm_to_w(40.0) * kFourPi * r_m * r_m / (dbm_to_w(110.0) * 10.0));
     const Db js = self_protection_js(110.0_dBm, 40.0_dBm, 20.0_km, Dbsm{10.0});
     ASSERT_NEAR(js.value, expected, 1e-4);
-    ASSERT_NEAR(js.value, 17.013, 1e-3);   // 40 − 110 + 70.992 + 26.021 − 10
+    ASSERT_NEAR(js.value, 17.013, 1e-3); // 40 − 110 + 70.992 + 26.021 − 10
 }
 
 void test_self_protection_twenty_db_per_decade() {
-    const Db near = self_protection_js(110.0_dBm, 40.0_dBm, 2.0_km,  Dbsm{10.0});
-    const Db far  = self_protection_js(110.0_dBm, 40.0_dBm, 20.0_km, Dbsm{10.0});
+    const Db near = self_protection_js(110.0_dBm, 40.0_dBm, 2.0_km, Dbsm{10.0});
+    const Db far = self_protection_js(110.0_dBm, 40.0_dBm, 20.0_km, Dbsm{10.0});
     ASSERT_NEAR(far.value - near.value, 20.0, 1e-9);
 }
 
@@ -257,8 +252,7 @@ void test_stand_off_js_linear_oracle() {
     // G_M = 30 dB toward the target, G_S = 0 dB toward the jammer.
     // J/S = ERP_J·G_S·4π·R_T⁴ / (ERP_S·G_M·σ·R_J²)
     const double rt = 20.0e3, rj = 50.0e3;
-    const double expected = to_db(dbm_to_w(40.0) * 1.0 * kFourPi * std::pow(rt, 4)
-                                  / (dbm_to_w(110.0) * 1000.0 * 10.0 * rj * rj));
+    const double expected = to_db(dbm_to_w(40.0) * 1.0 * kFourPi * std::pow(rt, 4) / (dbm_to_w(110.0) * 1000.0 * 10.0 * rj * rj));
     const Db js = stand_off_js(110.0_dBm, 40.0_dBm, 20.0_km, 50.0_km,
                                30.0_dB, 0.0_dB, Dbsm{10.0});
     ASSERT_NEAR(js.value, expected, 1e-4);

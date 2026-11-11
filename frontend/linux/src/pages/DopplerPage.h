@@ -8,6 +8,7 @@ class DopplerPage : public QWidget
 {
 public:
     explicit DopplerPage(QWidget* parent = nullptr);
+
 private:
     ewpresenter::DopplerPresenter presenter_;
     QLabel* doppler_shift_;

@@ -179,19 +179,19 @@ MainWindow::MainWindow(QWidget* parent)
 
     // ── Calculators section ─────────────────────────────────────────────
     addHeader(QStringLiteral("Calculators"));
-    addPage(QStringLiteral("Propagation"),   QStringLiteral("network-wireless"),         new PropagationPage);
-    addPage(QStringLiteral("Antenna"),       QStringLiteral("network-wireless"),         new AntennaPage);
-    addPage(QStringLiteral("Link Budget"),   QStringLiteral("network-transmit-receive"), new LinkPage);
-    addPage(QStringLiteral("Receiver"),      QStringLiteral("audio-card"),              new ReceiverPage);
-    addPage(QStringLiteral("Comms Jamming"), QStringLiteral("emblem-important"),        new JammingPage);
-    addPage(QStringLiteral("Radar Jamming"), QStringLiteral("dialog-warning"),         new RadarJammingPage);
+    addPage(QStringLiteral("Propagation"), QStringLiteral("network-wireless"), new PropagationPage);
+    addPage(QStringLiteral("Antenna"), QStringLiteral("network-wireless"), new AntennaPage);
+    addPage(QStringLiteral("Link Budget"), QStringLiteral("network-transmit-receive"), new LinkPage);
+    addPage(QStringLiteral("Receiver"), QStringLiteral("audio-card"), new ReceiverPage);
+    addPage(QStringLiteral("Comms Jamming"), QStringLiteral("emblem-important"), new JammingPage);
+    addPage(QStringLiteral("Radar Jamming"), QStringLiteral("dialog-warning"), new RadarJammingPage);
     // "find-location" isn't a standard XDG icon name and resolves to nothing
     // on most icon themes; "mark-location" is the widely-shipped equivalent.
-    addPage(QStringLiteral("Location"),      QStringLiteral("mark-location"),           new LocationPage);
-    addPage(QStringLiteral("Radar"),         QStringLiteral("system-search"),           new RadarPage);
-    addPage(QStringLiteral("Detection"),     QStringLiteral("edit-find"),               new DetectionPage);
+    addPage(QStringLiteral("Location"), QStringLiteral("mark-location"), new LocationPage);
+    addPage(QStringLiteral("Radar"), QStringLiteral("system-search"), new RadarPage);
+    addPage(QStringLiteral("Detection"), QStringLiteral("edit-find"), new DetectionPage);
     addPage(QStringLiteral("Doppler & Resolution"), QStringLiteral("media-playlist-shuffle"), new DopplerPage);
-    addPage(QStringLiteral("Digital / DSSS"),QStringLiteral("media-playback-start"),    new DigitalPage);
+    addPage(QStringLiteral("Digital / DSSS"), QStringLiteral("media-playback-start"), new DigitalPage);
 
     // ── Reference section ───────────────────────────────────────────────
     // One sidebar row per refdata page (#74): the sidebar renders whatever
@@ -222,7 +222,7 @@ MainWindow::MainWindow(QWidget* parent)
     // Matches the always-visible placement Windows (nav-pane footer button)
     // and macOS (toolbar button) use; previously Linux only exposed this via
     // the File menu, which was easy to miss.
-    auto* sidebar    = new QWidget;
+    auto* sidebar = new QWidget;
     auto* sidebarBox = new QVBoxLayout(sidebar);
     sidebarBox->setContentsMargins(0, 0, 0, 0);
     sidebarBox->setSpacing(4);
@@ -235,7 +235,7 @@ MainWindow::MainWindow(QWidget* parent)
 
     // ── Layout ────────────────────────────────────────────────────────────────
     auto* central = new QWidget;
-    auto* layout  = new QHBoxLayout(central);
+    auto* layout = new QHBoxLayout(central);
     layout->setContentsMargins(4, 4, 4, 4);
     layout->setSpacing(4);
     layout->addWidget(sidebar);

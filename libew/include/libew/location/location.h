@@ -35,8 +35,8 @@ using namespace libew::units;
 /// @param baseline           Receiver separation distance (km)
 /// @return CEP (km)
 [[nodiscard]] Km cep_from_tdoa_rms_error(double rms_time_error_ns,
-                                          Km range_to_emitter,
-                                          Km baseline) noexcept;
+                                         Km range_to_emitter,
+                                         Km baseline) noexcept;
 
 /// CEP from an Elliptical Error Probable (EEP) — exact for the symmetric case.
 /// For an ellipse with semi-axes a ≥ b:

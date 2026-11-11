@@ -29,22 +29,22 @@ void DopplerPresenter::set_beamwidth_el(double deg) noexcept {
 }
 
 void DopplerPresenter::recompute() noexcept {
-    output_.valid = (frequency_err_    == FieldError::none &&
+    output_.valid = (frequency_err_ == FieldError::none &&
                      radial_speed_err_ == FieldError::none &&
-                     prf_err_          == FieldError::none &&
-                     bandwidth_err_    == FieldError::none &&
+                     prf_err_ == FieldError::none &&
+                     bandwidth_err_ == FieldError::none &&
                      target_range_err_ == FieldError::none &&
                      beamwidth_az_err_ == FieldError::none &&
                      beamwidth_el_err_ == FieldError::none);
 
     if (!output_.valid) {
-        output_.doppler_shift_str        = kDash;
-        output_.unambiguous_range_str    = kDash;
-        output_.blind_speed_str          = kDash;
+        output_.doppler_shift_str = kDash;
+        output_.unambiguous_range_str = kDash;
+        output_.blind_speed_str = kDash;
         output_.unambiguous_velocity_str = kDash;
-        output_.range_resolution_str     = kDash;
-        output_.cross_range_az_str       = kDash;
-        output_.cross_range_el_str       = kDash;
+        output_.range_resolution_str = kDash;
+        output_.cross_range_az_str = kDash;
+        output_.cross_range_el_str = kDash;
         return;
     }
 
@@ -54,23 +54,23 @@ void DopplerPresenter::recompute() noexcept {
     const Mhz f{frequency_mhz_};
 
     output_.doppler_shift_hz = rad::doppler_shift_hz(f, radial_speed_m_s_);
-    output_.unambiguous_range        = rad::unambiguous_range(prf_hz_);
-    output_.blind_speed_m_s          = rad::blind_speed_m_s(f, prf_hz_);
+    output_.unambiguous_range = rad::unambiguous_range(prf_hz_);
+    output_.blind_speed_m_s = rad::blind_speed_m_s(f, prf_hz_);
     output_.unambiguous_velocity_m_s = rad::unambiguous_velocity_m_s(f, prf_hz_);
 
     output_.range_resolution = rad::range_resolution(Mhz{bandwidth_mhz_});
-    output_.cross_range_az   = rad::cross_range_resolution(Km{target_range_km_},
-                                                           Degrees{beamwidth_az_deg_});
-    output_.cross_range_el   = rad::cross_range_resolution(Km{target_range_km_},
-                                                           Degrees{beamwidth_el_deg_});
+    output_.cross_range_az = rad::cross_range_resolution(Km{target_range_km_},
+                                                         Degrees{beamwidth_az_deg_});
+    output_.cross_range_el = rad::cross_range_resolution(Km{target_range_km_},
+                                                         Degrees{beamwidth_el_deg_});
 
-    output_.doppler_shift_str        = format_hz(output_.doppler_shift_hz);
-    output_.unambiguous_range_str    = format_km(output_.unambiguous_range);
-    output_.blind_speed_str          = format_mps(output_.blind_speed_m_s);
+    output_.doppler_shift_str = format_hz(output_.doppler_shift_hz);
+    output_.unambiguous_range_str = format_km(output_.unambiguous_range);
+    output_.blind_speed_str = format_mps(output_.blind_speed_m_s);
     output_.unambiguous_velocity_str = format_mps(output_.unambiguous_velocity_m_s);
-    output_.range_resolution_str     = format_m(output_.range_resolution);
-    output_.cross_range_az_str       = format_m(output_.cross_range_az);
-    output_.cross_range_el_str       = format_m(output_.cross_range_el);
+    output_.range_resolution_str = format_m(output_.range_resolution);
+    output_.cross_range_az_str = format_m(output_.cross_range_az);
+    output_.cross_range_el_str = format_m(output_.cross_range_el);
 }
 
 void DopplerPresenter::fire() noexcept {

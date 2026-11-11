@@ -18,10 +18,10 @@ using namespace libew::units;
 // ---------------------------------------------------------------------------
 
 struct OnewayLinkResult {
-    Dbm received_power;           ///< Received signal power at receiver input (dBm)
-    Db  path_loss;                ///< Total propagation path loss (dB, positive)
-    Km  fresnel_zone_distance;    ///< Fresnel zone crossover distance (km)
-    bool two_ray_regime{false};   ///< True if 2-ray propagation applies at this range
+    Dbm received_power;         ///< Received signal power at receiver input (dBm)
+    Db path_loss;               ///< Total propagation path loss (dB, positive)
+    Km fresnel_zone_distance;   ///< Fresnel zone crossover distance (km)
+    bool two_ray_regime{false}; ///< True if 2-ray propagation applies at this range
 };
 
 /// Compute received power for a one-way RF link.
@@ -38,20 +38,20 @@ struct OnewayLinkResult {
 /// @param frequency      Carrier frequency (MHz)
 /// @return OnewayLinkResult with received power, loss, Fresnel distance, and regime flag
 [[nodiscard]] OnewayLinkResult one_way_link(
-    Dbm    tx_power,
-    Db     tx_gain,
-    Db     rx_gain,
-    Km     distance,
+    Dbm tx_power,
+    Db tx_gain,
+    Db rx_gain,
+    Km distance,
     Meters tx_height,
     Meters rx_height,
-    Mhz    frequency) noexcept;
+    Mhz frequency) noexcept;
 
 // ---------------------------------------------------------------------------
 // Effective range
 // ---------------------------------------------------------------------------
 
 struct EffectiveRangeResult {
-    Km   range;               ///< Maximum range at which received power ≥ sensitivity (km)
+    Km range;                   ///< Maximum range at which received power ≥ sensitivity (km)
     bool two_ray_regime{false}; ///< True if the effective range falls in the 2-ray regime
 };
 
@@ -70,12 +70,12 @@ struct EffectiveRangeResult {
 /// @param rx_sensitivity Receiver system sensitivity (dBm)
 /// @return EffectiveRangeResult with range and regime flag
 [[nodiscard]] EffectiveRangeResult effective_range(
-    Dbm    tx_power,
-    Db     tx_gain,
-    Db     rx_gain,
+    Dbm tx_power,
+    Db tx_gain,
+    Db rx_gain,
     Meters tx_height,
     Meters rx_height,
-    Mhz    frequency,
-    Dbm    rx_sensitivity) noexcept;
+    Mhz frequency,
+    Dbm rx_sensitivity) noexcept;
 
 } // namespace libew::link

@@ -22,8 +22,8 @@ private:
         QDoubleSpinBox* gain;
     };
     std::vector<StageRow> stage_rows_;
-    QWidget*    stages_container_ = nullptr;
-    QVBoxLayout* stages_layout_   = nullptr;
+    QWidget* stages_container_ = nullptr;
+    QVBoxLayout* stages_layout_ = nullptr;
 
     // Output labels
     QLabel* sensitivity_;

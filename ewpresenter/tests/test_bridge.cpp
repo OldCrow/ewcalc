@@ -44,9 +44,7 @@ void test_propagation_invalid_distance() {
 void test_propagation_callback() {
     EwpPropagationRef ref = ewp_propagation_create();
     int count = 0;
-    ewp_propagation_set_callback(ref,
-        [](EwpPropagationOutput, void* ctx) { ++(*static_cast<int*>(ctx)); },
-        &count);
+    ewp_propagation_set_callback(ref, [](EwpPropagationOutput, void* ctx) { ++(*static_cast<int*>(ctx)); }, &count);
     ewp_propagation_set_distance(ref, 20.0);
     ewp_propagation_set_frequency(ref, 200.0);
     ASSERT_TRUE(count == 2);
@@ -60,13 +58,13 @@ void test_propagation_callback() {
 void test_link_defaults_valid() {
     EwpLinkRef ref = ewp_link_create();
     ASSERT_TRUE(ewp_link_output(ref).valid);
-    ASSERT_TRUE(ewp_link_tx_power_error(ref)      == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_link_tx_gain_error(ref)        == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_link_rx_gain_error(ref)        == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_link_distance_error(ref)       == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_link_tx_height_error(ref)      == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_link_rx_height_error(ref)      == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_link_frequency_error(ref)      == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_link_tx_power_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_link_tx_gain_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_link_rx_gain_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_link_distance_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_link_tx_height_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_link_rx_height_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_link_frequency_error(ref) == EWP_FIELD_OK);
     ASSERT_TRUE(ewp_link_rx_sensitivity_error(ref) == EWP_FIELD_OK);
     ewp_link_destroy(ref);
 }
@@ -89,13 +87,13 @@ void test_link_invalid_frequency() {
 void test_receiver_defaults_valid() {
     EwpReceiverRef ref = ewp_receiver_create();
     ASSERT_TRUE(ewp_receiver_output(ref).valid);
-    ASSERT_TRUE(ewp_receiver_bandwidth_error(ref)       == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_receiver_noise_figure_error(ref)    == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_receiver_required_snr_error(ref)    == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_receiver_bandwidth_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_receiver_noise_figure_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_receiver_required_snr_error(ref) == EWP_FIELD_OK);
     ASSERT_TRUE(ewp_receiver_second_order_ip_error(ref) == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_receiver_third_order_ip_error(ref)  == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_receiver_adc_bits_error(ref)        == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_receiver_stage_nf_error(ref)        == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_receiver_third_order_ip_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_receiver_adc_bits_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_receiver_stage_nf_error(ref) == EWP_FIELD_OK);
     ewp_receiver_destroy(ref);
 }
 
@@ -130,19 +128,19 @@ void test_receiver_stage_negative_nf() {
 void test_jamming_defaults_valid() {
     EwpJammingRef ref = ewp_jamming_create();
     ASSERT_TRUE(ewp_jamming_output(ref).valid);
-    ASSERT_TRUE(ewp_jamming_signal_erp_error(ref)        == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_jamming_jammer_erp_error(ref)        == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_jamming_signal_dist_error(ref)       == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_jamming_jammer_dist_error(ref)       == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_jamming_signal_height_error(ref)     == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_jamming_jammer_height_error(ref)     == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_jamming_rx_height_error(ref)         == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_jamming_frequency_error(ref)         == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_jamming_rx_gain_signal_error(ref)    == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_jamming_rx_gain_jammer_error(ref)    == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_jamming_signal_bandwidth_error(ref)  == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_jamming_hop_range_error(ref)         == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_jamming_js_threshold_error(ref)      == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_jamming_signal_erp_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_jamming_jammer_erp_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_jamming_signal_dist_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_jamming_jammer_dist_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_jamming_signal_height_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_jamming_jammer_height_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_jamming_rx_height_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_jamming_frequency_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_jamming_rx_gain_signal_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_jamming_rx_gain_jammer_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_jamming_signal_bandwidth_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_jamming_hop_range_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_jamming_js_threshold_error(ref) == EWP_FIELD_OK);
     ewp_jamming_destroy(ref);
 }
 
@@ -177,17 +175,17 @@ void test_location_defaults_valid() {
     EwpLocationRef ref = ewp_location_create();
     ASSERT_TRUE(ewp_location_output(ref).valid);
     ASSERT_TRUE(ewp_location_rms_bearing_field_error(ref) == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_location_aoa_range_error(ref)         == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_location_rms_time_field_error(ref)    == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_location_baseline_error(ref)          == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_location_semi_major_error(ref)        == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_location_semi_minor_error(ref)        == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_location_aoa_range_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_location_rms_time_field_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_location_baseline_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_location_semi_major_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_location_semi_minor_error(ref) == EWP_FIELD_OK);
     ewp_location_destroy(ref);
 }
 
 void test_location_invalid_bearing_error() {
     EwpLocationRef ref = ewp_location_create();
-    ewp_location_set_rms_bearing_error(ref, 0.0);   // must be > 0
+    ewp_location_set_rms_bearing_error(ref, 0.0); // must be > 0
     // With OR validity: output.valid is true because TDOA and EEP sub-sections
     // are still valid; only the AOA string is dashed.
     ASSERT_TRUE(ewp_location_output(ref).valid);
@@ -204,16 +202,16 @@ void test_location_invalid_bearing_error() {
 void test_radar_defaults_valid() {
     EwpRadarRef ref = ewp_radar_create();
     ASSERT_TRUE(ewp_radar_output(ref).valid);
-    ASSERT_TRUE(ewp_radar_tx_power_error(ref)      == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_radar_antenna_gain_error(ref)  == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_radar_target_rcs_error(ref)    == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_radar_frequency_error(ref)     == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_radar_tx_power_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_radar_antenna_gain_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_radar_target_rcs_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_radar_frequency_error(ref) == EWP_FIELD_OK);
     ASSERT_TRUE(ewp_radar_system_losses_error(ref) == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_radar_noise_figure_error(ref)  == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_radar_bandwidth_error(ref)     == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_radar_required_snr_error(ref)  == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_radar_time_bandwidth_error(ref)== EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_radar_num_pulses_error(ref)    == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_radar_noise_figure_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_radar_bandwidth_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_radar_required_snr_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_radar_time_bandwidth_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_radar_num_pulses_error(ref) == EWP_FIELD_OK);
     ewp_radar_destroy(ref);
 }
 
@@ -244,14 +242,14 @@ void test_radar_output_field_names() {
 void test_detection_defaults_valid() {
     EwpDetectionRef ref = ewp_detection_create();
     ASSERT_TRUE(ewp_detection_output(ref).valid);
-    ASSERT_TRUE(ewp_detection_pd_error(ref)            == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_detection_pfa_exponent_error(ref)  == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_detection_num_pulses_error(ref)    == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_detection_pd_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_detection_pfa_exponent_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_detection_num_pulses_error(ref) == EWP_FIELD_OK);
     ASSERT_TRUE(ewp_detection_swerling_case_error(ref) == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_detection_beamwidth_error(ref)     == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_detection_scan_rate_error(ref)     == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_detection_prf_error(ref)           == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_detection_bandwidth_error(ref)     == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_detection_beamwidth_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_detection_scan_rate_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_detection_prf_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_detection_bandwidth_error(ref) == EWP_FIELD_OK);
     EwpDetectionOutput out = ewp_detection_output(ref);
     ASSERT_TRUE(out.required_snr_str[0] != '\0');
     ASSERT_TRUE(out.dwell_time_str[0] != '\0');
@@ -291,10 +289,10 @@ void test_radar_jamming_bridge() {
 void test_doppler_defaults_valid() {
     EwpDopplerRef ref = ewp_doppler_create();
     ASSERT_TRUE(ewp_doppler_output(ref).valid);
-    ASSERT_TRUE(ewp_doppler_frequency_error(ref)    == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_doppler_frequency_error(ref) == EWP_FIELD_OK);
     ASSERT_TRUE(ewp_doppler_radial_speed_error(ref) == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_doppler_prf_error(ref)          == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_doppler_bandwidth_error(ref)    == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_doppler_prf_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_doppler_bandwidth_error(ref) == EWP_FIELD_OK);
     ASSERT_TRUE(ewp_doppler_target_range_error(ref) == EWP_FIELD_OK);
     ASSERT_TRUE(ewp_doppler_beamwidth_az_error(ref) == EWP_FIELD_OK);
     ASSERT_TRUE(ewp_doppler_beamwidth_el_error(ref) == EWP_FIELD_OK);
@@ -320,12 +318,12 @@ void test_doppler_invalid_prf() {
 void test_digital_defaults_valid() {
     EwpDigitalRef ref = ewp_digital_create();
     ASSERT_TRUE(ewp_digital_output(ref).valid);
-    ASSERT_TRUE(ewp_digital_snr_error(ref)                  == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_digital_bandwidth_error(ref)            == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_digital_data_rate_error(ref)            == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_digital_chip_rate_error(ref)            == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_digital_required_eb_no_error(ref)       == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_digital_implementation_loss_error(ref)  == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_digital_snr_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_digital_bandwidth_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_digital_data_rate_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_digital_chip_rate_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_digital_required_eb_no_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_digital_implementation_loss_error(ref) == EWP_FIELD_OK);
     ewp_digital_destroy(ref);
 }
 
@@ -346,11 +344,11 @@ void test_digital_invalid_snr() {
 void test_antenna_defaults_valid() {
     EwpAntennaRef ref = ewp_antenna_create();
     ASSERT_TRUE(ewp_antenna_output(ref).valid);
-    ASSERT_TRUE(ewp_antenna_gain_error(ref)          == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_antenna_az_beamwidth_error(ref)  == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_antenna_el_beamwidth_error(ref)  == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_antenna_tx_power_error(ref)      == EWP_FIELD_OK);
-    ASSERT_TRUE(ewp_antenna_frequency_error(ref)     == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_antenna_gain_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_antenna_az_beamwidth_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_antenna_el_beamwidth_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_antenna_tx_power_error(ref) == EWP_FIELD_OK);
+    ASSERT_TRUE(ewp_antenna_frequency_error(ref) == EWP_FIELD_OK);
     ewp_antenna_destroy(ref);
 }
 

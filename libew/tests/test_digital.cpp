@@ -18,7 +18,7 @@ using namespace libew::units::literals;
 void test_eb_no_equals_snr_when_bw_equals_rate() {
     // BW = Rb → 10·log10(1) = 0 dB → Eb/N₀ = SNR
     ASSERT_NEAR(eb_no_from_snr(10.0_dB, 1.0_MHz, 1.0_MHz).value, 10.0, 1e-9);
-    ASSERT_NEAR(eb_no_from_snr(0.0_dB,  5.0_MHz, 5.0_MHz).value,  0.0, 1e-9);
+    ASSERT_NEAR(eb_no_from_snr(0.0_dB, 5.0_MHz, 5.0_MHz).value, 0.0, 1e-9);
 }
 
 void test_eb_no_higher_when_bw_exceeds_rate() {
@@ -62,7 +62,7 @@ void test_dsss_process_gain_unity() {
 
 void test_dsss_process_gain_doubles_with_10x_chip_rate() {
     // 10× chip rate → 10 dB additional gain
-    const Db pg1 = dsss_process_gain(1.0_MHz,  Mhz{0.001});
+    const Db pg1 = dsss_process_gain(1.0_MHz, Mhz{0.001});
     const Db pg2 = dsss_process_gain(10.0_MHz, Mhz{0.001});
     ASSERT_NEAR(pg2.value - pg1.value, 10.0, 0.001);
 }
@@ -93,8 +93,8 @@ void test_dsss_required_js_is_negation_of_margin() {
     const Db pg{25.0};
     const Db eb_no_req{8.0};
     const Db l_impl{2.0};
-    const Db jm  = dsss_jamming_margin(pg, eb_no_req, l_impl);
-    const Db js  = dsss_required_js(pg, eb_no_req, l_impl);
+    const Db jm = dsss_jamming_margin(pg, eb_no_req, l_impl);
+    const Db js = dsss_required_js(pg, eb_no_req, l_impl);
     ASSERT_NEAR(js.value, -jm.value, 1e-9);
 }
 

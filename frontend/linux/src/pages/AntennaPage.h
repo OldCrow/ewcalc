@@ -8,6 +8,7 @@ class AntennaPage : public QWidget
 {
 public:
     explicit AntennaPage(QWidget* parent = nullptr);
+
 private:
     ewpresenter::AntennaPresenter presenter_;
     QLabel* erp_;

@@ -47,9 +47,8 @@ QString AppSettings::configFilePath()
 void AppSettings::load()
 {
     root_ = QJsonObject{
-        { QStringLiteral("version"), kConfigVersion },
-        { QStringLiteral("pages"), QJsonObject{} }
-    };
+        {QStringLiteral("version"), kConfigVersion},
+        {QStringLiteral("pages"), QJsonObject{}}};
 
     QFile file(configFilePath());
     if (!file.open(QIODevice::ReadOnly))
@@ -110,9 +109,8 @@ void AppSettings::writeToDisk()
 void AppSettings::resetAll()
 {
     root_ = QJsonObject{
-        { QStringLiteral("version"), kConfigVersion },
-        { QStringLiteral("pages"), QJsonObject{} }
-    };
+        {QStringLiteral("version"), kConfigVersion},
+        {QStringLiteral("pages"), QJsonObject{}}};
     dirty_ = true;
     saveTimer_->stop();
     writeToDisk();

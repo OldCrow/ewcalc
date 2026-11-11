@@ -5,17 +5,17 @@
 namespace ewpresenter {
 
 namespace {
-    // Format a double with a given number of decimal places and a unit label.
-    std::string fmt(double value, int decimals, const char* unit) {
-        // Normalize IEEE 754 negative zero so it never renders as "-0.0".
-        // cppcheck-suppress duplicateConditionalAssign
-        // -0.0 == 0.0 is true, but assigning 0.0 flips the sign bit; not a no-op.
-        if (value == 0.0) value = 0.0;
-        char buf[64];
-        std::snprintf(buf, sizeof(buf), "%.*f %s",
-                      decimals, value, unit);
-        return buf;
-    }
+// Format a double with a given number of decimal places and a unit label.
+std::string fmt(double value, int decimals, const char* unit) {
+    // Normalize IEEE 754 negative zero so it never renders as "-0.0".
+    // cppcheck-suppress duplicateConditionalAssign
+    // -0.0 == 0.0 is true, but assigning 0.0 flips the sign bit; not a no-op.
+    if (value == 0.0) value = 0.0;
+    char buf[64];
+    std::snprintf(buf, sizeof(buf), "%.*f %s",
+                  decimals, value, unit);
+    return buf;
+}
 } // namespace
 
 std::string format_dbm(Dbm value, int decimals) {
@@ -26,9 +26,9 @@ std::string format_dbw(Dbw value, int decimals) {
     return fmt(value.value, decimals, "dBW");
 }
 
-static constexpr double kWattsDisplayThreshold = 1.0;    ///< Display in mW below this.
-static constexpr double kMilliwattsPerWatt      = 1000.0; ///< Scale factor mW → W.
-static constexpr double kPercentMultiplier      = 100.0;  ///< Fraction → percent.
+static constexpr double kWattsDisplayThreshold = 1.0; ///< Display in mW below this.
+static constexpr double kMilliwattsPerWatt = 1000.0;  ///< Scale factor mW → W.
+static constexpr double kPercentMultiplier = 100.0;   ///< Fraction → percent.
 
 std::string format_watts(Watts value) {
     // Auto-scale: display in mW if < 1 W
@@ -64,21 +64,21 @@ std::string format_m(Meters value, int decimals) {
 
 std::string format_degrees(Degrees value, int decimals) {
     char buf[64];
-    std::snprintf(buf, sizeof(buf), "%.*f\xc2\xb0",   // UTF-8 degree sign
+    std::snprintf(buf, sizeof(buf), "%.*f\xc2\xb0", // UTF-8 degree sign
                   decimals, value.value);
     return buf;
 }
 
-static constexpr double kMillisThreshold = 1.0;     ///< Display in ms below this (s).
-static constexpr double kMicrosThreshold = 1.0e-3;  ///< Display in µs below this (s).
-static constexpr double kKiloThreshold   = 1.0e3;   ///< Display in kHz at/above this (Hz).
-static constexpr double kMegaThreshold   = 1.0e6;   ///< Display in MHz at/above this (Hz).
+static constexpr double kMillisThreshold = 1.0;    ///< Display in ms below this (s).
+static constexpr double kMicrosThreshold = 1.0e-3; ///< Display in µs below this (s).
+static constexpr double kKiloThreshold = 1.0e3;    ///< Display in kHz at/above this (Hz).
+static constexpr double kMegaThreshold = 1.0e6;    ///< Display in MHz at/above this (Hz).
 
 std::string format_seconds(Seconds value) {
     // Auto-scale: s → ms → µs, three significant-ish decimals per band.
     const double s = value.value;
     if (std::abs(s) < kMicrosThreshold && s != 0.0) {
-        return fmt(s * 1.0e6, 1, "\xc2\xb5s");   // UTF-8 micro sign
+        return fmt(s * 1.0e6, 1, "\xc2\xb5s"); // UTF-8 micro sign
     }
     if (std::abs(s) < kMillisThreshold && s != 0.0) {
         return fmt(s * 1.0e3, 1, "ms");

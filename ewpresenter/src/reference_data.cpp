@@ -59,8 +59,8 @@ constexpr Row kEarthGeometry[] = {
 };
 
 constexpr Section kPropagationSections[] = {
-    {"Path Loss",      kPathLoss,      std::size(kPathLoss),      "prop-two-ray"},
-    {"Diffraction",    kDiffraction,   std::size(kDiffraction),   "prop-knife-edge"},
+    {"Path Loss", kPathLoss, std::size(kPathLoss), "prop-two-ray"},
+    {"Diffraction", kDiffraction, std::size(kDiffraction), "prop-knife-edge"},
     {"Earth Geometry", kEarthGeometry, std::size(kEarthGeometry), "prop-horizon-bulge"},
 };
 
@@ -72,7 +72,7 @@ constexpr Section kPropagationSections[] = {
 // primary source's term (EW103 Sec 5.2).
 
 constexpr Row kGlossPower[] = {
-    val("ERP",  "Tx power × antenna gain, referenced to a half-wave dipole (dBd)"),
+    val("ERP", "Tx power × antenna gain, referenced to a half-wave dipole (dBd)"),
     val("EIRP", "Tx power × antenna gain, referenced to isotropic (dBi); EIRP = ERP + 2.15 dB"),
     val("Convention here", "\"ERP\" with dBi gains, following Adamy's EW usage (strictly EIRP)"),
     val("Antenna gain", "directivity × efficiency, relative to isotropic (dBi)"),
@@ -81,22 +81,22 @@ constexpr Row kGlossPower[] = {
 
 constexpr Row kGlossAntenna[] = {
     val("3-dB beamwidth", "angular width where the pattern stays within 3 dB (half power) of the peak"),
-    val("Boresight",      "direction of the main-lobe maximum"),
-    val("Sidelobe",       "secondary pattern maximum outside the main lobe (quoted in dBc below peak)"),
-    val("Back lobe",      "sidelobe opposite boresight"),
-    val("Polarization",   "E-field orientation: linear (V/H/slant) or circular (RH/LH)"),
+    val("Boresight", "direction of the main-lobe maximum"),
+    val("Sidelobe", "secondary pattern maximum outside the main lobe (quoted in dBc below peak)"),
+    val("Back lobe", "sidelobe opposite boresight"),
+    val("Polarization", "E-field orientation: linear (V/H/slant) or circular (RH/LH)"),
     val("Cross-pol mismatch", "orthogonal polarizations couple poorly: ≈20 dB linear–linear, ≈3 dB linear–circular"),
 };
 
 constexpr Row kGlossFrequency[] = {
-    val("Octave",  "2:1 frequency span — the upper frequency is twice the lower (e.g. 2–4 GHz)"),
-    val("Decade",  "10:1 frequency span — the upper frequency is ten times the lower (e.g. 2–20 GHz)"),
+    val("Octave", "2:1 frequency span — the upper frequency is twice the lower (e.g. 2–4 GHz)"),
+    val("Decade", "10:1 frequency span — the upper frequency is ten times the lower (e.g. 2–20 GHz)"),
     val("Percent bandwidth", "bandwidth ÷ center frequency × 100"),
     val("Instantaneous bandwidth", "band processed at one moment, vs the wider tunable range"),
 };
 
 constexpr Row kGlossReceiver[] = {
-    val("SNR",  "signal-to-noise power ratio (dB)"),
+    val("SNR", "signal-to-noise power ratio (dB)"),
     val("Eb/N₀", "energy per bit over noise density — SNR normalized by data rate"),
     val("Noise figure", "SNR degradation added by a receiver, referenced to 290 K (dB)"),
     val("Noise temperature", "noise figure expressed as an equivalent source temperature (K)"),
@@ -108,7 +108,7 @@ constexpr Row kGlossReceiver[] = {
 constexpr Row kGlossRadar[] = {
     val("RCS (σ)", "target's equivalent reflecting area (m² or dBsm)"),
     val("Swerling cases", "statistical RCS fluctuation models 0–4 (steady; slow/fast scan-to-scan or pulse-to-pulse)"),
-    val("Pd",  "probability a real target crosses the detection threshold"),
+    val("Pd", "probability a real target crosses the detection threshold"),
     val("Pfa", "probability noise alone crosses the threshold"),
     val("Unambiguous range", "max range before echoes fold into the next pulse interval; c/(2·PRF)"),
     val("Blind speed", "radial speed whose Doppler aliases to zero; multiples of λ·PRF/2"),
@@ -124,48 +124,48 @@ constexpr Row kGlossJamming[] = {
 };
 
 constexpr Row kGlossLocation[] = {
-    val("AOA",  "angle of arrival — bearing-based direction finding"),
+    val("AOA", "angle of arrival — bearing-based direction finding"),
     val("TDOA", "time difference of arrival — hyperbolic location from a receiver baseline"),
     val("FDOA", "frequency difference of arrival — location from differential Doppler"),
-    val("CEP",  "circular error probable — circle around the estimate holding 50 % of fixes"),
-    val("EEP",  "elliptical error probable — the 50 % error ellipse; CEP ≈ 0.59·(a+b) (both forms on the Location page)"),
+    val("CEP", "circular error probable — circle around the estimate holding 50 % of fixes"),
+    val("EEP", "elliptical error probable — the 50 % error ellipse; CEP ≈ 0.59·(a+b) (both forms on the Location page)"),
 };
 
 constexpr Section kGlossarySections[] = {
-    {"Power & Gain",          kGlossPower,     std::size(kGlossPower)},
-    {"Antenna Terms",         kGlossAntenna,   std::size(kGlossAntenna)},
+    {"Power & Gain", kGlossPower, std::size(kGlossPower)},
+    {"Antenna Terms", kGlossAntenna, std::size(kGlossAntenna)},
     {"Frequency & Bandwidth", kGlossFrequency, std::size(kGlossFrequency)},
-    {"Receiver & Signal",     kGlossReceiver,  std::size(kGlossReceiver)},
-    {"Radar & Detection",     kGlossRadar,     std::size(kGlossRadar)},
-    {"Jamming & EW",          kGlossJamming,   std::size(kGlossJamming)},
-    {"Emitter Location",      kGlossLocation,  std::size(kGlossLocation)},
+    {"Receiver & Signal", kGlossReceiver, std::size(kGlossReceiver)},
+    {"Radar & Detection", kGlossRadar, std::size(kGlossRadar)},
+    {"Jamming & EW", kGlossJamming, std::size(kGlossJamming)},
+    {"Emitter Location", kGlossLocation, std::size(kGlossLocation)},
 };
 
 // ── dB & Units page (#74, split out per user decision 2026-09-10) ────────────
 
 constexpr Row kDbRatios[] = {
-    val("×2",     "+3.01 dB",  "3.01"),
-    val("×4",     "+6.02 dB",  "6.02"),
-    val("×5",     "+6.99 dB",  "6.99"),
-    val("×8",     "+9.03 dB",  "9.03"),
-    val("×10",    "+10.0 dB",  "10"),
-    val("×100",   "+20.0 dB",  "20"),
-    val("×1000",  "+30.0 dB",  "30"),
+    val("×2", "+3.01 dB", "3.01"),
+    val("×4", "+6.02 dB", "6.02"),
+    val("×5", "+6.99 dB", "6.99"),
+    val("×8", "+9.03 dB", "9.03"),
+    val("×10", "+10.0 dB", "10"),
+    val("×100", "+20.0 dB", "20"),
+    val("×1000", "+30.0 dB", "30"),
     val("Reciprocal (1/x)", "negate the dB value"),
 };
 
 constexpr Row kDbUnits[] = {
-    val("dBm",  "power re 1 mW"),
-    val("dBW",  "power re 1 W  (0 dBW = +30 dBm)", "30"),
-    val("dBi",  "gain re isotropic antenna"),
-    val("dBd",  "gain re half-wave dipole  (0 dBd = +2.15 dBi)", "2.15"),
+    val("dBm", "power re 1 mW"),
+    val("dBW", "power re 1 W  (0 dBW = +30 dBm)", "30"),
+    val("dBi", "gain re isotropic antenna"),
+    val("dBd", "gain re half-wave dipole  (0 dBd = +2.15 dBi)", "2.15"),
     val("dBsm", "RCS re 1 m²"),
-    val("dBc",  "level re carrier"),
+    val("dBc", "level re carrier"),
 };
 
 constexpr Section kDbSections[] = {
-    {"Ratio → dB",        kDbRatios, std::size(kDbRatios)},
-    {"Absolute dB Units", kDbUnits,  std::size(kDbUnits)},
+    {"Ratio → dB", kDbRatios, std::size(kDbRatios)},
+    {"Absolute dB Units", kDbUnits, std::size(kDbUnits)},
 };
 
 // ── Antenna Types page (#75) ─────────────────────────────────────────────────
@@ -180,116 +180,116 @@ constexpr Row kIsotropic[] = {
     formula("Effective aperture", "aperture",
             "Aₑ = G λ² / (4π)",
             "Aₑ(dBsm) = G(dBi) + 20 log₁₀ λ(m) − 11.0"),
-    val("Directivity", "0 dBi  (G = 1)",          "0"),
-    val("Pattern",     "uniform over a sphere"),
-    val("Purpose",     "gain reference for dBi"),
+    val("Directivity", "0 dBi  (G = 1)", "0"),
+    val("Pattern", "uniform over a sphere"),
+    val("Purpose", "gain reference for dBi"),
 };
 
 constexpr Row kDipole[] = {
-    val("Polarization",    "linear"),
-    val("Typical gain",    "2.15 dBi  (0 dBd)", "2.15"),
-    val("3-dB beamwidth",  "≈ 78° (E-plane), omni (H-plane)"),
-    val("Bandwidth",       "≈ 10 %"),
+    val("Polarization", "linear"),
+    val("Typical gain", "2.15 dBi  (0 dBd)", "2.15"),
+    val("3-dB beamwidth", "≈ 78° (E-plane), omni (H-plane)"),
+    val("Bandwidth", "≈ 10 %"),
     val("Frequency range", "HF – UHF"),
 };
 
 constexpr Row kMonopole[] = {
-    val("Polarization",    "linear (vertical)"),
-    val("Typical gain",    "5.15 dBi over ideal ground plane", "5.15"),
-    val("Ground-plane mount (typical)", "2 dBi",              "2"),
-    val("Short whip / rubber duck",     "≈ 0 dBi  (typical)", "0"),
-    val("3-dB beamwidth",  "omni (azimuth)"),
-    val("Bandwidth",       "≈ 10 %"),
+    val("Polarization", "linear (vertical)"),
+    val("Typical gain", "5.15 dBi over ideal ground plane", "5.15"),
+    val("Ground-plane mount (typical)", "2 dBi", "2"),
+    val("Short whip / rubber duck", "≈ 0 dBi  (typical)", "0"),
+    val("3-dB beamwidth", "omni (azimuth)"),
+    val("Bandwidth", "≈ 10 %"),
     val("Frequency range", "HF – UHF"),
 };
 
 constexpr Row kPatch[] = {
-    val("Polarization",    "linear (circular with dual feed)"),
-    val("Typical gain",    "6–9 dBi",           "7"),
-    val("3-dB beamwidth",  "60–90°"),
-    val("Bandwidth",       "1–5 %"),
+    val("Polarization", "linear (circular with dual feed)"),
+    val("Typical gain", "6–9 dBi", "7"),
+    val("3-dB beamwidth", "60–90°"),
+    val("Bandwidth", "1–5 %"),
     val("Frequency range", "UHF – Ka"),
 };
 
 constexpr Row kHorn[] = {
-    val("Polarization",    "linear"),
-    val("Typical gain",    "10–20 dBi",         "15"),
-    val("3-dB beamwidth",  "10–60°"),
-    val("Bandwidth",       "full waveguide band (≈ 40 %)"),
+    val("Polarization", "linear"),
+    val("Typical gain", "10–20 dBi", "15"),
+    val("3-dB beamwidth", "10–60°"),
+    val("Bandwidth", "full waveguide band (≈ 40 %)"),
     val("Frequency range", "L – W"),
 };
 
 constexpr Row kHelix[] = {
-    val("Polarization",    "circular"),
-    val("Typical gain",    "10–15 dBi",         "12"),
-    val("3-dB beamwidth",  "30–50°"),
-    val("Bandwidth",       "≈ 70 %"),
+    val("Polarization", "circular"),
+    val("Typical gain", "10–15 dBi", "12"),
+    val("3-dB beamwidth", "30–50°"),
+    val("Bandwidth", "≈ 70 %"),
     val("Frequency range", "VHF – S"),
 };
 
 constexpr Row kYagi[] = {
-    val("Polarization",    "linear"),
-    val("Typical gain",    "7–15 dBi (grows with boom length)", "10"),
-    val("Gain, 2-element",  "≈ 7 dBi",    "7"),
-    val("Gain, 3-element",  "≈ 8.5 dBi",  "8.5"),
-    val("Gain, 5-element",  "≈ 10.5 dBi", "10.5"),
-    val("Gain, 10-element", "≈ 14 dBi",   "14"),
-    val("3-dB beamwidth",  "30–60°"),
-    val("Bandwidth",       "≈ 5 %"),
+    val("Polarization", "linear"),
+    val("Typical gain", "7–15 dBi (grows with boom length)", "10"),
+    val("Gain, 2-element", "≈ 7 dBi", "7"),
+    val("Gain, 3-element", "≈ 8.5 dBi", "8.5"),
+    val("Gain, 5-element", "≈ 10.5 dBi", "10.5"),
+    val("Gain, 10-element", "≈ 14 dBi", "14"),
+    val("3-dB beamwidth", "30–60°"),
+    val("Bandwidth", "≈ 5 %"),
     val("Frequency range", "HF – UHF"),
 };
 
 constexpr Row kLogPeriodic[] = {
-    val("Polarization",    "linear"),
-    val("Typical gain",    "6–8 dBi",           "7"),
-    val("3-dB beamwidth",  "60–80°"),
-    val("Bandwidth",       "10:1 (multi-decade)"),
+    val("Polarization", "linear"),
+    val("Typical gain", "6–8 dBi", "7"),
+    val("3-dB beamwidth", "60–80°"),
+    val("Bandwidth", "10:1 (multi-decade)"),
     val("Frequency range", "HF – X"),
 };
 
 constexpr Row kSpiral[] = {
-    val("Polarization",    "circular"),
-    val("Typical gain",    "−5 to +3 dBi",      "0"),
-    val("3-dB beamwidth",  "70–90°"),
-    val("Bandwidth",       "9:1 (e.g. 2–18 GHz RWR)"),
+    val("Polarization", "circular"),
+    val("Typical gain", "−5 to +3 dBi", "0"),
+    val("3-dB beamwidth", "70–90°"),
+    val("Bandwidth", "9:1 (e.g. 2–18 GHz RWR)"),
     val("Frequency range", "S – Ka"),
 };
 
 constexpr Row kParabolic[] = {
-    val("Polarization",    "set by feed (linear or circular)"),
-    val("Typical gain",    "20–50 dBi (aperture-set)", "30"),
-    val("3-dB beamwidth",  "0.5–5°"),
-    val("Bandwidth",       "feed-limited"),
+    val("Polarization", "set by feed (linear or circular)"),
+    val("Typical gain", "20–50 dBi (aperture-set)", "30"),
+    val("3-dB beamwidth", "0.5–5°"),
+    val("Bandwidth", "feed-limited"),
     val("Frequency range", "L – W"),
 };
 
 constexpr Row kArray[] = {
-    val("Polarization",    "set by elements"),
-    val("Typical gain",    "20–40 dBi",         "30"),
-    val("3-dB beamwidth",  "1–10° (electronically steered)"),
-    val("Bandwidth",       "module-limited (≈ octave)"),
+    val("Polarization", "set by elements"),
+    val("Typical gain", "20–40 dBi", "30"),
+    val("3-dB beamwidth", "1–10° (electronically steered)"),
+    val("Bandwidth", "module-limited (≈ octave)"),
     val("Frequency range", "L – Ka"),
 };
 
 constexpr Row kSidelobeLevels[] = {
-    val("Uniform aperture — 1st SLL",   "−13 dBc",         "-13"),
-    val("Taylor weighted — 1st SLL",    "−25 dBc",         "-25"),
-    val("Low-sidelobe array — 1st SLL", "−35 dBc",         "-35"),
-    val("Typical back lobe",            "−25 to −35 dBc"),
+    val("Uniform aperture — 1st SLL", "−13 dBc", "-13"),
+    val("Taylor weighted — 1st SLL", "−25 dBc", "-25"),
+    val("Low-sidelobe array — 1st SLL", "−35 dBc", "-35"),
+    val("Typical back lobe", "−25 to −35 dBc"),
 };
 
 constexpr Section kAntennaSections[] = {
-    {"Isotropic Reference",       kIsotropic,   std::size(kIsotropic),   "ant-isotropic"},
-    {"Half-Wave Dipole",          kDipole,      std::size(kDipole),      "ant-dipole"},
-    {"Quarter-Wave Monopole",     kMonopole,    std::size(kMonopole),    "ant-monopole"},
-    {"Microstrip Patch",          kPatch,       std::size(kPatch),       "ant-patch"},
-    {"Pyramidal Horn",            kHorn,        std::size(kHorn),        "ant-horn"},
-    {"Axial-Mode Helix",          kHelix,       std::size(kHelix),       "ant-helix"},
-    {"Yagi–Uda",                  kYagi,        std::size(kYagi),        "ant-yagi"},
+    {"Isotropic Reference", kIsotropic, std::size(kIsotropic), "ant-isotropic"},
+    {"Half-Wave Dipole", kDipole, std::size(kDipole), "ant-dipole"},
+    {"Quarter-Wave Monopole", kMonopole, std::size(kMonopole), "ant-monopole"},
+    {"Microstrip Patch", kPatch, std::size(kPatch), "ant-patch"},
+    {"Pyramidal Horn", kHorn, std::size(kHorn), "ant-horn"},
+    {"Axial-Mode Helix", kHelix, std::size(kHelix), "ant-helix"},
+    {"Yagi–Uda", kYagi, std::size(kYagi), "ant-yagi"},
     {"Log-Periodic Dipole Array", kLogPeriodic, std::size(kLogPeriodic), "ant-logperiodic"},
-    {"Cavity-Backed Spiral",      kSpiral,      std::size(kSpiral),      "ant-spiral"},
-    {"Parabolic Reflector",       kParabolic,   std::size(kParabolic),   "ant-parabolic"},
-    {"Phased Array",              kArray,       std::size(kArray),       "ant-array"},
+    {"Cavity-Backed Spiral", kSpiral, std::size(kSpiral), "ant-spiral"},
+    {"Parabolic Reflector", kParabolic, std::size(kParabolic), "ant-parabolic"},
+    {"Phased Array", kArray, std::size(kArray), "ant-array"},
     {"Sidelobe Levels (re main lobe)", kSidelobeLevels, std::size(kSidelobeLevels)},
 };
 
@@ -324,7 +324,7 @@ constexpr Row kLinkComponents[] = {
 };
 
 constexpr Section kLinkSections[] = {
-    {"One-Way Link",        kOneWayLink,     std::size(kOneWayLink), "link-budget"},
+    {"One-Way Link", kOneWayLink, std::size(kOneWayLink), "link-budget"},
     {"Component Equations", kLinkComponents, std::size(kLinkComponents)},
 };
 
@@ -367,19 +367,19 @@ constexpr Row kRxDynamicRange[] = {
 };
 
 constexpr Row kNoiseFloor[] = {
-    val("1 Hz bandwidth",    "−174.0 dBm", "-174.0"),
-    val("1 kHz bandwidth",   "−144.0 dBm", "-144.0"),
-    val("1 MHz bandwidth",   "−114.0 dBm", "-114.0"),
-    val("10 MHz bandwidth",  "−104.0 dBm", "-104.0"),
-    val("100 MHz bandwidth", "−94.0 dBm",  "-94.0"),
-    val("1 GHz bandwidth",   "−84.0 dBm",  "-84.0"),
+    val("1 Hz bandwidth", "−174.0 dBm", "-174.0"),
+    val("1 kHz bandwidth", "−144.0 dBm", "-144.0"),
+    val("1 MHz bandwidth", "−114.0 dBm", "-114.0"),
+    val("10 MHz bandwidth", "−104.0 dBm", "-104.0"),
+    val("100 MHz bandwidth", "−94.0 dBm", "-94.0"),
+    val("1 GHz bandwidth", "−84.0 dBm", "-84.0"),
 };
 
 constexpr Section kReceiverSections[] = {
-    {"Sensitivity & Noise", kRxSensitivity,  std::size(kRxSensitivity)},
+    {"Sensitivity & Noise", kRxSensitivity, std::size(kRxSensitivity)},
     {"Thermal Noise Floor  (kT, 290 K)", kNoiseFloor, std::size(kNoiseFloor)},
-    {"Cascaded Stages",     kRxCascade,      std::size(kRxCascade), "receiver-cascade"},
-    {"Dynamic Range",       kRxDynamicRange, std::size(kRxDynamicRange)},
+    {"Cascaded Stages", kRxCascade, std::size(kRxCascade), "receiver-cascade"},
+    {"Dynamic Range", kRxDynamicRange, std::size(kRxDynamicRange)},
 };
 
 // ── Jamming page (#83) ───────────────────────────────────────────────────────
@@ -433,11 +433,11 @@ constexpr Row kPartialBand[] = {
 };
 
 constexpr Section kJammingSections[] = {
-    {"Radar Jamming — Self-Protection", kSpjRadar,    std::size(kSpjRadar),    "jamming-self-protection"},
-    {"Radar Jamming — Stand-Off",       kSojRadar,    std::size(kSojRadar),    "jamming-stand-off"},
-    {"Comms Jamming",                   kJsComms,     std::size(kJsComms),     "jamming-comms"},
-    {"Burnthrough (one-way link)",      kBurnthrough, std::size(kBurnthrough)},
-    {"Partial-Band Jamming",            kPartialBand, std::size(kPartialBand)},
+    {"Radar Jamming — Self-Protection", kSpjRadar, std::size(kSpjRadar), "jamming-self-protection"},
+    {"Radar Jamming — Stand-Off", kSojRadar, std::size(kSojRadar), "jamming-stand-off"},
+    {"Comms Jamming", kJsComms, std::size(kJsComms), "jamming-comms"},
+    {"Burnthrough (one-way link)", kBurnthrough, std::size(kBurnthrough)},
+    {"Partial-Band Jamming", kPartialBand, std::size(kPartialBand)},
 };
 
 // ── Location page (#84) ──────────────────────────────────────────────────────
@@ -471,9 +471,9 @@ constexpr Row kCepEep[] = {
 };
 
 constexpr Section kLocationSections[] = {
-    {"CEP from Angle of Arrival", kCepAoa,  std::size(kCepAoa),  "loc-aoa-cep"},
-    {"CEP from TDOA",             kCepTdoa, std::size(kCepTdoa)},
-    {"Error Ellipse → CEP",       kCepEep,  std::size(kCepEep),  "loc-eep-cep"},
+    {"CEP from Angle of Arrival", kCepAoa, std::size(kCepAoa), "loc-aoa-cep"},
+    {"CEP from TDOA", kCepTdoa, std::size(kCepTdoa)},
+    {"Error Ellipse → CEP", kCepEep, std::size(kCepEep), "loc-eep-cep"},
 };
 
 // ── Radar & Detection page (#85, combined per user ratification) ─────────────
@@ -519,9 +519,9 @@ constexpr Row kSwerlingCases[] = {
 };
 
 constexpr Section kRadarDetSections[] = {
-    {"Range Equation",       kRangeEquation,  std::size(kRangeEquation)},
+    {"Range Equation", kRangeEquation, std::size(kRangeEquation)},
     {"Detection Statistics", kDetectionStats, std::size(kDetectionStats)},
-    {"Swerling Cases",       kSwerlingCases,  std::size(kSwerlingCases)},
+    {"Swerling Cases", kSwerlingCases, std::size(kSwerlingCases)},
 };
 
 // ── Doppler & Resolution page (#86) ──────────────────────────────────────────
@@ -561,7 +561,7 @@ constexpr Row kResolutionRows[] = {
 };
 
 constexpr Section kDopplerSections[] = {
-    {"Doppler",    kDopplerRows,    std::size(kDopplerRows)},
+    {"Doppler", kDopplerRows, std::size(kDopplerRows)},
     {"Resolution", kResolutionRows, std::size(kResolutionRows), "resolution-cell"},
 };
 
@@ -580,12 +580,12 @@ constexpr Row kEbnoRows[] = {
 };
 
 constexpr Row kModulation[] = {
-    val("BPSK / QPSK,  BER 10⁻³", "6.8 dB",     "6.8"),
-    val("BPSK / QPSK,  BER 10⁻⁵", "9.6 dB",     "9.6"),
-    val("BPSK / QPSK,  BER 10⁻⁶", "10.5 dB",    "10.5"),
-    val("Non-coh. FSK, BER 10⁻³", "≈ 13.5 dB",  "13.5"),
-    val("Non-coh. FSK, BER 10⁻⁵", "≈ 17.0 dB",  "17.0"),
-    val("Shannon limit",          "−1.6 dB — the ultimate coding bound (ln 2)", "-1.6"),
+    val("BPSK / QPSK,  BER 10⁻³", "6.8 dB", "6.8"),
+    val("BPSK / QPSK,  BER 10⁻⁵", "9.6 dB", "9.6"),
+    val("BPSK / QPSK,  BER 10⁻⁶", "10.5 dB", "10.5"),
+    val("Non-coh. FSK, BER 10⁻³", "≈ 13.5 dB", "13.5"),
+    val("Non-coh. FSK, BER 10⁻⁵", "≈ 17.0 dB", "17.0"),
+    val("Shannon limit", "−1.6 dB — the ultimate coding bound (ln 2)", "-1.6"),
 };
 
 constexpr Row kSpreadSpectrum[] = {
@@ -597,9 +597,9 @@ constexpr Row kSpreadSpectrum[] = {
 };
 
 constexpr Section kDigitalSections[] = {
-    {"Eb/N₀ & SNR",                      kEbnoRows,       std::size(kEbnoRows)},
-    {"Eb/N₀ Requirements (AWGN, uncoded)", kModulation,   std::size(kModulation)},
-    {"Spread Spectrum",                  kSpreadSpectrum, std::size(kSpreadSpectrum)},
+    {"Eb/N₀ & SNR", kEbnoRows, std::size(kEbnoRows)},
+    {"Eb/N₀ Requirements (AWGN, uncoded)", kModulation, std::size(kModulation)},
+    {"Spread Spectrum", kSpreadSpectrum, std::size(kSpreadSpectrum)},
 };
 
 // ── RCS page (#77) ───────────────────────────────────────────────────────────
@@ -610,32 +610,32 @@ constexpr Section kDigitalSections[] = {
 // calculator's σ input. Supersedes the former Quick Values RCS table.
 
 constexpr Row kRcsShapes[] = {
-    formula("Sphere (optical)",            "rcs-sphere",    "σ = π r²"),
-    formula("Flat plate (normal, a×b)",    "rcs-plate",     "σ = 4π a² b² / λ²"),
-    formula("Cylinder (broadside)",        "rcs-cyl",       "σ = 2π r h² / λ"),
-    formula("Dihedral corner (max)",       "rcs-dihedral",  "σ = 8π a² b² / λ²"),
-    formula("Trihedral corner (max)",      "rcs-trihedral", "σ = 4π a⁴ / (3λ²)"),
-    formula("m² → dBsm",                   "rcs-dbsm",      "σ(dBsm) = 10 log₁₀ σ(m²)"),
+    formula("Sphere (optical)", "rcs-sphere", "σ = π r²"),
+    formula("Flat plate (normal, a×b)", "rcs-plate", "σ = 4π a² b² / λ²"),
+    formula("Cylinder (broadside)", "rcs-cyl", "σ = 2π r h² / λ"),
+    formula("Dihedral corner (max)", "rcs-dihedral", "σ = 8π a² b² / λ²"),
+    formula("Trihedral corner (max)", "rcs-trihedral", "σ = 4π a⁴ / (3λ²)"),
+    formula("m² → dBsm", "rcs-dbsm", "σ(dBsm) = 10 log₁₀ σ(m²)"),
     val("Validity", "closed forms hold in the optical region (dimensions ≫ λ)"),
     val("Range scaling", "detection range ∝ ⁴√σ — every 12 dB of RCS reduction halves it"),
 };
 
 constexpr Row kRcsTargets[] = {
-    val("Insect",                          "≈ 0.0001 m²  (−40 dBsm)", "-40"),
-    val("Bird",                            "≈ 0.03 m²  (−15 dBsm)",   "-15"),
-    val("Person",                          "≈ 1 m²  (0 dBsm)",        "0"),
-    val("Automobile",                      "≈ 100 m²  (+20 dBsm)",    "20"),
-    val("Cruise missile",                  "≈ 0.2 m²  (−7 dBsm)",     "-7"),
-    val("LO fighter (nose-on)",            "≈ 0.03 m²  (−15 dBsm)",   "-15"),
-    val("Fighter (nose-on, conventional)", "≈ 1 m²  (0 dBsm)",        "0"),
-    val("Fighter (broadside)",             "≈ 5 m²  (+7 dBsm)",       "7"),
-    val("Airliner / large aircraft",       "≈ 30 m²  (+15 dBsm)",     "15"),
-    val("Ship (small, ∼1 000 t)",          "≈ 300 m²  (+25 dBsm)",    "25"),
-    val("Ship (large, >10 000 t)",         "≈ 30 000 m²  (+45 dBsm)", "45"),
+    val("Insect", "≈ 0.0001 m²  (−40 dBsm)", "-40"),
+    val("Bird", "≈ 0.03 m²  (−15 dBsm)", "-15"),
+    val("Person", "≈ 1 m²  (0 dBsm)", "0"),
+    val("Automobile", "≈ 100 m²  (+20 dBsm)", "20"),
+    val("Cruise missile", "≈ 0.2 m²  (−7 dBsm)", "-7"),
+    val("LO fighter (nose-on)", "≈ 0.03 m²  (−15 dBsm)", "-15"),
+    val("Fighter (nose-on, conventional)", "≈ 1 m²  (0 dBsm)", "0"),
+    val("Fighter (broadside)", "≈ 5 m²  (+7 dBsm)", "7"),
+    val("Airliner / large aircraft", "≈ 30 m²  (+15 dBsm)", "15"),
+    val("Ship (small, ∼1 000 t)", "≈ 300 m²  (+25 dBsm)", "25"),
+    val("Ship (large, >10 000 t)", "≈ 30 000 m²  (+45 dBsm)", "45"),
 };
 
 constexpr Section kRcsSections[] = {
-    {"Simple Shapes",   kRcsShapes,  std::size(kRcsShapes),  "rcs-regions"},
+    {"Simple Shapes", kRcsShapes, std::size(kRcsShapes), "rcs-regions"},
     {"Typical Targets", kRcsTargets, std::size(kRcsTargets)},
 };
 
@@ -643,18 +643,18 @@ constexpr Section kRcsSections[] = {
 // IEEE Std 521 radar-band letters; NATO/EU EW band letters; ITU radio bands.
 
 constexpr Row kIeeeBands[] = {
-    val("HF",  "3–30 MHz"),
+    val("HF", "3–30 MHz"),
     val("VHF", "30–300 MHz"),
     val("UHF", "300 MHz–1 GHz"),
-    val("L",   "1–2 GHz"),
-    val("S",   "2–4 GHz"),
-    val("C",   "4–8 GHz"),
-    val("X",   "8–12 GHz"),
-    val("Ku",  "12–18 GHz"),
-    val("K",   "18–27 GHz"),
-    val("Ka",  "27–40 GHz"),
-    val("V",   "40–75 GHz"),
-    val("W",   "75–110 GHz"),
+    val("L", "1–2 GHz"),
+    val("S", "2–4 GHz"),
+    val("C", "4–8 GHz"),
+    val("X", "8–12 GHz"),
+    val("Ku", "12–18 GHz"),
+    val("K", "18–27 GHz"),
+    val("Ka", "27–40 GHz"),
+    val("V", "40–75 GHz"),
+    val("W", "75–110 GHz"),
     val("mm (G)", "110–300 GHz"),
 };
 
@@ -675,20 +675,20 @@ constexpr Row kNatoBands[] = {
 };
 
 constexpr Row kItuBands[] = {
-    val("VLF (band 4)",  "3–30 kHz"),
-    val("LF (band 5)",   "30–300 kHz"),
-    val("MF (band 6)",   "300 kHz–3 MHz"),
-    val("HF (band 7)",   "3–30 MHz"),
-    val("VHF (band 8)",  "30–300 MHz"),
-    val("UHF (band 9)",  "300 MHz–3 GHz"),
+    val("VLF (band 4)", "3–30 kHz"),
+    val("LF (band 5)", "30–300 kHz"),
+    val("MF (band 6)", "300 kHz–3 MHz"),
+    val("HF (band 7)", "3–30 MHz"),
+    val("VHF (band 8)", "30–300 MHz"),
+    val("UHF (band 9)", "300 MHz–3 GHz"),
     val("SHF (band 10)", "3–30 GHz"),
     val("EHF (band 11)", "30–300 GHz"),
 };
 
 constexpr Section kBandSections[] = {
     {"IEEE Radar Bands (IEEE Std 521)", kIeeeBands, std::size(kIeeeBands)},
-    {"NATO / EU EW Bands",              kNatoBands, std::size(kNatoBands)},
-    {"ITU Radio Bands",                 kItuBands,  std::size(kItuBands)},
+    {"NATO / EU EW Bands", kNatoBands, std::size(kNatoBands)},
+    {"ITU Radio Bands", kItuBands, std::size(kItuBands)},
 };
 
 constexpr Page kPages[] = {

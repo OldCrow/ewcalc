@@ -36,28 +36,29 @@ void RadarPresenter::set_time_bandwidth_product(double tb) noexcept {
 void RadarPresenter::set_num_pulses(int n) noexcept {
     num_pulses_ = n;
     num_pulses_err_ = validate_bounds(static_cast<double>(n), 1.0, 100000.0);
-    recompute(); fire();
+    recompute();
+    fire();
 }
 
 void RadarPresenter::recompute() noexcept {
-    output_.valid = (tx_power_err_     == FieldError::none &&
+    output_.valid = (tx_power_err_ == FieldError::none &&
                      antenna_gain_err_ == FieldError::none &&
-                     target_rcs_err_   == FieldError::none &&
-                     frequency_err_    == FieldError::none &&
-                     system_losses_err_== FieldError::none &&
+                     target_rcs_err_ == FieldError::none &&
+                     frequency_err_ == FieldError::none &&
+                     system_losses_err_ == FieldError::none &&
                      noise_figure_err_ == FieldError::none &&
-                     bandwidth_err_    == FieldError::none &&
+                     bandwidth_err_ == FieldError::none &&
                      required_snr_err_ == FieldError::none &&
-                     tb_product_err_   == FieldError::none &&
-                     num_pulses_err_   == FieldError::none);
+                     tb_product_err_ == FieldError::none &&
+                     num_pulses_err_ == FieldError::none);
 
     if (!output_.valid) {
-        output_.max_range_str                 = kDash;
-        output_.two_way_loss_str              = kDash;
-        output_.pulse_compression_gain_str    = kDash;
+        output_.max_range_str = kDash;
+        output_.two_way_loss_str = kDash;
+        output_.pulse_compression_gain_str = kDash;
         output_.coherent_integration_gain_str = kDash;
-        output_.lpi_advantage_str             = kDash;
-        output_.target_rcs_str                = kDash;
+        output_.lpi_advantage_str = kDash;
+        output_.target_rcs_str = kDash;
         return;
     }
 
@@ -69,20 +70,20 @@ void RadarPresenter::recompute() noexcept {
         Db{system_losses_db_}, Db{noise_figure_db_},
         Mhz{bandwidth_mhz_}, Db{required_snr_db_});
 
-    output_.max_range    = res.max_range;
+    output_.max_range = res.max_range;
     output_.two_way_loss = res.two_way_loss;
 
-    output_.pulse_compression_gain   = libew::radar::pulse_compression_gain(time_bandwidth_product_);
+    output_.pulse_compression_gain = libew::radar::pulse_compression_gain(time_bandwidth_product_);
     output_.coherent_integration_gain = libew::radar::coherent_integration_gain(num_pulses_);
-    output_.lpi_advantage             = libew::radar::lpi_advantage(time_bandwidth_product_);
+    output_.lpi_advantage = libew::radar::lpi_advantage(time_bandwidth_product_);
 
-    output_.target_rcs                    = Dbsm{target_rcs_dbsm_};
-    output_.max_range_str                 = format_km(output_.max_range);
-    output_.two_way_loss_str              = format_db(output_.two_way_loss);
-    output_.pulse_compression_gain_str    = format_db(output_.pulse_compression_gain);
+    output_.target_rcs = Dbsm{target_rcs_dbsm_};
+    output_.max_range_str = format_km(output_.max_range);
+    output_.two_way_loss_str = format_db(output_.two_way_loss);
+    output_.pulse_compression_gain_str = format_db(output_.pulse_compression_gain);
     output_.coherent_integration_gain_str = format_db(output_.coherent_integration_gain);
-    output_.lpi_advantage_str             = format_db(output_.lpi_advantage);
-    output_.target_rcs_str                = format_dbsm(output_.target_rcs);
+    output_.lpi_advantage_str = format_db(output_.lpi_advantage);
+    output_.target_rcs_str = format_dbsm(output_.target_rcs);
 }
 
 void RadarPresenter::fire() noexcept {

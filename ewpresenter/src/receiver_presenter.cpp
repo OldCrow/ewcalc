@@ -21,21 +21,25 @@ void ReceiverPresenter::set_required_snr(double db) noexcept {
 // Returns true if a stage has an invalid NF or non-finite gain.
 static bool stage_invalid(const ReceiverPresenter::StageInput& s) noexcept {
     return !(s.noise_figure_db >= 0.0)   // catches NaN and negative NF
-        || !std::isfinite(s.gain_db);    // gain may be negative (loss), but must be finite
+           || !std::isfinite(s.gain_db); // gain may be negative (loss), but must be finite
 }
 
 void ReceiverPresenter::set_stages(std::vector<StageInput> new_stages) noexcept {
     stages_ = std::move(new_stages);
     stage_nf_err_ = std::any_of(stages_.cbegin(), stages_.cend(), stage_invalid)
-        ? FieldError::invalid_negative : FieldError::none;
-    recompute(); fire();
+                        ? FieldError::invalid_negative
+                        : FieldError::none;
+    recompute();
+    fire();
 }
 bool ReceiverPresenter::try_set_stage(std::size_t index, StageInput stage) noexcept {
     if (index >= stages_.size()) return false;
     stages_[index] = stage;
     stage_nf_err_ = std::any_of(stages_.cbegin(), stages_.cend(), stage_invalid)
-        ? FieldError::invalid_negative : FieldError::none;
-    recompute(); fire();
+                        ? FieldError::invalid_negative
+                        : FieldError::none;
+    recompute();
+    fire();
     return true;
 }
 void ReceiverPresenter::set_stage(std::size_t index, StageInput stage) noexcept {
@@ -50,27 +54,28 @@ void ReceiverPresenter::set_third_order_ip(double dbm) noexcept {
 void ReceiverPresenter::set_adc_bits(int bits) noexcept {
     adc_bits_ = bits;
     adc_bits_err_ = validate_bounds(static_cast<double>(bits), 1.0, 64.0);
-    recompute(); fire();
+    recompute();
+    fire();
 }
 
 void ReceiverPresenter::recompute() noexcept {
-    output_.valid = (bandwidth_err_       == FieldError::none &&
-                     noise_figure_err_    == FieldError::none &&
-                     required_snr_err_    == FieldError::none &&
+    output_.valid = (bandwidth_err_ == FieldError::none &&
+                     noise_figure_err_ == FieldError::none &&
+                     required_snr_err_ == FieldError::none &&
                      second_order_ip_err_ == FieldError::none &&
-                     third_order_ip_err_  == FieldError::none &&
-                     adc_bits_err_        == FieldError::none &&
-                     stage_nf_err_        == FieldError::none);
+                     third_order_ip_err_ == FieldError::none &&
+                     adc_bits_err_ == FieldError::none &&
+                     stage_nf_err_ == FieldError::none);
 
     if (!output_.valid) {
-        output_.sensitivity_str       = kDash;
-        output_.cascaded_nf_str       = kDash;
-        output_.sfdr2_str             = kDash;
-        output_.sfdr3_str             = kDash;
-        output_.digital_dr_str        = kDash;
-        output_.digital_sqnr_str      = kDash;
+        output_.sensitivity_str = kDash;
+        output_.cascaded_nf_str = kDash;
+        output_.sfdr2_str = kDash;
+        output_.sfdr3_str = kDash;
+        output_.digital_dr_str = kDash;
+        output_.digital_sqnr_str = kDash;
         output_.system_noise_temp_str = kDash;
-        output_.system_nf_str         = kDash;
+        output_.system_nf_str = kDash;
         return;
     }
 
@@ -82,7 +87,7 @@ void ReceiverPresenter::recompute() noexcept {
         std::vector<Stage> chain;
         chain.reserve(stages_.size());
         std::transform(stages_.cbegin(), stages_.cend(), std::back_inserter(chain),
-            [](const StageInput& s) -> Stage { return {Db{s.noise_figure_db}, Db{s.gain_db}}; });
+                       [](const StageInput& s) -> Stage { return {Db{s.noise_figure_db}, Db{s.gain_db}}; });
         output_.cascaded_nf = cascaded_noise_figure(std::span<const Stage>{chain});
     } else {
         output_.cascaded_nf = Db{noise_figure_db_};
@@ -98,25 +103,25 @@ void ReceiverPresenter::recompute() noexcept {
     // SFDR
     const Dbm sens = output_.sensitivity;
     output_.sfdr_second_order = analog_sfdr_second_order(sens, Dbm{second_order_ip_dbm_});
-    output_.sfdr_third_order  = analog_sfdr_third_order(sens,  Dbm{third_order_ip_dbm_});
+    output_.sfdr_third_order = analog_sfdr_third_order(sens, Dbm{third_order_ip_dbm_});
 
     // Digital DR
-    output_.digital_dr   = digital_dynamic_range(adc_bits_);
+    output_.digital_dr = digital_dynamic_range(adc_bits_);
     output_.digital_sqnr = digital_sqnr(adc_bits_);
 
     // System noise temperature and equivalent NF derived from the cascaded Friis result,
     // not the raw input NF (which would be a trivial identity round-trip).
     output_.system_noise_temp = libew::receiver::noise_temp_from_nf(output_.cascaded_nf);
-    output_.system_nf         = libew::receiver::nf_from_noise_temp(output_.system_noise_temp);
+    output_.system_nf = libew::receiver::nf_from_noise_temp(output_.system_noise_temp);
 
-    output_.sensitivity_str       = format_dbm(output_.sensitivity);
-    output_.cascaded_nf_str       = format_db(output_.cascaded_nf);
-    output_.sfdr2_str             = format_db(output_.sfdr_second_order);
-    output_.sfdr3_str             = format_db(output_.sfdr_third_order);
-    output_.digital_dr_str        = format_db(output_.digital_dr);
-    output_.digital_sqnr_str      = format_db(output_.digital_sqnr);
+    output_.sensitivity_str = format_dbm(output_.sensitivity);
+    output_.cascaded_nf_str = format_db(output_.cascaded_nf);
+    output_.sfdr2_str = format_db(output_.sfdr_second_order);
+    output_.sfdr3_str = format_db(output_.sfdr_third_order);
+    output_.digital_dr_str = format_db(output_.digital_dr);
+    output_.digital_sqnr_str = format_db(output_.digital_sqnr);
     output_.system_noise_temp_str = format_kelvin(output_.system_noise_temp);
-    output_.system_nf_str         = format_db(output_.system_nf);
+    output_.system_nf_str = format_db(output_.system_nf);
 }
 
 void ReceiverPresenter::fire() noexcept {

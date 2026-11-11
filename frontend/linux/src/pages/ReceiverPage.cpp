@@ -40,7 +40,7 @@ std::vector<ewpresenter::ReceiverPresenter::StageInput> stagesFromVariant(const 
     for (const auto& v : list) {
         const QVariantMap m = v.toMap();
         stages.push_back({m.value(QStringLiteral("nf")).toDouble(),
-                           m.value(QStringLiteral("gain")).toDouble()});
+                          m.value(QStringLiteral("gain")).toDouble()});
     }
     return stages;
 }
@@ -54,30 +54,30 @@ ReceiverPage::ReceiverPage(QWidget* parent)
     auto* inGroup = makeGroup(QStringLiteral("System Inputs"), inForm);
 
     auto* bwSb = addSpinRow(inForm, QStringLiteral("Bandwidth (MHz)"), 0.001, 10000.0,
-        presenter_.bandwidth_mhz(), 0.1, 3, kGroup, QStringLiteral("bandwidth_mhz"),
-        QStringLiteral("IF noise bandwidth \u2014 wider bandwidth raises the noise floor and degrades sensitivity"));
+                            presenter_.bandwidth_mhz(), 0.1, 3, kGroup, QStringLiteral("bandwidth_mhz"),
+                            QStringLiteral("IF noise bandwidth \u2014 wider bandwidth raises the noise floor and degrades sensitivity"));
     auto* nfSb = addSpinRow(inForm, QStringLiteral("Noise figure (dB)"), 0.0, 30.0,
-        presenter_.noise_figure_db(), 0.5, 1, kGroup, QStringLiteral("noise_figure_db"),
-        QStringLiteral("System noise figure \u2014 NF = 0 dB is ideal (noiseless); each additional dB raises the sensitivity floor"));
+                            presenter_.noise_figure_db(), 0.5, 1, kGroup, QStringLiteral("noise_figure_db"),
+                            QStringLiteral("System noise figure \u2014 NF = 0 dB is ideal (noiseless); each additional dB raises the sensitivity floor"));
     auto* snrSb = addSpinRow(inForm, QStringLiteral("Required SNR (dB)"), -20.0, 50.0,
-        presenter_.required_snr_db(), 0.5, 1, kGroup, QStringLiteral("required_snr_db"),
-        QStringLiteral("Minimum pre-detection SNR for acceptable output \u2014 depends on modulation and required BER"));
+                             presenter_.required_snr_db(), 0.5, 1, kGroup, QStringLiteral("required_snr_db"),
+                             QStringLiteral("Minimum pre-detection SNR for acceptable output \u2014 depends on modulation and required BER"));
     auto* iip2Sb = addSpinRow(inForm, QStringLiteral("IIP2 (dBm)"), -50.0, 100.0,
-        presenter_.second_order_ip_dbm(), 1.0, 1, kGroup, QStringLiteral("second_order_ip_dbm"),
-        QStringLiteral("Second-order input intercept point \u2014 sets the 2nd-order intermodulation floor"));
+                              presenter_.second_order_ip_dbm(), 1.0, 1, kGroup, QStringLiteral("second_order_ip_dbm"),
+                              QStringLiteral("Second-order input intercept point \u2014 sets the 2nd-order intermodulation floor"));
     auto* iip3Sb = addSpinRow(inForm, QStringLiteral("IIP3 (dBm)"), -50.0, 100.0,
-        presenter_.third_order_ip_dbm(), 1.0, 1, kGroup, QStringLiteral("third_order_ip_dbm"),
-        QStringLiteral("Third-order input intercept point \u2014 sets the 3rd-order intermodulation floor; typically the tighter limit"));
+                              presenter_.third_order_ip_dbm(), 1.0, 1, kGroup, QStringLiteral("third_order_ip_dbm"),
+                              QStringLiteral("Third-order input intercept point \u2014 sets the 3rd-order intermodulation floor; typically the tighter limit"));
     auto* adcSb = addIntSpinRow(inForm, QStringLiteral("ADC bits"), 1, 64,
-        presenter_.adc_bits(), kGroup, QStringLiteral("adc_bits"),
-        QStringLiteral("Number of ADC quantisation bits \u2014 more bits raise the digital dynamic range and SQNR"));
+                                presenter_.adc_bits(), kGroup, QStringLiteral("adc_bits"),
+                                QStringLiteral("Number of ADC quantisation bits \u2014 more bits raise the digital dynamic range and SQNR"));
 
     // ── Noise-chain stage cascade ─────────────────────────────────────────────
     auto* stageGroup = new QGroupBox(QStringLiteral("Noise Chain Stages"));
-    auto* stageVBox  = new QVBoxLayout(stageGroup);
+    auto* stageVBox = new QVBoxLayout(stageGroup);
 
     stages_container_ = new QWidget;
-    stages_layout_    = new QVBoxLayout(stages_container_);
+    stages_layout_ = new QVBoxLayout(stages_container_);
     stages_layout_->setContentsMargins(0, 0, 0, 0);
     stages_layout_->setSpacing(2);
 
@@ -91,32 +91,31 @@ ReceiverPage::ReceiverPage(QWidget* parent)
 
     ResultRowRegistry results;
     sensitivity_ = addResultRow(outForm, QStringLiteral("Sensitivity"),
-        QStringLiteral("Minimum detectable signal: \u2212114 + 10\u00b7log\u2081\u2080(BW) + NF + SNR (dBm)"), &results);
+                                QStringLiteral("Minimum detectable signal: \u2212114 + 10\u00b7log\u2081\u2080(BW) + NF + SNR (dBm)"), &results);
     cascaded_nf_ = addResultRow(outForm, QStringLiteral("Cascaded NF"),
-        QStringLiteral("System noise figure from the Friis formula across the stage chain \u2014 front-end stage dominates"), &results);
+                                QStringLiteral("System noise figure from the Friis formula across the stage chain \u2014 front-end stage dominates"), &results);
     system_noise_temp_ = addResultRow(outForm, QStringLiteral("Sys. noise temp"),
-        QStringLiteral("Equivalent noise temperature: T\u2091 = (NF\u2097\u1d62\u2099 \u2212 1) \u00d7 290 K"), &results);
+                                      QStringLiteral("Equivalent noise temperature: T\u2091 = (NF\u2097\u1d62\u2099 \u2212 1) \u00d7 290 K"), &results);
     system_nf_ = addResultRow(outForm, QStringLiteral("Sys. NF equiv."),
-        QStringLiteral("System NF re-derived from system noise temperature \u2014 confirms the round-trip conversion"), &results);
+                              QStringLiteral("System NF re-derived from system noise temperature \u2014 confirms the round-trip conversion"), &results);
     sfdr2_ = addResultRow(outForm, QStringLiteral("SFDR (2nd order)"),
-        QStringLiteral("2nd-order spurious-free dynamic range: \u00bd \u00d7 (IIP2 \u2212 sensitivity)"), &results);
+                          QStringLiteral("2nd-order spurious-free dynamic range: \u00bd \u00d7 (IIP2 \u2212 sensitivity)"), &results);
     sfdr3_ = addResultRow(outForm, QStringLiteral("SFDR (3rd order)"),
-        QStringLiteral("3rd-order spurious-free dynamic range: \u2154 \u00d7 (IIP3 \u2212 sensitivity) \u2014 usually the binding constraint"), &results);
+                          QStringLiteral("3rd-order spurious-free dynamic range: \u2154 \u00d7 (IIP3 \u2212 sensitivity) \u2014 usually the binding constraint"), &results);
     digital_dr_ = addResultRow(outForm, QStringLiteral("Digital DR"),
-        QStringLiteral("ADC full-scale-to-LSB level ratio: 20\u00b7log\u2081\u2080(2\u1d3a) \u2248 6.02\u00b7N dB"), &results);
+                               QStringLiteral("ADC full-scale-to-LSB level ratio: 20\u00b7log\u2081\u2080(2\u1d3a) \u2248 6.02\u00b7N dB"), &results);
     digital_sqnr_ = addResultRow(outForm, QStringLiteral("SQNR"),
-        QStringLiteral("Quantisation SNR of a full-scale sine: 6.02\u00b7N + 1.76 dB \u2014 the DR plus the sine's 1.76 dB"), &results);
+                                 QStringLiteral("Quantisation SNR of a full-scale sine: 6.02\u00b7N + 1.76 dB \u2014 the DR plus the sine's 1.76 dB"), &results);
 
     outForm->addRow(addCopyResultsButton(results));
 
     // ── Scroll container ──────────────────────────────────────────────────────
     auto* content = new QWidget;
-    auto* vbox    = new QVBoxLayout(content);
+    auto* vbox = new QVBoxLayout(content);
     vbox->addWidget(inGroup);
     vbox->addWidget(stageGroup);
     vbox->addWidget(outGroup);
-    vbox->addWidget(makeDiagramGroup({
-        QStringLiteral(":/diagrams/receiver-cascade.png")}));
+    vbox->addWidget(makeDiagramGroup({QStringLiteral(":/diagrams/receiver-cascade.png")}));
     vbox->addStretch();
 
     auto* scroll = new QScrollArea(this);
@@ -129,46 +128,47 @@ ReceiverPage::ReceiverPage(QWidget* parent)
     outer->addWidget(scroll);
 
     // ── Signal wiring: system inputs ─────────────────────────────────────────
-    connect(bwSb,   &QDoubleSpinBox::valueChanged, this,
-            [this, bwSb](double v){ presenter_.set_bandwidth(v); applyFieldError(bwSb, presenter_.bandwidth_error()); });
-    connect(nfSb,   &QDoubleSpinBox::valueChanged, this,
-            [this, nfSb](double v){ presenter_.set_noise_figure(v); applyFieldError(nfSb, presenter_.noise_figure_error()); });
-    connect(snrSb,  &QDoubleSpinBox::valueChanged, this,
-            [this, snrSb](double v){ presenter_.set_required_snr(v); applyFieldError(snrSb, presenter_.required_snr_error()); });
+    connect(bwSb, &QDoubleSpinBox::valueChanged, this,
+            [this, bwSb](double v) { presenter_.set_bandwidth(v); applyFieldError(bwSb, presenter_.bandwidth_error()); });
+    connect(nfSb, &QDoubleSpinBox::valueChanged, this,
+            [this, nfSb](double v) { presenter_.set_noise_figure(v); applyFieldError(nfSb, presenter_.noise_figure_error()); });
+    connect(snrSb, &QDoubleSpinBox::valueChanged, this,
+            [this, snrSb](double v) { presenter_.set_required_snr(v); applyFieldError(snrSb, presenter_.required_snr_error()); });
     connect(iip2Sb, &QDoubleSpinBox::valueChanged, this,
-            [this, iip2Sb](double v){ presenter_.set_second_order_ip(v); applyFieldError(iip2Sb, presenter_.second_order_ip_error()); });
+            [this, iip2Sb](double v) { presenter_.set_second_order_ip(v); applyFieldError(iip2Sb, presenter_.second_order_ip_error()); });
     connect(iip3Sb, &QDoubleSpinBox::valueChanged, this,
-            [this, iip3Sb](double v){ presenter_.set_third_order_ip(v); applyFieldError(iip3Sb, presenter_.third_order_ip_error()); });
+            [this, iip3Sb](double v) { presenter_.set_third_order_ip(v); applyFieldError(iip3Sb, presenter_.third_order_ip_error()); });
     connect(adcSb, &QSpinBox::valueChanged, this,
-            [this, adcSb](int v){ presenter_.set_adc_bits(v); applyFieldError(adcSb, presenter_.adc_bits_error()); });
+            [this, adcSb](int v) { presenter_.set_adc_bits(v); applyFieldError(adcSb, presenter_.adc_bits_error()); });
 
     // ── Signal wiring: stage management ────────────────────────────────────────
-    connect(addBtn, &QPushButton::clicked, this, [this]{ addStage(); });
+    connect(addBtn, &QPushButton::clicked, this, [this] { addStage(); });
 
     // ── Restore persisted values (after presenter wiring, before first recompute) ──
-    restoreSpinValue(bwSb,   kGroup, QStringLiteral("bandwidth_mhz"));
-    restoreSpinValue(nfSb,   kGroup, QStringLiteral("noise_figure_db"));
-    restoreSpinValue(snrSb,  kGroup, QStringLiteral("required_snr_db"));
+    restoreSpinValue(bwSb, kGroup, QStringLiteral("bandwidth_mhz"));
+    restoreSpinValue(nfSb, kGroup, QStringLiteral("noise_figure_db"));
+    restoreSpinValue(snrSb, kGroup, QStringLiteral("required_snr_db"));
     restoreSpinValue(iip2Sb, kGroup, QStringLiteral("second_order_ip_dbm"));
     restoreSpinValue(iip3Sb, kGroup, QStringLiteral("third_order_ip_dbm"));
-    restoreSpinValue(adcSb,  kGroup, QStringLiteral("adc_bits"));
+    restoreSpinValue(adcSb, kGroup, QStringLiteral("adc_bits"));
 
     const QVariantList savedStages = AppSettings::instance()
-        .value(kGroup, kStagesKey, QVariant()).toList();
+                                         .value(kGroup, kStagesKey, QVariant())
+                                         .toList();
     if (!savedStages.isEmpty())
         presenter_.set_stages(stagesFromVariant(savedStages));
 
-    presenter_.set_on_change([this](const ewpresenter::ReceiverPresenter::Output& o){
+    presenter_.set_on_change([this](const ewpresenter::ReceiverPresenter::Output& o) {
         applyOutput(o);
     });
 
     // Seed per-field validation-error styling from initial/restored values (#41).
-    applyFieldError(bwSb,   presenter_.bandwidth_error());
-    applyFieldError(nfSb,   presenter_.noise_figure_error());
-    applyFieldError(snrSb,  presenter_.required_snr_error());
+    applyFieldError(bwSb, presenter_.bandwidth_error());
+    applyFieldError(nfSb, presenter_.noise_figure_error());
+    applyFieldError(snrSb, presenter_.required_snr_error());
     applyFieldError(iip2Sb, presenter_.second_order_ip_error());
     applyFieldError(iip3Sb, presenter_.third_order_ip_error());
-    applyFieldError(adcSb,  presenter_.adc_bits_error());
+    applyFieldError(adcSb, presenter_.adc_bits_error());
 
     // Populate stage list from presenter defaults (or restored stages) and seed outputs.
     rebuildStageList();
@@ -186,17 +186,17 @@ void ReceiverPage::rebuildStageList()
 
     const auto& stages = presenter_.stages();
     for (int i = 0; i < static_cast<int>(stages.size()); ++i) {
-        auto* row    = new QWidget;
-        auto* hbox   = new QHBoxLayout(row);
+        auto* row = new QWidget;
+        auto* hbox = new QHBoxLayout(row);
         hbox->setContentsMargins(0, 0, 0, 0);
 
         auto* idxLbl = new QLabel(QStringLiteral("S%1").arg(i + 1));
         idxLbl->setMinimumWidth(28);
 
         auto* nfSb = makeSpinBox(0.0, 30.0, stages[i].noise_figure_db, 0.5, 1,
-            QStringLiteral("Stage %1 noise figure (dB)").arg(i + 1));
-        auto* gSb  = makeSpinBox(-60.0, 60.0, stages[i].gain_db,         0.5, 1,
-            QStringLiteral("Stage %1 gain (dB)").arg(i + 1));
+                                 QStringLiteral("Stage %1 noise figure (dB)").arg(i + 1));
+        auto* gSb = makeSpinBox(-60.0, 60.0, stages[i].gain_db, 0.5, 1,
+                                QStringLiteral("Stage %1 gain (dB)").arg(i + 1));
         nfSb->setToolTip(QStringLiteral("Stage %1 noise figure").arg(i + 1));
         gSb->setToolTip(QStringLiteral("Stage %1 gain").arg(i + 1));
         // Stashed so applyFieldError() can restore this tooltip once the
@@ -204,7 +204,7 @@ void ReceiverPage::rebuildStageList()
         nfSb->setProperty("ewcBaseHelp", nfSb->toolTip());
 
         auto* nfLbl = new QLabel(QStringLiteral("NF"));
-        auto* gLbl  = new QLabel(QStringLiteral("G"));
+        auto* gLbl = new QLabel(QStringLiteral("G"));
         auto* dbLbl1 = new QLabel(QStringLiteral("dB"));
         auto* dbLbl2 = new QLabel(QStringLiteral("dB"));
 
@@ -229,11 +229,11 @@ void ReceiverPage::rebuildStageList()
 
         // Capture index by value; valid for the lifetime of this row.
         connect(nfSb, &QDoubleSpinBox::valueChanged, this,
-                [this](double){ pushStages(); });
-        connect(gSb,  &QDoubleSpinBox::valueChanged, this,
-                [this](double){ pushStages(); });
+                [this](double) { pushStages(); });
+        connect(gSb, &QDoubleSpinBox::valueChanged, this,
+                [this](double) { pushStages(); });
         connect(rmBtn, &QPushButton::clicked, this,
-                [this, i]{ removeStage(i); });
+                [this, i] { removeStage(i); });
     }
 
     applyStageErrors();
@@ -251,9 +251,9 @@ void ReceiverPage::pushStages()
     std::vector<ewpresenter::ReceiverPresenter::StageInput> stages;
     stages.reserve(stage_rows_.size());
     std::transform(stage_rows_.begin(), stage_rows_.end(), std::back_inserter(stages),
-                    [](const auto& r) {
-                        return ewpresenter::ReceiverPresenter::StageInput{r.nf->value(), r.gain->value()};
-                    });
+                   [](const auto& r) {
+                       return ewpresenter::ReceiverPresenter::StageInput{r.nf->value(), r.gain->value()};
+                   });
     presenter_.set_stages(stages);
     AppSettings::instance().setValue(kGroup, kStagesKey, stagesToVariant(stages));
     applyStageErrors();

@@ -16,30 +16,28 @@ namespace ewpresenter {
 /// constexpr-friendly finite check for C++20/MSVC, where std::isfinite is not
 /// constexpr. NaN is the only floating-point value that does not equal itself.
 [[nodiscard]] constexpr bool is_finite(double value) noexcept {
-    return value == value
-        && value != std::numeric_limits<double>::infinity()
-        && value != -std::numeric_limits<double>::infinity();
+    return value == value && value != std::numeric_limits<double>::infinity() && value != -std::numeric_limits<double>::infinity();
 }
 
 /// Reason an input field failed validation.
 enum class FieldError : uint8_t {
-    none,           ///< Value is valid
-    below_minimum,  ///< Value is less than the physical minimum for this field
-    above_maximum,  ///< Value exceeds the physical maximum for this field
-    invalid_zero,   ///< Value is zero where it must be strictly positive
+    none,             ///< Value is valid
+    below_minimum,    ///< Value is less than the physical minimum for this field
+    above_maximum,    ///< Value exceeds the physical maximum for this field
+    invalid_zero,     ///< Value is zero where it must be strictly positive
     invalid_negative, ///< Value is negative where it must be non-negative
-    not_finite      ///< Value is NaN or infinite
+    not_finite        ///< Value is NaN or infinite
 };
 
 /// Returns a short human-readable label for a FieldError.
 [[nodiscard]] constexpr std::string_view describe(FieldError e) noexcept {
     switch (e) {
-        case FieldError::none:             return "";
-        case FieldError::below_minimum:    return "below minimum";
-        case FieldError::above_maximum:    return "above maximum";
-    case FieldError::invalid_zero:     return "must be positive";
+        case FieldError::none: return "";
+        case FieldError::below_minimum: return "below minimum";
+        case FieldError::above_maximum: return "above maximum";
+        case FieldError::invalid_zero: return "must be positive";
         case FieldError::invalid_negative: return "must not be negative";
-        case FieldError::not_finite:        return "not a finite number";
+        case FieldError::not_finite: return "not a finite number";
     }
     return "unknown";
 }
@@ -48,8 +46,7 @@ enum class FieldError : uint8_t {
 /// Pass 0 for min_val to skip lower-bound check on strictly-positive fields;
 /// use validate_positive() for zero-exclusion.
 [[nodiscard]] constexpr FieldError validate_bounds(
-    double value, double min_val, double max_val) noexcept
-{
+    double value, double min_val, double max_val) noexcept {
     if (!is_finite(value)) return FieldError::not_finite;
     if (value < min_val) return FieldError::below_minimum;
     if (value > max_val) return FieldError::above_maximum;
@@ -72,8 +69,7 @@ enum class FieldError : uint8_t {
 
 /// Convenience: validate positive AND within bounds.
 [[nodiscard]] constexpr FieldError validate_positive_bounded(
-    double value, double min_val, double max_val) noexcept
-{
+    double value, double min_val, double max_val) noexcept {
     if (!is_finite(value)) return FieldError::not_finite;
     if (value <= 0.0) return FieldError::invalid_zero;
     return validate_bounds(value, min_val, max_val);

@@ -138,7 +138,7 @@ void test_receiver_sensitivity_uses_cascaded_nf() {
     // A single-stage chain collapses the Friis formula to that stage's own NF,
     // giving an exact expected cascaded_nf independent of the manual NF input.
     ewpresenter::ReceiverPresenter p;
-    p.set_stages({ ewpresenter::ReceiverPresenter::StageInput{20.0, 0.0} });
+    p.set_stages({ewpresenter::ReceiverPresenter::StageInput{20.0, 0.0}});
     ASSERT_NEAR(p.output().cascaded_nf.value, 20.0, 0.01);
     // sensitivity = -174 + 50 + 20 + 15 = -89.0 dBm, not the manual-NF value (-102.5).
     ASSERT_NEAR(p.output().sensitivity.value, -89.0, 0.05);
@@ -200,7 +200,7 @@ void test_jamming_partial_band_uses_threshold() {
     // which stays under the 58 MHz hop range (0 dB would cap it at 100 %).
     ewpresenter::JammingPresenter p;
     p.set_js_threshold(30.0);
-    const double margin   = p.output().js_ratio.value - 30.0;
+    const double margin = p.output().js_ratio.value - 30.0;
     const double expected = 0.025 * std::pow(10.0, margin / 10.0);
     ASSERT_NEAR(p.output().optimum_bw.value, expected, 1e-9);
     ASSERT_TRUE(p.output().duty_cycle < 1.0);
@@ -233,20 +233,20 @@ void test_digital_required_snr_for_eb_no_tracks_required_eb_no() {
     // independent of the received SNR input (no identity round-trip with snr_db_).
     ewpresenter::DigitalPresenter p;
     const double before = p.output().required_snr_for_eb_no.value;
-    p.set_required_eb_no(15.0);   // default is 10.0
+    p.set_required_eb_no(15.0); // default is 10.0
     ASSERT_NEAR(p.output().required_snr_for_eb_no.value, before + 5.0, 0.01);
-    p.set_required_eb_no(10.0);   // restore
+    p.set_required_eb_no(10.0); // restore
 }
 
 void test_digital_required_snr_for_eb_no_invalid_when_required_eb_no_invalid() {
     // An out-of-range required_eb_no must dash the required-SNR output while
     // leaving the Eb/N₀ section (and overall validity) untouched.
     ewpresenter::DigitalPresenter p;
-    p.set_required_eb_no(100.0);   // exceeds max (30 dB)
+    p.set_required_eb_no(100.0); // exceeds max (30 dB)
     ASSERT_TRUE(p.output().valid);
     ASSERT_TRUE(p.output().required_snr_for_eb_no_str == "N/A");
     ASSERT_FALSE(p.output().eb_no_str == "N/A");
-    p.set_required_eb_no(10.0);    // restore
+    p.set_required_eb_no(10.0); // restore
     ASSERT_FALSE(p.output().required_snr_for_eb_no_str == "N/A");
 }
 
@@ -255,9 +255,9 @@ void test_digital_dsss_values() {
     // Jamming margin = PG - req_eb_no - impl_loss = 20 - 10 - 1 = 9 dB
     // Required J/S = -JM = -9 dB
     ewpresenter::DigitalPresenter p;
-    ASSERT_NEAR(p.output().process_gain.value,    20.0, 0.01);
-    ASSERT_NEAR(p.output().jamming_margin.value,   9.0, 0.01);
-    ASSERT_NEAR(p.output().required_js.value,     -9.0, 0.01);
+    ASSERT_NEAR(p.output().process_gain.value, 20.0, 0.01);
+    ASSERT_NEAR(p.output().jamming_margin.value, 9.0, 0.01);
+    ASSERT_NEAR(p.output().required_js.value, -9.0, 0.01);
 }
 
 void test_digital_validity_split_dsss_invalid() {
@@ -265,14 +265,14 @@ void test_digital_validity_split_dsss_invalid() {
     static constexpr const char* DASH = "\xe2\x80\x94";
     ewpresenter::DigitalPresenter p;
 
-    p.set_chip_rate(-1.0);                              // chip_rate <= 0: invalid
-    ASSERT_TRUE(p.output().valid);                      // eb_no_valid is still true
-    ASSERT_FALSE(p.output().eb_no_str == DASH);         // Eb/N₀ was computed
-    ASSERT_TRUE(p.output().process_gain_str   == "N/A");
+    p.set_chip_rate(-1.0);                      // chip_rate <= 0: invalid
+    ASSERT_TRUE(p.output().valid);              // eb_no_valid is still true
+    ASSERT_FALSE(p.output().eb_no_str == DASH); // Eb/N₀ was computed
+    ASSERT_TRUE(p.output().process_gain_str == "N/A");
     ASSERT_TRUE(p.output().jamming_margin_str == "N/A");
-    ASSERT_TRUE(p.output().required_js_str    == "N/A");
+    ASSERT_TRUE(p.output().required_js_str == "N/A");
 
-    p.set_chip_rate(10.0);                              // restore
+    p.set_chip_rate(10.0); // restore
     ASSERT_TRUE(p.output().valid);
     ASSERT_FALSE(p.output().process_gain_str == "N/A");
 }
@@ -281,12 +281,12 @@ void test_digital_chip_rate_below_data_rate() {
     // chip_rate < data_rate is physically invalid (negative process gain);
     // DSSS outputs must be N/A; Eb/N₀ section must remain valid.
     ewpresenter::DigitalPresenter p;
-    p.set_chip_rate(0.05);   // less than default data_rate (0.1 Mbps)
-    ASSERT_TRUE(p.output().valid);                          // Eb/N₀ valid
-    ASSERT_TRUE(p.output().process_gain_str   == "N/A");
+    p.set_chip_rate(0.05);         // less than default data_rate (0.1 Mbps)
+    ASSERT_TRUE(p.output().valid); // Eb/N₀ valid
+    ASSERT_TRUE(p.output().process_gain_str == "N/A");
     ASSERT_TRUE(p.output().jamming_margin_str == "N/A");
-    ASSERT_TRUE(p.output().required_js_str    == "N/A");
-    p.set_chip_rate(10.0);   // restore
+    ASSERT_TRUE(p.output().required_js_str == "N/A");
+    p.set_chip_rate(10.0); // restore
     ASSERT_TRUE(p.output().valid);
     ASSERT_FALSE(p.output().process_gain_str == "N/A");
 }
@@ -296,12 +296,12 @@ void test_digital_validity_split_snr_invalid() {
     static constexpr const char* DASH = "\xe2\x80\x94";
     ewpresenter::DigitalPresenter p;
 
-    p.set_snr(100.0);                                   // exceeds max (60 dB)
+    p.set_snr(100.0); // exceeds max (60 dB)
     ASSERT_FALSE(p.output().valid);
-    ASSERT_TRUE(p.output().eb_no_str        == DASH);
+    ASSERT_TRUE(p.output().eb_no_str == DASH);
     ASSERT_TRUE(p.output().process_gain_str == DASH);
 
-    p.set_snr(10.0);                                    // restore
+    p.set_snr(10.0); // restore
     ASSERT_TRUE(p.output().valid);
 }
 
@@ -354,7 +354,7 @@ void test_detection_default_values() {
 
 void test_detection_validation() {
     ewpresenter::DetectionPresenter p;
-    p.set_pd(1.5);                       // out of range
+    p.set_pd(1.5); // out of range
     ASSERT_FALSE(p.output().valid);
     ASSERT_TRUE(p.pd_error() == ewpresenter::FieldError::above_maximum);
     p.set_pd(0.9);
@@ -468,15 +468,15 @@ void test_location_or_validity_single_section() {
 
     // Break AOA (shares aoa_range with TDOA) and TDOA-specific inputs,
     // leaving EEP as the only valid section.
-    p.set_rms_bearing_error(-1.0);   // invalid: AOA broken
-    p.set_rms_time_error(-1.0);      // invalid: TDOA broken
-    ASSERT_TRUE(p.output().valid);   // EEP alone keeps output valid
-    ASSERT_TRUE(p.output().cep_aoa_str  == DASH);
+    p.set_rms_bearing_error(-1.0); // invalid: AOA broken
+    p.set_rms_time_error(-1.0);    // invalid: TDOA broken
+    ASSERT_TRUE(p.output().valid); // EEP alone keeps output valid
+    ASSERT_TRUE(p.output().cep_aoa_str == DASH);
     ASSERT_TRUE(p.output().cep_tdoa_str == DASH);
     ASSERT_FALSE(p.output().cep_eep_str == DASH);
 
-    p.set_rms_bearing_error(1.0);    // restore
-    p.set_rms_time_error(10.0);      // restore
+    p.set_rms_bearing_error(1.0); // restore
+    p.set_rms_time_error(10.0);   // restore
     ASSERT_TRUE(p.output().valid);
     ASSERT_FALSE(p.output().cep_aoa_str == DASH);
 }
@@ -484,12 +484,12 @@ void test_location_or_validity_single_section() {
 void test_location_or_validity_all_sections_invalid() {
     // Only when every section is broken does output().valid go false.
     ewpresenter::LocationPresenter p;
-    p.set_rms_bearing_error(-1.0);   // breaks AOA
-    p.set_rms_time_error(-1.0);      // breaks TDOA
-    p.set_semi_major(-1.0);          // breaks EEP
+    p.set_rms_bearing_error(-1.0); // breaks AOA
+    p.set_rms_time_error(-1.0);    // breaks TDOA
+    p.set_semi_major(-1.0);        // breaks EEP
     ASSERT_FALSE(p.output().valid);
 
-    p.set_rms_bearing_error(1.0);    // restore
+    p.set_rms_bearing_error(1.0); // restore
     p.set_rms_time_error(10.0);
     p.set_semi_major(2.0);
     ASSERT_TRUE(p.output().valid);
@@ -503,15 +503,15 @@ void test_location_eep_axis_cross_field_error() {
     ewpresenter::LocationPresenter p;
 
     p.set_semi_major(1.0);
-    p.set_semi_minor(2.0);   // minor > major: physically invalid ellipse
+    p.set_semi_minor(2.0); // minor > major: physically invalid ellipse
     ASSERT_TRUE(p.semi_major_error() == ewpresenter::FieldError::none);
     ASSERT_TRUE(p.semi_minor_error() == ewpresenter::FieldError::none);
-    ASSERT_TRUE(p.eep_axis_error()   == ewpresenter::FieldError::above_maximum);
+    ASSERT_TRUE(p.eep_axis_error() == ewpresenter::FieldError::above_maximum);
     ASSERT_TRUE(p.output().cep_eep_str == DASH);
     // AOA/TDOA are untouched and still valid, so overall validity holds (OR semantics).
     ASSERT_TRUE(p.output().valid);
 
-    p.set_semi_major(2.0);  // restore: major >= minor again
+    p.set_semi_major(2.0); // restore: major >= minor again
     ASSERT_TRUE(p.eep_axis_error() == ewpresenter::FieldError::none);
     ASSERT_FALSE(p.output().cep_eep_str == DASH);
 }
@@ -555,12 +555,12 @@ void test_link_margin_tracks_sensitivity() {
     const double received_before = p.output().received_power.value;
     const std::string margin_before = p.output().link_margin_str;
 
-    p.set_rx_sensitivity(-100.5);   // 20 dB above default -120.5
+    p.set_rx_sensitivity(-100.5); // 20 dB above default -120.5
     ASSERT_NEAR(p.output().received_power.value, received_before, 0.001);
     ASSERT_TRUE(p.output().link_margin_str != margin_before);
     ASSERT_TRUE(p.output().valid);
 
-    p.set_rx_sensitivity(-120.5);   // restore
+    p.set_rx_sensitivity(-120.5); // restore
 }
 
 void test_link_callback() {

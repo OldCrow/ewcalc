@@ -91,7 +91,7 @@ void test_two_ray_double_height_subtracts_6dB() {
 void test_fresnel_zone_formula() {
     // At h_tx=10 m, h_rx=10 m, f=100 MHz:
     // d_FZ = 10 * 10 * 100 / 24000 = 10000/24000 = 0.41667 km
-    ASSERT_NEAR(fresnel_zone_distance(10.0_m, 10.0_m, 100.0_MHz).value, 10.0*10.0*100.0/24000.0, 1e-6);
+    ASSERT_NEAR(fresnel_zone_distance(10.0_m, 10.0_m, 100.0_MHz).value, 10.0 * 10.0 * 100.0 / 24000.0, 1e-6);
 
     // At h_tx=30 m, h_rx=10 m, f=300 MHz:
     // d_FZ = 30 * 10 * 300 / 24000 = 90000/24000 = 3.75 km
@@ -160,8 +160,8 @@ void test_knife_edge_negative_v_approx() {
     // so that |v| is controlled. Use clearance = +5 m to get negative v.
     // Verify loss is less than 6 dB (clearance → partial gain).
     const Db loss = knife_edge_diffraction_loss(5.0_km, 5.0_km, 5.0_m, 1000.0_MHz);
-    ASSERT_TRUE(loss.value < 6.02);   // clearance above LOS → less than 6 dB loss
-    ASSERT_TRUE(loss.value >= 0.0);   // loss is non-negative
+    ASSERT_TRUE(loss.value < 6.02); // clearance above LOS → less than 6 dB loss
+    ASSERT_TRUE(loss.value >= 0.0); // loss is non-negative
 }
 
 // ---------------------------------------------------------------------------
@@ -176,13 +176,13 @@ void test_knife_edge_negative_v_approx() {
 void test_earth_bulge_symmetric_midpoint() {
     // Total path = 20 km, midpoint: d1=d2=10 km
     // h = 10*10*1000 / (2*8494.67) = 100000/16989.3 = 5.886 m
-    const double expected = 10.0 * 10.0 * 1000.0 / (2.0 * (4.0/3.0 * 6371.0));
+    const double expected = 10.0 * 10.0 * 1000.0 / (2.0 * (4.0 / 3.0 * 6371.0));
     ASSERT_NEAR(earth_bulge(10.0_km, 10.0_km).value, expected, 0.001);
 }
 
 void test_earth_bulge_asymmetric() {
     // d1=5 km, d2=15 km: h = 5*15*1000 / (2*8494.67) = 75000/16989.3 = 4.414 m
-    const double expected = 5.0 * 15.0 * 1000.0 / (2.0 * (4.0/3.0 * 6371.0));
+    const double expected = 5.0 * 15.0 * 1000.0 / (2.0 * (4.0 / 3.0 * 6371.0));
     ASSERT_NEAR(earth_bulge(5.0_km, 15.0_km).value, expected, 0.001);
 }
 

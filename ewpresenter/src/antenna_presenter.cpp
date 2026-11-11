@@ -29,17 +29,17 @@ void AntennaPresenter::set_frequency(double mhz) noexcept {
 }
 
 void AntennaPresenter::recompute() noexcept {
-    output_.valid = (gain_err_      == FieldError::none &&
-                     az_bw_err_     == FieldError::none &&
-                     el_bw_err_     == FieldError::none &&
-                     tx_power_err_  == FieldError::none &&
+    output_.valid = (gain_err_ == FieldError::none &&
+                     az_bw_err_ == FieldError::none &&
+                     el_bw_err_ == FieldError::none &&
+                     tx_power_err_ == FieldError::none &&
                      frequency_err_ == FieldError::none);
 
     if (!output_.valid) {
-        output_.erp_str                 = kDash;
+        output_.erp_str = kDash;
         output_.beamwidth_from_gain_str = kDash;
         output_.gain_from_beamwidth_str = kDash;
-        output_.wavelength_str          = kDash;
+        output_.wavelength_str = kDash;
         return;
     }
 
@@ -51,10 +51,10 @@ void AntennaPresenter::recompute() noexcept {
         Degrees{az_beamwidth_deg_}, Degrees{el_beamwidth_deg_});
     output_.wavelength = libew::antenna::wavelength(Mhz{frequency_mhz_});
 
-    output_.erp_str                 = format_dbm(output_.erp);
+    output_.erp_str = format_dbm(output_.erp);
     output_.beamwidth_from_gain_str = format_degrees(output_.beamwidth_from_gain);
     output_.gain_from_beamwidth_str = format_db(output_.gain_from_beamwidth);
-    output_.wavelength_str          = format_m(output_.wavelength, 2);
+    output_.wavelength_str = format_m(output_.wavelength, 2);
 }
 
 void AntennaPresenter::fire() noexcept {

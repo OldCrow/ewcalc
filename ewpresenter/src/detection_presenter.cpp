@@ -16,12 +16,14 @@ void DetectionPresenter::set_pfa_exponent(double x) noexcept {
 void DetectionPresenter::set_num_pulses(int n) noexcept {
     num_pulses_ = n;
     num_pulses_err_ = validate_bounds(static_cast<double>(n), 1.0, 100.0);
-    recompute(); fire();
+    recompute();
+    fire();
 }
 void DetectionPresenter::set_swerling_case(int c) noexcept {
     swerling_case_ = c;
     swerling_case_err_ = validate_bounds(static_cast<double>(c), 0.0, 4.0);
-    recompute(); fire();
+    recompute();
+    fire();
 }
 void DetectionPresenter::set_beamwidth(double deg) noexcept {
     update_field(deg, beamwidth_deg_, beamwidth_err_, validate_positive_bounded(deg, 0.1, 45.0));
@@ -37,22 +39,22 @@ void DetectionPresenter::set_bandwidth(double mhz) noexcept {
 }
 
 void DetectionPresenter::recompute() noexcept {
-    output_.valid = (pd_err_            == FieldError::none &&
-                     pfa_exponent_err_  == FieldError::none &&
-                     num_pulses_err_    == FieldError::none &&
+    output_.valid = (pd_err_ == FieldError::none &&
+                     pfa_exponent_err_ == FieldError::none &&
+                     num_pulses_err_ == FieldError::none &&
                      swerling_case_err_ == FieldError::none &&
-                     beamwidth_err_     == FieldError::none &&
-                     scan_rate_err_     == FieldError::none &&
-                     prf_err_           == FieldError::none &&
-                     bandwidth_err_     == FieldError::none);
+                     beamwidth_err_ == FieldError::none &&
+                     scan_rate_err_ == FieldError::none &&
+                     prf_err_ == FieldError::none &&
+                     bandwidth_err_ == FieldError::none);
 
     if (!output_.valid) {
-        output_.required_snr_str            = kDash;
+        output_.required_snr_str = kDash;
         output_.required_snr_albersheim_str = kDash;
-        output_.fluctuation_loss_str        = kDash;
-        output_.dwell_time_str              = kDash;
-        output_.hits_per_scan_str           = kDash;
-        output_.far_str                     = kDash;
+        output_.fluctuation_loss_str = kDash;
+        output_.dwell_time_str = kDash;
+        output_.hits_per_scan_str = kDash;
+        output_.far_str = kDash;
         return;
     }
 
@@ -69,16 +71,16 @@ void DetectionPresenter::recompute() noexcept {
     output_.fluctuation_loss =
         rad::fluctuation_loss(pd_, pfa, num_pulses_, swerling);
 
-    output_.dwell_time    = rad::dwell_time(Degrees{beamwidth_deg_}, scan_rate_deg_s_);
+    output_.dwell_time = rad::dwell_time(Degrees{beamwidth_deg_}, scan_rate_deg_s_);
     output_.hits_per_scan = rad::hits_per_scan(output_.dwell_time, prf_hz_);
-    output_.far_hz        = rad::false_alarm_rate_hz(pfa, Mhz{bandwidth_mhz_});
+    output_.far_hz = rad::false_alarm_rate_hz(pfa, Mhz{bandwidth_mhz_});
 
-    output_.required_snr_str            = format_db(output_.required_snr);
+    output_.required_snr_str = format_db(output_.required_snr);
     output_.required_snr_albersheim_str = format_db(output_.required_snr_albersheim);
-    output_.fluctuation_loss_str        = format_db(output_.fluctuation_loss);
-    output_.dwell_time_str              = format_seconds(output_.dwell_time);
-    output_.hits_per_scan_str           = format_count(output_.hits_per_scan);
-    output_.far_str                     = format_hz(output_.far_hz);
+    output_.fluctuation_loss_str = format_db(output_.fluctuation_loss);
+    output_.dwell_time_str = format_seconds(output_.dwell_time);
+    output_.hits_per_scan_str = format_count(output_.hits_per_scan);
+    output_.far_str = format_hz(output_.far_hz);
 }
 
 void DetectionPresenter::fire() noexcept {

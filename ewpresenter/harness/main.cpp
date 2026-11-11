@@ -27,19 +27,19 @@ int main() {
         p.set_on_change([&fired](const ewpresenter::PropagationPresenter::Output&) {
             fired = true;
         });
-        p.set_distance(32.6);    // triggers callback
+        p.set_distance(32.6); // triggers callback
         p.set_frequency(100.0);
         p.set_tx_height(10.0);
         p.set_rx_height(10.0);
 
         const auto& out = p.output();
-        row("Valid",         out.valid ? "yes" : "NO");
-        row("FSPL",          out.fspl_str);
-        row("2-Ray loss",    out.two_ray_loss_str);
-        row("Fresnel zone",  out.fresnel_zone_str);
-        row("Path loss",     out.path_loss_str);
-        row("Regime",        out.regime_str);
-        row("Callback fired",fired ? "yes" : "NO");
+        row("Valid", out.valid ? "yes" : "NO");
+        row("FSPL", out.fspl_str);
+        row("2-Ray loss", out.two_ray_loss_str);
+        row("Fresnel zone", out.fresnel_zone_str);
+        row("Path loss", out.path_loss_str);
+        row("Regime", out.regime_str);
+        row("Callback fired", fired ? "yes" : "NO");
     }
 
     // -----------------------------------------------------------------------
@@ -59,14 +59,14 @@ int main() {
         p.set_rx_sensitivity(-120.5);
 
         const auto& out = p.output();
-        row("Valid",           out.valid ? "yes" : "NO");
-        row("Received power",  out.received_power_str);
-        row("Path loss",       out.path_loss_str);
-        row("Fresnel zone",    out.fresnel_zone_str);
-        row("Regime",          out.regime_str);
-        row("Link margin",     out.link_margin_str);
+        row("Valid", out.valid ? "yes" : "NO");
+        row("Received power", out.received_power_str);
+        row("Path loss", out.path_loss_str);
+        row("Fresnel zone", out.fresnel_zone_str);
+        row("Regime", out.regime_str);
+        row("Link margin", out.link_margin_str);
         row("Effective range", out.effective_range_str);
-        row("Range regime",    out.range_regime_str);
+        row("Range regime", out.range_regime_str);
     }
 
     // -----------------------------------------------------------------------
@@ -77,15 +77,15 @@ int main() {
     {
         ewpresenter::ReceiverPresenter p;
         const auto& out = p.output();
-        row("Valid",           out.valid ? "yes" : "NO");
-        row("Sensitivity",     out.sensitivity_str);
-        row("Cascaded NF",     out.cascaded_nf_str);
+        row("Valid", out.valid ? "yes" : "NO");
+        row("Sensitivity", out.sensitivity_str);
+        row("Cascaded NF", out.cascaded_nf_str);
         row("Sys. noise temp", out.system_noise_temp_str);
-        row("Sys. NF equiv.",  out.system_nf_str);
-        row("SFDR2",           out.sfdr2_str);
-        row("SFDR3",           out.sfdr3_str);
-        row("Digital DR",      out.digital_dr_str);
-        row("SQNR",            out.digital_sqnr_str);
+        row("Sys. NF equiv.", out.system_nf_str);
+        row("SFDR2", out.sfdr2_str);
+        row("SFDR3", out.sfdr3_str);
+        row("Digital DR", out.digital_dr_str);
+        row("SQNR", out.digital_sqnr_str);
     }
 
     // -----------------------------------------------------------------------
@@ -96,26 +96,26 @@ int main() {
     {
         ewpresenter::JammingPresenter p;
         const auto& out = p.output();
-        row("Valid",          out.valid ? "yes" : "NO");
-        row("J/S ratio",      out.js_ratio_str);
-        row("Signal at Rx",   out.signal_at_rx_str);
-        row("Jammer at Rx",   out.jammer_at_rx_str);
-        row("Optimum BW",     out.optimum_bw_str);
-        row("Duty cycle",     out.duty_cycle_str);
+        row("Valid", out.valid ? "yes" : "NO");
+        row("J/S ratio", out.js_ratio_str);
+        row("Signal at Rx", out.signal_at_rx_str);
+        row("Jammer at Rx", out.jammer_at_rx_str);
+        row("Optimum BW", out.optimum_bw_str);
+        row("Duty cycle", out.duty_cycle_str);
     }
 
     section("Radar Jamming");
     {
         ewpresenter::RadarJammingPresenter p;
         const auto& out = p.output();
-        row("Valid",             out.valid ? "yes" : "NO");
-        row("SPJ J/S",           out.js_ratio_str);
-        row("SPJ burnthrough",   out.burnthrough_range_str);
-        row("SPJ status",        out.status_str);
+        row("Valid", out.valid ? "yes" : "NO");
+        row("SPJ J/S", out.js_ratio_str);
+        row("SPJ burnthrough", out.burnthrough_range_str);
+        row("SPJ status", out.status_str);
         p.set_geometry(ewpresenter::RadarJammingPresenter::kStandOff);
-        row("SOJ J/S",           out.js_ratio_str);
-        row("SOJ burnthrough",   out.burnthrough_range_str);
-        row("SOJ status",        out.status_str);
+        row("SOJ J/S", out.js_ratio_str);
+        row("SOJ burnthrough", out.burnthrough_range_str);
+        row("SOJ status", out.status_str);
     }
 
     // -----------------------------------------------------------------------
@@ -126,7 +126,7 @@ int main() {
     {
         ewpresenter::LocationPresenter p;
         const auto& out = p.output();
-        row("Valid",    out.valid ? "yes" : "NO");
+        row("Valid", out.valid ? "yes" : "NO");
         row("CEP(AOA)", out.cep_aoa_str);
         row("CEP(EEP)", out.cep_eep_str);
     }
@@ -139,11 +139,11 @@ int main() {
     {
         ewpresenter::RadarPresenter p;
         const auto& out = p.output();
-        row("Valid",               out.valid ? "yes" : "NO");
-        row("Max range",           out.max_range_str);
-        row("Two-way loss",        out.two_way_loss_str);
-        row("Target RCS",          out.target_rcs_str);
-        row("PC gain (TB=100)",    out.pulse_compression_gain_str);
+        row("Valid", out.valid ? "yes" : "NO");
+        row("Max range", out.max_range_str);
+        row("Two-way loss", out.two_way_loss_str);
+        row("Target RCS", out.target_rcs_str);
+        row("PC gain (TB=100)", out.pulse_compression_gain_str);
         row("Coh. int. gain (N=16)", out.coherent_integration_gain_str);
     }
 
@@ -151,27 +151,27 @@ int main() {
     {
         ewpresenter::DetectionPresenter p;
         const auto& out = p.output();
-        row("Valid",                 out.valid ? "yes" : "NO");
+        row("Valid", out.valid ? "yes" : "NO");
         row("Required SNR (Shnidman)", out.required_snr_str);
         row("Required SNR (Albersheim)", out.required_snr_albersheim_str);
-        row("Fluctuation loss",      out.fluctuation_loss_str);
-        row("Dwell time",            out.dwell_time_str);
-        row("Hits per scan",         out.hits_per_scan_str);
-        row("False-alarm rate",      out.far_str);
+        row("Fluctuation loss", out.fluctuation_loss_str);
+        row("Dwell time", out.dwell_time_str);
+        row("Hits per scan", out.hits_per_scan_str);
+        row("False-alarm rate", out.far_str);
     }
 
     section("Doppler & Resolution");
     {
         ewpresenter::DopplerPresenter p;
         const auto& out = p.output();
-        row("Valid",                 out.valid ? "yes" : "NO");
-        row("Doppler shift",         out.doppler_shift_str);
-        row("Unambiguous range",     out.unambiguous_range_str);
-        row("First blind speed",     out.blind_speed_str);
-        row("Unambiguous velocity",  out.unambiguous_velocity_str);
-        row("Range resolution",      out.range_resolution_str);
-        row("Cross-range (az)",      out.cross_range_az_str);
-        row("Cross-range (el)",      out.cross_range_el_str);
+        row("Valid", out.valid ? "yes" : "NO");
+        row("Doppler shift", out.doppler_shift_str);
+        row("Unambiguous range", out.unambiguous_range_str);
+        row("First blind speed", out.blind_speed_str);
+        row("Unambiguous velocity", out.unambiguous_velocity_str);
+        row("Range resolution", out.range_resolution_str);
+        row("Cross-range (az)", out.cross_range_az_str);
+        row("Cross-range (el)", out.cross_range_el_str);
     }
 
     // -----------------------------------------------------------------------
@@ -182,11 +182,11 @@ int main() {
     {
         ewpresenter::AntennaPresenter p;
         const auto& out = p.output();
-        row("Valid",                out.valid ? "yes" : "NO");
-        row("ERP",                  out.erp_str);
-        row("Beamwidth from gain",  out.beamwidth_from_gain_str);
-        row("Gain from beamwidth",  out.gain_from_beamwidth_str);
-        row("Wavelength",           out.wavelength_str);
+        row("Valid", out.valid ? "yes" : "NO");
+        row("ERP", out.erp_str);
+        row("Beamwidth from gain", out.beamwidth_from_gain_str);
+        row("Gain from beamwidth", out.gain_from_beamwidth_str);
+        row("Wavelength", out.wavelength_str);
     }
 
     // -----------------------------------------------------------------------
@@ -195,13 +195,13 @@ int main() {
     section("Validation");
     {
         ewpresenter::PropagationPresenter p;
-        p.set_distance(-5.0);  // invalid: negative
+        p.set_distance(-5.0); // invalid: negative
         row("Rejected negative distance",
             p.output().valid ? "FAIL (still valid)" : "PASS (invalidated)");
         row("Distance error",
             std::string(ewpresenter::describe(p.distance_error())));
 
-        p.set_distance(32.6);  // restore
+        p.set_distance(32.6); // restore
         row("Restored valid",
             p.output().valid ? "PASS" : "FAIL");
     }
@@ -215,12 +215,12 @@ int main() {
     {
         ewpresenter::DigitalPresenter p;
         const auto& out = p.output();
-        row("Valid",           out.valid ? "yes" : "NO");
-        row("Eb/N\xc2\xb0",   out.eb_no_str);          // Eb/N₀
+        row("Valid", out.valid ? "yes" : "NO");
+        row("Eb/N\xc2\xb0", out.eb_no_str); // Eb/N₀
         row("Required SNR", out.required_snr_for_eb_no_str);
-        row("Process gain",    out.process_gain_str);
-        row("Jamming margin",  out.jamming_margin_str);
-        row("Required J/S",    out.required_js_str);
+        row("Process gain", out.process_gain_str);
+        row("Jamming margin", out.jamming_margin_str);
+        row("Required J/S", out.required_js_str);
     }
 
     // -----------------------------------------------------------------------
@@ -232,14 +232,14 @@ int main() {
         // Set a 50 m obstacle at midpoint to exercise diffraction
         p.set_obstruction_height(50.0);
         const auto& out = p.output();
-        row("Earth bulge (midpt)",  out.earth_bulge_str);
-        row("Radar horizon",        out.horizon_range_str);
+        row("Earth bulge (midpt)", out.earth_bulge_str);
+        row("Radar horizon", out.horizon_range_str);
         row("Diffraction loss (h=50m)", out.diffraction_loss_str);
     }
     {
         ewpresenter::ReceiverPresenter p;
         const auto& out = p.output();
-        row("System noise temp",  out.system_noise_temp_str);
+        row("System noise temp", out.system_noise_temp_str);
     }
     {
         ewpresenter::JammingPresenter p;
@@ -249,7 +249,7 @@ int main() {
     {
         ewpresenter::LocationPresenter p;
         const auto& out = p.output();
-        row("CEP (TDOA)",  out.cep_tdoa_str);
+        row("CEP (TDOA)", out.cep_tdoa_str);
     }
     {
         ewpresenter::RadarPresenter p;

@@ -8,6 +8,7 @@ class DigitalPage : public QWidget
 {
 public:
     explicit DigitalPage(QWidget* parent = nullptr);
+
 private:
     ewpresenter::DigitalPresenter presenter_;
     QLabel* eb_no_;

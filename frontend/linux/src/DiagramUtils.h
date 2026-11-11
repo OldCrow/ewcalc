@@ -35,7 +35,7 @@ public:
         , naturalWidth_(source_.isNull() ? 0 : source_.width() / 2)
     {
         setAlignment(Qt::AlignHCenter | Qt::AlignTop);
-        setMinimumSize(1, 1);  // let the page shrink below the diagram size
+        setMinimumSize(1, 1); // let the page shrink below the diagram size
         QSizePolicy sp(QSizePolicy::Expanding, QSizePolicy::Preferred);
         sp.setHeightForWidth(true);
         setSizePolicy(sp);
@@ -70,7 +70,7 @@ private:
         if (targetW <= 0 || targetW == lastWidth_)
             return;
         lastWidth_ = targetW;
-        const qreal dpr = devicePixelRatio();  // qreal in Qt6
+        const qreal dpr = devicePixelRatio(); // qreal in Qt6
         QPixmap scaled = source_.scaledToWidth(
             qRound(targetW * dpr), Qt::SmoothTransformation);
         scaled.setDevicePixelRatio(dpr);
@@ -79,7 +79,7 @@ private:
 
     QPixmap source_;
     int naturalWidth_ = 0;
-    int lastWidth_    = -1;
+    int lastWidth_ = -1;
 };
 
 /// Creates a collapsible "Geometry" QGroupBox showing the given diagram
@@ -98,7 +98,7 @@ inline QGroupBox* makeDiagramGroup(const QStringList& resourcePaths)
     // widget whose visibility tracks the check state so the group actually
     // collapses to its title bar.
     auto* content = new QWidget;
-    auto* inner   = new QVBoxLayout(content);
+    auto* inner = new QVBoxLayout(content);
     inner->setContentsMargins(0, 0, 0, 0);
     for (const QString& path : resourcePaths)
         inner->addWidget(new DiagramLabel(path));

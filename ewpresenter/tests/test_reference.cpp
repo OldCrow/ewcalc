@@ -69,8 +69,8 @@ void test_antenna_types_page() {
     ASSERT_TRUE(eq(page.sections[1].title, "Half-Wave Dipole"));
     ASSERT_TRUE(eq(page.sections[1].rows[1].copy_value, "2.15"));
     // Monopole and Yagi absorbed the ex-Quick-Values gain ladders.
-    ASSERT_TRUE(page.sections[2].row_count == 7);  // monopole + 2
-    ASSERT_TRUE(page.sections[6].row_count == 9);  // yagi + 4
+    ASSERT_TRUE(page.sections[2].row_count == 7);               // monopole + 2
+    ASSERT_TRUE(page.sections[6].row_count == 9);               // yagi + 4
     ASSERT_TRUE(eq(page.sections[6].rows[5].copy_value, "14")); // 10-element
 }
 
@@ -79,8 +79,7 @@ void test_receiver_page() {
     // The sensitivity row shares the Link Budget page's asset pair and text.
     const Row& sens = page.sections[0].rows[0];
     ASSERT_TRUE(eq(sens.svg_base, "sensitivity"));
-    ASSERT_TRUE(std::string_view{sens.log_value}.find("114")
-                != std::string_view::npos);
+    ASSERT_TRUE(std::string_view{sens.log_value}.find("114") != std::string_view::npos);
     // The noise-floor ladder (ex-Quick Values) sits beside sensitivity.
     ASSERT_TRUE(eq(page.sections[1].title, "Thermal Noise Floor  (kT, 290 K)"));
     ASSERT_TRUE(page.sections[1].row_count == 6);
@@ -91,8 +90,7 @@ void test_receiver_page() {
     // DR and SQNR are distinct rows (resolved fidelity docket).
     ASSERT_TRUE(eq(page.sections[3].rows[0].svg_base, "ddr"));
     ASSERT_TRUE(eq(page.sections[3].rows[1].svg_base, "sqnr"));
-    ASSERT_TRUE(std::string_view{page.sections[3].rows[1].value}.find("1.76")
-                != std::string_view::npos);
+    ASSERT_TRUE(std::string_view{page.sections[3].rows[1].value}.find("1.76") != std::string_view::npos);
 }
 
 void test_jamming_page() {
@@ -104,8 +102,7 @@ void test_jamming_page() {
     ASSERT_TRUE(eq(page.sections[1].diagram, "jamming-stand-off"));
     ASSERT_TRUE(eq(page.sections[2].diagram, "jamming-comms"));
     // Radar forms carry the 71 dB constant and the R4-vs-R2 contrast note.
-    ASSERT_TRUE(std::string_view{page.sections[0].rows[0].value}.find("71")
-                != std::string_view::npos);
+    ASSERT_TRUE(std::string_view{page.sections[0].rows[0].value}.find("71") != std::string_view::npos);
     ASSERT_TRUE(std::string_view{page.sections[1].rows[0].value}
                     .find("40 log") != std::string_view::npos);
     ASSERT_TRUE(eq(page.sections[2].rows[0].svg_base, "js"));
@@ -113,8 +110,7 @@ void test_jamming_page() {
     for (std::size_t s2 = 0; s2 < page.section_count; ++s2)
         for (std::size_t r = 0; r < page.sections[s2].row_count; ++r)
             ASSERT_TRUE(page.sections[s2].rows[r].log_value == nullptr);
-    ASSERT_TRUE(std::string_view{page.sections[3].rows[0].value}.find("32.44")
-                != std::string_view::npos);
+    ASSERT_TRUE(std::string_view{page.sections[3].rows[0].value}.find("32.44") != std::string_view::npos);
 }
 
 void test_location_page() {
@@ -122,10 +118,8 @@ void test_location_page() {
     ASSERT_TRUE(eq(page.sections[0].diagram, "loc-aoa-cep"));
     ASSERT_TRUE(eq(page.sections[2].diagram, "loc-eep-cep"));
     // Both Wegner EEP->CEP forms are shown, ours first (Eq 24a with 0.59).
-    ASSERT_TRUE(std::string_view{page.sections[2].rows[0].value}.find("0.59")
-                != std::string_view::npos);
-    ASSERT_TRUE(std::string_view{page.sections[2].rows[1].value}.find("0.75")
-                != std::string_view::npos);
+    ASSERT_TRUE(std::string_view{page.sections[2].rows[0].value}.find("0.59") != std::string_view::npos);
+    ASSERT_TRUE(std::string_view{page.sections[2].rows[1].value}.find("0.75") != std::string_view::npos);
     ASSERT_TRUE(page.sections[2].rows[1].kind == RowKind::Formula);
 }
 
@@ -135,8 +129,7 @@ void test_radar_det_page() {
     // corrected 40·log10 arrangement (the /4 doc line was a typo).
     const Row& rng = page.sections[0].rows[0];
     ASSERT_TRUE(eq(rng.svg_base, "radarrange"));
-    ASSERT_TRUE(std::string_view{rng.log_value}.find("40 log")
-                != std::string_view::npos);
+    ASSERT_TRUE(std::string_view{rng.log_value}.find("40 log") != std::string_view::npos);
     // Albersheim/Shnidman are method anchors (value rows), not formulas.
     ASSERT_TRUE(page.sections[1].rows[0].kind == RowKind::Value);
     ASSERT_TRUE(page.sections[1].rows[1].kind == RowKind::Value);
@@ -186,8 +179,7 @@ void test_rcs_page() {
     ASSERT_TRUE(page.sections[1].row_count == 11);
     const Row& person = page.sections[1].rows[2];
     ASSERT_TRUE(eq(person.label, "Person"));
-    ASSERT_TRUE(std::string_view{person.value}.find("m²")
-                != std::string_view::npos);
+    ASSERT_TRUE(std::string_view{person.value}.find("m²") != std::string_view::npos);
     ASSERT_TRUE(eq(person.copy_value, "0"));
 }
 
@@ -204,8 +196,7 @@ void test_link_page() {
     // FSPL row reuses the shared asset pair and quotes the same constant.
     const Row& fspl = page.sections[1].rows[2];
     ASSERT_TRUE(eq(fspl.svg_base, "fspl"));
-    ASSERT_TRUE(std::string_view{fspl.log_value}.find("32.44")
-                != std::string_view::npos);
+    ASSERT_TRUE(std::string_view{fspl.log_value}.find("32.44") != std::string_view::npos);
     // Sensitivity log form carries the -114 dBm/MHz anchor.
     ASSERT_TRUE(std::string_view{page.sections[1].rows[1].log_value}
                     .find("114") != std::string_view::npos);
@@ -224,8 +215,7 @@ void test_glossary_page() {
     }
     // The ERP/EIRP pair records the 2.15 dB offset and the convention note.
     ASSERT_TRUE(eq(page.sections[0].rows[0].label, "ERP"));
-    ASSERT_TRUE(std::string_view{page.sections[0].rows[1].value}.find("2.15")
-                != std::string_view::npos);
+    ASSERT_TRUE(std::string_view{page.sections[0].rows[1].value}.find("2.15") != std::string_view::npos);
     ASSERT_TRUE(eq(page.sections[0].rows[2].label, "Convention here"));
 }
 
@@ -318,8 +308,7 @@ void test_formula_row_fields() {
     ASSERT_TRUE(fspl.log_value != nullptr); // log-form Unicode text
     ASSERT_TRUE(fspl.copy_value == nullptr);
     // Log form must quote libew's FSPL constant.
-    ASSERT_TRUE(std::string_view{fspl.log_value}.find("32.44")
-                != std::string_view::npos);
+    ASSERT_TRUE(std::string_view{fspl.log_value}.find("32.44") != std::string_view::npos);
 }
 
 void test_all_rows_have_label_and_value() {
@@ -348,24 +337,24 @@ void test_all_rows_have_label_and_value() {
 } // namespace
 
 TEST_MAIN()
-    RUN_TEST(test_pages_shape);
-    RUN_TEST(test_propagation_page);
-    RUN_TEST(test_antenna_types_page);
-    RUN_TEST(test_link_page);
-    RUN_TEST(test_receiver_page);
-    RUN_TEST(test_jamming_page);
-    RUN_TEST(test_location_page);
-    RUN_TEST(test_radar_det_page);
-    RUN_TEST(test_doppler_page);
-    RUN_TEST(test_digital_page);
-    RUN_TEST(test_rcs_page);
-    RUN_TEST(test_glossary_page);
-    RUN_TEST(test_bands_page);
-    RUN_TEST(test_db_units_page);
-    RUN_TEST(test_value_row_fields);
-    RUN_TEST(test_value_row_without_copy);
-    RUN_TEST(test_noise_floor_values_ascii_free);
-    RUN_TEST(test_formula_row_fields);
-    RUN_TEST(test_all_rows_have_label_and_value);
-    return test::summary();
+RUN_TEST(test_pages_shape);
+RUN_TEST(test_propagation_page);
+RUN_TEST(test_antenna_types_page);
+RUN_TEST(test_link_page);
+RUN_TEST(test_receiver_page);
+RUN_TEST(test_jamming_page);
+RUN_TEST(test_location_page);
+RUN_TEST(test_radar_det_page);
+RUN_TEST(test_doppler_page);
+RUN_TEST(test_digital_page);
+RUN_TEST(test_rcs_page);
+RUN_TEST(test_glossary_page);
+RUN_TEST(test_bands_page);
+RUN_TEST(test_db_units_page);
+RUN_TEST(test_value_row_fields);
+RUN_TEST(test_value_row_without_copy);
+RUN_TEST(test_noise_floor_values_ascii_free);
+RUN_TEST(test_formula_row_fields);
+RUN_TEST(test_all_rows_have_label_and_value);
+return test::summary();
 }

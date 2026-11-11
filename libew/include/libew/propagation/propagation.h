@@ -89,10 +89,10 @@ using namespace libew::units;
 /// @param frequency     Carrier frequency (MHz)
 /// @return Diffraction loss (dB, positive = additional loss)
 [[nodiscard]] Db knife_edge_diffraction_loss(
-    Km    dist_tx_edge,
-    Km    dist_edge_rx,
+    Km dist_tx_edge,
+    Km dist_edge_rx,
     Meters los_clearance,
-    Mhz   frequency) noexcept;
+    Mhz frequency) noexcept;
 
 // ---------------------------------------------------------------------------
 // Earth geometry

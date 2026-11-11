@@ -8,6 +8,7 @@ class LocationPage : public QWidget
 {
 public:
     explicit LocationPage(QWidget* parent = nullptr);
+
 private:
     ewpresenter::LocationPresenter presenter_;
     QLabel* cep_aoa_;

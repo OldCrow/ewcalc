@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 
     // Ensure any pending debounced settings writes are flushed before exit.
     QObject::connect(&app, &QApplication::aboutToQuit,
-                      [] { AppSettings::instance().flush(); });
+                     [] { AppSettings::instance().flush(); });
 
     MainWindow w;
     w.show();

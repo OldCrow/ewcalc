@@ -54,7 +54,7 @@ protected:
     void update_field(double value, double& storage, FieldError& error,
                       FieldError validated) noexcept {
         storage = value;
-        error   = validated;
+        error = validated;
         static_cast<Derived*>(this)->recompute();
         static_cast<Derived*>(this)->fire();
     }

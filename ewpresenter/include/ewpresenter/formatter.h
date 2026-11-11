@@ -21,27 +21,27 @@ inline constexpr const char* kDash = "\xe2\x80\x94";
 // ---------------------------------------------------------------------------
 // Power
 // ---------------------------------------------------------------------------
-[[nodiscard]] std::string format_dbm(Dbm value, int decimals = 1);   // "-120.5 dBm"
-[[nodiscard]] std::string format_dbw(Dbw value, int decimals = 1);   // "-150.5 dBW"
-[[nodiscard]] std::string format_watts(Watts value);                  // "1.000 W" or "1.000 mW"
+[[nodiscard]] std::string format_dbm(Dbm value, int decimals = 1); // "-120.5 dBm"
+[[nodiscard]] std::string format_dbw(Dbw value, int decimals = 1); // "-150.5 dBW"
+[[nodiscard]] std::string format_watts(Watts value);               // "1.000 W" or "1.000 mW"
 
 // ---------------------------------------------------------------------------
 // Gain / loss / ratio
 // ---------------------------------------------------------------------------
-[[nodiscard]] std::string format_db(Db value, int decimals = 1);      // "32.4 dB"
-[[nodiscard]] std::string format_dbsm(Dbsm value, int decimals = 1);  // "0.0 dBsm"
+[[nodiscard]] std::string format_db(Db value, int decimals = 1);     // "32.4 dB"
+[[nodiscard]] std::string format_dbsm(Dbsm value, int decimals = 1); // "0.0 dBsm"
 
 // ---------------------------------------------------------------------------
 // Frequency
 // ---------------------------------------------------------------------------
-[[nodiscard]] std::string format_mhz(Mhz value, int decimals = 1);   // "42.5 MHz"
-[[nodiscard]] std::string format_ghz(Ghz value, int decimals = 3);   // "3.000 GHz"
+[[nodiscard]] std::string format_mhz(Mhz value, int decimals = 1); // "42.5 MHz"
+[[nodiscard]] std::string format_ghz(Ghz value, int decimals = 3); // "3.000 GHz"
 
 // ---------------------------------------------------------------------------
 // Distance
 // ---------------------------------------------------------------------------
-[[nodiscard]] std::string format_km(Km value, int decimals = 3);      // "32.546 km"
-[[nodiscard]] std::string format_m(Meters value, int decimals = 1);   // "10.0 m"
+[[nodiscard]] std::string format_km(Km value, int decimals = 3);    // "32.546 km"
+[[nodiscard]] std::string format_m(Meters value, int decimals = 1); // "10.0 m"
 
 // ---------------------------------------------------------------------------
 // Angle
@@ -51,8 +51,8 @@ inline constexpr const char* kDash = "\xe2\x80\x94";
 // ---------------------------------------------------------------------------
 // Time / rate
 // ---------------------------------------------------------------------------
-[[nodiscard]] std::string format_seconds(Seconds value); // "1.500 s" / "55.6 ms" / "12.3 µs"
-[[nodiscard]] std::string format_hz(double hz);          // "1.00 Hz" / "2.50 kHz" / "3.10 MHz"
+[[nodiscard]] std::string format_seconds(Seconds value);            // "1.500 s" / "55.6 ms" / "12.3 µs"
+[[nodiscard]] std::string format_hz(double hz);                     // "1.00 Hz" / "2.50 kHz" / "3.10 MHz"
 [[nodiscard]] std::string format_mps(double m_s, int decimals = 1); // "15.0 m/s"
 
 // ---------------------------------------------------------------------------

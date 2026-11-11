@@ -8,6 +8,7 @@ class PropagationPage : public QWidget
 {
 public:
     explicit PropagationPage(QWidget* parent = nullptr);
+
 private:
     ewpresenter::PropagationPresenter presenter_;
     QLabel* fspl_;

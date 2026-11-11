@@ -19,9 +19,9 @@ using namespace libew::units;
 // ---------------------------------------------------------------------------
 
 struct JammingResult {
-    Db  js_ratio;                    ///< Jamming-to-signal ratio (dB)
-    Dbm jammer_power_at_receiver;    ///< Jammer power at receiver input (dBm)
-    Dbm signal_power_at_receiver;    ///< Desired signal power at receiver input (dBm)
+    Db js_ratio;                  ///< Jamming-to-signal ratio (dB)
+    Dbm jammer_power_at_receiver; ///< Jammer power at receiver input (dBm)
+    Dbm signal_power_at_receiver; ///< Desired signal power at receiver input (dBm)
 };
 
 /// Compute J/S ratio for communications jamming.
@@ -43,16 +43,16 @@ struct JammingResult {
 /// @param rx_gain_toward_jammer Receiver antenna gain toward jammer (dB)
 /// @return JammingResult with J/S, jammer power, and signal power at receiver
 [[nodiscard]] JammingResult comms_jamming_js(
-    Dbm    signal_erp,
-    Dbm    jammer_erp,
-    Km     signal_to_rx_dist,
-    Km     jammer_to_rx_dist,
+    Dbm signal_erp,
+    Dbm jammer_erp,
+    Km signal_to_rx_dist,
+    Km jammer_to_rx_dist,
     Meters signal_tx_height,
     Meters jammer_height,
     Meters rx_height,
-    Mhz    frequency,
-    Db     rx_gain_toward_signal,
-    Db     rx_gain_toward_jammer) noexcept;
+    Mhz frequency,
+    Db rx_gain_toward_signal,
+    Db rx_gain_toward_jammer) noexcept;
 
 // ---------------------------------------------------------------------------
 // Burnthrough range
@@ -77,23 +77,23 @@ struct JammingResult {
 /// @param js_threshold      J/S level at which jamming is considered effective (dB)
 /// @return Burnthrough range (km) — signal range at which J/S = js_threshold
 [[nodiscard]] Km burnthrough_range(
-    Dbm    signal_erp,
-    Dbm    jammer_erp,
-    Km     jammer_to_rx_dist,
+    Dbm signal_erp,
+    Dbm jammer_erp,
+    Km jammer_to_rx_dist,
     Meters signal_tx_height,
     Meters jammer_height,
     Meters rx_height,
-    Mhz    frequency,
-    Db     js_threshold) noexcept;
+    Mhz frequency,
+    Db js_threshold) noexcept;
 
 // ---------------------------------------------------------------------------
 // Partial-band / spot jamming
 // ---------------------------------------------------------------------------
 
 struct PartialBandResult {
-    Mhz    optimum_jamming_bandwidth; ///< Optimum jamming bandwidth (MHz)
-    double duty_cycle{0.0};           ///< Fraction of hop range covered
-    bool   meets_threshold{true};     ///< false when J/S < required on even one channel
+    Mhz optimum_jamming_bandwidth; ///< Optimum jamming bandwidth (MHz)
+    double duty_cycle{0.0};        ///< Fraction of hop range covered
+    bool meets_threshold{true};    ///< false when J/S < required on even one channel
 };
 
 /// Compute optimum partial-band jamming parameters.
@@ -124,8 +124,8 @@ struct PartialBandResult {
 [[nodiscard]] PartialBandResult partial_band_jamming(
     Mhz signal_bandwidth,
     Mhz hop_range_bandwidth,
-    Db  single_channel_js,
-    Db  required_js = Db{0.0}) noexcept;
+    Db single_channel_js,
+    Db required_js = Db{0.0}) noexcept;
 
 // ---------------------------------------------------------------------------
 // Radar jamming — self-protection (SPJ) and stand-off (SOJ)
@@ -151,9 +151,9 @@ struct PartialBandResult {
 /// @param rcs        Target radar cross-section (dBsm)
 /// @return J/S at the radar receiver (dB)
 [[nodiscard]] Db self_protection_js(
-    Dbm  radar_erp,
-    Dbm  jammer_erp,
-    Km   range,
+    Dbm radar_erp,
+    Dbm jammer_erp,
+    Km range,
     Dbsm rcs) noexcept;
 
 /// Self-protection burnthrough range — the range at which J/S falls to the
@@ -161,10 +161,10 @@ struct PartialBandResult {
 ///
 /// R = 10^((J/S_thr − (ERP_J − ERP_S + 70.99 − σ)) / 20)  km
 [[nodiscard]] Km self_protection_burnthrough(
-    Dbm  radar_erp,
-    Dbm  jammer_erp,
+    Dbm radar_erp,
+    Dbm jammer_erp,
     Dbsm rcs,
-    Db   js_threshold) noexcept;
+    Db js_threshold) noexcept;
 
 /// Stand-off jamming J/S at the radar receiver.
 ///
@@ -179,12 +179,12 @@ struct PartialBandResult {
 /// @param rcs           Target radar cross-section (dBsm)
 /// @return J/S at the radar receiver (dB)
 [[nodiscard]] Db stand_off_js(
-    Dbm  radar_erp,
-    Dbm  jammer_erp,
-    Km   target_range,
-    Km   jammer_range,
-    Db   mainbeam_gain,
-    Db   sidelobe_gain,
+    Dbm radar_erp,
+    Dbm jammer_erp,
+    Km target_range,
+    Km jammer_range,
+    Db mainbeam_gain,
+    Db sidelobe_gain,
     Dbsm rcs) noexcept;
 
 /// Stand-off burnthrough range — the radar-to-target range at which J/S falls
@@ -192,12 +192,12 @@ struct PartialBandResult {
 ///
 /// R_T = 10^((J/S_thr − (ERP_J − ERP_S + G_S − G_M + 70.99 − 20·log₁₀ R_J − σ)) / 40)  km
 [[nodiscard]] Km stand_off_burnthrough(
-    Dbm  radar_erp,
-    Dbm  jammer_erp,
-    Km   jammer_range,
-    Db   mainbeam_gain,
-    Db   sidelobe_gain,
+    Dbm radar_erp,
+    Dbm jammer_erp,
+    Km jammer_range,
+    Db mainbeam_gain,
+    Db sidelobe_gain,
     Dbsm rcs,
-    Db   js_threshold) noexcept;
+    Db js_threshold) noexcept;
 
 } // namespace libew::jamming

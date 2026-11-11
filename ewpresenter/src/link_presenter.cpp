@@ -32,23 +32,23 @@ void LinkPresenter::set_rx_sensitivity(double dbm) noexcept {
 }
 
 void LinkPresenter::recompute() noexcept {
-    output_.valid = (tx_power_err_       == FieldError::none &&
-                     tx_gain_err_        == FieldError::none &&
-                     rx_gain_err_        == FieldError::none &&
-                     distance_err_       == FieldError::none &&
-                     tx_height_err_      == FieldError::none &&
-                     rx_height_err_      == FieldError::none &&
-                     frequency_err_      == FieldError::none &&
+    output_.valid = (tx_power_err_ == FieldError::none &&
+                     tx_gain_err_ == FieldError::none &&
+                     rx_gain_err_ == FieldError::none &&
+                     distance_err_ == FieldError::none &&
+                     tx_height_err_ == FieldError::none &&
+                     rx_height_err_ == FieldError::none &&
+                     frequency_err_ == FieldError::none &&
                      rx_sensitivity_err_ == FieldError::none);
 
     if (!output_.valid) {
         output_.received_power_str = kDash;
-        output_.path_loss_str      = kDash;
-        output_.fresnel_zone_str   = kDash;
-        output_.regime_str         = kDash;
-        output_.effective_range_str= kDash;
-        output_.range_regime_str   = kDash;
-        output_.link_margin_str    = kDash;
+        output_.path_loss_str = kDash;
+        output_.fresnel_zone_str = kDash;
+        output_.regime_str = kDash;
+        output_.effective_range_str = kDash;
+        output_.range_regime_str = kDash;
+        output_.link_margin_str = kDash;
         return;
     }
 
@@ -58,28 +58,28 @@ void LinkPresenter::recompute() noexcept {
         Km{distance_km_}, Meters{tx_height_m_}, Meters{rx_height_m_},
         Mhz{frequency_mhz_});
 
-    output_.received_power       = res.received_power;
-    output_.path_loss            = res.path_loss;
-    output_.fresnel_zone_distance= res.fresnel_zone_distance;
-    output_.two_ray_regime       = res.two_ray_regime;
+    output_.received_power = res.received_power;
+    output_.path_loss = res.path_loss;
+    output_.fresnel_zone_distance = res.fresnel_zone_distance;
+    output_.two_ray_regime = res.two_ray_regime;
 
     const auto range_res = libew::link::effective_range(
         Dbm{tx_power_dbm_}, Db{tx_gain_db_}, Db{rx_gain_db_},
         Meters{tx_height_m_}, Meters{rx_height_m_},
         Mhz{frequency_mhz_}, Dbm{rx_sensitivity_dbm_});
 
-    output_.effective_range          = range_res.range;
-    output_.range_two_ray_regime     = range_res.two_ray_regime;
+    output_.effective_range = range_res.range;
+    output_.range_two_ray_regime = range_res.two_ray_regime;
 
     const Db margin = res.received_power - Dbm{rx_sensitivity_dbm_};
 
     output_.received_power_str = format_dbm(output_.received_power);
-    output_.path_loss_str      = format_db(output_.path_loss);
-    output_.fresnel_zone_str   = format_km(output_.fresnel_zone_distance);
-    output_.regime_str         = format_regime(output_.two_ray_regime);
-    output_.effective_range_str= format_km(output_.effective_range);
-    output_.range_regime_str   = format_regime(output_.range_two_ray_regime);
-    output_.link_margin_str    = format_db(margin);
+    output_.path_loss_str = format_db(output_.path_loss);
+    output_.fresnel_zone_str = format_km(output_.fresnel_zone_distance);
+    output_.regime_str = format_regime(output_.two_ray_regime);
+    output_.effective_range_str = format_km(output_.effective_range);
+    output_.range_regime_str = format_regime(output_.range_two_ray_regime);
+    output_.link_margin_str = format_db(margin);
 }
 
 void LinkPresenter::fire() noexcept {
