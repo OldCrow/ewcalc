@@ -113,7 +113,7 @@ jobs:
   # ── macOS ───────────────────────────────────────────────────────────────────
   build-macos:
     name: macOS (SwiftUI)
-    runs-on: macos-14           # Apple Silicon runner
+    runs-on: macos-15           # Apple Silicon runner (macos-14 image retired)
     timeout-minutes: 40         # notarization (tag/dispatch runs) can be slow
     permissions:
       contents: read
