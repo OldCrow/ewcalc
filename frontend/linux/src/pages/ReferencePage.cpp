@@ -39,8 +39,7 @@ namespace {
 /// rendered as "Receiver _Signal" — the '&' swallowed and the following space
 /// underlined. The data layer is shared with frontends that have no such
 /// convention, so the escaping belongs here, at the Qt display boundary.
-QString displayText(QString text)
-{
+QString displayText(QString text) {
     return text.replace(QLatin1Char('&'), QStringLiteral("&&"));
 }
 
@@ -62,25 +61,22 @@ constexpr int kStdFormMaxWidth = 300;
 constexpr int kCopyButtonWidth = 26;
 
 /// Builds the "⧉" copy button shared by both row kinds.
-QPushButton* makeCopyButton(const QString& copyText, const QString& label)
-{
-    auto* btn = new QPushButton(QStringLiteral("\u29c9"));
+QPushButton *makeCopyButton(const QString &copyText, const QString &label) {
+    auto *btn = new QPushButton(QStringLiteral("\u29c9"));
     btn->setFixedWidth(kCopyButtonWidth);
     btn->setFlat(true);
     btn->setToolTip(QStringLiteral("Copy ") + copyText);
     btn->setAccessibleName(QStringLiteral("Copy ") + label);
-    QObject::connect(btn, &QPushButton::clicked, btn, [copyText](){
-        QGuiApplication::clipboard()->setText(copyText);
-    });
+    QObject::connect(btn, &QPushButton::clicked, btn,
+                     [copyText]() { QGuiApplication::clipboard()->setText(copyText); });
     return btn;
 }
 
 /// Builds a row's leading label. The buddy is set for the same reason
 /// QFormLayout::addRow() sets one: it is what makes QLabel parse the
 /// mnemonic, so displayText()'s "&&" escaping renders as a single '&'.
-QLabel* makeRowLabel(const QString& label, QWidget* buddy)
-{
-    auto* lbl = new QLabel(displayText(label) + ':');
+QLabel *makeRowLabel(const QString &label, QWidget *buddy) {
+    auto *lbl = new QLabel(displayText(label) + ':');
     lbl->setBuddy(buddy);
     return lbl;
 }
@@ -89,14 +85,9 @@ QLabel* makeRowLabel(const QString& label, QWidget* buddy)
 /// The value spans the two form columns; rows with a copy value get a "⧉"
 /// button in the trailing column. When @p registry is non-null, appends
 /// {label, valLbl} so a page-level "Copy Results" button can include it.
-void addRefRow(QGridLayout* grid,
-               int row,
-               const QString& label,
-               const QString& value,
-               const QString& copyValue,
-               ResultRowRegistry* registry)
-{
-    auto* valLbl = new QLabel(value);
+void addRefRow(QGridLayout *grid, int row, const QString &label, const QString &value,
+               const QString &copyValue, ResultRowRegistry *registry) {
+    auto *valLbl = new QLabel(value);
     valLbl->setTextInteractionFlags(Qt::TextSelectableByMouse);
     valLbl->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     // Values range from short numbers to full prose (Glossary definitions,
@@ -137,24 +128,22 @@ void addRefRow(QGridLayout* grid,
 /// cap only moves that threshold — the image has to respond to the width
 /// actually available. This matches what the other frontends already do:
 /// maxWidth + scaledToFit on macOS, MaxWidth + Stretch="Uniform" on WinUI.
-class FormulaImage : public QLabel
-{
+class FormulaImage : public QLabel {
 public:
     /// @p maxLogicalWidth caps the drawn width (0 = natural size only).
-    FormulaImage(const QPixmap& source, const QString& altText, int maxLogicalWidth = 0)
-        : source_(source), maxWidth_(maxLogicalWidth)
-    {
+    FormulaImage(const QPixmap &source, const QString &altText, int maxLogicalWidth = 0)
+        : source_(source), maxWidth_(maxLogicalWidth) {
         setAccessibleName(altText);
         setToolTip(altText);
         // Horizontally shrinkable, vertically driven by heightForWidth.
         setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
     }
 
-    bool  hasHeightForWidth() const override { return true; }
-    int   heightForWidth(int w) const override { return scaledSize(w).height(); }
-    QSize sizeHint() const override          { return scaledSize(naturalWidth()); }
+    bool hasHeightForWidth() const override { return true; }
+    int heightForWidth(int w) const override { return scaledSize(w).height(); }
+    QSize sizeHint() const override { return scaledSize(naturalWidth()); }
     // Allow the layout to squeeze the image rather than force the page wider.
-    QSize minimumSizeHint() const override   { return QSize(1, 1); }
+    QSize minimumSizeHint() const override { return QSize(1, 1); }
 
 protected:
     /// Draws the source scaled to the width actually granted, left-aligned and
@@ -164,8 +153,7 @@ protected:
     /// the old size cut the formula off mid-glyph — seen on the stand-off J/S
     /// line, which lost its trailing "− 10 log₁₀ σ(m²) dB". Scaling at paint
     /// time cannot disagree with the current geometry.
-    void paintEvent(QPaintEvent*) override
-    {
+    void paintEvent(QPaintEvent *) override {
         const QSize target = scaledSize(width());
         if (target.isEmpty() || source_.isNull())
             return;
@@ -176,35 +164,32 @@ protected:
     }
 
 private:
-    int naturalWidth() const
-    {
+    int naturalWidth() const {
         const int natural = qRound(source_.width() / source_.devicePixelRatio());
         return (maxWidth_ > 0) ? std::min(natural, maxWidth_) : natural;
     }
 
     /// Logical size when drawn into @p w px — aspect-preserving, never past
     /// natural size.
-    QSize scaledSize(int w) const
-    {
+    QSize scaledSize(int w) const {
         const int natural = naturalWidth();
         if (natural <= 0)
             return QSize();
-        const int   target = std::clamp(w, 1, natural);
-        const qreal scale  = qreal(target) / natural;
+        const int target = std::clamp(w, 1, natural);
+        const qreal scale = qreal(target) / natural;
         return QSize(target,
                      qMax(1, qRound(source_.height() / source_.devicePixelRatio() * scale)));
     }
 
     QPixmap source_;
-    int     maxWidth_ = 0;
+    int maxWidth_ = 0;
 };
 
 /// Creates the formula image for @p resourcePath. @p altText (the Unicode
 /// plain-text equivalent from the data layer) becomes the accessible name and
 /// tooltip, standing in for the image for screen readers and on hover.
-QLabel* makeFormulaImage(const QString& resourcePath, const QString& altText,
-                         int maxLogicalWidth = 0)
-{
+QLabel *makeFormulaImage(const QString &resourcePath, const QString &altText,
+                         int maxLogicalWidth = 0) {
     QPixmap pix(resourcePath);
     pix.setDevicePixelRatio(2.0);
     return new FormulaImage(pix, altText, maxLogicalWidth);
@@ -221,22 +206,22 @@ QLabel* makeFormulaImage(const QString& resourcePath, const QString& altText,
 /// standard form's glyph size — is inherent to column-binding the two, and
 /// only shows at widths where a form must shrink at all. WinUI made the same
 /// trade in 848ad92.
-void addFormulaRow(QGridLayout* grid, int row, const refdata::Row& formulaRow)
-{
-    const QString label   = QString::fromUtf8(formulaRow.label);
+void addFormulaRow(QGridLayout *grid, int row, const refdata::Row &formulaRow) {
+    const QString label = QString::fromUtf8(formulaRow.label);
     const QString stdText = QString::fromUtf8(formulaRow.value);
-    const QString base    = QString::fromUtf8(formulaRow.svg_base);
+    const QString base = QString::fromUtf8(formulaRow.svg_base);
 
-    auto* stdImage = makeFormulaImage(QStringLiteral(":/formulas/%1-std.png").arg(base),
-                                      stdText, formulaRow.log_value ? kStdFormMaxWidth : 0);
+    auto *stdImage = makeFormulaImage(QStringLiteral(":/formulas/%1-std.png").arg(base), stdText,
+                                      formulaRow.log_value ? kStdFormMaxWidth : 0);
     grid->addWidget(makeRowLabel(label, stdImage), row, ColLabel, Qt::AlignLeft | Qt::AlignVCenter);
     grid->addWidget(stdImage, row, ColStd);
 
     QString copyText = stdText;
     if (formulaRow.log_value) {
         const QString logText = QString::fromUtf8(formulaRow.log_value);
-        grid->addWidget(makeFormulaImage(QStringLiteral(":/formulas/%1-log.png").arg(base), logText),
-                        row, ColLog);
+        grid->addWidget(
+            makeFormulaImage(QStringLiteral(":/formulas/%1-log.png").arg(base), logText), row,
+            ColLog);
         copyText += QStringLiteral("   |   ") + logText;
     }
 
@@ -255,19 +240,18 @@ constexpr int kSectionDiagramMaxWidth = 480;
 /// for a page's own diagrams, where this is a small always-visible, fixed
 /// thumbnail inline in a reference section — same PNG source and DPR
 /// convention, different presentation.
-QLabel* makeSectionDiagram(const QString& name)
-{
+QLabel *makeSectionDiagram(const QString &name) {
     QPixmap pix(QStringLiteral(":/diagrams/%1.png").arg(name));
     constexpr qreal dpr = 2.0;
     if (!pix.isNull()) {
         const int naturalWidth = qRound(pix.width() / dpr);
-        const int targetWidth  = std::min(naturalWidth, kSectionDiagramMaxWidth);
+        const int targetWidth = std::min(naturalWidth, kSectionDiagramMaxWidth);
         if (targetWidth > 0 && targetWidth < naturalWidth)
             pix = pix.scaledToWidth(qRound(targetWidth * dpr), Qt::SmoothTransformation);
         pix.setDevicePixelRatio(dpr);
     }
 
-    auto* lbl = new QLabel;
+    auto *lbl = new QLabel;
     lbl->setPixmap(pix);
     lbl->setAlignment(Qt::AlignHCenter);
     const QString alt = QString(name).replace('-', ' ');
@@ -280,20 +264,18 @@ QLabel* makeSectionDiagram(const QString& name)
 
 // ── ReferencePage ─────────────────────────────────────────────────────────────
 
-ReferencePage::ReferencePage(std::size_t pageIndex, QWidget* parent)
-    : QWidget(parent)
-{
-    auto* content = new QWidget;
-    auto* vbox    = new QVBoxLayout(content);
+ReferencePage::ReferencePage(std::size_t pageIndex, QWidget *parent) : QWidget(parent) {
+    auto *content = new QWidget;
+    auto *vbox = new QVBoxLayout(content);
 
     const auto pages = refdata::pages();
     ResultRowRegistry results;
     if (pageIndex < pages.size()) {
-        const auto& page = pages[pageIndex];
+        const auto &page = pages[pageIndex];
         for (std::size_t s = 0; s < page.section_count; ++s) {
-            const auto& section = page.sections[s];
-            auto* box  = new QGroupBox(displayText(QString::fromUtf8(section.title)));
-            auto* grid = new QGridLayout(box);
+            const auto &section = page.sections[s];
+            auto *box = new QGroupBox(displayText(QString::fromUtf8(section.title)));
+            auto *grid = new QGridLayout(box);
             grid->setHorizontalSpacing(12);
             // Only the log-form column takes up slack, so the standard-form
             // column stays at the width of the section's widest standard form
@@ -303,15 +285,14 @@ ReferencePage::ReferencePage(std::size_t pageIndex, QWidget* parent)
 
             int gridRow = 0;
             if (section.diagram)
-                grid->addWidget(makeSectionDiagram(QString::fromUtf8(section.diagram)),
-                                gridRow++, ColLabel, 1, ColCount, Qt::AlignHCenter);
+                grid->addWidget(makeSectionDiagram(QString::fromUtf8(section.diagram)), gridRow++,
+                                ColLabel, 1, ColCount, Qt::AlignHCenter);
 
             for (std::size_t r = 0; r < section.row_count; ++r) {
-                const auto& row = section.rows[r];
+                const auto &row = section.rows[r];
                 switch (row.kind) {
                     case refdata::RowKind::Value:
-                        addRefRow(grid, gridRow++,
-                                  QString::fromUtf8(row.label),
+                        addRefRow(grid, gridRow++, QString::fromUtf8(row.label),
                                   QString::fromUtf8(row.value),
                                   row.copy_value ? QString::fromUtf8(row.copy_value) : QString{},
                                   &results);
@@ -327,12 +308,12 @@ ReferencePage::ReferencePage(std::size_t pageIndex, QWidget* parent)
     vbox->addWidget(addCopyResultsButton(results));
     vbox->addStretch();
 
-    auto* scroll = new QScrollArea(this);
+    auto *scroll = new QScrollArea(this);
     scroll->setWidget(content);
     scroll->setWidgetResizable(true);
     scroll->setFrameShape(QFrame::NoFrame);
 
-    auto* outer = new QVBoxLayout(this);
+    auto *outer = new QVBoxLayout(this);
     outer->setContentsMargins(0, 0, 0, 0);
     outer->addWidget(scroll);
 }

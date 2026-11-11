@@ -26,11 +26,15 @@ using namespace libew::units;
 
 /// Convert isotropic gain (dBi) to dipole-referenced gain (dBd).
 /// dBd = dBi - 2.15
-[[nodiscard]] constexpr Db dbi_to_dbd(Db dbi) noexcept { return Db{dbi.value - 2.15}; }
+[[nodiscard]] constexpr Db dbi_to_dbd(Db dbi) noexcept {
+    return Db{dbi.value - 2.15};
+}
 
 /// Convert dipole-referenced gain (dBd) to isotropic gain (dBi).
 /// dBi = dBd + 2.15
-[[nodiscard]] constexpr Db dbd_to_dbi(Db dbd) noexcept { return Db{dbd.value + 2.15}; }
+[[nodiscard]] constexpr Db dbd_to_dbi(Db dbd) noexcept {
+    return Db{dbd.value + 2.15};
+}
 
 /// Approximate circular 3 dB beamwidth from antenna gain.
 /// Inverts the symmetric case of gain_from_beamwidth():

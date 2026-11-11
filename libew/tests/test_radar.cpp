@@ -58,15 +58,14 @@ void test_radar_range_computed() {
     //                ≈ 60 + 60 - 20.01 + 0 - 33.02 + 109 - 13 - 3 = 159.97 dB
     //   R_m = 10^(159.97/40) = 10^3.999 ≈ 9990 m ≈ 10.0 km
     // Harness output (default presenter inputs): 10.010 km
-    const RadarRangeResult r = radar_range(
-        Dbm{60.0},   // 1 kW transmitter
-        Db{30.0},    // 30 dBi antenna gain
-        Dbsm{0.0},   // 1 m² RCS
-        Mhz{3000.0}, // X-band
-        Db{3.0},     // system losses
-        Db{5.0},     // noise figure
-        Mhz{1.0},    // bandwidth
-        Db{13.0}     // required SNR
+    const RadarRangeResult r = radar_range(Dbm{60.0},   // 1 kW transmitter
+                                           Db{30.0},    // 30 dBi antenna gain
+                                           Dbsm{0.0},   // 1 m² RCS
+                                           Mhz{3000.0}, // X-band
+                                           Db{3.0},     // system losses
+                                           Db{5.0},     // noise figure
+                                           Mhz{1.0},    // bandwidth
+                                           Db{13.0}     // required SNR
     );
     ASSERT_NEAR(r.max_range.value, 10.01, 0.05);
     ASSERT_TRUE(r.two_way_loss.value > 0.0);
@@ -126,30 +125,31 @@ void test_lpi_advantage() {
 
 void test_albersheim_formula_fidelity() {
     // Independent Python evaluation of eq. 12:
-    ASSERT_NEAR(required_snr_albersheim(0.9, 1.0e-6, 1).value,  13.1200180104, 1e-6);
-    ASSERT_NEAR(required_snr_albersheim(0.5, 1.0e-6, 10).value,  3.5580323886, 1e-6);
-    ASSERT_NEAR(required_snr_albersheim(0.9, 1.0e-4, 30).value,  0.8278671048, 1e-6);
+    ASSERT_NEAR(required_snr_albersheim(0.9, 1.0e-6, 1).value, 13.1200180104, 1e-6);
+    ASSERT_NEAR(required_snr_albersheim(0.5, 1.0e-6, 10).value, 3.5580323886, 1e-6);
+    ASSERT_NEAR(required_snr_albersheim(0.9, 1.0e-4, 30).value, 0.8278671048, 1e-6);
 }
 
 void test_albersheim_vs_exact() {
     // Exact square-law values (oracle). Albersheim fits a *linear* detector
     // (~0.2 dB from square-law), so gate at 0.5 dB.
-    ASSERT_NEAR(required_snr_albersheim(0.9, 1.0e-6, 1).value,  13.183, 0.5);
-    ASSERT_NEAR(required_snr_albersheim(0.5, 1.0e-6, 10).value,  3.651, 0.5);
-    ASSERT_NEAR(required_snr_albersheim(0.9, 1.0e-4, 30).value,  0.977, 0.5);
+    ASSERT_NEAR(required_snr_albersheim(0.9, 1.0e-6, 1).value, 13.183, 0.5);
+    ASSERT_NEAR(required_snr_albersheim(0.5, 1.0e-6, 10).value, 3.651, 0.5);
+    ASSERT_NEAR(required_snr_albersheim(0.9, 1.0e-4, 30).value, 0.977, 0.5);
 }
 
 void test_shnidman_formula_fidelity() {
     // Independent Python evaluation of Shnidman's closed form. The 0.95
     // case exercises the Pd > 0.872 C2 branch; the N=39/40 pair exercises
     // the alpha breakpoint (0 below 40 pulses, 0.25 at and above).
-    ASSERT_NEAR(required_snr_shnidman(0.9,  1.0e-6, 1,  Swerling::case1).value, 21.3460831936, 1e-6);
-    ASSERT_NEAR(required_snr_shnidman(0.9,  1.0e-6, 10, Swerling::case2).value,  6.1583306442, 1e-6);
-    ASSERT_NEAR(required_snr_shnidman(0.9,  1.0e-4, 30, Swerling::case3).value,  4.9865636374, 1e-6);
-    ASSERT_NEAR(required_snr_shnidman(0.5,  1.0e-6, 10, Swerling::case4).value,  3.8124525580, 1e-6);
-    ASSERT_NEAR(required_snr_shnidman(0.95, 1.0e-6, 10, Swerling::case1).value, 17.0031488483, 1e-6);
-    ASSERT_NEAR(required_snr_shnidman(0.9,  1.0e-6, 40, Swerling::case2).value,  1.4098749674, 1e-6);
-    ASSERT_NEAR(required_snr_shnidman(0.9,  1.0e-6, 39, Swerling::case2).value,  1.4681739259, 1e-6);
+    ASSERT_NEAR(required_snr_shnidman(0.9, 1.0e-6, 1, Swerling::case1).value, 21.3460831936, 1e-6);
+    ASSERT_NEAR(required_snr_shnidman(0.9, 1.0e-6, 10, Swerling::case2).value, 6.1583306442, 1e-6);
+    ASSERT_NEAR(required_snr_shnidman(0.9, 1.0e-4, 30, Swerling::case3).value, 4.9865636374, 1e-6);
+    ASSERT_NEAR(required_snr_shnidman(0.5, 1.0e-6, 10, Swerling::case4).value, 3.8124525580, 1e-6);
+    ASSERT_NEAR(required_snr_shnidman(0.95, 1.0e-6, 10, Swerling::case1).value, 17.0031488483,
+                1e-6);
+    ASSERT_NEAR(required_snr_shnidman(0.9, 1.0e-6, 40, Swerling::case2).value, 1.4098749674, 1e-6);
+    ASSERT_NEAR(required_snr_shnidman(0.9, 1.0e-6, 39, Swerling::case2).value, 1.4681739259, 1e-6);
 }
 
 void test_shnidman_vs_exact() {
@@ -158,11 +158,11 @@ void test_shnidman_vs_exact() {
     ASSERT_NEAR(required_snr_shnidman(0.5, 1.0e-6, 1, Swerling::case1).value, 12.7719, 0.5);
     ASSERT_NEAR(required_snr_shnidman(0.9, 1.0e-4, 1, Swerling::case1).value, 19.3660, 0.5);
     // Grid points across all cases:
-    ASSERT_NEAR(required_snr_shnidman(0.9, 1.0e-6, 1,  Swerling::nonfluctuating).value, 13.183, 0.5);
-    ASSERT_NEAR(required_snr_shnidman(0.9, 1.0e-6, 10, Swerling::case2).value,  6.292, 0.5);
+    ASSERT_NEAR(required_snr_shnidman(0.9, 1.0e-6, 1, Swerling::nonfluctuating).value, 13.183, 0.5);
+    ASSERT_NEAR(required_snr_shnidman(0.9, 1.0e-6, 10, Swerling::case2).value, 6.292, 0.5);
     ASSERT_NEAR(required_snr_shnidman(0.9, 1.0e-6, 30, Swerling::case1).value, 10.367, 0.5);
-    ASSERT_NEAR(required_snr_shnidman(0.9, 1.0e-6, 10, Swerling::case3).value,  9.601, 0.5);
-    ASSERT_NEAR(required_snr_shnidman(0.9, 1.0e-6, 10, Swerling::case4).value,  5.808, 0.5);
+    ASSERT_NEAR(required_snr_shnidman(0.9, 1.0e-6, 10, Swerling::case3).value, 9.601, 0.5);
+    ASSERT_NEAR(required_snr_shnidman(0.9, 1.0e-6, 10, Swerling::case4).value, 5.808, 0.5);
     ASSERT_NEAR(required_snr_shnidman(0.5, 1.0e-4, 30, Swerling::case3).value, -0.076, 0.5);
 }
 
@@ -170,16 +170,14 @@ void test_fluctuation_loss() {
     // Definition: SNR(case) - SNR(Sw0) at identical Pd/Pfa/N.
     const Db l1 = fluctuation_loss(0.9, 1.0e-6, 10, Swerling::case1);
     ASSERT_NEAR(l1.value,
-                required_snr_shnidman(0.9, 1.0e-6, 10, Swerling::case1).value
-                    - required_snr_shnidman(0.9, 1.0e-6, 10,
-                                            Swerling::nonfluctuating).value,
+                required_snr_shnidman(0.9, 1.0e-6, 10, Swerling::case1).value -
+                    required_snr_shnidman(0.9, 1.0e-6, 10, Swerling::nonfluctuating).value,
                 1e-12);
     // Exact-theory value: 13.500 - 5.267 = 8.23 dB (oracle grid).
     ASSERT_NEAR(l1.value, 8.23, 0.5);
     // Scan-to-scan fluctuation at high Pd costs SNR; Sw0 loss is zero.
     ASSERT_TRUE(l1.value > 0.0);
-    ASSERT_NEAR(fluctuation_loss(0.9, 1.0e-6, 10,
-                                 Swerling::nonfluctuating).value, 0.0, 1e-12);
+    ASSERT_NEAR(fluctuation_loss(0.9, 1.0e-6, 10, Swerling::nonfluctuating).value, 0.0, 1e-12);
 }
 
 void test_scan_timing() {
@@ -230,10 +228,10 @@ void test_blind_speed_and_unambiguous_velocity() {
     ASSERT_NEAR(blind_speed_m_s(Mhz{10000.0}, 1000.0), 14.9896229, 1e-6);
     ASSERT_NEAR(unambiguous_velocity_m_s(Mhz{10000.0}, 1000.0), 7.49481145, 1e-7);
     // Doppler dilemma invariant: R_u·v_u = c·λ/8 regardless of PRF.
-    const double product_1k  = unambiguous_range(1000.0).value * 1000.0
-                               * unambiguous_velocity_m_s(Mhz{10000.0}, 1000.0);
-    const double product_10k = unambiguous_range(10000.0).value * 1000.0
-                               * unambiguous_velocity_m_s(Mhz{10000.0}, 10000.0);
+    const double product_1k =
+        unambiguous_range(1000.0).value * 1000.0 * unambiguous_velocity_m_s(Mhz{10000.0}, 1000.0);
+    const double product_10k =
+        unambiguous_range(10000.0).value * 1000.0 * unambiguous_velocity_m_s(Mhz{10000.0}, 10000.0);
     ASSERT_NEAR(product_1k, product_10k, 1e-3);
     ASSERT_NEAR(product_1k, 299792458.0 * 0.0299792458 / 8.0, 1.0);
 }
@@ -247,11 +245,9 @@ void test_range_resolution() {
 
 void test_cross_range_resolution() {
     // R = 100 km, θ = 2°: ΔX = 1e5 · 2·π/180 = 3490.6585... m
-    ASSERT_NEAR(cross_range_resolution(Km{100.0}, Degrees{2.0}).value,
-                3490.6585, 1e-3);
+    ASSERT_NEAR(cross_range_resolution(Km{100.0}, Degrees{2.0}).value, 3490.6585, 1e-3);
     // Linear in both range and beamwidth.
-    ASSERT_NEAR(cross_range_resolution(Km{50.0}, Degrees{4.0}).value,
-                3490.6585, 1e-3);
+    ASSERT_NEAR(cross_range_resolution(Km{50.0}, Degrees{4.0}).value, 3490.6585, 1e-3);
 }
 
 int main() {

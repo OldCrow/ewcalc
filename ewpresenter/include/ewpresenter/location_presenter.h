@@ -15,18 +15,19 @@ using namespace libew::units;
 
 class LocationPresenter : public PresenterBase<LocationPresenter> {
     friend PresenterBase<LocationPresenter>;
+
 public:
     struct Output {
         // AOA section
-        Km  cep_aoa{};
+        Km cep_aoa{};
         std::string cep_aoa_str;
 
         // TDOA section
-        Km  cep_tdoa{};
+        Km cep_tdoa{};
         std::string cep_tdoa_str;
 
         // EEP section
-        Km  cep_eep{};
+        Km cep_eep{};
         std::string cep_eep_str;
 
         bool valid{false};
@@ -65,47 +66,47 @@ public:
     // -----------------------------------------------------------------------
     // Accessors
     // -----------------------------------------------------------------------
-    [[nodiscard]] const Output& output() const noexcept { return output_; }
+    [[nodiscard]] const Output &output() const noexcept { return output_; }
     [[nodiscard]] bool is_valid() const noexcept { return output_.valid; }
 
     [[nodiscard]] double rms_bearing_error_deg() const noexcept { return rms_bearing_error_deg_; }
-    [[nodiscard]] double aoa_range_km()          const noexcept { return aoa_range_km_; }
-    [[nodiscard]] double rms_time_error_ns()     const noexcept { return rms_time_error_ns_; }
-    [[nodiscard]] double baseline_km()           const noexcept { return baseline_km_; }
-    [[nodiscard]] double semi_major_km()         const noexcept { return semi_major_km_; }
-    [[nodiscard]] double semi_minor_km()         const noexcept { return semi_minor_km_; }
+    [[nodiscard]] double aoa_range_km() const noexcept { return aoa_range_km_; }
+    [[nodiscard]] double rms_time_error_ns() const noexcept { return rms_time_error_ns_; }
+    [[nodiscard]] double baseline_km() const noexcept { return baseline_km_; }
+    [[nodiscard]] double semi_major_km() const noexcept { return semi_major_km_; }
+    [[nodiscard]] double semi_minor_km() const noexcept { return semi_minor_km_; }
 
-    [[nodiscard]] FieldError rms_bearing_error()  const noexcept { return rms_bearing_err_; }
-    [[nodiscard]] FieldError aoa_range_error()    const noexcept { return aoa_range_err_; }
-    [[nodiscard]] FieldError rms_time_error()     const noexcept { return rms_time_err_; }
-    [[nodiscard]] FieldError baseline_error()     const noexcept { return baseline_err_; }
-    [[nodiscard]] FieldError semi_major_error()   const noexcept { return semi_major_err_; }
-    [[nodiscard]] FieldError semi_minor_error()   const noexcept { return semi_minor_err_; }
+    [[nodiscard]] FieldError rms_bearing_error() const noexcept { return rms_bearing_err_; }
+    [[nodiscard]] FieldError aoa_range_error() const noexcept { return aoa_range_err_; }
+    [[nodiscard]] FieldError rms_time_error() const noexcept { return rms_time_err_; }
+    [[nodiscard]] FieldError baseline_error() const noexcept { return baseline_err_; }
+    [[nodiscard]] FieldError semi_major_error() const noexcept { return semi_major_err_; }
+    [[nodiscard]] FieldError semi_minor_error() const noexcept { return semi_minor_err_; }
     /// Set to above_maximum on semi_minor when semi_minor > semi_major; none otherwise.
-    [[nodiscard]] FieldError eep_axis_error()     const noexcept { return eep_axis_err_; }
+    [[nodiscard]] FieldError eep_axis_error() const noexcept { return eep_axis_err_; }
 
-    void set_on_change(std::function<void(const Output&)> cb) noexcept {
+    void set_on_change(std::function<void(const Output &)> cb) noexcept {
         on_change_ = std::move(cb);
     }
 
 private:
-    double rms_bearing_error_deg_ {1.0};
-    double aoa_range_km_          {100.0};
-    double rms_time_error_ns_     {10.0};
-    double baseline_km_           {10.0};  ///< Typical tactical baseline
-    double semi_major_km_         {2.0};
-    double semi_minor_km_         {1.0};
+    double rms_bearing_error_deg_{1.0};
+    double aoa_range_km_{100.0};
+    double rms_time_error_ns_{10.0};
+    double baseline_km_{10.0}; ///< Typical tactical baseline
+    double semi_major_km_{2.0};
+    double semi_minor_km_{1.0};
 
-    FieldError rms_bearing_err_ {FieldError::none};
-    FieldError aoa_range_err_   {FieldError::none};
-    FieldError rms_time_err_    {FieldError::none};
-    FieldError baseline_err_    {FieldError::none};
-    FieldError semi_major_err_  {FieldError::none};
-    FieldError semi_minor_err_  {FieldError::none};
-    FieldError eep_axis_err_    {FieldError::none};
+    FieldError rms_bearing_err_{FieldError::none};
+    FieldError aoa_range_err_{FieldError::none};
+    FieldError rms_time_err_{FieldError::none};
+    FieldError baseline_err_{FieldError::none};
+    FieldError semi_major_err_{FieldError::none};
+    FieldError semi_minor_err_{FieldError::none};
+    FieldError eep_axis_err_{FieldError::none};
 
     Output output_;
-    std::function<void(const Output&)> on_change_;
+    std::function<void(const Output &)> on_change_;
 
     void recompute() noexcept;
     void fire() noexcept;

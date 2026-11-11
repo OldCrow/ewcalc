@@ -4,19 +4,19 @@
 
 class QLabel;
 
-class PropagationPage : public QWidget
-{
+class PropagationPage : public QWidget {
 public:
-    explicit PropagationPage(QWidget* parent = nullptr);
+    explicit PropagationPage(QWidget *parent = nullptr);
+
 private:
     ewpresenter::PropagationPresenter presenter_;
-    QLabel* fspl_;
-    QLabel* two_ray_loss_;
-    QLabel* fresnel_zone_;
-    QLabel* path_loss_;
-    QLabel* regime_;
-    QLabel* earth_bulge_;
-    QLabel* horizon_range_;
-    QLabel* diffraction_loss_;
-    void applyOutput(const ewpresenter::PropagationPresenter::Output& o);
+    QLabel *fspl_;
+    QLabel *two_ray_loss_;
+    QLabel *fresnel_zone_;
+    QLabel *path_loss_;
+    QLabel *regime_;
+    QLabel *earth_bulge_;
+    QLabel *horizon_range_;
+    QLabel *diffraction_loss_;
+    void applyOutput(const ewpresenter::PropagationPresenter::Output &o);
 };

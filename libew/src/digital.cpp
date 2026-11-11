@@ -18,14 +18,12 @@ Db dsss_process_gain(Mhz chip_rate, Mhz data_rate) noexcept {
     return Db{10.0 * std::log10(chip_rate.value / data_rate.value)};
 }
 
-Db dsss_jamming_margin(Db process_gain, Db required_eb_no,
-                       Db implementation_loss) noexcept {
+Db dsss_jamming_margin(Db process_gain, Db required_eb_no, Db implementation_loss) noexcept {
     // JM = PG - Eb/N₀_req - L_impl
     return Db{process_gain.value - required_eb_no.value - implementation_loss.value};
 }
 
-Db dsss_required_js(Db process_gain, Db required_eb_no,
-                    Db implementation_loss) noexcept {
+Db dsss_required_js(Db process_gain, Db required_eb_no, Db implementation_loss) noexcept {
     // J/S_req = -JM = Eb/N₀_req + L_impl - PG
     return Db{required_eb_no.value + implementation_loss.value - process_gain.value};
 }

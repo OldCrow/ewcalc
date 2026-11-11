@@ -16,18 +16,19 @@ using namespace libew::units;
 
 class DigitalPresenter : public PresenterBase<DigitalPresenter> {
     friend PresenterBase<DigitalPresenter>;
+
 public:
     struct Output {
         // Eb/N₀ section
-        Db  eb_no{};
-        std::string eb_no_str;            ///< Eb/N₀ from received SNR
-        Db  required_snr_for_eb_no{};
+        Db eb_no{};
+        std::string eb_no_str; ///< Eb/N₀ from received SNR
+        Db required_snr_for_eb_no{};
         std::string required_snr_for_eb_no_str; ///< SNR required to achieve required_eb_no_db_
 
         // DSSS section
-        Db  process_gain{};
-        Db  jamming_margin{};
-        Db  required_js{};
+        Db process_gain{};
+        Db jamming_margin{};
+        Db required_js{};
         std::string process_gain_str;
         std::string jamming_margin_str;
         std::string required_js_str;
@@ -69,44 +70,44 @@ public:
     // -----------------------------------------------------------------------
     // Accessors
     // -----------------------------------------------------------------------
-    [[nodiscard]] const Output& output() const noexcept { return output_; }
+    [[nodiscard]] const Output &output() const noexcept { return output_; }
     [[nodiscard]] bool is_valid() const noexcept { return output_.valid; }
 
-    [[nodiscard]] double snr_db()               const noexcept { return snr_db_; }
-    [[nodiscard]] double bandwidth_mhz()        const noexcept { return bandwidth_mhz_; }
-    [[nodiscard]] double data_rate_mhz()        const noexcept { return data_rate_mhz_; }
-    [[nodiscard]] double chip_rate_mhz()        const noexcept { return chip_rate_mhz_; }
-    [[nodiscard]] double required_eb_no_db()    const noexcept { return required_eb_no_db_; }
+    [[nodiscard]] double snr_db() const noexcept { return snr_db_; }
+    [[nodiscard]] double bandwidth_mhz() const noexcept { return bandwidth_mhz_; }
+    [[nodiscard]] double data_rate_mhz() const noexcept { return data_rate_mhz_; }
+    [[nodiscard]] double chip_rate_mhz() const noexcept { return chip_rate_mhz_; }
+    [[nodiscard]] double required_eb_no_db() const noexcept { return required_eb_no_db_; }
     [[nodiscard]] double implementation_loss_db() const noexcept { return implementation_loss_db_; }
 
-    [[nodiscard]] FieldError snr_error()               const noexcept { return snr_err_; }
-    [[nodiscard]] FieldError bandwidth_error()         const noexcept { return bandwidth_err_; }
-    [[nodiscard]] FieldError data_rate_error()         const noexcept { return data_rate_err_; }
-    [[nodiscard]] FieldError chip_rate_error()         const noexcept { return chip_rate_err_; }
-    [[nodiscard]] FieldError required_eb_no_error()    const noexcept { return required_eb_no_err_; }
+    [[nodiscard]] FieldError snr_error() const noexcept { return snr_err_; }
+    [[nodiscard]] FieldError bandwidth_error() const noexcept { return bandwidth_err_; }
+    [[nodiscard]] FieldError data_rate_error() const noexcept { return data_rate_err_; }
+    [[nodiscard]] FieldError chip_rate_error() const noexcept { return chip_rate_err_; }
+    [[nodiscard]] FieldError required_eb_no_error() const noexcept { return required_eb_no_err_; }
     [[nodiscard]] FieldError implementation_loss_error() const noexcept { return impl_loss_err_; }
 
-    void set_on_change(std::function<void(const Output&)> cb) noexcept {
+    void set_on_change(std::function<void(const Output &)> cb) noexcept {
         on_change_ = std::move(cb);
     }
 
 private:
-    double snr_db_                {10.0};
-    double bandwidth_mhz_         {1.0};
-    double data_rate_mhz_         {0.1};   // 100 kbps
-    double chip_rate_mhz_         {10.0};  // 10 Mcps → PG = 20 dB
-    double required_eb_no_db_     {10.0};
+    double snr_db_{10.0};
+    double bandwidth_mhz_{1.0};
+    double data_rate_mhz_{0.1};  // 100 kbps
+    double chip_rate_mhz_{10.0}; // 10 Mcps → PG = 20 dB
+    double required_eb_no_db_{10.0};
     double implementation_loss_db_{1.0};
 
-    FieldError snr_err_            {FieldError::none};
-    FieldError bandwidth_err_      {FieldError::none};
-    FieldError data_rate_err_      {FieldError::none};
-    FieldError chip_rate_err_      {FieldError::none};
-    FieldError required_eb_no_err_ {FieldError::none};
-    FieldError impl_loss_err_      {FieldError::none};
+    FieldError snr_err_{FieldError::none};
+    FieldError bandwidth_err_{FieldError::none};
+    FieldError data_rate_err_{FieldError::none};
+    FieldError chip_rate_err_{FieldError::none};
+    FieldError required_eb_no_err_{FieldError::none};
+    FieldError impl_loss_err_{FieldError::none};
 
     Output output_;
-    std::function<void(const Output&)> on_change_;
+    std::function<void(const Output &)> on_change_;
 
     void recompute() noexcept;
     void fire() noexcept;

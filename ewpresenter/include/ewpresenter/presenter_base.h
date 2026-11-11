@@ -36,7 +36,7 @@ namespace ewpresenter {
 /// @tparam Derived  Concrete presenter class. Must implement:
 ///                  - void recompute() noexcept
 ///                  - void fire() noexcept
-template<typename Derived>
+template <typename Derived>
 class PresenterBase {
 private:
     /// Restricted to Derived: prevents constructing or slicing to
@@ -51,12 +51,12 @@ protected:
     /// The validation result is computed by the caller (at the call site
     /// the validate_* call is inlined by the compiler, so there is zero
     /// runtime overhead compared to the expanded four-line form).
-    void update_field(double value, double& storage, FieldError& error,
+    void update_field(double value, double &storage, FieldError &error,
                       FieldError validated) noexcept {
         storage = value;
-        error   = validated;
-        static_cast<Derived*>(this)->recompute();
-        static_cast<Derived*>(this)->fire();
+        error = validated;
+        static_cast<Derived *>(this)->recompute();
+        static_cast<Derived *>(this)->fire();
     }
 };
 

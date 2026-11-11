@@ -4,7 +4,9 @@
 
 namespace ewpresenter {
 
-JammingPresenter::JammingPresenter() noexcept { recompute(); }
+JammingPresenter::JammingPresenter() noexcept {
+    recompute();
+}
 
 void JammingPresenter::set_signal_erp(double dbm) noexcept {
     update_field(dbm, signal_erp_dbm_, signal_erp_err_, validate_bounds(dbm, -100.0, 200.0));
@@ -13,22 +15,28 @@ void JammingPresenter::set_jammer_erp(double dbm) noexcept {
     update_field(dbm, jammer_erp_dbm_, jammer_erp_err_, validate_bounds(dbm, -100.0, 200.0));
 }
 void JammingPresenter::set_signal_to_rx_dist(double km) noexcept {
-    update_field(km, signal_to_rx_dist_km_, signal_to_rx_err_, validate_positive_bounded(km, 0.01, 10000.0));
+    update_field(km, signal_to_rx_dist_km_, signal_to_rx_err_,
+                 validate_positive_bounded(km, 0.01, 10000.0));
 }
 void JammingPresenter::set_jammer_to_rx_dist(double km) noexcept {
-    update_field(km, jammer_to_rx_dist_km_, jammer_to_rx_err_, validate_positive_bounded(km, 0.01, 10000.0));
+    update_field(km, jammer_to_rx_dist_km_, jammer_to_rx_err_,
+                 validate_positive_bounded(km, 0.01, 10000.0));
 }
 void JammingPresenter::set_signal_tx_height(double meters) noexcept {
-    update_field(meters, signal_tx_height_m_, signal_height_err_, validate_positive_bounded(meters, 0.1, 100000.0));
+    update_field(meters, signal_tx_height_m_, signal_height_err_,
+                 validate_positive_bounded(meters, 0.1, 100000.0));
 }
 void JammingPresenter::set_jammer_height(double meters) noexcept {
-    update_field(meters, jammer_height_m_, jammer_height_err_, validate_positive_bounded(meters, 0.1, 100000.0));
+    update_field(meters, jammer_height_m_, jammer_height_err_,
+                 validate_positive_bounded(meters, 0.1, 100000.0));
 }
 void JammingPresenter::set_rx_height(double meters) noexcept {
-    update_field(meters, rx_height_m_, rx_height_err_, validate_positive_bounded(meters, 0.1, 100000.0));
+    update_field(meters, rx_height_m_, rx_height_err_,
+                 validate_positive_bounded(meters, 0.1, 100000.0));
 }
 void JammingPresenter::set_frequency(double mhz) noexcept {
-    update_field(mhz, frequency_mhz_, frequency_err_, validate_positive_bounded(mhz, 0.1, 100000.0));
+    update_field(mhz, frequency_mhz_, frequency_err_,
+                 validate_positive_bounded(mhz, 0.1, 100000.0));
 }
 void JammingPresenter::set_rx_gain_signal(double db) noexcept {
     update_field(db, rx_gain_signal_db_, rx_gain_signal_err_, validate_bounds(db, -30.0, 60.0));
@@ -37,7 +45,8 @@ void JammingPresenter::set_rx_gain_jammer(double db) noexcept {
     update_field(db, rx_gain_jammer_db_, rx_gain_jammer_err_, validate_bounds(db, -30.0, 60.0));
 }
 void JammingPresenter::set_signal_bandwidth(double mhz) noexcept {
-    update_field(mhz, signal_bandwidth_mhz_, signal_bandwidth_err_, validate_positive_bounded(mhz, 0.001, 1000.0));
+    update_field(mhz, signal_bandwidth_mhz_, signal_bandwidth_err_,
+                 validate_positive_bounded(mhz, 0.001, 1000.0));
 }
 void JammingPresenter::set_hop_range(double mhz) noexcept {
     // 0 is valid: means non-hopping signal; partial-band analysis is N/A
@@ -48,66 +57,57 @@ void JammingPresenter::set_js_threshold(double db) noexcept {
 }
 void JammingPresenter::recompute() noexcept {
     // J/S and burnthrough: require geometry inputs only
-    const bool js_valid = (signal_erp_err_    == FieldError::none &&
-                           jammer_erp_err_    == FieldError::none &&
-                           signal_to_rx_err_  == FieldError::none &&
-                           jammer_to_rx_err_  == FieldError::none &&
-                           signal_height_err_ == FieldError::none &&
-                           jammer_height_err_ == FieldError::none &&
-                           rx_height_err_     == FieldError::none &&
-                           frequency_err_     == FieldError::none &&
-                           rx_gain_signal_err_== FieldError::none &&
-                           rx_gain_jammer_err_== FieldError::none &&
-                           js_threshold_err_  == FieldError::none);
+    const bool js_valid =
+        (signal_erp_err_ == FieldError::none && jammer_erp_err_ == FieldError::none &&
+         signal_to_rx_err_ == FieldError::none && jammer_to_rx_err_ == FieldError::none &&
+         signal_height_err_ == FieldError::none && jammer_height_err_ == FieldError::none &&
+         rx_height_err_ == FieldError::none && frequency_err_ == FieldError::none &&
+         rx_gain_signal_err_ == FieldError::none && rx_gain_jammer_err_ == FieldError::none &&
+         js_threshold_err_ == FieldError::none);
 
     // Partial-band: additionally requires a positive hop range and signal bandwidth
-    const bool partial_band_valid = js_valid &&
-                                    signal_bandwidth_err_ == FieldError::none &&
-                                    hop_range_err_        == FieldError::none &&
-                                    hop_range_mhz_        > 0.0;
+    const bool partial_band_valid = js_valid && signal_bandwidth_err_ == FieldError::none &&
+                                    hop_range_err_ == FieldError::none && hop_range_mhz_ > 0.0;
 
     output_.valid = js_valid;
 
     if (!js_valid) {
-        output_.js_ratio_str          = kDash;
-        output_.signal_at_rx_str      = kDash;
-        output_.jammer_at_rx_str      = kDash;
+        output_.js_ratio_str = kDash;
+        output_.signal_at_rx_str = kDash;
+        output_.jammer_at_rx_str = kDash;
         output_.burnthrough_range_str = kDash;
-        output_.optimum_bw_str        = "N/A";
-        output_.duty_cycle_str        = "N/A";
+        output_.optimum_bw_str = "N/A";
+        output_.duty_cycle_str = "N/A";
         return;
     }
 
     using namespace libew::units;
 
     const auto js = libew::jamming::comms_jamming_js(
-        Dbm{signal_erp_dbm_}, Dbm{jammer_erp_dbm_},
-        Km{signal_to_rx_dist_km_}, Km{jammer_to_rx_dist_km_},
-        Meters{signal_tx_height_m_}, Meters{jammer_height_m_}, Meters{rx_height_m_},
-        Mhz{frequency_mhz_},
-        Db{rx_gain_signal_db_}, Db{rx_gain_jammer_db_});
+        Dbm{signal_erp_dbm_}, Dbm{jammer_erp_dbm_}, Km{signal_to_rx_dist_km_},
+        Km{jammer_to_rx_dist_km_}, Meters{signal_tx_height_m_}, Meters{jammer_height_m_},
+        Meters{rx_height_m_}, Mhz{frequency_mhz_}, Db{rx_gain_signal_db_}, Db{rx_gain_jammer_db_});
 
-    output_.js_ratio     = js.js_ratio;
+    output_.js_ratio = js.js_ratio;
     output_.signal_at_rx = js.signal_power_at_receiver;
     output_.jammer_at_rx = js.jammer_power_at_receiver;
 
     const double computed_js_db = js.js_ratio.value;
 
     output_.burnthrough_range = libew::jamming::burnthrough_range(
-        Dbm{signal_erp_dbm_}, Dbm{jammer_erp_dbm_},
-        Km{jammer_to_rx_dist_km_},
+        Dbm{signal_erp_dbm_}, Dbm{jammer_erp_dbm_}, Km{jammer_to_rx_dist_km_},
         Meters{signal_tx_height_m_}, Meters{jammer_height_m_}, Meters{rx_height_m_},
         Mhz{frequency_mhz_}, Db{js_threshold_db_});
 
-    output_.js_ratio_str          = format_db(output_.js_ratio);
-    output_.signal_at_rx_str      = format_dbm(output_.signal_at_rx);
-    output_.jammer_at_rx_str      = format_dbm(output_.jammer_at_rx);
+    output_.js_ratio_str = format_db(output_.js_ratio);
+    output_.signal_at_rx_str = format_dbm(output_.signal_at_rx);
+    output_.jammer_at_rx_str = format_dbm(output_.jammer_at_rx);
     output_.burnthrough_range_str = format_km(output_.burnthrough_range);
 
     if (partial_band_valid) {
-        const auto pb = libew::jamming::partial_band_jamming(
-            Mhz{signal_bandwidth_mhz_}, Mhz{hop_range_mhz_}, Db{computed_js_db},
-            Db{js_threshold_db_});
+        const auto pb =
+            libew::jamming::partial_band_jamming(Mhz{signal_bandwidth_mhz_}, Mhz{hop_range_mhz_},
+                                                 Db{computed_js_db}, Db{js_threshold_db_});
         output_.optimum_bw = pb.optimum_jamming_bandwidth;
         output_.duty_cycle = pb.duty_cycle;
         if (pb.meets_threshold) {
@@ -127,7 +127,8 @@ void JammingPresenter::recompute() noexcept {
 }
 
 void JammingPresenter::fire() noexcept {
-    if (on_change_) on_change_(output_);
+    if (on_change_)
+        on_change_(output_);
 }
 
 } // namespace ewpresenter

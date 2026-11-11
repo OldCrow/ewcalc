@@ -9,8 +9,7 @@
 /// page's title lives on its sidebar row (see MainWindow.cpp's addPage),
 /// matching how every other page is titled — ReferencePage itself renders
 /// only the page's sections.
-class ReferencePage : public QWidget
-{
+class ReferencePage : public QWidget {
 public:
-    explicit ReferencePage(std::size_t pageIndex, QWidget* parent = nullptr);
+    explicit ReferencePage(std::size_t pageIndex, QWidget *parent = nullptr);
 };

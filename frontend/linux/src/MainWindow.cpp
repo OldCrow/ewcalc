@@ -49,8 +49,7 @@ namespace {
 /// ref-db-units gets its own distinct icon; an unknown future id falls back
 /// to the Reference icon. addPage() applies the plain-then-"-symbolic"
 /// theme fallback uniformly, so only the plain name is chosen here.
-QString referencePageIcon(const QString& pageId)
-{
+QString referencePageIcon(const QString &pageId) {
     if (pageId == QStringLiteral("ref-propagation"))
         return QStringLiteral("network-wireless");
     if (pageId == QStringLiteral("ref-antennas"))
@@ -82,11 +81,8 @@ QString referencePageIcon(const QString& pageId)
 
 } // namespace
 
-MainWindow::MainWindow(QWidget* parent)
-    : QMainWindow(parent)
-    , nav_(new QListWidget)
-    , stack_(new QStackedWidget)
-{
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent), nav_(new QListWidget), stack_(new QStackedWidget) {
     setWindowTitle(QStringLiteral("EW Calculator"));
     setMinimumSize(980, 640);
     // The minimum is the floor at which every page is still usable, not a
@@ -114,8 +110,8 @@ MainWindow::MainWindow(QWidget* parent)
     nav_->setIconSize(navIconSize);
 
     // Adds a non-selectable section header row
-    auto addHeader = [this](const QString& text) {
-        auto* item = new QListWidgetItem(text.toUpper());
+    auto addHeader = [this](const QString &text) {
+        auto *item = new QListWidgetItem(text.toUpper());
         item->setFlags(Qt::NoItemFlags);
         QFont f = item->font();
         f.setPointSizeF(f.pointSizeF() * 0.80);
@@ -128,7 +124,7 @@ MainWindow::MainWindow(QWidget* parent)
 
     // Adds a blank spacer row (provides visual gap between groups)
     auto addSpacer = [this]() {
-        auto* item = new QListWidgetItem;
+        auto *item = new QListWidgetItem;
         item->setFlags(Qt::NoItemFlags);
         item->setSizeHint(QSize(0, 6));
         nav_->addItem(item);
@@ -136,8 +132,9 @@ MainWindow::MainWindow(QWidget* parent)
     };
 
     // Adds a page item with optional XDG theme icon (graceful fallback)
-    auto addPage = [this, navIconSize](const QString& label, const QString& iconName, QWidget* page) {
-        auto* item = new QListWidgetItem(label);
+    auto addPage = [this, navIconSize](const QString &label, const QString &iconName,
+                                       QWidget *page) {
+        auto *item = new QListWidgetItem(label);
         // Current GNOME icon themes (Adwaita 46+, Yaru) ship most of these
         // names only in their "-symbolic" form; the full-colour legacy names
         // resolve to nothing, and QIcon::fromTheme fails silently, leaving
@@ -179,19 +176,23 @@ MainWindow::MainWindow(QWidget* parent)
 
     // ── Calculators section ─────────────────────────────────────────────
     addHeader(QStringLiteral("Calculators"));
-    addPage(QStringLiteral("Propagation"),   QStringLiteral("network-wireless"),         new PropagationPage);
-    addPage(QStringLiteral("Antenna"),       QStringLiteral("network-wireless"),         new AntennaPage);
-    addPage(QStringLiteral("Link Budget"),   QStringLiteral("network-transmit-receive"), new LinkPage);
-    addPage(QStringLiteral("Receiver"),      QStringLiteral("audio-card"),              new ReceiverPage);
-    addPage(QStringLiteral("Comms Jamming"), QStringLiteral("emblem-important"),        new JammingPage);
-    addPage(QStringLiteral("Radar Jamming"), QStringLiteral("dialog-warning"),         new RadarJammingPage);
+    addPage(QStringLiteral("Propagation"), QStringLiteral("network-wireless"), new PropagationPage);
+    addPage(QStringLiteral("Antenna"), QStringLiteral("network-wireless"), new AntennaPage);
+    addPage(QStringLiteral("Link Budget"), QStringLiteral("network-transmit-receive"),
+            new LinkPage);
+    addPage(QStringLiteral("Receiver"), QStringLiteral("audio-card"), new ReceiverPage);
+    addPage(QStringLiteral("Comms Jamming"), QStringLiteral("emblem-important"), new JammingPage);
+    addPage(QStringLiteral("Radar Jamming"), QStringLiteral("dialog-warning"),
+            new RadarJammingPage);
     // "find-location" isn't a standard XDG icon name and resolves to nothing
     // on most icon themes; "mark-location" is the widely-shipped equivalent.
-    addPage(QStringLiteral("Location"),      QStringLiteral("mark-location"),           new LocationPage);
-    addPage(QStringLiteral("Radar"),         QStringLiteral("system-search"),           new RadarPage);
-    addPage(QStringLiteral("Detection"),     QStringLiteral("edit-find"),               new DetectionPage);
-    addPage(QStringLiteral("Doppler & Resolution"), QStringLiteral("media-playlist-shuffle"), new DopplerPage);
-    addPage(QStringLiteral("Digital / DSSS"),QStringLiteral("media-playback-start"),    new DigitalPage);
+    addPage(QStringLiteral("Location"), QStringLiteral("mark-location"), new LocationPage);
+    addPage(QStringLiteral("Radar"), QStringLiteral("system-search"), new RadarPage);
+    addPage(QStringLiteral("Detection"), QStringLiteral("edit-find"), new DetectionPage);
+    addPage(QStringLiteral("Doppler & Resolution"), QStringLiteral("media-playlist-shuffle"),
+            new DopplerPage);
+    addPage(QStringLiteral("Digital / DSSS"), QStringLiteral("media-playback-start"),
+            new DigitalPage);
 
     // ── Reference section ───────────────────────────────────────────────
     // One sidebar row per refdata page (#74): the sidebar renders whatever
@@ -201,9 +202,8 @@ MainWindow::MainWindow(QWidget* parent)
     addHeader(QStringLiteral("Reference"));
     const auto refPages = ewpresenter::refdata::pages();
     for (std::size_t i = 0; i < refPages.size(); ++i) {
-        const auto& page = refPages[i];
-        addPage(QString::fromUtf8(page.title),
-                referencePageIcon(QString::fromUtf8(page.id)),
+        const auto &page = refPages[i];
+        addPage(QString::fromUtf8(page.title), referencePageIcon(QString::fromUtf8(page.id)),
                 new ReferencePage(i));
     }
 
@@ -211,31 +211,32 @@ MainWindow::MainWindow(QWidget* parent)
     nav_->setCurrentRow(1);
 
     // currentRowChanged maps through navToStack_ so headers/spacers are skipped
-    connect(nav_, &QListWidget::currentRowChanged, this,
-            [this](int row) {
-                if (row < 0 || row >= navToStack_.size()) return;
-                const int stackIdx = navToStack_[row];
-                if (stackIdx >= 0) stack_->setCurrentIndex(stackIdx);
-            });
+    connect(nav_, &QListWidget::currentRowChanged, this, [this](int row) {
+        if (row < 0 || row >= navToStack_.size())
+            return;
+        const int stackIdx = navToStack_[row];
+        if (stackIdx >= 0)
+            stack_->setCurrentIndex(stackIdx);
+    });
 
     // ── Sidebar: nav list + a visible "Reset to Defaults" button ───────────
     // Matches the always-visible placement Windows (nav-pane footer button)
     // and macOS (toolbar button) use; previously Linux only exposed this via
     // the File menu, which was easy to miss.
-    auto* sidebar    = new QWidget;
-    auto* sidebarBox = new QVBoxLayout(sidebar);
+    auto *sidebar = new QWidget;
+    auto *sidebarBox = new QVBoxLayout(sidebar);
     sidebarBox->setContentsMargins(0, 0, 0, 0);
     sidebarBox->setSpacing(4);
     sidebarBox->addWidget(nav_, 1);
 
-    auto* resetButton = new QPushButton(tr("Reset to Defaults\u2026"));
+    auto *resetButton = new QPushButton(tr("Reset to Defaults\u2026"));
     resetButton->setToolTip(tr("Clear all saved inputs and restart with default values"));
     resetButton->setAccessibleName(tr("Reset all calculators to default values"));
     sidebarBox->addWidget(resetButton);
 
     // ── Layout ────────────────────────────────────────────────────────────────
-    auto* central = new QWidget;
-    auto* layout  = new QHBoxLayout(central);
+    auto *central = new QWidget;
+    auto *layout = new QHBoxLayout(central);
     layout->setContentsMargins(4, 4, 4, 4);
     layout->setSpacing(4);
     layout->addWidget(sidebar);
@@ -245,20 +246,21 @@ MainWindow::MainWindow(QWidget* parent)
     // ── Reset persisted inputs (issue #20): wired to both the File menu
     // item and the sidebar button below so it's reachable either way.
     auto promptResetToDefaults = [this] {
-        const auto choice = QMessageBox::question(
-            this, tr("Reset to Defaults"),
-            tr("This clears all saved inputs and restarts EW Calculator with "
-               "default values. Continue?"),
-            QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+        const auto choice =
+            QMessageBox::question(this, tr("Reset to Defaults"),
+                                  tr("This clears all saved inputs and restarts EW Calculator with "
+                                     "default values. Continue?"),
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
         if (choice != QMessageBox::Yes)
             return;
         AppSettings::instance().resetAll();
-        QProcess::startDetached(QApplication::applicationFilePath(), QApplication::arguments().mid(1));
+        QProcess::startDetached(QApplication::applicationFilePath(),
+                                QApplication::arguments().mid(1));
         QApplication::quit();
     };
 
-    auto* fileMenu = menuBar()->addMenu(tr("&File"));
-    auto* resetAction = fileMenu->addAction(tr("Reset to &Defaults\u2026"));
+    auto *fileMenu = menuBar()->addMenu(tr("&File"));
+    auto *resetAction = fileMenu->addAction(tr("Reset to &Defaults\u2026"));
     resetAction->setToolTip(tr("Clear all saved inputs and restart with default values"));
     connect(resetAction, &QAction::triggered, this, promptResetToDefaults);
     connect(resetButton, &QPushButton::clicked, this, promptResetToDefaults);

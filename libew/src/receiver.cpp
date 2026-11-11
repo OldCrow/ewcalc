@@ -8,25 +8,23 @@ namespace libew::receiver {
 Dbm system_sensitivity(Mhz bandwidth, Db noise_figure, Db required_snr) noexcept {
     // S = -114 + 10*log10(BW/1MHz) + NF + SNR_min
     // (-114 dBm/MHz = -174 dBm/Hz + 60 dB for MHz baseline)
-    return Dbm{
-        -114.0
-        + 10.0 * std::log10(bandwidth.value)
-        + noise_figure.value
-        + required_snr.value
-    };
+    return Dbm{-114.0 + 10.0 * std::log10(bandwidth.value) + noise_figure.value +
+               required_snr.value};
 }
 
 Db cascaded_noise_figure(Stage s1, Stage s2) noexcept {
     // Friis: NF_sys = NF1_lin + (NF2_lin - 1) / G1_lin
     const double nf1 = units::db_to_linear(s1.noise_figure);
     const double nf2 = units::db_to_linear(s2.noise_figure);
-    const double g1  = units::db_to_linear(s1.gain);
+    const double g1 = units::db_to_linear(s1.gain);
     return units::linear_to_db(nf1 + (nf2 - 1.0) / g1);
 }
 
 Db cascaded_noise_figure(std::span<const Stage> stages) noexcept {
-    if (stages.empty()) return Db{0.0};
-    if (stages.size() == 1) return stages[0].noise_figure;
+    if (stages.empty())
+        return Db{0.0};
+    if (stages.size() == 1)
+        return stages[0].noise_figure;
 
     // Accumulate Friis from front to back
     double nf_sys = units::db_to_linear(stages[0].noise_figure);
@@ -75,9 +73,7 @@ Kelvin noise_temp_from_nf(Db noise_figure) noexcept {
 
 Db nf_from_noise_temp(Kelvin noise_temp) noexcept {
     // NF_dB = 10*log10(1 + T_e / T_ref)
-    return Db{
-        10.0 * std::log10(1.0 + noise_temp.value / constants::standard_temperature_K)
-    };
+    return Db{10.0 * std::log10(1.0 + noise_temp.value / constants::standard_temperature_K)};
 }
 
 Kelvin loss_noise_temp(Db loss_db, Kelvin phys_temp) noexcept {

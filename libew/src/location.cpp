@@ -13,13 +13,10 @@ Km cep_from_rms_bearing_error(Degrees rms_bearing_error, Km range_to_emitter) no
     return Km{1.2 * range_to_emitter.value * std::tan(sigma_rad)};
 }
 
-Km cep_from_tdoa_rms_error(double rms_time_error_ns,
-                            Km range_to_emitter,
-                            Km baseline) noexcept {
+Km cep_from_tdoa_rms_error(double rms_time_error_ns, Km range_to_emitter, Km baseline) noexcept {
     // CEP_TDOA ≈ c·σ_t·R / (2·B)
     // sigma_r_km = c (m/s) * sigma_t (ns) * 1e-9 (s/ns) / 1000 (m/km)
-    const double sigma_r_km = constants::speed_of_light_m_s
-                              * rms_time_error_ns * 1e-9 / 1000.0;
+    const double sigma_r_km = constants::speed_of_light_m_s * rms_time_error_ns * 1e-9 / 1000.0;
     return Km{sigma_r_km * range_to_emitter.value / (2.0 * baseline.value)};
 }
 

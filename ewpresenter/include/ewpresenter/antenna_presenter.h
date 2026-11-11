@@ -14,7 +14,7 @@ namespace ewpresenter {
 using namespace libew::units;
 
 class AntennaPresenter : public PresenterBase<AntennaPresenter> {
-    friend PresenterBase<AntennaPresenter>;  ///< Allows base to call recompute/fire.
+    friend PresenterBase<AntennaPresenter>; ///< Allows base to call recompute/fire.
 public:
     struct Output {
         // ERP
@@ -59,40 +59,40 @@ public:
     // -----------------------------------------------------------------------
     // Accessors
     // -----------------------------------------------------------------------
-    [[nodiscard]] const Output& output() const noexcept { return output_; }
+    [[nodiscard]] const Output &output() const noexcept { return output_; }
     [[nodiscard]] bool is_valid() const noexcept { return output_.valid; }
 
-    [[nodiscard]] double gain_dbi()        const noexcept { return gain_dbi_; }
+    [[nodiscard]] double gain_dbi() const noexcept { return gain_dbi_; }
     [[nodiscard]] double az_beamwidth_deg() const noexcept { return az_beamwidth_deg_; }
     [[nodiscard]] double el_beamwidth_deg() const noexcept { return el_beamwidth_deg_; }
-    [[nodiscard]] double tx_power_dbm()    const noexcept { return tx_power_dbm_; }
-    [[nodiscard]] double frequency_mhz()   const noexcept { return frequency_mhz_; }
+    [[nodiscard]] double tx_power_dbm() const noexcept { return tx_power_dbm_; }
+    [[nodiscard]] double frequency_mhz() const noexcept { return frequency_mhz_; }
 
-    [[nodiscard]] FieldError gain_error()          const noexcept { return gain_err_; }
-    [[nodiscard]] FieldError az_beamwidth_error()   const noexcept { return az_bw_err_; }
-    [[nodiscard]] FieldError el_beamwidth_error()   const noexcept { return el_bw_err_; }
-    [[nodiscard]] FieldError tx_power_error()       const noexcept { return tx_power_err_; }
-    [[nodiscard]] FieldError frequency_error()      const noexcept { return frequency_err_; }
+    [[nodiscard]] FieldError gain_error() const noexcept { return gain_err_; }
+    [[nodiscard]] FieldError az_beamwidth_error() const noexcept { return az_bw_err_; }
+    [[nodiscard]] FieldError el_beamwidth_error() const noexcept { return el_bw_err_; }
+    [[nodiscard]] FieldError tx_power_error() const noexcept { return tx_power_err_; }
+    [[nodiscard]] FieldError frequency_error() const noexcept { return frequency_err_; }
 
-    void set_on_change(std::function<void(const Output&)> cb) noexcept {
+    void set_on_change(std::function<void(const Output &)> cb) noexcept {
         on_change_ = std::move(cb);
     }
 
 private:
-    double gain_dbi_          { 0.0};
-    double az_beamwidth_deg_  {60.0};
-    double el_beamwidth_deg_  {60.0};
-    double tx_power_dbm_      {30.0};
-    double frequency_mhz_     {1000.0};
+    double gain_dbi_{0.0};
+    double az_beamwidth_deg_{60.0};
+    double el_beamwidth_deg_{60.0};
+    double tx_power_dbm_{30.0};
+    double frequency_mhz_{1000.0};
 
-    FieldError gain_err_      {FieldError::none};
-    FieldError az_bw_err_     {FieldError::none};
-    FieldError el_bw_err_     {FieldError::none};
-    FieldError tx_power_err_  {FieldError::none};
-    FieldError frequency_err_ {FieldError::none};
+    FieldError gain_err_{FieldError::none};
+    FieldError az_bw_err_{FieldError::none};
+    FieldError el_bw_err_{FieldError::none};
+    FieldError tx_power_err_{FieldError::none};
+    FieldError frequency_err_{FieldError::none};
 
     Output output_;
-    std::function<void(const Output&)> on_change_;
+    std::function<void(const Output &)> on_change_;
 
     void recompute() noexcept; ///< CRTP hook — called by PresenterBase::update_field.
     void fire() noexcept;      ///< CRTP hook — called by PresenterBase::update_field.

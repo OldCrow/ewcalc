@@ -15,18 +15,17 @@
 
 class QTimer;
 
-class AppSettings : public QObject
-{
+class AppSettings : public QObject {
     Q_OBJECT
 public:
     /// Returns the process-wide settings instance.
-    static AppSettings& instance();
+    static AppSettings &instance();
 
     /// Returns the stored value for group/key, or defaultValue if absent.
-    QVariant value(const QString& group, const QString& key, const QVariant& defaultValue) const;
+    QVariant value(const QString &group, const QString &key, const QVariant &defaultValue) const;
 
     /// Stores value for group/key and schedules a debounced write to disk.
-    void setValue(const QString& group, const QString& key, const QVariant& newValue);
+    void setValue(const QString &group, const QString &key, const QVariant &newValue);
 
     /// Writes any pending changes to disk immediately. Call before quitting.
     void flush();
@@ -49,7 +48,7 @@ private:
     void writeToDisk();
 
     QJsonObject root_;
-    QTimer* saveTimer_;
+    QTimer *saveTimer_;
     bool dirty_ = false;
 
     static constexpr int kConfigVersion = 1;

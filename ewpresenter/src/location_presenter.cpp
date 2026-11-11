@@ -4,13 +4,17 @@
 
 namespace ewpresenter {
 
-LocationPresenter::LocationPresenter() noexcept { recompute(); }
+LocationPresenter::LocationPresenter() noexcept {
+    recompute();
+}
 
 void LocationPresenter::set_rms_bearing_error(double degrees) noexcept {
-    update_field(degrees, rms_bearing_error_deg_, rms_bearing_err_, validate_positive_bounded(degrees, 0.01, 45.0));
+    update_field(degrees, rms_bearing_error_deg_, rms_bearing_err_,
+                 validate_positive_bounded(degrees, 0.01, 45.0));
 }
 void LocationPresenter::set_rms_time_error(double ns) noexcept {
-    update_field(ns, rms_time_error_ns_, rms_time_err_, validate_positive_bounded(ns, 0.001, 100000.0));
+    update_field(ns, rms_time_error_ns_, rms_time_err_,
+                 validate_positive_bounded(ns, 0.001, 100000.0));
 }
 void LocationPresenter::set_baseline(double km) noexcept {
     update_field(km, baseline_km_, baseline_err_, validate_positive_bounded(km, 0.1, 10000.0));
@@ -26,19 +30,19 @@ void LocationPresenter::set_semi_minor(double km) noexcept {
 }
 
 void LocationPresenter::recompute() noexcept {
-    const bool aoa_valid  = (rms_bearing_err_ == FieldError::none &&
-                             aoa_range_err_   == FieldError::none);
-    const bool tdoa_valid = (rms_time_err_  == FieldError::none &&
-                             aoa_range_err_ == FieldError::none &&
-                             baseline_err_  == FieldError::none);
+    const bool aoa_valid =
+        (rms_bearing_err_ == FieldError::none && aoa_range_err_ == FieldError::none);
+    const bool tdoa_valid =
+        (rms_time_err_ == FieldError::none && aoa_range_err_ == FieldError::none &&
+         baseline_err_ == FieldError::none);
     // Cross-field: semi_minor must not exceed semi_major.
-    eep_axis_err_ = (semi_major_err_ == FieldError::none &&
-                     semi_minor_err_ == FieldError::none &&
-                     semi_major_km_  <  semi_minor_km_)
-                    ? FieldError::above_maximum : FieldError::none;
-    const bool eep_valid  = (semi_major_err_ == FieldError::none &&
-                             semi_minor_err_ == FieldError::none &&
-                             eep_axis_err_   == FieldError::none);
+    eep_axis_err_ = (semi_major_err_ == FieldError::none && semi_minor_err_ == FieldError::none &&
+                     semi_major_km_ < semi_minor_km_)
+                        ? FieldError::above_maximum
+                        : FieldError::none;
+    const bool eep_valid =
+        (semi_major_err_ == FieldError::none && semi_minor_err_ == FieldError::none &&
+         eep_axis_err_ == FieldError::none);
 
     // valid is true if any sub-section can produce output; each section independently
     // dashes its own string when invalid, so callers should check per-section strings.
@@ -63,8 +67,7 @@ void LocationPresenter::recompute() noexcept {
     }
 
     if (eep_valid) {
-        output_.cep_eep = libew::location::cep_from_eep(
-            Km{semi_major_km_}, Km{semi_minor_km_});
+        output_.cep_eep = libew::location::cep_from_eep(Km{semi_major_km_}, Km{semi_minor_km_});
         output_.cep_eep_str = format_km(output_.cep_eep);
     } else {
         output_.cep_eep_str = kDash;
@@ -72,7 +75,8 @@ void LocationPresenter::recompute() noexcept {
 }
 
 void LocationPresenter::fire() noexcept {
-    if (on_change_) on_change_(output_);
+    if (on_change_)
+        on_change_(output_);
 }
 
 } // namespace ewpresenter

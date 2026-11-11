@@ -5,27 +5,18 @@
 namespace libew::propagation {
 
 Db free_space_path_loss(Km distance, Mhz frequency) noexcept {
-    return Db{
-        constants::fspl_constant_km_mhz
-        + 20.0 * std::log10(distance.value)
-        + 20.0 * std::log10(frequency.value)
-    };
+    return Db{constants::fspl_constant_km_mhz + 20.0 * std::log10(distance.value) +
+              20.0 * std::log10(frequency.value)};
 }
 
 Db two_ray_path_loss(Km distance, Meters tx_height, Meters rx_height) noexcept {
-    return Db{
-        constants::two_ray_constant_km
-        + 40.0 * std::log10(distance.value)
-        - 20.0 * std::log10(tx_height.value)
-        - 20.0 * std::log10(rx_height.value)
-    };
+    return Db{constants::two_ray_constant_km + 40.0 * std::log10(distance.value) -
+              20.0 * std::log10(tx_height.value) - 20.0 * std::log10(rx_height.value)};
 }
 
 Km fresnel_zone_distance(Meters tx_height, Meters rx_height, Mhz frequency) noexcept {
-    return Km{
-        tx_height.value * rx_height.value * frequency.value
-        / constants::fresnel_zone_denominator
-    };
+    return Km{tx_height.value * rx_height.value * frequency.value /
+              constants::fresnel_zone_denominator};
 }
 
 bool is_two_ray_regime(Km distance, Meters tx_height, Meters rx_height, Mhz frequency) noexcept {
@@ -39,22 +30,17 @@ Db path_loss(Km distance, Meters tx_height, Meters rx_height, Mhz frequency) noe
     return free_space_path_loss(distance, frequency);
 }
 
-Db knife_edge_diffraction_loss(
-    Km     dist_tx_edge,
-    Km     dist_edge_rx,
-    Meters los_clearance,
-    Mhz    frequency) noexcept
-{
+Db knife_edge_diffraction_loss(Km dist_tx_edge, Km dist_edge_rx, Meters los_clearance,
+                               Mhz frequency) noexcept {
     // Wavelength in km: λ = c(m/s) / f(Hz) / 1000
-    const double lambda_km = constants::speed_of_light_m_s
-                             / (frequency.value * 1.0e6) / 1000.0;
+    const double lambda_km = constants::speed_of_light_m_s / (frequency.value * 1.0e6) / 1000.0;
 
     // Fresnel diffraction parameter v
     // v = h * sqrt(2 * (d1 + d2) / (lambda * d1 * d2))
     // h is negative when the edge is above the LOS (los_clearance < 0 means edge above LOS)
     const double d1 = dist_tx_edge.value;
     const double d2 = dist_edge_rx.value;
-    const double h  = -los_clearance.value / 1000.0; // convert m to km, sign: positive = above LOS
+    const double h = -los_clearance.value / 1000.0; // convert m to km, sign: positive = above LOS
     const double lambda = lambda_km;
     const double v = h * std::sqrt(2.0 * (d1 + d2) / (lambda * d1 * d2));
 
@@ -68,9 +54,8 @@ Db knife_edge_diffraction_loss(
         gd_db = 20.0 * std::log10(0.5 * std::exp(-0.95 * v));
     } else if (v < 2.4) {
         const double inner = 0.1184 - (0.38 - 0.1 * v) * (0.38 - 0.1 * v);
-        gd_db = (inner > 0.0)
-            ? 20.0 * std::log10(0.4 - std::sqrt(inner))
-            : 20.0 * std::log10(0.225 / v);
+        gd_db = (inner > 0.0) ? 20.0 * std::log10(0.4 - std::sqrt(inner))
+                              : 20.0 * std::log10(0.225 / v);
     } else {
         gd_db = 20.0 * std::log10(0.225 / v);
     }
@@ -81,18 +66,13 @@ Db knife_edge_diffraction_loss(
 Meters earth_bulge(Km d1, Km d2) noexcept {
     // h_m = d1_km * d2_km * 1000 / (2 * R_eff_km)
     //      = d1_km * d2_km / (2 * 8494.67 / 1000)
-    return Meters{
-        d1.value * d2.value * 1000.0
-        / (2.0 * constants::effective_earth_radius_km)
-    };
+    return Meters{d1.value * d2.value * 1000.0 / (2.0 * constants::effective_earth_radius_km)};
 }
 
 Km radar_horizon_range(Meters tx_height, Meters rx_height) noexcept {
     // R_km = coeff * (sqrt(h_tx_m) + sqrt(h_rx_m))
-    return Km{
-        constants::radar_horizon_coeff
-        * (std::sqrt(tx_height.value) + std::sqrt(rx_height.value))
-    };
+    return Km{constants::radar_horizon_coeff *
+              (std::sqrt(tx_height.value) + std::sqrt(rx_height.value))};
 }
 
 } // namespace libew::propagation

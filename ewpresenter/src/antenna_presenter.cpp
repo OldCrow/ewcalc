@@ -10,10 +10,13 @@ constexpr double kMinGainDbiForBeamwidth = -6.35; // keeps circular beamwidth <=
 constexpr double kMaxGainDbi = 60.0;
 } // namespace
 
-AntennaPresenter::AntennaPresenter() noexcept { recompute(); }
+AntennaPresenter::AntennaPresenter() noexcept {
+    recompute();
+}
 
 void AntennaPresenter::set_gain(double dbi) noexcept {
-    update_field(dbi, gain_dbi_, gain_err_, validate_bounds(dbi, kMinGainDbiForBeamwidth, kMaxGainDbi));
+    update_field(dbi, gain_dbi_, gain_err_,
+                 validate_bounds(dbi, kMinGainDbiForBeamwidth, kMaxGainDbi));
 }
 void AntennaPresenter::set_az_beamwidth(double deg) noexcept {
     update_field(deg, az_beamwidth_deg_, az_bw_err_, validate_positive_bounded(deg, 0.1, 360.0));
@@ -25,21 +28,20 @@ void AntennaPresenter::set_tx_power(double dbm) noexcept {
     update_field(dbm, tx_power_dbm_, tx_power_err_, validate_bounds(dbm, -30.0, 100.0));
 }
 void AntennaPresenter::set_frequency(double mhz) noexcept {
-    update_field(mhz, frequency_mhz_, frequency_err_, validate_positive_bounded(mhz, 0.1, 100000.0));
+    update_field(mhz, frequency_mhz_, frequency_err_,
+                 validate_positive_bounded(mhz, 0.1, 100000.0));
 }
 
 void AntennaPresenter::recompute() noexcept {
-    output_.valid = (gain_err_      == FieldError::none &&
-                     az_bw_err_     == FieldError::none &&
-                     el_bw_err_     == FieldError::none &&
-                     tx_power_err_  == FieldError::none &&
+    output_.valid = (gain_err_ == FieldError::none && az_bw_err_ == FieldError::none &&
+                     el_bw_err_ == FieldError::none && tx_power_err_ == FieldError::none &&
                      frequency_err_ == FieldError::none);
 
     if (!output_.valid) {
-        output_.erp_str                 = kDash;
+        output_.erp_str = kDash;
         output_.beamwidth_from_gain_str = kDash;
         output_.gain_from_beamwidth_str = kDash;
-        output_.wavelength_str          = kDash;
+        output_.wavelength_str = kDash;
         return;
     }
 
@@ -47,18 +49,19 @@ void AntennaPresenter::recompute() noexcept {
 
     output_.erp = libew::antenna::erp(Dbm{tx_power_dbm_}, Db{gain_dbi_});
     output_.beamwidth_from_gain = libew::antenna::beamwidth_from_gain(Db{gain_dbi_});
-    output_.gain_from_beamwidth = libew::antenna::gain_from_beamwidth(
-        Degrees{az_beamwidth_deg_}, Degrees{el_beamwidth_deg_});
+    output_.gain_from_beamwidth =
+        libew::antenna::gain_from_beamwidth(Degrees{az_beamwidth_deg_}, Degrees{el_beamwidth_deg_});
     output_.wavelength = libew::antenna::wavelength(Mhz{frequency_mhz_});
 
-    output_.erp_str                 = format_dbm(output_.erp);
+    output_.erp_str = format_dbm(output_.erp);
     output_.beamwidth_from_gain_str = format_degrees(output_.beamwidth_from_gain);
     output_.gain_from_beamwidth_str = format_db(output_.gain_from_beamwidth);
-    output_.wavelength_str          = format_m(output_.wavelength, 2);
+    output_.wavelength_str = format_m(output_.wavelength, 2);
 }
 
 void AntennaPresenter::fire() noexcept {
-    if (on_change_) on_change_(output_);
+    if (on_change_)
+        on_change_(output_);
 }
 
 } // namespace ewpresenter

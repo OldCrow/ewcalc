@@ -97,23 +97,21 @@ void test_beamwidth_from_gain_increases_with_lower_gain() {
 
 void test_gain_from_beamwidth_10x10() {
     // θ_az = θ_el = 10°: G = 10*log10(29000 / 100) = 10*log10(290) = 24.62 dBi
-    ASSERT_NEAR(gain_from_beamwidth(10.0_deg, 10.0_deg).value,
-                10.0 * std::log10(290.0), 0.01);
+    ASSERT_NEAR(gain_from_beamwidth(10.0_deg, 10.0_deg).value, 10.0 * std::log10(290.0), 0.01);
 }
 
 void test_gain_from_beamwidth_1x1() {
     // θ_az = θ_el = 1°: G = 10*log10(29000) = 44.62 dBi
-    ASSERT_NEAR(gain_from_beamwidth(1.0_deg, 1.0_deg).value,
-                10.0 * std::log10(29000.0), 0.01);
+    ASSERT_NEAR(gain_from_beamwidth(1.0_deg, 1.0_deg).value, 10.0 * std::log10(29000.0), 0.01);
 }
 
 void test_beamwidth_gain_consistency() {
     // beamwidth_from_gain is the circular/symmetric inverse of
     // gain_from_beamwidth where θ_az == θ_el.
-    const Degrees bw_low  = beamwidth_from_gain(10.0_dB);
+    const Degrees bw_low = beamwidth_from_gain(10.0_dB);
     const Degrees bw_high = beamwidth_from_gain(30.0_dB);
-    ASSERT_TRUE(bw_high.value < bw_low.value);  // higher gain → narrower beam
-    const Db g_from_low  = gain_from_beamwidth(bw_low,  bw_low);
+    ASSERT_TRUE(bw_high.value < bw_low.value); // higher gain → narrower beam
+    const Db g_from_low = gain_from_beamwidth(bw_low, bw_low);
     const Db g_from_high = gain_from_beamwidth(bw_high, bw_high);
     ASSERT_NEAR(g_from_low.value, 10.0, 1e-9);
     ASSERT_NEAR(g_from_high.value, 30.0, 1e-9);

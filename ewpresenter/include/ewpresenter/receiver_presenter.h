@@ -17,6 +17,7 @@ using namespace libew::units;
 
 class ReceiverPresenter : public PresenterBase<ReceiverPresenter> {
     friend PresenterBase<ReceiverPresenter>;
+
 public:
     struct Output {
         // Sensitivity section
@@ -24,24 +25,24 @@ public:
         std::string sensitivity_str;
 
         // Cascaded noise figure section
-        Db  cascaded_nf{};
+        Db cascaded_nf{};
         std::string cascaded_nf_str;
 
         // Analog dynamic range
-        Db  sfdr_second_order{};
-        Db  sfdr_third_order{};
+        Db sfdr_second_order{};
+        Db sfdr_third_order{};
         std::string sfdr2_str;
         std::string sfdr3_str;
 
         // Digital dynamic range
-        Db  digital_dr{};
-        Db  digital_sqnr{};
+        Db digital_dr{};
+        Db digital_sqnr{};
         std::string digital_dr_str;
         std::string digital_sqnr_str;
 
         // System noise temperature and equivalent NF (from system NF input)
         Kelvin system_noise_temp{};
-        Db     system_nf{};
+        Db system_nf{};
         std::string system_noise_temp_str;
         std::string system_nf_str;
 
@@ -95,54 +96,54 @@ public:
     // -----------------------------------------------------------------------
     // Accessors
     // -----------------------------------------------------------------------
-    [[nodiscard]] const Output& output() const noexcept { return output_; }
+    [[nodiscard]] const Output &output() const noexcept { return output_; }
     [[nodiscard]] bool is_valid() const noexcept { return output_.valid; }
 
-    [[nodiscard]] double bandwidth_mhz()      const noexcept { return bandwidth_mhz_; }
-    [[nodiscard]] double noise_figure_db()     const noexcept { return noise_figure_db_; }
-    [[nodiscard]] double required_snr_db()     const noexcept { return required_snr_db_; }
+    [[nodiscard]] double bandwidth_mhz() const noexcept { return bandwidth_mhz_; }
+    [[nodiscard]] double noise_figure_db() const noexcept { return noise_figure_db_; }
+    [[nodiscard]] double required_snr_db() const noexcept { return required_snr_db_; }
     [[nodiscard]] double second_order_ip_dbm() const noexcept { return second_order_ip_dbm_; }
-    [[nodiscard]] double third_order_ip_dbm()  const noexcept { return third_order_ip_dbm_; }
-    [[nodiscard]] int    adc_bits()            const noexcept { return adc_bits_; }
-    [[nodiscard]] const std::vector<StageInput>& stages() const noexcept { return stages_; }
+    [[nodiscard]] double third_order_ip_dbm() const noexcept { return third_order_ip_dbm_; }
+    [[nodiscard]] int adc_bits() const noexcept { return adc_bits_; }
+    [[nodiscard]] const std::vector<StageInput> &stages() const noexcept { return stages_; }
 
-    [[nodiscard]] FieldError bandwidth_error()       const noexcept { return bandwidth_err_; }
-    [[nodiscard]] FieldError noise_figure_error()    const noexcept { return noise_figure_err_; }
-    [[nodiscard]] FieldError required_snr_error()    const noexcept { return required_snr_err_; }
+    [[nodiscard]] FieldError bandwidth_error() const noexcept { return bandwidth_err_; }
+    [[nodiscard]] FieldError noise_figure_error() const noexcept { return noise_figure_err_; }
+    [[nodiscard]] FieldError required_snr_error() const noexcept { return required_snr_err_; }
     [[nodiscard]] FieldError second_order_ip_error() const noexcept { return second_order_ip_err_; }
-    [[nodiscard]] FieldError third_order_ip_error()  const noexcept { return third_order_ip_err_; }
-    [[nodiscard]] FieldError adc_bits_error()         const noexcept { return adc_bits_err_; }
-    [[nodiscard]] FieldError stage_nf_error()         const noexcept { return stage_nf_err_; }
+    [[nodiscard]] FieldError third_order_ip_error() const noexcept { return third_order_ip_err_; }
+    [[nodiscard]] FieldError adc_bits_error() const noexcept { return adc_bits_err_; }
+    [[nodiscard]] FieldError stage_nf_error() const noexcept { return stage_nf_err_; }
 
-    void set_on_change(std::function<void(const Output&)> cb) noexcept {
+    void set_on_change(std::function<void(const Output &)> cb) noexcept {
         on_change_ = std::move(cb);
     }
 
 private:
-    double bandwidth_mhz_      {0.1};
-    double noise_figure_db_    {6.5};
-    double required_snr_db_    {15.0};
+    double bandwidth_mhz_{0.1};
+    double noise_figure_db_{6.5};
+    double required_snr_db_{15.0};
     double second_order_ip_dbm_{50.0};
-    double third_order_ip_dbm_ {20.0};
-    int    adc_bits_           {12};
+    double third_order_ip_dbm_{20.0};
+    int adc_bits_{12};
 
     std::vector<StageInput> stages_{
-        {1.0,  -1.0},   // feed loss
-        {3.0,  20.0},   // preamp
-        {10.0, -10.0},  // cable
-        {11.0,  0.0}    // receiver
+        {1.0, -1.0},   // feed loss
+        {3.0, 20.0},   // preamp
+        {10.0, -10.0}, // cable
+        {11.0, 0.0}    // receiver
     };
 
-    FieldError bandwidth_err_       {FieldError::none};
-    FieldError noise_figure_err_    {FieldError::none};
-    FieldError required_snr_err_    {FieldError::none};
-    FieldError second_order_ip_err_ {FieldError::none};
-    FieldError third_order_ip_err_  {FieldError::none};
-    FieldError adc_bits_err_        {FieldError::none};
-    FieldError stage_nf_err_        {FieldError::none};
+    FieldError bandwidth_err_{FieldError::none};
+    FieldError noise_figure_err_{FieldError::none};
+    FieldError required_snr_err_{FieldError::none};
+    FieldError second_order_ip_err_{FieldError::none};
+    FieldError third_order_ip_err_{FieldError::none};
+    FieldError adc_bits_err_{FieldError::none};
+    FieldError stage_nf_err_{FieldError::none};
 
     Output output_;
-    std::function<void(const Output&)> on_change_;
+    std::function<void(const Output &)> on_change_;
 
     void recompute() noexcept;
     void fire() noexcept;

@@ -36,20 +36,17 @@
 
 /// One entry in a page's result-row registry: the visible label and the
 /// QLabel displaying its current formatted value.
-using ResultRowRegistry = QVector<QPair<QString, QLabel*>>;
+using ResultRowRegistry = QVector<QPair<QString, QLabel *>>;
 
 /// Creates a QDoubleSpinBox without adding it to a layout.
 /// Used for spinboxes that live inside custom layouts (e.g. stage rows).
 /// Ownership: the caller must either pass a non-null parent to take immediate
 /// ownership, or add the returned spinbox to a layout (which re-parents it)
 /// before any exception can be thrown — otherwise the widget will leak.
-inline QDoubleSpinBox* makeSpinBox(
-    double minVal, double maxVal, double initVal,
-    double step = 1.0, int decimals = 3,
-    const QString& accessibleName = QString(),
-    QWidget* parent = nullptr)
-{
-    auto* sb = new QDoubleSpinBox(parent);
+inline QDoubleSpinBox *makeSpinBox(double minVal, double maxVal, double initVal, double step = 1.0,
+                                   int decimals = 3, const QString &accessibleName = QString(),
+                                   QWidget *parent = nullptr) {
+    auto *sb = new QDoubleSpinBox(parent);
     sb->setRange(minVal, maxVal);
     sb->setSingleStep(step);
     sb->setDecimals(decimals);
@@ -73,14 +70,11 @@ inline QDoubleSpinBox* makeSpinBox(
 /// restoreSpinValue() once more so a persisted value that differs from
 /// initVal is actually propagated to the presenter before the first
 /// recompute (see issue #20).
-inline QDoubleSpinBox* addSpinRow(
-    QFormLayout* form, const QString& label,
-    double minVal, double maxVal, double initVal,
-    double step, int decimals,
-    const QString& settingsGroup, const QString& settingsKey,
-    const QString& help = QString())
-{
-    auto* sb = new QDoubleSpinBox;
+inline QDoubleSpinBox *addSpinRow(QFormLayout *form, const QString &label, double minVal,
+                                  double maxVal, double initVal, double step, int decimals,
+                                  const QString &settingsGroup, const QString &settingsKey,
+                                  const QString &help = QString()) {
+    auto *sb = new QDoubleSpinBox;
     sb->setRange(minVal, maxVal);
     sb->setSingleStep(step);
     sb->setDecimals(decimals);
@@ -95,13 +89,12 @@ inline QDoubleSpinBox* addSpinRow(
     // validation error clears (issue #41).
     sb->setProperty("ewcBaseHelp", help);
 
-    QObject::connect(sb, &QDoubleSpinBox::valueChanged, sb,
-        [settingsGroup, settingsKey](double v) {
-            AppSettings::instance().setValue(settingsGroup, settingsKey, v);
-        });
+    QObject::connect(sb, &QDoubleSpinBox::valueChanged, sb, [settingsGroup, settingsKey](double v) {
+        AppSettings::instance().setValue(settingsGroup, settingsKey, v);
+    });
 
-    auto* wrapper = new QWidget;
-    auto* hbox    = new QHBoxLayout(wrapper);
+    auto *wrapper = new QWidget;
+    auto *hbox = new QHBoxLayout(wrapper);
     hbox->setContentsMargins(0, 0, 0, 0);
     hbox->addStretch(1);
     hbox->addWidget(sb);
@@ -111,13 +104,10 @@ inline QDoubleSpinBox* addSpinRow(
 }
 
 /// Same as addSpinRow but for integer QSpinBox (ADC bits, coherent pulses, etc.).
-inline QSpinBox* addIntSpinRow(
-    QFormLayout* form, const QString& label,
-    int minVal, int maxVal, int initVal,
-    const QString& settingsGroup, const QString& settingsKey,
-    const QString& help = QString())
-{
-    auto* sb = new QSpinBox;
+inline QSpinBox *addIntSpinRow(QFormLayout *form, const QString &label, int minVal, int maxVal,
+                               int initVal, const QString &settingsGroup,
+                               const QString &settingsKey, const QString &help = QString()) {
+    auto *sb = new QSpinBox;
     sb->setRange(minVal, maxVal);
     sb->setValue(initVal);
     sb->setAlignment(Qt::AlignRight);
@@ -128,13 +118,12 @@ inline QSpinBox* addIntSpinRow(
         sb->setToolTip(help);
     sb->setProperty("ewcBaseHelp", help);
 
-    QObject::connect(sb, &QSpinBox::valueChanged, sb,
-        [settingsGroup, settingsKey](int v) {
-            AppSettings::instance().setValue(settingsGroup, settingsKey, v);
-        });
+    QObject::connect(sb, &QSpinBox::valueChanged, sb, [settingsGroup, settingsKey](int v) {
+        AppSettings::instance().setValue(settingsGroup, settingsKey, v);
+    });
 
-    auto* wrapper = new QWidget;
-    auto* hbox    = new QHBoxLayout(wrapper);
+    auto *wrapper = new QWidget;
+    auto *hbox = new QHBoxLayout(wrapper);
     hbox->setContentsMargins(0, 0, 0, 0);
     hbox->addStretch(1);
     hbox->addWidget(sb);
@@ -149,15 +138,13 @@ inline QSpinBox* addIntSpinRow(
 /// restored value is propagated to the presenter before the first recompute.
 /// A no-op (no signal emitted) if there is nothing persisted yet or the
 /// persisted value equals the current value.
-inline void restoreSpinValue(QDoubleSpinBox* sb, const QString& group, const QString& key)
-{
+inline void restoreSpinValue(QDoubleSpinBox *sb, const QString &group, const QString &key) {
     const double restored = AppSettings::instance().value(group, key, sb->value()).toDouble();
     sb->setValue(qBound(sb->minimum(), restored, sb->maximum()));
 }
 
 /// Integer overload of restoreSpinValue().
-inline void restoreSpinValue(QSpinBox* sb, const QString& group, const QString& key)
-{
+inline void restoreSpinValue(QSpinBox *sb, const QString &group, const QString &key) {
     const int restored = AppSettings::instance().value(group, key, sb->value()).toInt();
     sb->setValue(qBound(sb->minimum(), restored, sb->maximum()));
 }
@@ -167,15 +154,20 @@ inline void restoreSpinValue(QSpinBox* sb, const QString& group, const QString& 
 /// Human-readable validation message for a FieldError, matching the wording
 /// used by the macOS (Shared.swift) and Windows (FieldErrorToTooltipConverter)
 /// per-field validation UI so the message is consistent across frontends.
-inline QString describeFieldError(ewpresenter::FieldError err)
-{
+inline QString describeFieldError(ewpresenter::FieldError err) {
     switch (err) {
-        case ewpresenter::FieldError::none:             return QString();
-        case ewpresenter::FieldError::below_minimum:    return QStringLiteral("Value is below the minimum");
-        case ewpresenter::FieldError::above_maximum:    return QStringLiteral("Value exceeds the maximum");
-        case ewpresenter::FieldError::invalid_zero:     return QStringLiteral("Value must be positive");
-        case ewpresenter::FieldError::invalid_negative: return QStringLiteral("Value must not be negative");
-        case ewpresenter::FieldError::not_finite:       return QStringLiteral("Value must be a finite number");
+        case ewpresenter::FieldError::none:
+            return QString();
+        case ewpresenter::FieldError::below_minimum:
+            return QStringLiteral("Value is below the minimum");
+        case ewpresenter::FieldError::above_maximum:
+            return QStringLiteral("Value exceeds the maximum");
+        case ewpresenter::FieldError::invalid_zero:
+            return QStringLiteral("Value must be positive");
+        case ewpresenter::FieldError::invalid_negative:
+            return QStringLiteral("Value must not be negative");
+        case ewpresenter::FieldError::not_finite:
+            return QStringLiteral("Value must be a finite number");
     }
     return QStringLiteral("Invalid value");
 }
@@ -185,8 +177,7 @@ inline QString describeFieldError(ewpresenter::FieldError err)
 /// the field's base help text (stashed as the "ewcBaseHelp" property by
 /// addSpinRow()/addIntSpinRow()). Mirrors the red-outline + tooltip treatment
 /// already used on macOS and Windows for the same FieldError values (#41).
-inline void applyFieldError(QAbstractSpinBox* sb, ewpresenter::FieldError err)
-{
+inline void applyFieldError(QAbstractSpinBox *sb, ewpresenter::FieldError err) {
     const QString baseHelp = sb->property("ewcBaseHelp").toString();
     if (err != ewpresenter::FieldError::none) {
         sb->setStyleSheet(QStringLiteral("QAbstractSpinBox { border: 1.5px solid #d32f2f; }"));
@@ -205,12 +196,10 @@ inline void applyFieldError(QAbstractSpinBox* sb, ewpresenter::FieldError err)
 /// Sets a tooltip from @p help (ported from macOS ResultRow help text) and an
 /// accessible name from @p fieldLabel. When @p registry is non-null, appends
 /// {fieldLabel, label} so a page-level "Copy Results" button can include it.
-inline QLabel* addResultRow(
-    QFormLayout* form, const QString& fieldLabel,
-    const QString& help = QString(),
-    ResultRowRegistry* registry = nullptr)
-{
-    auto* lbl = new QLabel(QStringLiteral("\u2014")); // em-dash placeholder
+inline QLabel *addResultRow(QFormLayout *form, const QString &fieldLabel,
+                            const QString &help = QString(),
+                            ResultRowRegistry *registry = nullptr) {
+    auto *lbl = new QLabel(QStringLiteral("\u2014")); // em-dash placeholder
     lbl->setTextInteractionFlags(Qt::TextSelectableByMouse);
     lbl->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     lbl->setAccessibleName(fieldLabel);
@@ -227,28 +216,26 @@ inline QLabel* addResultRow(
 
 /// Creates a titled QGroupBox wrapping a new QFormLayout.
 /// @param outLayout   receives the form layout; caller populates it.
-inline QGroupBox* makeGroup(const QString& title, QFormLayout*& outLayout)
-{
-    auto* box    = new QGroupBox(title);
-    outLayout    = new QFormLayout(box);
+inline QGroupBox *makeGroup(const QString &title, QFormLayout *&outLayout) {
+    auto *box = new QGroupBox(title);
+    outLayout = new QFormLayout(box);
     return box;
 }
 
 /// Creates a "Copy Results" button that copies every row in @p results to
 /// the system clipboard as plain text, one "Label: Value" line per row.
-inline QPushButton* addCopyResultsButton(const ResultRowRegistry& results)
-{
-    auto* btn = new QPushButton(QStringLiteral("Copy Results"));
+inline QPushButton *addCopyResultsButton(const ResultRowRegistry &results) {
+    auto *btn = new QPushButton(QStringLiteral("Copy Results"));
     btn->setToolTip(QStringLiteral("Copy all result values on this page to the clipboard"));
     btn->setAccessibleName(QStringLiteral("Copy Results"));
     QObject::connect(btn, &QPushButton::clicked, btn, [results] {
         const QString text = std::accumulate(
-            results.begin(), results.end(), QString(),
-            [](QString acc, const auto& row) {
+            results.begin(), results.end(), QString(), [](QString acc, const auto &row) {
                 // std::move(acc) routes into QString's rvalue operator+ overload
                 // (in-place += + move-return) instead of the deep-copying lvalue
                 // overload, keeping this O(n) like the raw loop it replaced.
-                return std::move(acc) + row.first + QStringLiteral(": ") + row.second->text() + QStringLiteral("\n");
+                return std::move(acc) + row.first + QStringLiteral(": ") + row.second->text() +
+                       QStringLiteral("\n");
             });
         QGuiApplication::clipboard()->setText(text);
     });

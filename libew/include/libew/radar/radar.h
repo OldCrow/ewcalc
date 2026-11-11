@@ -39,15 +39,9 @@ struct RadarRangeResult {
 /// @param bandwidth    Receiver noise bandwidth (MHz)
 /// @param required_snr Minimum required SNR for detection (dB)
 /// @return RadarRangeResult with max range and two-way path loss
-[[nodiscard]] RadarRangeResult radar_range(
-    Dbm  tx_power,
-    Db   antenna_gain,
-    Dbsm target_rcs,
-    Mhz  frequency,
-    Db   system_losses,
-    Db   noise_figure,
-    Mhz  bandwidth,
-    Db   required_snr) noexcept;
+[[nodiscard]] RadarRangeResult radar_range(Dbm tx_power, Db antenna_gain, Dbsm target_rcs,
+                                           Mhz frequency, Db system_losses, Db noise_figure,
+                                           Mhz bandwidth, Db required_snr) noexcept;
 
 // ---------------------------------------------------------------------------
 // Signal processing gain
@@ -170,8 +164,7 @@ enum class Swerling : std::uint8_t {
 /// @param azimuth_beamwidth  3 dB azimuth beamwidth (degrees)
 /// @param scan_rate_deg_s    Antenna scan rate (degrees/second)
 /// @return Dwell time (seconds)
-[[nodiscard]] Seconds dwell_time(Degrees azimuth_beamwidth,
-                                 double scan_rate_deg_s) noexcept;
+[[nodiscard]] Seconds dwell_time(Degrees azimuth_beamwidth, double scan_rate_deg_s) noexcept;
 
 /// Hits per scan — pulses striking the target per beam pass.
 ///   n = T_D · PRF

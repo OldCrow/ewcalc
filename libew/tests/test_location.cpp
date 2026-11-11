@@ -35,7 +35,7 @@ void test_cep_aoa_formula_derivation() {
 
 void test_cep_aoa_proportional_to_range() {
     // CEP scales linearly with range (tan(σ) factor is fixed)
-    const Km cep50  = cep_from_rms_bearing_error(1.0_deg, 50.0_km);
+    const Km cep50 = cep_from_rms_bearing_error(1.0_deg, 50.0_km);
     const Km cep100 = cep_from_rms_bearing_error(1.0_deg, 100.0_km);
     ASSERT_NEAR(cep100.value / cep50.value, 2.0, 1e-9);
 }
@@ -45,8 +45,8 @@ void test_cep_aoa_proportional_to_tan_error() {
     const Km cep1 = cep_from_rms_bearing_error(1.0_deg, 100.0_km);
     const Km cep2 = cep_from_rms_bearing_error(2.0_deg, 100.0_km);
     // tan(2°)/tan(1°) ≈ 2 for small angles
-    const double ratio = std::tan(2.0 * std::numbers::pi/180.0)
-                       / std::tan(1.0 * std::numbers::pi/180.0);
+    const double ratio =
+        std::tan(2.0 * std::numbers::pi / 180.0) / std::tan(1.0 * std::numbers::pi / 180.0);
     ASSERT_NEAR(cep2.value / cep1.value, ratio, 0.001);
 }
 
@@ -76,7 +76,7 @@ void test_cep_aoa_zero_error() {
 
 void test_cep_tdoa_formula_derivation() {
     const double sigma_r_km = 2.99792458e8 * 10.0e-9 / 1000.0;
-    const double expected   = sigma_r_km * 100.0 / (2.0 * 10.0);
+    const double expected = sigma_r_km * 100.0 / (2.0 * 10.0);
     ASSERT_NEAR(cep_from_tdoa_rms_error(10.0, 100.0_km, 10.0_km).value, expected, 1e-6);
 }
 

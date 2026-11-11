@@ -4,17 +4,17 @@
 
 class QLabel;
 
-class JammingPage : public QWidget
-{
+class JammingPage : public QWidget {
 public:
-    explicit JammingPage(QWidget* parent = nullptr);
+    explicit JammingPage(QWidget *parent = nullptr);
+
 private:
     ewpresenter::JammingPresenter presenter_;
-    QLabel* js_ratio_;
-    QLabel* signal_at_rx_;
-    QLabel* jammer_at_rx_;
-    QLabel* optimum_bw_;
-    QLabel* duty_cycle_;
-    QLabel* burnthrough_range_;
-    void applyOutput(const ewpresenter::JammingPresenter::Output& o);
+    QLabel *js_ratio_;
+    QLabel *signal_at_rx_;
+    QLabel *jammer_at_rx_;
+    QLabel *optimum_bw_;
+    QLabel *duty_cycle_;
+    QLabel *burnthrough_range_;
+    void applyOutput(const ewpresenter::JammingPresenter::Output &o);
 };

@@ -63,7 +63,8 @@ using namespace libew::units;
 // ---------------------------------------------------------------------------
 
 /// Returns true if 2-ray propagation applies (distance > Fresnel zone crossover).
-[[nodiscard]] bool is_two_ray_regime(Km distance, Meters tx_height, Meters rx_height, Mhz frequency) noexcept;
+[[nodiscard]] bool is_two_ray_regime(Km distance, Meters tx_height, Meters rx_height,
+                                     Mhz frequency) noexcept;
 
 /// Compute path loss using whichever regime applies at the given distance.
 /// Uses free_space_path_loss for d < d_FZ, two_ray_path_loss otherwise.
@@ -88,11 +89,8 @@ using namespace libew::units;
 /// @param los_clearance Height of line-of-sight above knife edge (m); negative = edge above LOS
 /// @param frequency     Carrier frequency (MHz)
 /// @return Diffraction loss (dB, positive = additional loss)
-[[nodiscard]] Db knife_edge_diffraction_loss(
-    Km    dist_tx_edge,
-    Km    dist_edge_rx,
-    Meters los_clearance,
-    Mhz   frequency) noexcept;
+[[nodiscard]] Db knife_edge_diffraction_loss(Km dist_tx_edge, Km dist_edge_rx, Meters los_clearance,
+                                             Mhz frequency) noexcept;
 
 // ---------------------------------------------------------------------------
 // Earth geometry

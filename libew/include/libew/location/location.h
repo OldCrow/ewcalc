@@ -16,7 +16,8 @@ using namespace libew::units;
 /// @param rms_bearing_error  RMS bearing error (degrees)
 /// @param range_to_emitter   Range from each receiver to emitter (km)
 /// @return CEP (km)
-[[nodiscard]] Km cep_from_rms_bearing_error(Degrees rms_bearing_error, Km range_to_emitter) noexcept;
+[[nodiscard]] Km cep_from_rms_bearing_error(Degrees rms_bearing_error,
+                                            Km range_to_emitter) noexcept;
 
 /// CEP from TDOA RMS timing error.
 ///
@@ -34,9 +35,8 @@ using namespace libew::units;
 /// @param range_to_emitter   Slant range from receiver midpoint to emitter (km)
 /// @param baseline           Receiver separation distance (km)
 /// @return CEP (km)
-[[nodiscard]] Km cep_from_tdoa_rms_error(double rms_time_error_ns,
-                                          Km range_to_emitter,
-                                          Km baseline) noexcept;
+[[nodiscard]] Km cep_from_tdoa_rms_error(double rms_time_error_ns, Km range_to_emitter,
+                                         Km baseline) noexcept;
 
 /// CEP from an Elliptical Error Probable (EEP) — exact for the symmetric case.
 /// For an ellipse with semi-axes a ≥ b:

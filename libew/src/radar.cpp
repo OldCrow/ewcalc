@@ -10,16 +10,9 @@ Meters wavelength_m(Mhz frequency) noexcept {
     return Meters{constants::speed_of_light_m_s / (frequency.value * 1.0e6)};
 }
 
-RadarRangeResult radar_range(
-    Dbm  tx_power,
-    Db   antenna_gain,
-    Dbsm target_rcs,
-    Mhz  frequency,
-    Db   system_losses,
-    Db   noise_figure,
-    Mhz  bandwidth,
-    Db   required_snr) noexcept
-{
+RadarRangeResult radar_range(Dbm tx_power, Db antenna_gain, Dbsm target_rcs, Mhz frequency,
+                             Db system_losses, Db noise_figure, Mhz bandwidth,
+                             Db required_snr) noexcept {
     // Radar range equation in dB form:
     //
     // R_max^4 = Pt * G^2 * λ^2 * σ / ((4π)^3 * kTBNF * SNR * L)
@@ -36,15 +29,14 @@ RadarRangeResult radar_range(
     const Dbm noise_power = receiver::system_sensitivity(bandwidth, noise_figure, Db{0.0});
 
     // Compute the numerator (all log terms that add to range)
-    const double numerator_db =
-          tx_power.value                        // Pt (dBm)
-        + 2.0 * antenna_gain.value              // G^2 (dB)
-        + 20.0 * std::log10(lambda_m)           // λ^2 term
-        + target_rcs.value                       // σ (dBsm)
-        - 30.0 * std::log10(constants::four_pi) // (4π)^3 term
-        - noise_power.value                      // kTBNF (dBm)
-        - required_snr.value                     // SNR threshold (dB)
-        - system_losses.value;                   // L_sys (dB)
+    const double numerator_db = tx_power.value                          // Pt (dBm)
+                                + 2.0 * antenna_gain.value              // G^2 (dB)
+                                + 20.0 * std::log10(lambda_m)           // λ^2 term
+                                + target_rcs.value                      // σ (dBsm)
+                                - 30.0 * std::log10(constants::four_pi) // (4π)^3 term
+                                - noise_power.value                     // kTBNF (dBm)
+                                - required_snr.value                    // SNR threshold (dB)
+                                - system_losses.value;                  // L_sys (dB)
 
     // R_m = 10^(numerator / 40)
     const double range_m = std::pow(10.0, numerator_db / 40.0);
@@ -83,15 +75,12 @@ Db required_snr_albersheim(double pd, double pfa, int num_pulses) noexcept {
     const double n = static_cast<double>(num_pulses);
     const double a = std::log(0.62 / pfa);
     const double b = std::log(pd / (1.0 - pd));
-    const double snr_db =
-        -5.0 * std::log10(n)
-        + (6.2 + 4.545 / std::sqrt(n + 0.44))
-              * std::log10(a + 0.12 * a * b + 1.7 * b);
+    const double snr_db = -5.0 * std::log10(n) + (6.2 + 4.545 / std::sqrt(n + 0.44)) *
+                                                     std::log10(a + 0.12 * a * b + 1.7 * b);
     return Db{snr_db};
 }
 
-Db required_snr_shnidman(double pd, double pfa, int num_pulses,
-                         Swerling swerling) noexcept {
+Db required_snr_shnidman(double pd, double pfa, int num_pulses, Swerling swerling) noexcept {
     // Shnidman (2002), "Determination of Required SNR Values", IEEE Trans.
     // AES 38(3). Square-law detector, noncoherent integration of N pulses.
     //
@@ -105,9 +94,8 @@ Db required_snr_shnidman(double pd, double pfa, int num_pulses,
     // eta: two-sided Gaussian-tail surrogate for (Pfa, Pd). The 4·p·(1-p)
     // form is symmetric about p = 0.5, where the Pd term vanishes.
     const double eta =
-        std::sqrt(-0.8 * std::log(4.0 * pfa * (1.0 - pfa)))
-        + std::copysign(1.0, pd - 0.5)
-              * std::sqrt(-0.8 * std::log(4.0 * pd * (1.0 - pd)));
+        std::sqrt(-0.8 * std::log(4.0 * pfa * (1.0 - pfa))) +
+        std::copysign(1.0, pd - 0.5) * std::sqrt(-0.8 * std::log(4.0 * pd * (1.0 - pd)));
 
     // X_inf: required *total* (N-pulse) SNR for the nonfluctuating target.
     const double alpha = (num_pulses >= 40) ? 0.25 : 0.0;
@@ -117,22 +105,29 @@ Db required_snr_shnidman(double pd, double pfa, int num_pulses,
     if (swerling != Swerling::nonfluctuating) {
         double k = 1.0;
         switch (swerling) {
-            case Swerling::case1: k = 1.0;     break;
-            case Swerling::case2: k = n;       break;
-            case Swerling::case3: k = 2.0;     break;
-            case Swerling::case4: k = 2.0 * n; break;
-            case Swerling::nonfluctuating:     break; // unreachable
+            case Swerling::case1:
+                k = 1.0;
+                break;
+            case Swerling::case2:
+                k = n;
+                break;
+            case Swerling::case3:
+                k = 2.0;
+                break;
+            case Swerling::case4:
+                k = 2.0 * n;
+                break;
+            case Swerling::nonfluctuating:
+                break; // unreachable
         }
         // C1: cubic-in-Pd fluctuation penalty; C2: high-Pd correction that
         // switches in above Pd = 0.872 (Shnidman's stated breakpoint).
-        const double c1 =
-            (((17.7006 * pd - 18.4496) * pd + 14.5339) * pd - 3.525) / k;
+        const double c1 = (((17.7006 * pd - 18.4496) * pd + 14.5339) * pd - 3.525) / k;
         double c2 = 0.0;
         if (pd > 0.872) {
-            c2 = (1.0 / k)
-                 * (std::exp(27.31 * pd - 25.14)
-                    + (pd - 0.8) * (0.7 * std::log(1.0e-5 / pfa)
-                                    + (2.0 * n - 20.0) / 80.0));
+            c2 =
+                (1.0 / k) * (std::exp(27.31 * pd - 25.14) +
+                             (pd - 0.8) * (0.7 * std::log(1.0e-5 / pfa) + (2.0 * n - 20.0) / 80.0));
         }
         c_db = c1 + c2;
     }
@@ -142,11 +137,9 @@ Db required_snr_shnidman(double pd, double pfa, int num_pulses,
     return Db{10.0 * std::log10(x_inf / n) + c_db};
 }
 
-Db fluctuation_loss(double pd, double pfa, int num_pulses,
-                    Swerling swerling) noexcept {
-    return Db{required_snr_shnidman(pd, pfa, num_pulses, swerling).value
-              - required_snr_shnidman(pd, pfa, num_pulses,
-                                      Swerling::nonfluctuating).value};
+Db fluctuation_loss(double pd, double pfa, int num_pulses, Swerling swerling) noexcept {
+    return Db{required_snr_shnidman(pd, pfa, num_pulses, swerling).value -
+              required_snr_shnidman(pd, pfa, num_pulses, Swerling::nonfluctuating).value};
 }
 
 // ---------------------------------------------------------------------------
@@ -171,8 +164,7 @@ double false_alarm_rate_hz(double pfa, Mhz bandwidth) noexcept {
 
 double doppler_shift_hz(Mhz frequency, double radial_speed_m_s) noexcept {
     // f_d = 2·v_r·f/c — two-way path, so twice the one-way shift.
-    return 2.0 * radial_speed_m_s * frequency.value * 1.0e6
-           / constants::speed_of_light_m_s;
+    return 2.0 * radial_speed_m_s * frequency.value * 1.0e6 / constants::speed_of_light_m_s;
 }
 
 Km unambiguous_range(double prf_hz) noexcept {
