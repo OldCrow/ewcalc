@@ -39,6 +39,25 @@
   C++/CLI types outside a full solution build). Roslyn analyzer
   diagnostics are gated by the normal build instead. See AGENTS.md's
   Windows Frontend conventions.
+- **CI and tooling [2026-11-11]** (rules and incidents: CI House Style §1,
+  §6, §8).
+  - Runner labels float on `*-latest`, except `ubuntu-22.04` for the
+    AppImage glibc floor (#111, #112). The macOS job had been pinned to
+    `macos-14`, which GitHub retired on 2026-11-02.
+  - The canary runs weekly (Monday 03:55 UTC); a `canary-report` job
+    opens a "Canary failed" issue, or comments on the open one (#113).
+  - Pre-commit (#116): file-hygiene hooks only, enforced by a `precommit`
+    CI job on all files. `.gitattributes` sets LF, with CRLF for the
+    files Visual Studio and PowerShell own. No `actions/cache` in that
+    job (zizmor `cache-poisoning`).
+  - **No C++ formatter, by decision.** clang-format was trialled and
+    rejected: with a style tuned to the code, about 1,690 of 2,434
+    changed lines were lost hand alignment, and still 1,132 of 1,858 with
+    the three table files excluded. An untuned style also split one-line
+    `if` statements, which detached a cppcheck suppression and cut
+    measured coverage from 77.0% to 68.4% (gate 75%). Same reason as the
+    `dotnet format` decision above.
+  - `reviewdog/action-actionlint` stays at v1.83.0 or newer (#118).
 
 ## GitHub Synchronization [DERIVED]
 Last reconciled against live GitHub state: 2026-10-12 UTC (after v1.3.1
@@ -863,6 +882,12 @@ Carried into the next session:
     push triggers no run at all. The three required checks could never have
     run for those commits, which is exactly the case the bypass actor exists
     for. Worth knowing before treating a missing run here as a failure.
+- **Packaging is untested on the floated runner labels** [OPEN,
+  2026-11-11]. Signing, notarization, MSIX, DMG and AppImage packaging
+  run only on tags and `workflow_dispatch`, so the moves to
+  `macos-latest` and `windows-latest` (#112) are proven for build and
+  test only. Run `ci.yml` by `workflow_dispatch` once before the next
+  tag.
 
 ## Build-Stack Standardization (2026-07-23) [DERIVED]
 Cross-repo effort tracked in the fleet standards repo
