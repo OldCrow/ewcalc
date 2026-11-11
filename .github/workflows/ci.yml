@@ -29,7 +29,7 @@ jobs:
   # ── Windows ─────────────────────────────────────────────────────────────────
   build-windows:
     name: Windows (WinUI 3)
-    runs-on: windows-2022
+    runs-on: windows-latest
     timeout-minutes: 45
     permissions:
       contents: read
@@ -113,7 +113,7 @@ jobs:
   # ── macOS ───────────────────────────────────────────────────────────────────
   build-macos:
     name: macOS (SwiftUI)
-    runs-on: macos-15           # Apple Silicon runner (macos-14 image retired)
+    runs-on: macos-latest       # Apple Silicon runner
     timeout-minutes: 40         # notarization (tag/dispatch runs) can be slow
     permissions:
       contents: read
@@ -190,7 +190,8 @@ jobs:
           retention-days: 90
 
   # ── Linux ───────────────────────────────────────────────────────────────────
-  # Pinned to an older LTS than the other jobs (which use ubuntu-24.04) so the
+  # The one pinned runner label in this file (CI House Style §1: every other
+  # job floats on *-latest). Pinned to an older LTS so the
   # AppImage's bundled libraries (libstdc++, libgcc_s, and whatever Qt/X11
   # transitively pulls in, e.g. libgcrypt) are linked against an older
   # glibc/GLIBCXX baseline. AppImages only ever need to run on systems with a
@@ -291,7 +292,7 @@ jobs:
   # ── Sanitizers (ASan/UBSan) ────────────────────────────────────────────────
   sanitizers:
     name: Sanitizers (ASan/UBSan)
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     timeout-minutes: 20
 
     steps:
@@ -324,7 +325,7 @@ jobs:
   # ── Static analysis (clang-tidy + cppcheck) ─────────────────────────────────────────
   static-analysis:
     name: Static analysis (clang-tidy + cppcheck)
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     timeout-minutes: 15
 
     steps:
@@ -360,7 +361,7 @@ jobs:
   # ── API documentation (Doxygen) ─────────────────────────────────────────
   docs:
     name: API docs (Doxygen)
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
@@ -386,7 +387,7 @@ jobs:
   # ── Code coverage ────────────────────────────────────────────────────────
   coverage:
     name: Code coverage
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
       # Initial baseline: measured ~79.5% line coverage for libew+ewpresenter
