@@ -160,10 +160,11 @@ Open milestones are fully itemized here since they reflect actionable state.
       - ImageOpened sizing: CORRECT and DPI-safe. Width is in DIPs, so
         PixelWidth/2 on a 2x master keeps the formula matched to
         surrounding text at any display scale.
-      - C4679 pragma: still needed. CI builds on windows-2022 (VS 17.x)
-        where it fires; confirmed VS 18 2026 (MSVC 19.51) no longer
+      - C4679 pragma: still needed. It fires under VS 17.x, which CI
+        used on windows-2022; confirmed VS 18 2026 (MSVC 19.51) no longer
         emits it. Comment in RefData.cpp now says to drop the pragma
-        once CI moves off windows-2022.
+        once the windows-latest image ships VS 18 (the job floats on
+        windows-latest since 2026-11-11).
       - Formula-row spacing: acceptable for the single proof row, but
         see the alignment item under Known Gaps before #74-#78 add
         multi-row formula sections.
@@ -810,7 +811,7 @@ Carried into the next session:
   `CMAKE_GENERATOR_INSTANCE` pin used mid-diagnosis was a temporary
   crutch and is not in any committed file. Note the repair installed only
   .NET SDK 10.0.401; the net8.0 target still builds under it, but CI
-  (windows-2022) uses the .NET 8 SDK, so this box and CI now differ. The
+  (windows-2022 at the time) used the .NET 8 SDK, so this box and CI now differ. The
   one local-only symptom of that divergence is a benign NETSDK1198
   "publish profile 'win-x64' was not found" warning from SDK 10 — it does
   not appear on CI and is unrelated to #73.
