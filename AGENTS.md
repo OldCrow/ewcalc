@@ -183,7 +183,7 @@ Gating to keep straight when editing:
   builds and tests only. This is a deliberate trade against the
   runner-budget rule — packaging regressions surface at release time, and
   `workflow_dispatch` is the escape hatch for testing them early.
-- The monthly `schedule` canary catches drift with no code change to
+- The weekly `schedule` canary catches drift with no code change to
   trigger it (runner images, Qt and WinAppSDK NuGet updates). Because
   packaging is tag-gated, scheduled runs re-validate build+test and never
   publish or sign.
