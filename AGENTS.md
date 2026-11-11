@@ -151,6 +151,8 @@ The conventions below are scoped per target — the frontends are Swift, C#, and
 - No external dependencies in `libew` or `ewpresenter`.
 - All quantity types from `libew::units` — never use bare `double` for RF quantities in these layers.
 - Static analysis: `scripts/lint-cpp.sh` runs clang-tidy (rules in `.clang-tidy`, repo root) and cppcheck against `libew/`, `ewpresenter/`, and `bridge/`. Mirrors the `static-analysis` CI job — run it locally before pushing.
+- Formatting: no automatic formatter. The C++ is hand-aligned on purpose (tag structs, member blocks, field-by-field mappings, data tables), and clang-format flattens that alignment; it was trialled and rejected on 2026-11-11 (numbers in `.pre-commit-config.yaml`). Keep the alignment of the code around your change.
+- Pre-commit: `.pre-commit-config.yaml` runs whitespace, EOF, line-ending (LF; Windows-owned `.sln`/`.vcxproj`/`.csproj`/`.ps1` etc. stay CRLF per `.gitattributes`), YAML/JSON, merge-conflict, case-conflict, and large-file hooks. Enable locally with `python -m pre_commit install`. The `precommit` CI job runs the same config on all files.
 
 ### Frontends
 
@@ -172,7 +174,8 @@ only).
 
 `ci.yml` runs one job per frontend — Windows/WinUI 3, macOS/SwiftUI on
 Apple Silicon, Linux/Qt6 — plus sanitizers (ASan/UBSan), static analysis
-(clang-tidy + cppcheck), Doxygen docs, and coverage. The frontend jobs each
+(clang-tidy + cppcheck), Doxygen docs, coverage, and `precommit` (all
+pre-commit hooks on all files). The frontend jobs each
 own their platform's packaging: MSIX, signed+notarized DMG, AppImage, and
 .deb, each with a build-provenance attestation.
 

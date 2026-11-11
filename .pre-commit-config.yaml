@@ -1,0 +1,42 @@
+default_language_version:
+  python: python3
+
+# Build output and untracked tool caches never reach the hooks.
+exclude: '^(build[^/]*|out|\.cache)/'
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      # The fixers must leave binary assets, generated or IDE-owned Xcode/XAML
+      # designer output, and WinUI/MSBuild build output byte-exact.
+      - id: trailing-whitespace
+        exclude: &fixer_exclude >-
+          (?x)(
+            \.(png|ico|icns|pbxproj|xcscheme|xcassets|resx|g\.cs|g\.i\.cs|designer\.cs)$
+            | (^|/)Assets\.xcassets/
+            | (^|/)(bin|obj)/
+          )
+      - id: end-of-file-fixer
+        exclude: *fixer_exclude
+      # Windows-owned types keep CRLF (see .gitattributes); everything else is LF.
+      - id: mixed-line-ending
+        args: ['--fix=lf']
+        exclude: >-
+          (?x)(
+            \.(sln|vcxproj|csproj|props|targets|filters|appxmanifest|manifest|resx|ps1|cmd|bat)$
+            | \.(png|ico|icns)$
+          )
+      - id: check-yaml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: check-added-large-files
+        args: ['--maxkb=500']
+
+# No source formatter, deliberately. The C++ is hand-aligned throughout
+# (tag structs, member blocks, field-by-field mappings, data tables), and
+# clang-format has no option that keeps aligned call arguments. Measured
+# 2026-11-11 with a style tuned to the code: about 1,690 of 2,434 changed
+# lines were lost alignment; with the three table files excluded, still
+# 1,132 of 1,858.
