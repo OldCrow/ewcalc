@@ -1,0 +1,14 @@
+---
+BasedOnStyle: InheritParentConfig
+# The Qt frontend breaks before function and class braces, and puts
+# constructor-initializer commas at the start of the line.
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: true
+  AfterFunction: true
+  AfterStruct: false
+  AfterEnum: false
+  AfterNamespace: false
+  AfterControlStatement: Never
+  BeforeElse: false
+BreakConstructorInitializers: BeforeComma

@@ -24,7 +24,7 @@ IndentCaseLabels: true
 IndentPPDirectives: None
 
 # Line length
-ColumnLimit: 100
+ColumnLimit: 0
 
 # Braces — K&R style: opening brace on the same line as the statement
 BreakBeforeBraces: Attach
@@ -34,16 +34,16 @@ SpaceBeforeParens: ControlStatements
 SpacesInParentheses: false
 SpacesInSquareBrackets: false
 SpaceAfterCStyleCast: false
-SpaceAfterTemplateKeyword: true
+SpaceAfterTemplateKeyword: false
 SpaceBeforeAssignmentOperators: true
 SpaceBeforeCpp11BracedList: false
 
 # Short forms
-AllowShortFunctionsOnASingleLine: Inline
-AllowShortIfStatementsOnASingleLine: Never
+AllowShortFunctionsOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
 AllowShortLambdasOnASingleLine: Inline
-AllowShortLoopsOnASingleLine: false
-AllowShortCaseLabelsOnASingleLine: false
+AllowShortLoopsOnASingleLine: true
+AllowShortCaseLabelsOnASingleLine: true
 
 # Templates
 AlwaysBreakTemplateDeclarations: Yes
@@ -62,3 +62,5 @@ ReflowComments: false
 # Namespace indentation
 NamespaceIndentation: None
 CompactNamespaces: false
+PointerAlignment: Left
+AlignAfterOpenBracket: Align
