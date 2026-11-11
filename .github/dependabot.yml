@@ -23,3 +23,7 @@ updates:
       codeql-action:
         patterns:
           - "github/codeql-action*"
+  - package-ecosystem: pre-commit
+    directory: /
+    schedule:
+      interval: weekly
